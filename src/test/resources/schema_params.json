@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "detectors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of all the detectors we want to process"
+    },
+    "bands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of all the bands we want to process"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "l1b_product": "PATH_TO_L1B_PRODUCT_FOLDER",
+  "gipp_folder": "PATH_TO_GIPP_FOLDER",
+  "gipp_check": true,
+  "dem": "PATH_TO_DEM_FOLDER",
+  "geoid": "PATH_TO_GEOID_FOLDER",
+  "iers": "PATH_TO_IERS_FILE",
+  "pod": "PATH_TO_POD_file/folder?",
+  "operation": "direct",
+  "deactivate_available_refining": false,
+  "steps": {
+    "10m_bands": 45,
+    "20m_bands": 90,
+    "60m_bands": 270
+  },
+  "inverse_location_additional_info": {
+	"UL_X":15000,
+	"UL_Y":7000,
+	"LR_X":15000,
+	"LR_Y":7000,
+	"referential":"EPSG:4326",
+	"output_folder":"PATH_TO_OUTPUT_FOLDER_FOR_INVERSE_LOCATION_GRIDS"
+  }
+}
+
+
+
