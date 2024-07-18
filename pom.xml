@@ -46,13 +46,6 @@
         <artifactId>everit-json-schema-jdk6</artifactId>
         <version>1.9.2</version>
     </dependency>
-    <dependency>
-        <groupId>org.sxgeo</groupId>
-        <artifactId>sxgeo</artifactId>
-        <version>${sxgeo.version}</version>
-        <type>jar</type>
-        <optional>false</optional>
-    </dependency>
   </dependencies>
 
   <build>
