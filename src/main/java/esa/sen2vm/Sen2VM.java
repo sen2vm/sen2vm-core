@@ -16,11 +16,11 @@ public class Sen2VM
     {
         Options options = new Options();
 
-        Option configOption = new Option("c", "config", true, "mandatory path to the configuration file (in JSON format)");
+        Option configOption = new Option("c", "config", true, "Mandatory. Path to the configuration file (in JSON format) regrouping all inputs");
         configOption.setRequired(true);
         options.addOption(configOption);
 
-        Option paramOption = new Option("p", "param", true, "optional path to parameter file (in JSON format)");
+        Option paramOption = new Option("p", "param", true, "Optional. Path to parameter file (in JSON format) regrouping all parallelisation specificities. All processed if not provided");
         paramOption.setRequired(false);
         options.addOption(paramOption);
 
@@ -32,7 +32,7 @@ public class Sen2VM
             cmd = parser.parse(options, args);
         } catch (ParseException e) {
             System.out.println(e.getMessage());
-            formatter.printHelp("Sen2vm", options);
+            formatter.printHelp("Sen2VM", options);
 
             System.exit(1);
             return;
@@ -41,7 +41,7 @@ public class Sen2VM
         String configFilepath = cmd.getOptionValue("config");
         String sensorManagerFile = cmd.getOptionValue("param");
 
-        System.out.println("Running Sen2vm core :\n");
+        System.out.println("Running Sen2VM core :\n");
 
         ConfigurationFile configFile = new ConfigurationFile(configFilepath);
 

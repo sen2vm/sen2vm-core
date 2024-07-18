@@ -15,7 +15,7 @@ public class ConfigurationFile extends InputFileManager
     private String filepath;
     private String l1bProduct;
     private String gippFolder;
-    private boolean gippCheck;
+    private boolean gippVersionCheck;
     private String dem;
     private String geoid;
     private String iers;
@@ -56,7 +56,7 @@ public class ConfigurationFile extends InputFileManager
 
             this.l1bProduct = jsonObject.getString("l1b_product");
             this.gippFolder = jsonObject.getString("gipp_folder");
-            this.gippCheck = jsonObject.getBoolean("gipp_check");
+            this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
             this.dem = jsonObject.getString("dem");
             this.geoid = jsonObject.getString("geoid");
             this.iers = jsonObject.getString("iers");
@@ -70,10 +70,10 @@ public class ConfigurationFile extends InputFileManager
             this.band60m = steps.getFloat("60m_bands");
 
             JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
-            this.ul_x = inverseLoc.getFloat("UL_X");
-            this.ul_y = inverseLoc.getFloat("UL_Y");
-            this.lr_x = inverseLoc.getFloat("LR_X");
-            this.lr_y = inverseLoc.getFloat("LR_Y");
+            this.ul_x = inverseLoc.getFloat("ul_x");
+            this.ul_y = inverseLoc.getFloat("ul_y");
+            this.lr_x = inverseLoc.getFloat("lr_x");
+            this.lr_y = inverseLoc.getFloat("lr_y");
             this.referential = inverseLoc.getString("referential");
             this.outputFolder = inverseLoc.getString("output_folder");
 

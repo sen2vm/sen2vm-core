@@ -9,7 +9,7 @@
             "type": "string",
             "description": "Path to GIPP folder"
         },
-        "gipp_check": {
+        "gipp_version_check": {
             "type": "boolean"
         },
         "dem": {
@@ -56,16 +56,16 @@
         "inverse_location_additional_info": {
           "type": "object",
           "properties": {
-            "UL_X" : {
+            "ul_x" : {
               "type": "number"
             },
-            "UL_Y" : {
+            "ul_y" : {
               "type": "number"
             },
-            "LR_X" : {
+            "lr_x" : {
               "type": "number"
             },
-            "LR_Y" : {
+            "lr_y" : {
               "type": "number"
             },
             "referential" : {
@@ -75,7 +75,7 @@
               "type": "string"
             }
           },
-          "required":["UL_X", "UL_Y", "LR_X", "LR_Y", "referential", "output_folder"]
+          "required":["ul_x", "ul_y", "lr_x", "lr_y", "referential", "output_folder"]
         }
     },
     "required": ["l1b_product", "gipp_folder", "dem", "geoid", "operation", "steps", "inverse_location_additional_info"]
