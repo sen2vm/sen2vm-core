@@ -31,11 +31,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>javax.json</groupId>
-        <artifactId>javax.json-api</artifactId>
-        <version>1.1.4</version>
-    </dependency>
-    <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>javax.json</artifactId>
         <version>1.1.4</version>
@@ -109,7 +104,7 @@
                         <createDependencyReducedPom>false</createDependencyReducedPom>
                         <transformers>
                             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                <mainClass>esa.sen2vm.App</mainClass>
+                                <mainClass>esa.sen2vm.Sen2VM</mainClass>
                             </transformer>
                         </transformers>
                     </configuration>
