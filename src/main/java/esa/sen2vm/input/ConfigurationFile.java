@@ -53,6 +53,7 @@ public class ConfigurationFile extends InputFileManager
         try (InputStream fis = new FileInputStream(filepath)) {
 
             JSONObject jsonObject = new JSONObject(new JSONTokener(fis));
+
             this.l1bProduct = jsonObject.getString("l1b_product");
             this.gippFolder = jsonObject.getString("gipp_folder");
             this.gippCheck = jsonObject.getBoolean("gipp_check");
@@ -63,18 +64,18 @@ public class ConfigurationFile extends InputFileManager
             this.operation = jsonObject.getString("operation");
             this.refining = jsonObject.getBoolean("deactivate_available_refining");
 
-//             JSONObject steps = jsonObject.getJsonObject("steps");
-//             this.band10m = steps.getFloat("10m_bands");
-//             this.band20m = steps.getFloat("20m_bands");
-//             this.band60m = steps.getFloat("60m_bands");
-//
-//             JSONObject inverseLoc = jsonObject.getJsonObject("inverse_location_additional_info");
-//             this.ul_x = inverseLoc.getFloat("UL_X");
-//             this.ul_y = inverseLoc.getFloat("UL_Y");
-//             this.lr_x = inverseLoc.getFloat("LR_X");
-//             this.lr_y = inverseLoc.getFloat("LR_Y");
-//             this.referential = inverseLoc.getString("referential");
-//             this.outputFolder = inverseLoc.getString("output_folder");
+            JSONObject steps = jsonObject.getJSONObject("steps");
+            this.band10m = steps.getFloat("10m_bands");
+            this.band20m = steps.getFloat("20m_bands");
+            this.band60m = steps.getFloat("60m_bands");
+
+            JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
+            this.ul_x = inverseLoc.getFloat("UL_X");
+            this.ul_y = inverseLoc.getFloat("UL_Y");
+            this.lr_x = inverseLoc.getFloat("LR_X");
+            this.lr_y = inverseLoc.getFloat("LR_Y");
+            this.referential = inverseLoc.getString("referential");
+            this.outputFolder = inverseLoc.getString("output_folder");
 
             // TODO add verification of each parameter
             // for file see if it does really exist

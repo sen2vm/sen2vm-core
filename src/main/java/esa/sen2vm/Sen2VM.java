@@ -1,8 +1,6 @@
 package esa.sen2vm;
 
 import org.apache.commons.cli.*;
-import org.sxgeo.input.datamodels.sensor.Sensor;
-
 
 /**
  * Main class
@@ -48,10 +46,7 @@ public class Sen2VM
         ConfigurationFile configFile = new ConfigurationFile(configFilepath);
 
         if (sensorManagerFile != null) {
-            System.out.println("sensorManagerFile = " + sensorManagerFile);
             ParamFile paramsFile = new ParamFile(sensorManagerFile);
-            System.out.println("paramsFile = " + paramsFile.detectors);
-            System.out.println("paramsFile = " + paramsFile.bands);
         }
     }
 }

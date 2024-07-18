@@ -1,9 +1,8 @@
 package esa.sen2vm;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,8 +16,8 @@ import java.io.InputStream;
 public class ParamFile extends InputFileManager
 {
     private String filepath;
-    public JsonArray detectors;
-    public JsonArray bands;
+    public JSONArray detectors;
+    public JSONArray bands;
 
     public ParamFile(String jsonFilePath) {
         this.filepath = jsonFilePath;
@@ -30,13 +29,12 @@ public class ParamFile extends InputFileManager
     public void parse(String jsonFilePath) {
         System.out.println("Parsing file : "+ jsonFilePath +"\n");
 
-        try (InputStream fis = new FileInputStream(jsonFilePath);
-             JsonReader reader = Json.createReader(fis)) {
+        try (InputStream fis = new FileInputStream(jsonFilePath)) {
 
-            JsonObject jsonObject = reader.readObject();
+            JSONObject jsonObject = new JSONObject(new JSONTokener(fis));
 
-            this.detectors = jsonObject.getJsonArray("detectors");
-            this.bands = jsonObject.getJsonArray("bands");
+            this.detectors = jsonObject.getJSONArray("detectors");
+            this.bands = jsonObject.getJSONArray("bands");
 
             // TODO add a step to get rid of all band or detector that don't exist
 
