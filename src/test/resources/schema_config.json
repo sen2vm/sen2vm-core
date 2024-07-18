@@ -58,9 +58,25 @@
           "properties": {
             "UL_X" : {
               "type": "integer"
+            },
+            "UL_Y" : {
+              "type": "integer"
+            },
+            "LR_X" : {
+              "type": "integer"
+            },
+            "LR_Y" : {
+              "type": "integer"
+            },
+            "referential" : {
+              "type": "string"
+            },
+            "output_folder" : {
+              "type": "string"
             }
-          }
+          },
+          "required":["UL_X", "UL_Y", "LR_X", "LR_Y", "referential", "output_folder"]
         }
     },
-    "required": ["l1b_product", "gipp_folder", "dem", "geoid", "pod", "operation", "deactivate_available_refining"]
+    "required": ["l1b_product", "gipp_folder", "dem", "geoid", "operation", "steps", "inverse_location_additional_info"]
 }
