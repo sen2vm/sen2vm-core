@@ -8,7 +8,7 @@ import org.sxgeo.input.datamodels.sensor.Sensor;
  * Main class
  *
  */
-public class App
+public class Sen2VM
 {
     /**
      * Main process
@@ -46,7 +46,6 @@ public class App
         System.out.println("Running Sen2vm core :\n");
 
         ConfigurationFile configFile = new ConfigurationFile(configFilepath);
-        System.out.println("configFile = " + configFile.operation);
 
         if (sensorManagerFile != null) {
             System.out.println("sensorManagerFile = " + sensorManagerFile);

@@ -40,15 +40,15 @@
             "type": "object",
             "properties": {
               "10m_bands": {
-                  "type": "integer",
+                  "type": "number",
                   "minimum": 1
               },
               "20m_bands": {
-                  "type": "integer",
+                  "type": "number",
                   "minimum": 1
               },
               "60m_bands": {
-                  "type": "integer",
+                  "type": "number",
                   "minimum": 1
               }
             }
@@ -57,16 +57,16 @@
           "type": "object",
           "properties": {
             "UL_X" : {
-              "type": "integer"
+              "type": "number"
             },
             "UL_Y" : {
-              "type": "integer"
+              "type": "number"
             },
             "LR_X" : {
-              "type": "integer"
+              "type": "number"
             },
             "LR_Y" : {
-              "type": "integer"
+              "type": "number"
             },
             "referential" : {
               "type": "string"
