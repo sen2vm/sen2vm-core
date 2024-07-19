@@ -5,6 +5,7 @@ import org.json.JSONTokener;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 /**
  * ConfigurationFile class
@@ -12,6 +13,8 @@ import java.io.InputStream;
  */
 public class ConfigurationFile extends InputFileManager
 {
+    private static final Logger LOGGER = Logger.getLogger(ConfigurationFile.class.getName());
+
     private String filepath;
     private String l1bProduct;
     private String gippFolder;
@@ -48,7 +51,7 @@ public class ConfigurationFile extends InputFileManager
      * @param filepath Path to the configuration file to parse
      */
     public void parse(String filepath) {
-        System.out.println("Parsing file : "+ filepath +"\n");
+        LOGGER.info("Parsing file "+ filepath);
 
         try (InputStream fis = new FileInputStream(filepath)) {
 

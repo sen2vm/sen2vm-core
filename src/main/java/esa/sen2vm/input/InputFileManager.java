@@ -8,9 +8,12 @@ import org.json.JSONTokener;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 public class InputFileManager
 {
+    private static final Logger LOGGER = Logger.getLogger(InputFileManager.class.getName());
+
     public boolean check_schema(String filepath, String configSchema) {
         boolean correct_schema = false;
 
@@ -26,12 +29,12 @@ public class InputFileManager
 
             correct_schema = true;
         } catch (ValidationException e) {
-            System.err.println("Validation failed: ");
+            LOGGER.severe("Validation schema failed for " + filepath);
             e.getCausingExceptions().stream()
                 .map(ValidationException::getMessage)
                 .forEach(System.err::println);
         } catch (Exception e) {
-            System.err.println("Error : " + e.getMessage());
+            LOGGER.severe("Error during check_schema with message : " + e.getMessage());
         }
 
         return correct_schema;

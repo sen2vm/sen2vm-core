@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 /**
  * Parameters class
@@ -15,6 +16,8 @@ import java.io.InputStream;
  */
 public class ParamFile extends InputFileManager
 {
+    private static final Logger LOGGER = Logger.getLogger(ParamFile.class.getName());
+
     private String filepath;
     public JSONArray detectors;
     public JSONArray bands;
@@ -27,7 +30,7 @@ public class ParamFile extends InputFileManager
     }
 
     public void parse(String jsonFilePath) {
-        System.out.println("Parsing file : "+ jsonFilePath +"\n");
+        LOGGER.info("Parsing file "+ filepath);
 
         try (InputStream fis = new FileInputStream(jsonFilePath)) {
 

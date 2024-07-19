@@ -1,6 +1,15 @@
 package esa.sen2vm;
 
 import org.apache.commons.cli.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  * Main class
@@ -8,6 +17,9 @@ import org.apache.commons.cli.*;
  */
 public class Sen2VM
 {
+    // Get sen2VM logger
+    private static final Logger LOGGER = Logger.getLogger(Sen2VM.class.getName());
+
     /**
      * Main process
      * @param args first arg : input json file. second param (optional) : parameter json file
@@ -20,7 +32,7 @@ public class Sen2VM
         configOption.setRequired(true);
         options.addOption(configOption);
 
-        Option paramOption = new Option("p", "param", true, "Optional. Path to parameter file (in JSON format) regrouping all parallelisation specificities. All processed if not provided");
+        Option paramOption = new Option("p", "param", true, "Optional. Path to parameter file (in JSON format) regrouping all parallelization specificities. All processed if not provided");
         paramOption.setRequired(false);
         options.addOption(paramOption);
 
@@ -38,15 +50,38 @@ public class Sen2VM
             return;
         }
 
-        String configFilepath = cmd.getOptionValue("config");
-        String sensorManagerFile = cmd.getOptionValue("param");
+        // Set sen2VM logger
+        try {
+            LogManager.getLogManager().readConfiguration( new FileInputStream("src/main/resources/log.properties") );
 
-        System.out.println("Running Sen2VM core :\n");
+            // Create a custom FileHandler with date and time in the filename
+            String pattern = "/tmp/sen2VM-%s.log";
+            String dateTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String fileName = String.format(pattern, dateTime);
 
-        ConfigurationFile configFile = new ConfigurationFile(configFilepath);
+            FileHandler fileHandler = new FileHandler(fileName, true);
+            fileHandler.setLevel(Level.INFO);
+            fileHandler.setFormatter(new SimpleFormatter());
 
-        if (sensorManagerFile != null) {
-            ParamFile paramsFile = new ParamFile(sensorManagerFile);
+            // Add the custom FileHandler to the root logger
+            Logger.getLogger("").addHandler(fileHandler);
+
+            // Run core
+            String configFilepath = cmd.getOptionValue("config");
+            String sensorManagerFile = cmd.getOptionValue("param");
+
+            LOGGER.info("Start Sen2VM");
+
+            ConfigurationFile configFile = new ConfigurationFile(configFilepath);
+
+            if (sensorManagerFile != null) {
+                ParamFile paramsFile = new ParamFile(sensorManagerFile);
+            }
+
+            LOGGER.info("End Sen2VM");
+
+        } catch ( IOException exception ) {
+            throw new ExceptionInInitializerError(exception);
         }
     }
 }
