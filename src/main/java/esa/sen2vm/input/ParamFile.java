@@ -22,6 +22,10 @@ public class ParamFile extends InputFileManager
     public JSONArray detectors;
     public JSONArray bands;
 
+    /**
+     * Constructor
+     * @param jsonFilePath Path to the parameter file to parse
+     */
     public ParamFile(String jsonFilePath) {
         this.filepath = jsonFilePath;
         if(check_schema(this.filepath, "src/test/resources/schema_params.json")) {
@@ -29,6 +33,10 @@ public class ParamFile extends InputFileManager
         }
     }
 
+    /**
+     * Parse parameter file
+     * @param jsonFilePath Path to the configuration file to parse
+     */
     public void parse(String jsonFilePath) {
         LOGGER.info("Parsing file "+ filepath);
 
@@ -38,8 +46,6 @@ public class ParamFile extends InputFileManager
 
             this.detectors = jsonObject.getJSONArray("detectors");
             this.bands = jsonObject.getJSONArray("bands");
-
-            // TODO add a step to get rid of all band or detector that don't exist
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

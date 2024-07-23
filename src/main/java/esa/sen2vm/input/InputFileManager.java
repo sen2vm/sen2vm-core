@@ -14,6 +14,14 @@ public class InputFileManager
 {
     private static final Logger LOGGER = Logger.getLogger(InputFileManager.class.getName());
 
+    /**
+     * Check that filepath respect a certain json schema
+     *
+     * @param filepath, path to the input json file to check
+     * @param configSchema, path to the file that contains the json schema to respect
+     * @return true if the input file contains the required fields given by the json schema
+     *  and false if it doesn't
+     */
     public boolean check_schema(String filepath, String configSchema) {
         boolean correct_schema = false;
 
