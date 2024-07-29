@@ -1,7 +1,6 @@
 package esa.sen2vm;
 
 import org.apache.commons.cli.*;
-import org.sxgeo.input.datamodels.sensor.Sensor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -29,10 +28,11 @@ public class Granule {
     public Granule(File path) {
         this.path = path;
         this.name = path.getName() ;
+        System.out.print("Granule " + this.name);
 
         String[] name_array = this.name.split("_");
-        String detector = name_array[name_array.length-2];
-        System.out.println(detector);
+        this.detector = name_array[name_array.length-2];
+        System.out.println(" (" + detector + ")");
 
         this.images = new File[13];
         this.grids = new File[13];

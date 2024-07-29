@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.util.ArrayList;
 
 /**
  * Main class
@@ -77,6 +78,55 @@ public class Sen2VM
             if (sensorManagerFile != null) {
                 ParamFile paramsFile = new ParamFile(sensorManagerFile);
             }
+
+
+            String[] detectors = {"D01"} ;
+            String[] bands = {"B01"} ;
+
+            System.out.println();
+            System.out.println();
+            System.out.println("Start");
+            System.out.println();
+
+            SafeManager sm = new SafeManager();
+            // Load all images and geo grid already existing (granule x det x band)
+            sm.setAndProcessGranules("../data/S2A_MSIL1B_20240508T075611_N0510_R035_20240605T140412.SAFE/GRANULE");
+            // sm.setAndProcessDataStrip("../data/S2A_MSIL1B_20240508T075611_N0510_R035_20240605T140412.SAFE/DATASTRIP");
+
+            // Create Grid with DS information [TODO]
+            int pixelOffset = 0; // GIPP
+            int lineOffset = 0; // GIPP
+            int pixelStep = 40; // Input
+            int lineStep = 40; // Input
+
+
+            int startPixel = 1 ; // GIPP
+            int startLine = 1 ; // GIPP
+            int fullSizeLine = 200 ; // DS + Granule
+            int fullSizePixel = 93 ; // DS + Granule
+
+            DirectLocGrid dirGrid = new DirectLocGrid(pixelOffset, lineOffset, pixelStep, lineStep,
+                            startPixel, startLine, fullSizePixel, fullSizeLine);
+            dirGrid.initDirectGrid();
+
+            for (int d = 0 ; d < detectors.length ; d++) {
+                String detector =  detectors[d];
+
+                ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detector);
+                System.out.print("Number of granules found: ");
+                System.out.println(granulesToCompute.size());
+
+                for(int g = 0 ; g < granulesToCompute.size() ; g++ ) {
+
+                    Granule gr = granulesToCompute.get(g) ;
+
+                    for (int b = 0 ; b < bands.length ; b++) {
+                        dirGrid.extractPoints(20, 40) ;
+                    }
+                }
+
+            }
+
 
             LOGGER.info("End Sen2VM");
 

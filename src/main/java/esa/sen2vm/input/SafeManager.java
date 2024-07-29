@@ -25,7 +25,6 @@ public class SafeManager {
         if(listOfFiles != null) {
             for (int i = 0; i < listOfFiles.length; i++) {
                 if (listOfFiles[i].isDirectory()) {
-                    System.out.println("Directory " + listOfFiles[i].getName());
                     Granule gr = new Granule(listOfFiles[i]) ;
                     listGranules.add(gr);
                 }
@@ -53,15 +52,9 @@ public class SafeManager {
         ArrayList<Granule> listGranulesToCompute = new ArrayList<Granule>() ;
 
         for(int g = 0 ; g < this.listGranules.size() ; g++ ) {
-
-            if (this.listGranules.get(g).getDetector() == detector){
+            if (this.listGranules.get(g).getDetector().equals(detector)){
                 listGranulesToCompute.add(listGranules.get(g)) ;
             }
-
-            /*if (this.listGranules.get(g).getDetector(detector, band) != null &&
-                this.listGranules.get(g).getGrid(detector, band) == null) {
-                listGranulesToCompute.add(listGranules.get(g)) ;
-            }*/
         }
         return listGranulesToCompute ;
 
