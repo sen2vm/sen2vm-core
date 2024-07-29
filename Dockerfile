@@ -16,9 +16,9 @@ RUN apk add --no-cache \
     bash \
     maven
 
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
 
-ENV LD_LIBRARY_PATH /usr/lib:${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=/usr/lib
 
 # Install GDAL
 ARG GDAL_VERSION=3.6.2
