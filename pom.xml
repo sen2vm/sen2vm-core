@@ -16,6 +16,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <jaxb.plugin.version>2.5.0</jaxb.plugin.version>
   </properties>
 
   <dependencies>
@@ -35,9 +36,112 @@
         <artifactId>everit-json-schema-jdk6</artifactId>
         <version>1.9.2</version>
     </dependency>
+    <dependency>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <version>${jaxb.plugin.version}</version>
+        <type>maven-plugin</type>
+    </dependency>
   </dependencies>
 
   <build>
+    <plugins>
+      <!-- Maven compiler plugin -->
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+          <configuration>
+            <archive>
+                <manifest>
+                    <mainClass>esa.sen2vm.Sen2VM</mainClass>
+                </manifest>
+            </archive>
+          </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+            <!--generatedSourcesDirectory>${project.build.directory}/generated-sources/xjc</generatedSourcesDirectory-->
+        </configuration>
+      </plugin>
+      <!-- Shade plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.4</version>
+        <executions>
+            <execution>
+                <phase>package</phase>
+                <goals>
+                    <goal>shade</goal>
+                </goals>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>esa.sen2vm.Sen2VM</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
+            </execution>
+        </executions>
+      </plugin>
+      <!-- XJC plugin to generate java class from xsd -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <version>${jaxb.plugin.version}</version>
+        <executions>
+            <execution>
+                <id>xjc</id>
+                <goals>
+                    <goal>xjc</goal>
+                </goals>
+                <phase>generate-sources</phase>
+            </execution>
+        </executions>
+        <configuration>
+            <sources>
+                <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_blind_pixels.xsd</source>
+                <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_spacecraft_model_parameters.xsd</source>
+                <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_viewing_directions.xsd</source>
+            </sources>
+            <xjbSources>
+                <xjbSource>${basedir}/src/main/resources/binding/jaxb-bindings.xjb</xjbSource>
+            </xjbSources>
+            <outputDirectory>${basedir}/src/generated/</outputDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>maven-replacer-plugin</artifactId>
+        <version>1.3.8</version>
+        <executions>
+            <execution>
+                <phase>prepare-package</phase>
+                <goals>
+                    <goal>replace</goal>
+                </goals>
+            </execution>
+        </executions>
+        <configuration>
+            <includes>
+                <include>src/generated/**/*.java</include>
+            </includes>
+            <token>^// Generated : .*$</token>
+            <value>// Generated : [TEXT REMOVED by maven-replacer-plugin]</value>
+            <regexFlags>
+                <regexFlag>MULTILINE</regexFlag>
+            </regexFlags>
+        </configuration>
+      </plugin>
+    </plugins>
+
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
@@ -51,21 +155,8 @@
           <version>3.0.2</version>
         </plugin>
         <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
@@ -83,28 +174,6 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
-        </plugin>
-        <!-- Shade plugin -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>3.2.4</version>
-            <executions>
-                <execution>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>shade</goal>
-                    </goals>
-                    <configuration>
-                        <createDependencyReducedPom>false</createDependencyReducedPom>
-                        <transformers>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                <mainClass>esa.sen2vm.Sen2VM</mainClass>
-                            </transformer>
-                        </transformers>
-                    </configuration>
-                </execution>
-            </executions>
         </plugin>
       </plugins>
     </pluginManagement>
