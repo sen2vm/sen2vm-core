@@ -1,12 +1,14 @@
 # sen2vm-core
 Sen2VM standalone tool that will be also called by Sen2VM SNAP Plugin
 
-# How to run sen2vm-core
+# Installation guide 
 
-Inside `sen2vm-core` folder, run the next commands :
+Sen2VM requires some external libraries like :
+- SXGEO : v0.1.13
+- GDAL : v3.6.2
 
+If you don't want to face any environment compatibility matters, we provide a Dockerfile to build a docker image that contains all the required dependencies :
 ```
-mvn compile
-mvn exec:java -Dexec.mainClass="esa.sen2vm.Sen2VM" -Dexec.args="-c src/test/resources/configuration_example.json -p src/test/resources/params.json"
+docker build -t sen2vm_core .
 ```
 
