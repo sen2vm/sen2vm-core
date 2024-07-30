@@ -25,7 +25,7 @@ public class Sen2VM
      * Main process
      * @param args first arg : input json file. second param (optional) : parameter json file
      */
-    public static void main( String[] args )
+    public static void main( String[] args ) throws Sen2VMException
     {
         Options options = new Options();
 
@@ -61,7 +61,7 @@ public class Sen2VM
             String fileName = String.format(pattern, dateTime);
 
             FileHandler fileHandler = new FileHandler(fileName, true);
-            fileHandler.setLevel(Level.INFO);
+            fileHandler.setLevel(Level.SEVERE);
             fileHandler.setFormatter(new SimpleFormatter());
 
             // Add the custom FileHandler to the root logger
@@ -73,11 +73,17 @@ public class Sen2VM
 
             LOGGER.info("Start Sen2VM");
 
+            // Read configuration file
             ConfigurationFile configFile = new ConfigurationFile(configFilepath);
 
+            // Read parameter file
             if (sensorManagerFile != null) {
                 ParamFile paramsFile = new ParamFile(sensorManagerFile);
             }
+
+            // Read GIPP
+            GIPPManager gippManager = GIPPManager.getInstance();
+            gippManager.setGippFolderPath(configFile.getGippFolder());
 
 
             String[] detectors = {"D01"} ;

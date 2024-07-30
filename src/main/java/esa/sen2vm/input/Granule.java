@@ -78,9 +78,9 @@ public class Granule {
         File[] list_img = img_data.listFiles();
         for (int i = 0; i < list_img.length; i++) {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
-            String band = name[name.length-1];
-            int indexBand = BandS2.valueOf(band).ordinal();
-            System.out.println(band + ": " + list_img[i]);
+            String bandName = name[name.length-1];
+            int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
+            System.out.println(bandName + ": " + list_img[i].getName());
             this.images[indexBand] = list_img[i] ;
         }
     }
@@ -88,25 +88,24 @@ public class Granule {
     private void loadGrids(File img_data) {
         File[] list_img = img_data.listFiles();
         System.out.println("Number of grids already existing:" + String.valueOf(list_img.length));
-
         for (int i = 0; i < list_img.length; i++) {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
-            String band = name[name.length-1];
-            int indexBand = BandS2.valueOf(band).ordinal();
-            System.out.println(detector + "/" + band + ": " + list_img[i]);
+            String bandName = name[name.length-1];
+            int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
+            System.out.println(bandName + ": " + list_img[i].getName());
             this.images[indexBand] = list_img[i] ;
         }
     }
 
     public File getImage(String detector, String band) {
-        int indexBand = BandS2.valueOf(band).ordinal();
-        int indexDetector = DetectorS2.valueOf(detector).ordinal();
+        int indexBand = BandInfo.valueOf(band).ordinal();
+        int indexDetector = DetectorInfo.valueOf(detector).ordinal();
         return this.images[indexBand];
     }
 
     public File getGrid(String detector, String band) {
-        int indexBand = BandS2.valueOf(band).ordinal();
-        int indexDetector = DetectorS2.valueOf(detector).ordinal();
+        int indexBand = BandInfo.valueOf(band).ordinal();
+        int indexDetector = DetectorInfo.valueOf(detector).ordinal();
         return this.grids[indexBand];
     }
 
@@ -114,11 +113,11 @@ public class Granule {
         Map<String, Object> info = new HashMap<>();
         info.put("pixelOrigin", this.pixelOrigin);
         info.put("granulePosition", this.granulePosition);
-        int indexBand = BandS2.valueOf(band).ordinal();
-        if (BandS2.values()[indexBand].getResolution() == 10) {
+        int indexBand = BandInfo.valueOf(band).ordinal();
+        if (BandInfo.values()[indexBand].getPixelHeight() == Sen2VMConstants.RESOLUTION_10M) {
             info.put("granuleDimensions_nrows", this.granuleDimensions_nrows.get(0));
             info.put("granuleDimensions_ncols", this.granuleDimensions_ncols.get(0));
-        } else if (BandS2.values()[indexBand].getResolution() == 20) {
+        } else if (BandInfo.values()[indexBand].getPixelHeight() == Sen2VMConstants.RESOLUTION_20M) {
             info.put("granuleDimensions_nrows", this.granuleDimensions_nrows.get(1));
             info.put("granuleDimensions_ncols", this.granuleDimensions_ncols.get(1));
         } else {

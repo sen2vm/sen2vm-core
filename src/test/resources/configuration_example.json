@@ -1,6 +1,6 @@
 {
-  "l1b_product": "PATH_TO_L1B_PRODUCT_FOLDER",
-  "gipp_folder": "PATH_TO_GIPP_FOLDER",
+  "l1b_product": "/Sen2vm/sen2vm-core/src/test/resources/from_VM/S2A_MSIL1B_20240508T075611_N0510_R035_20240605T140412.SAFE",
+  "gipp_folder": "/Sen2vm/sen2vm-core/src/test/resources/from_VM/GIPPs_Sen2VM/",
   "gipp_version_check": true,
   "dem": "PATH_TO_DEM_FOLDER",
   "geoid": "PATH_TO_GEOID_FOLDER",

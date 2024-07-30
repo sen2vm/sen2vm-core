@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by C.N.E.S. (C.N.E.S.) -->
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by CNES (CNES) -->
+<xs:schema xmlns:gs2="http://gs2.esa.int/doc/1.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:base="http://gs2.esa.int/SY/1.0/base/" targetNamespace="http://gs2.esa.int/SY/1.0/base/" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:simpleType name="A_SATELLITE_IDENTIFIER">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="S2A"/>
+			<xs:enumeration value="S2B"/>
+			<xs:enumeration value="S2C"/>
+			<xs:enumeration value="S2D"/>
+			<xs:enumeration value="S2_"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TBD">
+		<xs:annotation>
+			<xs:documentation>To be Defined</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int"/>
+	</xs:simpleType>
+</xs:schema>
