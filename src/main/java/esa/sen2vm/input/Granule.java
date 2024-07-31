@@ -97,9 +97,9 @@ public class Granule {
         }
     }
 
-    public File getImage(String detector, String band) {
-        int indexBand = BandInfo.valueOf(band).ordinal();
-        int indexDetector = DetectorInfo.valueOf(detector).ordinal();
+    public File getImage(BandInfo band) {
+        String bandName = band.getName();
+        int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
         return this.images[indexBand];
     }
 

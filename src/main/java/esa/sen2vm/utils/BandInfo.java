@@ -33,14 +33,14 @@ public enum BandInfo {
     /**
      * Band pixel height
      */
-    protected double pixelHeight = 0;
+    protected int pixelHeight = 0;
 
     /**
      * Private constructor
      * @param name band name
      * @param pixelHeight band pixel size in meter)
      */
-    private BandInfo(String name, int index, double pixelHeight) {
+    private BandInfo(String name, int index, int pixelHeight) {
         this.name = name;
         this.index = index;
         this.pixelHeight = pixelHeight;
@@ -126,7 +126,7 @@ public enum BandInfo {
     /**
      * @return the pixel height
      */
-    public double getPixelHeight() {
+    public int getPixelHeight() {
         return pixelHeight;
     }
 

@@ -25,9 +25,9 @@ public class ConfigurationFile extends InputFileManager
     private String pod;
     private String operation;
     private boolean refining;
-    private float band10m;
-    private float band20m;
-    private float band60m;
+    private float stepBand10m;
+    private float stepBand20m;
+    private float stepBand60m;
     private float ul_x;
     private float ul_y;
     private float lr_x;
@@ -68,9 +68,9 @@ public class ConfigurationFile extends InputFileManager
             this.refining = jsonObject.getBoolean("deactivate_available_refining");
 
             JSONObject steps = jsonObject.getJSONObject("steps");
-            this.band10m = steps.getFloat("10m_bands");
-            this.band20m = steps.getFloat("20m_bands");
-            this.band60m = steps.getFloat("60m_bands");
+            this.stepBand10m = steps.getFloat("10m_bands");
+            this.stepBand20m = steps.getFloat("20m_bands");
+            this.stepBand60m = steps.getFloat("60m_bands");
 
             JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
             this.ul_x = inverseLoc.getFloat("ul_x");
@@ -95,5 +95,27 @@ public class ConfigurationFile extends InputFileManager
     public String getGippFolder() {
        return gippFolder;
     }
+
+    /*
+     * Get the step of 10m band
+     */
+    public Float getStepBand10m() {
+       return this.stepBand10m;
+    }
+
+    /*
+     * Get the step of 20m band
+     */
+    public Float getStepBand20m() {
+       return this.stepBand20m;
+    }
+
+    /*
+     * Get Float step of 60m band
+     */
+    public Float getStepBand60m() {
+       return this.stepBand60m;
+    }
+
 }
 

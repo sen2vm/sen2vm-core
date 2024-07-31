@@ -48,12 +48,16 @@ public class SafeManager {
         }
     }
 
-    public ArrayList<Granule> getGranulesToCompute(String detector) {
+    public ArrayList<Granule> getGranulesToCompute(DetectorInfo detector, BandInfo band) {
         ArrayList<Granule> listGranulesToCompute = new ArrayList<Granule>() ;
 
-        for(int g = 0 ; g < this.listGranules.size() ; g++ ) {
-            if (this.listGranules.get(g).getDetector().equals(detector)){
-                listGranulesToCompute.add(listGranules.get(g)) ;
+        for(int g = 0 ; g < this.listGranules.size() ; g++) {
+
+            if (this.listGranules.get(g).getDetector().equals("D" + detector.getName())){
+
+                //if (this.listGranules.get(g).getImage(band).isFile()) {
+                    listGranulesToCompute.add(listGranules.get(g)) ;
+                //}
             }
         }
         return listGranulesToCompute ;

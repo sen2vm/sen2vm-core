@@ -72,6 +72,21 @@ public enum DetectorInfo {
     }
 
     /**
+     * Get DetectorInfo from detector name
+     * @param detectorName detector name
+     * @return the detector having the given name. Null if not found
+     */
+    public static DetectorInfo getDetectorInfoFromNameWithD(String detectorName) {
+        for (DetectorInfo detector : DetectorInfo.values()) {
+            String name = "D" + detectorName;
+            if (detectorName.equals("D" + detector.name)) {
+                return detector;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get DetectorInfo from detector index
      * @param detectorIndex detector index (from 0 to 11)
      * @return the detector having the given index (from 0 to 11). Null if not found

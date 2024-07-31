@@ -85,7 +85,6 @@ public class Sen2VM
             GIPPManager gippManager = GIPPManager.getInstance();
             gippManager.setGippFolderPath(configFile.getGippFolder());
 
-
             String[] detectors = {"D01"} ;
             String[] bands = {"B01"} ;
 
@@ -102,37 +101,55 @@ public class Sen2VM
             // Create Grid with DS information [TODO]
             int pixelOffset = 0; // GIPP
             int lineOffset = 0; // GIPP
-            int pixelStep = 40; // Input
-            int lineStep = 40; // Input
-
 
             int startPixel = 1 ; // GIPP
             int startLine = 1 ; // GIPP
+
             int fullSizeLine = 200 ; // DS + Granule
             int fullSizePixel = 93 ; // DS + Granule
 
-            DirectLocGrid dirGrid = new DirectLocGrid(pixelOffset, lineOffset, pixelStep, lineStep,
-                            startPixel, startLine, fullSizePixel, fullSizeLine);
-            dirGrid.initDirectGrid();
+            for (int b = 0 ; b < bands.length ; b++) {
+                String bandName = bands[b];
+                BandInfo band = BandInfo.getBandInfoFromNameWithB(bandName);
+                Float step ;
 
-            for (int d = 0 ; d < detectors.length ; d++) {
-                String detector =  detectors[d];
-
-                ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detector);
-                System.out.print("Number of granules found: ");
-                System.out.println(granulesToCompute.size());
-
-                for(int g = 0 ; g < granulesToCompute.size() ; g++ ) {
-
-                    Granule gr = granulesToCompute.get(g) ;
-
-                    for (int b = 0 ; b < bands.length ; b++) {
-                        dirGrid.extractPoints(20, 40) ;
-                    }
+                switch(band.getPixelHeight()){
+                    case Sen2VMConstants.RESOLUTION_10M:
+                        step = configFile.getStepBand10m() ; break;
+                    case Sen2VMConstants.RESOLUTION_20M:
+                        step = configFile.getStepBand20m() ; break;
+                    default:
+                        step = configFile.getStepBand60m() ; break;
                 }
 
-            }
+                DirectLocGrid dirGrid = new DirectLocGrid(pixelOffset, lineOffset, step,
+                                startPixel, startLine, fullSizePixel, fullSizeLine);
 
+                double[][] sensorGrid = dirGrid.get2Dgrid();
+
+                for (int d = 0 ; d < detectors.length ; d++) {
+                    String detectorName =  detectors[d];
+                    DetectorInfo detector = DetectorInfo.getDetectorInfoFromNameWithD(detectorName);
+                    System.out.println(detector);
+
+                    ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detector, band);
+                    System.out.print("Number of granules found: ");
+                    System.out.println(granulesToCompute.size());
+
+                    for(int g = 0 ; g < granulesToCompute.size() ; g++ ) {
+                        Granule gr = granulesToCompute.get(g) ;
+
+                        double[][] directLocGrid = sensorGrid;
+                        System.out.println(directLocGrid[0][0]);
+
+                        int startGranule = 20; // MTD granule
+                        int sizeGranule = 20; // MTD granule
+                        //double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
+
+                    }
+
+                }
+            }
 
             LOGGER.info("End Sen2VM");
 
