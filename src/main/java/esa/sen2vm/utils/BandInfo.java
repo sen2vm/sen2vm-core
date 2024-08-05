@@ -52,7 +52,7 @@ public enum BandInfo {
      * @return the band having the given name. Null if not found
      */
     public static BandInfo getBandInfoFromName(String bandName) {
-        for (BandInfo band : BandInfo.values()) {
+        for (BandInfo band: BandInfo.values()) {
             if (band.name.equals(bandName)) {
                 return band;
             }
@@ -77,7 +77,7 @@ public enum BandInfo {
      * @return the band having the given name. Null if not found
      */
     public static BandInfo getBandInfoFromNameWithB(String bandName) {
-        for (BandInfo band : BandInfo.values()) {
+        for (BandInfo band: BandInfo.values()) {
             String name = "B" + band.getName2Digit();
             if (name.equals(bandName)) {
                 return band;
@@ -173,7 +173,7 @@ public enum BandInfo {
      */
     public static List<BandInfo> getAllBandInfo() {
         List<BandInfo> bandInfoList = new ArrayList<>();
-        for (BandInfo bandInfo : BandInfo.values()) {
+        for (BandInfo bandInfo: BandInfo.values()) {
             bandInfoList.add(bandInfo);
         }
         return bandInfoList;

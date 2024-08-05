@@ -58,7 +58,7 @@ public class GIPPFileManager {
         Map<String, Set<String>> fileMap = new HashMap<>();
         List<File> foundFiles = new ArrayList<File>();
 
-        for (File dir : directories) {
+        for (File dir: directories) {
             if (!dir.isDirectory()) {
                 continue; // Ignore non-directory files
             }
@@ -72,7 +72,7 @@ public class GIPPFileManager {
             });
 
             if (matchedFiles != null) {
-                for (File file : matchedFiles) {
+                for (File file: matchedFiles) {
                     String filepathWithoutExtension = getFilepathWithoutExtension(file);
                     String extension = getFileExtension(file);
 
@@ -109,7 +109,7 @@ public class GIPPFileManager {
     private static String getFilepathWithoutExtension(File file) {
         String fileName = file.getPath();
         int lastDotIndex = fileName.lastIndexOf('.');
-        return (lastDotIndex == -1) ? fileName : fileName.substring(0, lastDotIndex);
+        return (lastDotIndex == -1) ? fileName: fileName.substring(0, lastDotIndex);
     }
 
     /**
@@ -120,7 +120,7 @@ public class GIPPFileManager {
     private static String getFileExtension(File file) {
         String fileName = file.getName();
         int lastDotIndex = fileName.lastIndexOf('.');
-        return (lastDotIndex == -1) ? "" : fileName.substring(lastDotIndex + 1);
+        return (lastDotIndex == -1) ? "": fileName.substring(lastDotIndex + 1);
     }
 
     /**

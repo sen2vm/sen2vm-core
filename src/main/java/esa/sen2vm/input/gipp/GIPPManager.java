@@ -90,7 +90,7 @@ public class GIPPManager {
     public void setGippFolderPath(String gippFolder) throws Sen2VMException {
         gippFileManager = new GIPPFileManager(gippFolder);
         viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
-        LOGGER.info("Get through GIPP folder : "+ gippFolder);
+        LOGGER.info("Get through GIPP folder: "+ gippFolder);
         loadAllGIPP();
     }
 
@@ -103,11 +103,11 @@ public class GIPPManager {
         try {
             fileBlindPixel = gippFileManager.getBlindPixelFile();
             if (fileBlindPixel != null) {
-                LOGGER.info("Read blind pixel file : "+ fileBlindPixel);
+                LOGGER.info("Read blind pixel file: "+ fileBlindPixel);
                 blindPixelInfo = (GS2_BLIND_PIXELS) jaxbUnmarshaller.unmarshal(fileBlindPixel);
             }
         } catch (Exception e) {
-            LOGGER.severe("Error when reading the blind pixel GIPP file : " + fileBlindPixel + " with message : " + e.getMessage());
+            LOGGER.severe("Error when reading the blind pixel GIPP file: " + fileBlindPixel + " with message: " + e.getMessage());
         }
 
         // Load spacecraft model gipp
@@ -115,12 +115,12 @@ public class GIPPManager {
         try {
             fileSpaMod = gippFileManager.getSpaModFile();
             if (fileSpaMod != null) {
-                LOGGER.info("Read spacecraft model file : "+ fileSpaMod);
+                LOGGER.info("Read spacecraft model file: "+ fileSpaMod);
                 GS2_SPACECRAFT_MODEL_PARAMETERS spaModInfo = (GS2_SPACECRAFT_MODEL_PARAMETERS) jaxbUnmarshaller.unmarshal(fileSpaMod);
                 spaModMgr = new SpaModManager(spaModInfo);
             }
         } catch (Exception e) {
-            LOGGER.severe("Error when reading spacecraft model GIPP file : " + fileSpaMod + " with message : " + e.getMessage());
+            LOGGER.severe("Error when reading spacecraft model GIPP file: " + fileSpaMod + " with message: " + e.getMessage());
         }
 
         // Load viewing directions gipp
@@ -130,7 +130,7 @@ public class GIPPManager {
             if (gippFilePathList != null) {
                 for (int i = 0; i < gippFilePathList.size(); i++) {
                     file = gippFilePathList.get(i);
-                    LOGGER.info("Read viewingDirection file : "+ file);
+                    LOGGER.info("Read viewingDirection file: "+ file);
 
                     // Load GIPP DATA
                     GS2_VIEWING_DIRECTIONS viewingDirection = (GS2_VIEWING_DIRECTIONS) jaxbUnmarshaller.unmarshal(file);
@@ -140,7 +140,7 @@ public class GIPPManager {
                 }
             }
         } catch (Exception e) {
-            LOGGER.severe("Error when reading viewing directions GIPP files with message : " + e.getMessage());
+            LOGGER.severe("Error when reading viewing directions GIPP files with message: " + e.getMessage());
         }
     }
 

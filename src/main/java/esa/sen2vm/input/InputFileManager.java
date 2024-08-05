@@ -34,7 +34,7 @@ public class InputFileManager
                 .map(ValidationException::getMessage)
                 .forEach(System.err::println);
         } catch (Exception e) {
-            LOGGER.severe("Error during check_schema with message : " + e.getMessage());
+            LOGGER.severe("Error during check_schema with message: " + e.getMessage());
         }
 
         return correct_schema;

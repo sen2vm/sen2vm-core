@@ -57,7 +57,7 @@ public enum DetectorInfo {
      * @return the detector having the given name. Null if not found
      */
     public static DetectorInfo getDetectorInfoFromName(String detectorName) {
-        for (DetectorInfo detector : DetectorInfo.values()) {
+        for (DetectorInfo detector: DetectorInfo.values()) {
             if (detector.name.equals(detectorName)) {
                 return detector;
             }
@@ -98,7 +98,7 @@ public enum DetectorInfo {
      */
     public static List<DetectorInfo> getAllDetectorInfo() {
         List<DetectorInfo> detectorInfoList = new ArrayList<>();
-        for (DetectorInfo detectorInfo : DetectorInfo.values()) {
+        for (DetectorInfo detectorInfo: DetectorInfo.values()) {
             detectorInfoList.add(detectorInfo);
         }
         return detectorInfoList;
