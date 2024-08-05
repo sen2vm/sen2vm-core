@@ -131,26 +131,6 @@ public enum BandInfo {
     }
 
     /**
-     * @return the pixel width
-     */
-    public double getPixelWidth(LevelInfo levelInfo) {
-        double returned = pixelHeight;
-        switch (this) {
-        case BAND_1:
-        case BAND_9:
-        case BAND_10:
-            if (levelInfo.getIndex() < LevelInfo.L1B.getIndex()) {
-                returned = returned / 3d;
-            }
-            break;
-
-        default:
-            break;
-        }
-        return returned;
-    }
-
-    /**
      * Return the number of line for a granule of this band
      * @return the number of line for a granule of this band
      */
@@ -165,27 +145,6 @@ public enum BandInfo {
      */
     public static double getGranuleNbLine(double pixelSize) {
         double returned = getNewPositionFromSize(Sen2VMConstants.GRANULE_NB_LINE_10_M, Sen2VMConstants.RESOLUTION_10M, pixelSize);
-        return returned;
-    }
-
-    /**
-     * Return the number of line for a granule of this band
-     * @return the number of line for a granule of this band
-     */
-    public double getGranuleNbLine(LevelInfo levelInfo) {
-        double returned = getNewPositionFromSize(Sen2VMConstants.GRANULE_NB_LINE_10_M, Sen2VMConstants.RESOLUTION_10M, pixelHeight);
-        switch (this) {
-        case BAND_1:
-        case BAND_9:
-        case BAND_10:
-            if (levelInfo.getIndex() >= LevelInfo.L1B.getIndex()) {
-                returned = returned * 3;
-            }
-            break;
-
-        default:
-            break;
-        }
         return returned;
     }
 

@@ -7,18 +7,18 @@ import java.util.List;
  * Information on detector
  */
 public enum DetectorInfo {
-    DETECTOR_1("01", 0, UnionBand.B9B2),
-    DETECTOR_2("02", 1, UnionBand.B2B9),
-    DETECTOR_3("03", 2, UnionBand.B9B2),
-    DETECTOR_4("04", 3, UnionBand.B2B9),
-    DETECTOR_5("05", 4, UnionBand.B9B2),
-    DETECTOR_6("06", 5, UnionBand.B2B9),
-    DETECTOR_7("07", 6, UnionBand.B9B2),
-    DETECTOR_8("08", 7, UnionBand.B2B9),
-    DETECTOR_9("09", 8, UnionBand.B9B2),
-    DETECTOR_10("10", 9, UnionBand.B2B9),
-    DETECTOR_11("11", 10, UnionBand.B9B2),
-    DETECTOR_12("12", 11, UnionBand.B2B9);
+    DETECTOR_1("01", 0),
+    DETECTOR_2("02", 1),
+    DETECTOR_3("03", 2),
+    DETECTOR_4("04", 3),
+    DETECTOR_5("05", 4),
+    DETECTOR_6("06", 5),
+    DETECTOR_7("07", 6),
+    DETECTOR_8("08", 7),
+    DETECTOR_9("09", 8),
+    DETECTOR_10("10", 9),
+    DETECTOR_11("11", 10),
+    DETECTOR_12("12", 11);
 
     /**
      * Detector name
@@ -31,19 +31,13 @@ public enum DetectorInfo {
     protected int index = 0;
 
     /**
-     * Detector bandUnion
-     */
-    protected UnionBand bandUnion = null;
-
-    /**
      * Private constructor
      * @param name detector name
      * @param resolution detector resolution
      */
-    private DetectorInfo(String name, int index, UnionBand bandUnion) {
+    private DetectorInfo(String name, int index) {
         this.name = name;
         this.index = index;
-        this.bandUnion = bandUnion;
     }
 
     /**
@@ -96,13 +90,6 @@ public enum DetectorInfo {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * @return the bandUnion
-     */
-    public UnionBand getBandUnion() {
-        return bandUnion;
     }
 
     /**
