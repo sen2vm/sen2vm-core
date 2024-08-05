@@ -23,6 +23,13 @@ public class Sen2VMConstants {
     public static final int NB_GIPP_MAX_FILE = 13;
 
     /**
+     * For GIPP purpose
+     */
+     public static final String GIPP_VIEWDIR_NAME = ".*GIP_VIEDIR.*";
+     public static final String GIPP_BLINDP_NAME = ".*GIP_BLINDP.*";
+     public static final String GIPP_SPAMOD_NAME = ".*GIP_SPAMOD.*";
+
+    /**
      * Granule nb line (for band having resolution of 10m)
      */
     public static final double GRANULE_NB_LINE_10_M = 2304d;

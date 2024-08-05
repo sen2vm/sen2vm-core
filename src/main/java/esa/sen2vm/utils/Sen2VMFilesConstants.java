@@ -5,7 +5,10 @@ public class Sen2VMFilesConstants {
     public static final String tif_extention = ".tif";
     public static final String jp2_extention = ".jp2";
     public static final String vrt_extention = ".vrt";
-    public static final String xml_extention = ".xml";
+    public static final String xml_extention_small = ".xml";
+    public static final String xml_extention_big = ".XML";
+    public static final String dbl_extention_small = ".dbl";
+    public static final String dbl_extention_big = ".DBL";
     public static final String raw_extention = ".raw";
     public static final String txt_extention = ".txt";
     public static final String srtm_dt1_extention = ".dt1";
