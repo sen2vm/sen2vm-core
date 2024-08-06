@@ -131,24 +131,6 @@ public enum BandInfo {
     }
 
     /**
-     * Return the number of line for a granule of this band
-     * @return the number of line for a granule of this band
-     */
-    public double getGranuleNbLine() {
-        double returned = getNewPositionFromSize(Sen2VMConstants.GRANULE_NB_LINE_10_M, Sen2VMConstants.RESOLUTION_10M, pixelHeight);
-        return returned;
-    }
-
-    /**
-     * Return the number of line for a granule for given pixel size in meters
-     * @return the number of line for a granule for given pixel size in meters
-     */
-    public static double getGranuleNbLine(double pixelSize) {
-        double returned = getNewPositionFromSize(Sen2VMConstants.GRANULE_NB_LINE_10_M, Sen2VMConstants.RESOLUTION_10M, pixelSize);
-        return returned;
-    }
-
-    /**
      * Return VNIR or SWIR depending on the band
      * @return VNIR or SWIR depending on the band
      */

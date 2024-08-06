@@ -158,10 +158,10 @@ public class GIPPFileManager {
         }
         File[] directories = gippFolder.listFiles();
 
-        List<String> validExtensions = Arrays.asList(Sen2VMFilesConstants.xml_extention_small,
-                                                     Sen2VMFilesConstants.xml_extention_big,
-                                                     Sen2VMFilesConstants.dbl_extention_small,
-                                                     Sen2VMFilesConstants.dbl_extention_big);
+        List<String> validExtensions = Arrays.asList(Sen2VMConstants.xml_extention_small,
+                                                     Sen2VMConstants.xml_extention_big,
+                                                     Sen2VMConstants.dbl_extention_small,
+                                                     Sen2VMConstants.dbl_extention_big);
 
         try {
             // get viewing direction file
