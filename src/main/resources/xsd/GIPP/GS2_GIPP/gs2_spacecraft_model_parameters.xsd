@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by C.N.E.S. (C.N.E.S.) -->
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by CNES (CNES) -->
+<xs:schema xmlns:gs2="http://gs2.esa.int/doc/1.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:header="http://gs2.esa.int/GS/1.0/header/" xmlns:misc="http://gs2.esa.int/SY/1.0/misc/" xmlns:image="http://gs2.esa.int/SY/1.0/image/" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:import namespace="http://gs2.esa.int/GS/1.0/header/" schemaLocation="../Dicos/GS/1.0/header/header.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/misc/" schemaLocation="../Dicos/SY/1.0/misc/misc.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/image/" schemaLocation="../Dicos/SY/1.0/image/image.xsd"/>
+	<xs:element name="GS2_SPACECRAFT_MODEL_PARAMETERS">
+		<xs:annotation>
+			<xs:documentation>Spacecraft model parameters</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="HEADER" type="header:AN_INTERFACE_HEADER"/>
+				<xs:element name="SPECIFIC_HEADER" type="header:A_GIPP_HEADER"/>
+				<xs:element name="DATA">
+					<xs:annotation>
+						<xs:documentation>List of the transformations between frames</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="LOCATION_ACCURACY">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ABSOLUTE_LOCATION" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR"/>
+										<xs:element name="PLANIMETRIC_STABILITY" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR"/>
+										<xs:element name="DOP_QUALITY">
+											<xs:annotation>
+												<xs:documentation>Dilution of precision quality</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="VALUES" type="misc:A_LIST_OF_DOUBLE">
+														<xs:annotation>
+															<xs:documentation>DOP values provided by GPS</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="QUALITY_INDICATOR" type="misc:A_LIST_OF_STRING">
+														<xs:annotation>
+															<xs:documentation>Quality indicator for each DOP value</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="PILOTING_TO_MSI_FRAME" type="misc:A_ROTATION_AROUND_THREE_AXIS_AND_SCALE">
+								<xs:annotation>
+									<xs:documentation>Spacecraft to MSI frame transformation</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="MSI_TO_FOCAL_PLANE">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="MSI_TO_VNIR" type="misc:A_ROTATION_AROUND_THREE_AXIS_AND_SCALE"/>
+										<xs:element name="MSI_TO_SWIR" type="misc:A_ROTATION_AROUND_THREE_AXIS_AND_SCALE"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="FOCAL_PLANE_TO_DETECTOR">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="FOCAL_PLANE_TO_DETECTOR_VNIR" minOccurs="12" maxOccurs="12">
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="misc:A_ROTATION_AROUND_THREE_AXIS">
+														<xs:attribute name="detector_id" type="image:A_DETECTOR_NUMBER" use="required"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="FOCAL_PLANE_TO_DETECTOR_SWIR" minOccurs="12" maxOccurs="12">
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="misc:A_ROTATION_AROUND_THREE_AXIS">
+														<xs:attribute name="detector_id" type="image:A_DETECTOR_NUMBER" use="required"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+								<xs:unique name="detector_id_vnir_unique">
+									<xs:selector xpath="./FOCAL_PLANE_TO_DETECTOR_VNIR"/>
+									<xs:field xpath="@detector_id"/>
+								</xs:unique>
+								<xs:unique name="detector_id_swir_unique">
+									<xs:selector xpath="./FOCAL_PLANE_TO_DETECTOR_SWIR"/>
+									<xs:field xpath="@detector_id"/>
+								</xs:unique>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

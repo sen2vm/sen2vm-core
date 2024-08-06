@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 sp1 (http://www.altova.com) by cnes (C.N.E.S.) -->
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by CNES (CNES) -->
+<xs:schema xmlns:gs2="http://gs2.esa.int/doc/1.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:header="http://gs2.esa.int/GS/1.0/header/" xmlns:image="http://gs2.esa.int/SY/1.0/image/" xmlns:gipp="http://gs2.esa.int/GS/1.0/gipp/" xmlns:misc="http://gs2.esa.int/SY/1.0/misc/" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:import namespace="http://gs2.esa.int/GS/1.0/header/" schemaLocation="../Dicos/GS/1.0/header/header.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/image/" schemaLocation="../Dicos/SY/1.0/image/image.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/GS/1.0/gipp/" schemaLocation="../Dicos/GS/1.0/gipp/gipp.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/misc/" schemaLocation="../Dicos/SY/1.0/misc/misc.xsd"/>
+	<xs:element name="GS2_BLIND_PIXELS">
+		<xs:annotation>
+			<xs:documentation>Parameters for blind pixels</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="HEADER" type="header:AN_INTERFACE_HEADER"/>
+				<xs:element name="SPECIFIC_HEADER" type="header:A_GIPP_HEADER"/>
+				<xs:element name="DATA">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="BAND" maxOccurs="13">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="BLIND_PIXEL_NUMBER" type="xs:int">
+											<xs:annotation>
+												<xs:documentation>The total number of blind pixels for a given band</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="DETECTOR" maxOccurs="12">
+											<xs:annotation>
+												<xs:documentation>Blind pixels position</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="NORMALIZATION_COEF" type="xs:double">
+														<xs:annotation>
+															<xs:documentation>Normalization coefficient for the computation of the  offset variation along the detector (lambda)</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="SIDE" minOccurs="2" maxOccurs="2">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="VALID_BLIND_PIXELS" type="misc:A_LIST_OF_INT">
+																	<xs:annotation>
+																		<xs:documentation>List of column index of the "valid" blind pixels in the detector</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="NON_VALID_BLIND_PIXELS" type="misc:A_LIST_OF_INT">
+																	<xs:annotation>
+																		<xs:documentation>List of column index of the "non valid" blind pixels in the detector</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="side_id" type="image:A_DETECTOR_SIDE" use="required">
+																<xs:annotation>
+																	<xs:documentation>Blind pixel location:LEFT or RIGHT side of detector</xs:documentation>
+																</xs:annotation>
+															</xs:attribute>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="detector_id" type="image:A_DETECTOR_NUMBER" use="required"/>
+											</xs:complexType>
+											<xs:unique name="side_id">
+												<xs:selector xpath="./SIDE"/>
+												<xs:field xpath="@side_id"/>
+											</xs:unique>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="band_id" type="image:A_BAND_NUMBER" use="required"/>
+								</xs:complexType>
+								<xs:unique name="detector_id_unique">
+									<xs:selector xpath="./DETECTOR"/>
+									<xs:field xpath="@detector_id"/>
+								</xs:unique>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+					<xs:unique name="band_id_unique">
+						<xs:selector xpath="./BAND"/>
+						<xs:field xpath="@band_id"/>
+					</xs:unique>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

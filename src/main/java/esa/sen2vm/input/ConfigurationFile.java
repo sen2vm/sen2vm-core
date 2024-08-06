@@ -88,5 +88,12 @@ public class ConfigurationFile extends InputFileManager
             e.printStackTrace();
         }
     }
+
+    /*
+     * Get the gipp folder
+     */
+    public String getGippFolder() {
+       return gippFolder;
+    }
 }
 

@@ -56,22 +56,22 @@
         "inverse_location_additional_info": {
           "type": "object",
           "properties": {
-            "ul_x" : {
+            "ul_x": {
               "type": "number"
             },
-            "ul_y" : {
+            "ul_y": {
               "type": "number"
             },
-            "lr_x" : {
+            "lr_x": {
               "type": "number"
             },
-            "lr_y" : {
+            "lr_y": {
               "type": "number"
             },
-            "referential" : {
+            "referential": {
               "type": "string"
             },
-            "output_folder" : {
+            "output_folder": {
               "type": "string"
             }
           },
