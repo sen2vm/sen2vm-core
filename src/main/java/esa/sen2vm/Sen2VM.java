@@ -93,20 +93,33 @@ public class Sen2VM
             System.out.println("Start");
             System.out.println();
 
+            // GIPP
+            int pixelOffset = 0;
+            int lineOffset = 0;
+            int startPixel = 1 ;
+            int startLine = 1 ;
+
+            // Safe Manager
             SafeManager sm = new SafeManager();
+
             // Load all images and geo grid already existing (granule x det x band)
             sm.setAndProcessGranules("../data/S2A_MSIL1B_20240508T075611_N0510_R035_20240605T140412.SAFE/GRANULE");
-            // sm.setAndProcessDataStrip("../data/S2A_MSIL1B_20240508T075611_N0510_R035_20240605T140412.SAFE/DATASTRIP");
+            sm.setAndProcessDataStrip("../data/S2A_MSIL1B_20240508T075611_N0510_R035_20240605T140412.SAFE/DATASTRIP");
+            sm.checkEmptyGrid(detectors, bands) ;
 
-            // Create Grid with DS information [TODO]
-            int pixelOffset = 0; // GIPP
-            int lineOffset = 0; // GIPP
+            // VERFIER QUIL Y A QU DOSSIER S2* DANS DS
 
-            int startPixel = 1 ; // GIPP
-            int startLine = 1 ; // GIPP
+            // Datastrip Information
+            Datastrip ds = sm.getDatastrip();
 
+            // Load all ifnormations and geo grid already existing (granule x det x band)
             int fullSizeLine = 200 ; // DS + Granule
             int fullSizePixel = 93 ; // DS + Granule
+
+
+
+
+            OutputFileManager outputFileManager = new OutputFileManager();
 
             for (int b = 0 ; b < bands.length ; b++) {
                 String bandName = bands[b];
@@ -130,24 +143,31 @@ public class Sen2VM
                 for (int d = 0 ; d < detectors.length ; d++) {
                     String detectorName =  detectors[d];
                     DetectorInfo detector = DetectorInfo.getDetectorInfoFromNameWithD(detectorName);
-                    System.out.println(detector);
+                    System.out.println("Detector: " + detector.getName());
 
                     ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detector, band);
                     System.out.print("Number of granules found: ");
                     System.out.println(granulesToCompute.size());
 
+                    double[][] directLocGrid = sensorGrid; // TODO
+
                     for(int g = 0 ; g < granulesToCompute.size() ; g++ ) {
                         Granule gr = granulesToCompute.get(g) ;
-
-                        double[][] directLocGrid = sensorGrid;
-                        System.out.println(directLocGrid[0][0]);
+                        String gridFileName = gr.getCorrespondingGeoFileName(band);
 
                         int startGranule = 20; // MTD granule
                         int sizeGranule = 20; // MTD granule
-                        //double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
+
+                        double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
+                        String srs = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433],AUTHORITY[\"EPSG\",\"4326\"]]" ;
+                        // Jonathan
+                        outputFileManager.createGeoTiff(gridFileName, 1, startGranule, step, 2, srs, subDirectLocGrid) ;
+
 
                     }
-
+                    // System.out.print(ds.getCorrespondingVRTFileName(detector, band));
+                    // create list vrt
+                    // outputFileManager.createVRT(ds.getCorrespondingVRTFileName(detector, band), Vector<String> inputVRTs) ;
                 }
             }
 

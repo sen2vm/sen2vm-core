@@ -47,7 +47,6 @@ public class Granule {
                     if (listOfFiles[p].getName().equals("GEO_DATA")) {
                         loadGrids(listOfFiles[p]) ;
                     }
-
                 } else if (listOfFiles[p].isFile()) {
                     this.path_mtd = listOfFiles[p] ;
                     loadMTDinformations() ;
@@ -85,8 +84,8 @@ public class Granule {
         }
     }
 
-    private void loadGrids(File img_data) {
-        File[] list_img = img_data.listFiles();
+    private void loadGrids(File geo_data) {
+        File[] list_img = geo_data.listFiles();
         System.out.println("Number of grids already existing:" + String.valueOf(list_img.length));
         for (int i = 0; i < list_img.length; i++) {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
@@ -126,7 +125,17 @@ public class Granule {
         }
 
         return info;
-     }
+    }
 
+    public String getCorrespondingGeoFileName(BandInfo band) {
+        File geo_data = new File(this.path + File.separator + "GEO_DATA");
+        if(geo_data.mkdir()) {
+            System.out.println("Already Existing");
+        }
+
+        String image = this.images[band.index].getName();
+        String grid = image.replace(".jp2", ".tif").replace("_MSI_", "_GEO_");
+        return new File(geo_data.getPath() + File.separator + grid).getPath();
+    }
 
 }

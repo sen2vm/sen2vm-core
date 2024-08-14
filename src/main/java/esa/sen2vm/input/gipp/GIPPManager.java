@@ -157,8 +157,4 @@ public class GIPPManager {
         return returned;
     }
 
-    public GS2_BLIND_PIXELS getBlindPixelInfo() {
-        return this.blindPixelInfo ;
-    }
-
 }

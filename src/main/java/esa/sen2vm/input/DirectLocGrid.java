@@ -94,8 +94,9 @@ public class DirectLocGrid {
 
         int i_grid = 0;
 
-        int grid_row_start = (startGranule - 1) / 40;
-        int grid_row_end = (startGranule -1 + sizeGranule) / 40 + 1;
+        int grid_row_start = (int) ((startGranule - 1) / this.step);
+        int grid_row_end = (int) ((startGranule - 1 + sizeGranule) / this.step + 1);
+
         int nbLines = grid_row_end - grid_row_start ;
         int nbCols = this.gridPixels.size();
 

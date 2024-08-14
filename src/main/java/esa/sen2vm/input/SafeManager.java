@@ -11,7 +11,7 @@ public class SafeManager {
     private File dirGranules ;
     private File dirDataStrip ;
     private ArrayList<Granule> listGranules ;
-    private File mtdDatastrip ;
+    private Datastrip datastrip ;
 
 
     public SafeManager() {
@@ -38,14 +38,21 @@ public class SafeManager {
         File[] listOfFiles = this.dirDataStrip.listFiles();
         if(listOfFiles != null) {
             for (int i = 0; i < listOfFiles.length; i++) {
-                if (listOfFiles[i].isDirectory() && listOfFiles[i].getName().equals("QI_DATA")) {
-                    System.out.println("Directory QI_DATA");
-                } else if (listOfFiles[i].isFile()) {
-                    // DEBUG
-                    this.mtdDatastrip = listOfFiles[i];
+                if (listOfFiles[i].isDirectory()) {
+                    this.datastrip = new Datastrip(listOfFiles[i]) ;
                 }
             }
         }
+    }
+
+    public void checkEmptyGrid(String[] detectors,String[] bands) {
+        for(int g = 0 ; g < this.listGranules.size() ; g++) {
+            String det = this.listGranules.get(g).getDetector() ;
+        }
+    }
+
+    public Datastrip getDatastrip() {
+        return this.datastrip ;
     }
 
     public ArrayList<Granule> getGranulesToCompute(DetectorInfo detector, BandInfo band) {
@@ -61,6 +68,6 @@ public class SafeManager {
             }
         }
         return listGranulesToCompute ;
-
     }
+
 }
