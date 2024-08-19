@@ -30,6 +30,7 @@ public enum BandInfo {
      * Band index
      */
     protected int index = 0;
+
     /**
      * Band pixel height
      */
@@ -52,7 +53,7 @@ public enum BandInfo {
      * @return the band having the given name. Null if not found
      */
     public static BandInfo getBandInfoFromName(String bandName) {
-        for (BandInfo band : BandInfo.values()) {
+        for (BandInfo band: BandInfo.values()) {
             if (band.name.equals(bandName)) {
                 return band;
             }
@@ -61,23 +62,12 @@ public enum BandInfo {
     }
 
     /**
-     * Get BandInfo from sensor name
-     * @param sensorName sensor name
-     * @return the band having the given name. Null if not found
-     */
-    public static BandInfo getBandInfoFromSensorName(String sensorName) {
-        int underscoreIndex = sensorName.indexOf('_');
-        String bandName = sensorName.substring(1, underscoreIndex);
-        return getBandInfoFromName(bandName);
-    }
-
-    /**
      * Get BandInfo from band name
      * @param bandName band name
      * @return the band having the given name. Null if not found
      */
     public static BandInfo getBandInfoFromNameWithB(String bandName) {
-        for (BandInfo band : BandInfo.values()) {
+        for (BandInfo band: BandInfo.values()) {
             String name = "B" + band.getName2Digit();
             if (name.equals(bandName)) {
                 return band;
@@ -116,6 +106,13 @@ public enum BandInfo {
     /**
      * @return the name
      */
+    public String getNameWithB() {
+        return "B" + getName2Digit();
+    }
+
+    /**
+     * @return the name
+     */
     public String getName2Digit() {
         if (name.length() == 1) {
             return "0" + name;
@@ -131,69 +128,10 @@ public enum BandInfo {
     }
 
     /**
-     * @return the pixel width
-     */
-    public double getPixelWidth(LevelInfo levelInfo) {
-        double returned = pixelHeight;
-        switch (this) {
-        case BAND_1:
-        case BAND_9:
-        case BAND_10:
-            if (levelInfo.getIndex() < LevelInfo.L1B.getIndex()) {
-                returned = returned / 3d;
-            }
-            break;
-
-        default:
-            break;
-        }
-        return returned;
-    }
-
-    /**
-     * Return the number of line for a granule of this band
-     * @return the number of line for a granule of this band
-     */
-    public double getGranuleNbLine() {
-        double returned = getNewPositionFromSize(Sen2VMConstants.GRANULE_NB_LINE_10_M, Sen2VMConstants.RESOLUTION_10M, pixelHeight);
-        return returned;
-    }
-
-    /**
-     * Return the number of line for a granule for given pixel size in meters
-     * @return the number of line for a granule for given pixel size in meters
-     */
-    public static double getGranuleNbLine(double pixelSize) {
-        double returned = getNewPositionFromSize(Sen2VMConstants.GRANULE_NB_LINE_10_M, Sen2VMConstants.RESOLUTION_10M, pixelSize);
-        return returned;
-    }
-
-    /**
-     * Return the number of line for a granule of this band
-     * @return the number of line for a granule of this band
-     */
-    public double getGranuleNbLine(LevelInfo levelInfo) {
-        double returned = getNewPositionFromSize(Sen2VMConstants.GRANULE_NB_LINE_10_M, Sen2VMConstants.RESOLUTION_10M, pixelHeight);
-        switch (this) {
-        case BAND_1:
-        case BAND_9:
-        case BAND_10:
-            if (levelInfo.getIndex() >= LevelInfo.L1B.getIndex()) {
-                returned = returned * 3;
-            }
-            break;
-
-        default:
-            break;
-        }
-        return returned;
-    }
-
-    /**
      * Return VNIR or SWIR depending on the band
      * @return VNIR or SWIR depending on the band
      */
-    public String getSpaModEnum() {
+    public String getSpaMod() {
         String returned = "VNIR";
         switch (this) {
         case BAND_10:
@@ -214,33 +152,9 @@ public enum BandInfo {
      */
     public static List<BandInfo> getAllBandInfo() {
         List<BandInfo> bandInfoList = new ArrayList<>();
-        for (BandInfo bandInfo : BandInfo.values()) {
+        for (BandInfo bandInfo: BandInfo.values()) {
             bandInfoList.add(bandInfo);
         }
         return bandInfoList;
-    }
-
-    /**
-     * Return the position in wanted pixel size
-     * @param position current position
-     * @param pixelSize size of pixelNum
-     * @param wantedSize wanted size
-     * @return
-     */
-    public static double getNewPositionFromSize(double position, double pixelSize, double wantedSize) {
-        double returned = position * pixelSize / wantedSize;
-        return returned;
-    }
-
-    /**
-     * Return the position in wanted resolution
-     * @param position current position
-     * @param currentResolution resolution of pixelNum
-     * @param wantedResolution wanted resolution
-     * @return
-     */
-    public static double getNewPositionFromResolution(double position, double currentResolution, double wantedResolution) {
-        double returned = position / currentResolution * wantedResolution;
-        return returned;
     }
 }

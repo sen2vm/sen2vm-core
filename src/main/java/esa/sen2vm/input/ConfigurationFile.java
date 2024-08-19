@@ -90,6 +90,13 @@ public class ConfigurationFile extends InputFileManager
     }
 
     /*
+     * Get the product folder
+     */
+    public String getL1bProduct() {
+       return l1bProduct;
+    }
+
+    /*
      * Get the gipp folder
      */
     public String getGippFolder() {
@@ -117,5 +124,26 @@ public class ConfigurationFile extends InputFileManager
        return this.stepBand60m;
     }
 
+
+    /*
+     * Get the DEM folder
+     */
+    public String getDem() {
+       return dem;
+    }
+
+    /*
+     * Get the geoid folder
+     */
+    public String getGeoid() {
+       return geoid;
+    }
+
+    /*
+     * Get the IERS folder
+     */
+    public String getIers() {
+       return iers;
+    }
 }
 

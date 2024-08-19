@@ -17,6 +17,12 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jaxb.plugin.version>2.5.0</jaxb.plugin.version>
+        <!-- cots version -->
+        <gdal.version>3.6.2</gdal.version>
+        <sxgeo.version>0.1.13</sxgeo.version>
+		<sxgeo.orekit.version>11.3.2</sxgeo.orekit.version>
+		<sxgeo.rugged.version>4.0.1</sxgeo.rugged.version>
+		<sxgeo.hipparchus.version>2.3</sxgeo.hipparchus.version>
     </properties>
 
     <dependencies>
@@ -42,6 +48,40 @@
             <version>${jaxb.plugin.version}</version>
             <type>maven-plugin</type>
         </dependency>
+        <!-- cots -->
+        <dependency>
+            <groupId>org.gdal</groupId>
+            <artifactId>gdal</artifactId>
+            <version>${gdal.version}</version>
+            <type>jar</type>
+            <optional>false</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.sxgeo</groupId>
+            <artifactId>sxgeo</artifactId>
+            <version>${sxgeo.version}</version>
+            <type>jar</type>
+            <optional>false</optional>
+        </dependency>
+        <dependency>
+			<groupId>org.hipparchus</groupId>
+			<artifactId>hipparchus-core</artifactId>
+			<version>${sxgeo.hipparchus.version}</version>
+		</dependency>
+        <dependency>
+			<groupId>org.orekit</groupId>
+			<artifactId>rugged</artifactId>
+			<version>${sxgeo.rugged.version}</version>
+			<type>jar</type>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.orekit</groupId>
+			<artifactId>orekit</artifactId>
+			<version>${sxgeo.orekit.version}</version>
+			<type>jar</type>
+			<optional>false</optional>
+		</dependency>
     </dependencies>
 
     <build>
@@ -87,6 +127,7 @@
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_blind_pixels.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_spacecraft_model_parameters.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_viewing_directions.xsd</source>
+                        <source>${basedir}/src/main/resources/xsd/Datastrip/S2_PDI_Level-1B_Datastrip_Metadata.xsd</source>
                     </sources>
                     <xjbSources>
                         <xjbSource>${basedir}/src/main/resources/binding/jaxb-bindings.xjb</xjbSource>

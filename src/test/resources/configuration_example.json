@@ -1,10 +1,10 @@
 {
-  "l1b_product": "/Sen2vm/sen2vm-core/src/test/resources/from_VM/S2A_MSIL1B_20240508T075611_N0510_R035_20240605T140412.SAFE",
-  "gipp_folder": "/Sen2vm/sen2vm-core/src/test/resources/from_VM/GIPPs_Sen2VM/",
+  "l1b_product": "/Sen2vm/sen2vm-core/src/test/resources/20240805_24303121_g-GEibNG/S2B_MSIL1B_20240804T080609_N0511_R078_20240805T075818.SAFE",
+  "gipp_folder": "/Sen2vm/sen2vm-core/src/test/resources/20240805_24303121_g-GEibNG/GIPP_Sen2VM/",
   "gipp_version_check": true,
-  "dem": "PATH_TO_DEM_FOLDER",
-  "geoid": "PATH_TO_GEOID_FOLDER",
-  "iers": "PATH_TO_IERS_FILE",
+  "dem": "/Sen2vm/sen2vm-core/tests/resources/DEM_SRTM",
+  "geoid": "/Sen2vm/sen2vm-core/tests/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx",
+  "iers": "/Sen2vm/sen2vm-core/src/test/resources/20240805_24303121_g-GEibNG/IERS",
   "pod": "PATH_TO_POD_file/folder?",
   "operation": "direct",
   "deactivate_available_refining": false,
@@ -14,12 +14,12 @@
     "60m_bands": 270
   },
   "inverse_location_additional_info": {
-	"ul_x":15000,
-	"ul_y":7000,
-	"lr_x":15000,
-	"lr_y":7000,
-	"referential":"EPSG:4326",
-	"output_folder":"PATH_TO_OUTPUT_FOLDER_FOR_INVERSE_LOCATION_GRIDS"
+	"ul_x": 15000,
+	"ul_y": 7000,
+	"lr_x": 15000,
+	"lr_y": 7000,
+	"referential": "EPSG:4326",
+	"output_folder": "PATH_TO_OUTPUT_FOLDER_FOR_INVERSE_LOCATION_GRIDS"
   }
 }
 
