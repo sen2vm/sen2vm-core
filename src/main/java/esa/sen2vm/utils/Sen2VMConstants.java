@@ -24,4 +24,35 @@ public class Sen2VMConstants {
     public static final String xml_extention_big = ".XML";
     public static final String dbl_extention_small = ".dbl";
     public static final String dbl_extention_big = ".DBL";
+
+    /**
+     * Error management
+     */
+    public static final String ERROR_QUATERNION_NULL_GPS = "error.quaternion.null.gps";
+
+    /**
+     * Rugged Manager initialisation
+     */
+    // Pixel size for band (in meters)
+    public static final double PIXEL_HEIGHT_10 = 10.0;
+    // Pixel size for band (in meters)
+    public static final double PIXEL_HEIGHT_20 = 20.0;
+    // Pixel size for band (in meters)
+    public static final double PIXEL_HEIGHT_60 = 60.0;
+
+    // Granule line (for a 10m resolution band)
+    public static final double GRANULE_NB_LINE_10_M = 2304.0;
+    // Granule line (for a 60m resolution band) ??
+    public static final double GRANULE_NB_LINE_60_M = 384.0;
+
+    // The interval is split in 1/4 parts.
+    public static final double MINMAX_LINES_INTERVAL_QUARTER = 10.0 * GRANULE_NB_LINE_10_M;
+    // Number of lines between min/max line for inverse computation (for a 10m resolution band)
+    public static final double MINMAX_LINES_INTERVAL = 4.0 * MINMAX_LINES_INTERVAL_QUARTER;
+
+    // Compute margin according to the band pixel size
+    public static final double BAND_PIXEL_SIZE = PIXEL_HEIGHT_10;
+    public static final double MARGIN = GRANULE_NB_LINE_60_M * PIXEL_HEIGHT_10 / BAND_PIXEL_SIZE;
+
+    public static final String OREKIT_DATA_DIR = "src/main/resources/orekit-data";
 }

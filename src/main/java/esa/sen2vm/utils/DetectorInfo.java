@@ -93,6 +93,13 @@ public enum DetectorInfo {
     }
 
     /**
+     * @return the name
+     */
+    public String getNameWithD() {
+        return "D" + name;
+    }
+
+    /**
      * Get a List of all DetectorInfo
      * @return
      */

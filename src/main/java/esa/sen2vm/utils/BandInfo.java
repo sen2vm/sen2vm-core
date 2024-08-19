@@ -30,6 +30,7 @@ public enum BandInfo {
      * Band index
      */
     protected int index = 0;
+
     /**
      * Band pixel height
      */
@@ -58,17 +59,6 @@ public enum BandInfo {
             }
         }
         return null;
-    }
-
-    /**
-     * Get BandInfo from sensor name
-     * @param sensorName sensor name
-     * @return the band having the given name. Null if not found
-     */
-    public static BandInfo getBandInfoFromSensorName(String sensorName) {
-        int underscoreIndex = sensorName.indexOf('_');
-        String bandName = sensorName.substring(1, underscoreIndex);
-        return getBandInfoFromName(bandName);
     }
 
     /**
@@ -116,6 +106,13 @@ public enum BandInfo {
     /**
      * @return the name
      */
+    public String getNameWithB() {
+        return "B" + getName2Digit();
+    }
+
+    /**
+     * @return the name
+     */
     public String getName2Digit() {
         if (name.length() == 1) {
             return "0" + name;
@@ -134,7 +131,7 @@ public enum BandInfo {
      * Return VNIR or SWIR depending on the band
      * @return VNIR or SWIR depending on the band
      */
-    public String getSpaModEnum() {
+    public String getSpaMod() {
         String returned = "VNIR";
         switch (this) {
         case BAND_10:
@@ -159,29 +156,5 @@ public enum BandInfo {
             bandInfoList.add(bandInfo);
         }
         return bandInfoList;
-    }
-
-    /**
-     * Return the position in wanted pixel size
-     * @param position current position
-     * @param pixelSize size of pixelNum
-     * @param wantedSize wanted size
-     * @return
-     */
-    public static double getNewPositionFromSize(double position, double pixelSize, double wantedSize) {
-        double returned = position * pixelSize / wantedSize;
-        return returned;
-    }
-
-    /**
-     * Return the position in wanted resolution
-     * @param position current position
-     * @param currentResolution resolution of pixelNum
-     * @param wantedResolution wanted resolution
-     * @return
-     */
-    public static double getNewPositionFromResolution(double position, double currentResolution, double wantedResolution) {
-        double returned = position / currentResolution * wantedResolution;
-        return returned;
     }
 }
