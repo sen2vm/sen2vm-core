@@ -117,5 +117,26 @@ public class ConfigurationFile extends InputFileManager
        return this.stepBand60m;
     }
 
+    /*
+     * Get
+     */
+    public Float[] getInverseLocBound() {
+        Float[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
+        return bb;
+    }
+
+    /*
+     * Get
+     */
+    public String getInverseLocReferential() {
+        return this.referential;
+    }
+
+    /*
+     * Get
+     */
+    public String getInverseLocOutputFolder() {
+        return this.outputFolder;
+    }
 }
 
