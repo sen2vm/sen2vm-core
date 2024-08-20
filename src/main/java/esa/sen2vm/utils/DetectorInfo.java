@@ -32,8 +32,8 @@ public enum DetectorInfo {
 
     /**
      * Private constructor
-     * @param name detector name
-     * @param resolution detector resolution
+     * @param name detector name, e.g. "01", "02", ... "12"
+     * @param index detector index (from 0 to 11)
      */
     private DetectorInfo(String name, int index) {
         this.name = name;
@@ -42,7 +42,7 @@ public enum DetectorInfo {
 
     /**
      * Get DetectorInfo from sensor name
-     * @param sensorName sensor name
+     * @param sensorName sensor name in the shape of BXX/DXX, e.g. "B01/D01", "B01/D02", ... "B01/D12"
      * @return the detector having the given name. Null if not found
      */
     public static DetectorInfo getDetectorInfoFromSensorName(String sensorName) {
@@ -53,7 +53,7 @@ public enum DetectorInfo {
 
     /**
      * Get DetectorInfo from detector name
-     * @param detectorName detector name
+     * @param detectorName detector name, e.g. "01", "02", ... "12".
      * @return the detector having the given name. Null if not found
      */
     public static DetectorInfo getDetectorInfoFromName(String detectorName) {
