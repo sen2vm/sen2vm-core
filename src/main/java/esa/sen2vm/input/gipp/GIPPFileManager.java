@@ -130,7 +130,7 @@ public class GIPPFileManager {
      * @param list of all valid extensions
      * @return the first occurrence that correspond to the input regex
      */
-    public File findFile(File[] directories, String regexPattern, List<String> validExtensions) {
+    public File findFile(File[] directories, String regexPattern, List<String> validExtensions) throws Exception {
         List<File> foundFiles = null;
         try {
              foundFiles = findGippFiles(directories, regexPattern, validExtensions);
@@ -139,11 +139,14 @@ public class GIPPFileManager {
             e.printStackTrace();
         }
 
-        if (foundFiles != null && foundFiles.size() > 0) {
+        if (foundFiles != null && foundFiles.size() == 1) {
             return foundFiles.get(0);
         }
+        else if (foundFiles != null && foundFiles.size() > 1) {
+            throw new Exception("Duplicate GIPP file of type " + regexPattern + " find");
+        }
         else {
-            return null;
+            throw new Exception("No GIPP file of type " + regexPattern + " were find");
         }
     }
 
@@ -151,7 +154,7 @@ public class GIPPFileManager {
      * Constructor
      * @param folder contains the GIPP xml files
      */
-    public GIPPFileManager(String folder) {
+    public GIPPFileManager(String folder) throws Exception {
         File gippFolder = new File(folder);
         if (!gippFolder.exists() || !gippFolder.isDirectory()) {
             LOGGER.severe("The gipp folder " + gippFolder + " doesn't exist or is not a directory");
@@ -163,18 +166,15 @@ public class GIPPFileManager {
                                                      Sen2VMConstants.dbl_extention_small,
                                                      Sen2VMConstants.dbl_extention_big);
 
-        try {
-            // get viewing direction file
-            viewingDirectionFileList = findGippFiles(directories, Sen2VMConstants.GIPP_VIEWDIR_NAME, validExtensions);
+        // get viewing direction file
+        viewingDirectionFileList = findGippFiles(directories, Sen2VMConstants.GIPP_VIEWDIR_NAME, validExtensions);
 
-            // get blind pixel file
-            blindPixelFile = findFile(directories, Sen2VMConstants.GIPP_BLINDP_NAME, validExtensions);
+        // get blind pixel file
+        blindPixelFile = findFile(directories, Sen2VMConstants.GIPP_BLINDP_NAME, validExtensions);
 
-            // get spacecraft model file
-            spaModFile = findFile(directories, Sen2VMConstants.GIPP_SPAMOD_NAME, validExtensions);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // get spacecraft model file
+        spaModFile = findFile(directories, Sen2VMConstants.GIPP_SPAMOD_NAME, validExtensions);
+
     }
 
     /**
