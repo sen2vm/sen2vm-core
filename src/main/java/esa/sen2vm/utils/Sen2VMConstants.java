@@ -21,9 +21,9 @@ public class Sen2VMConstants {
     /**
      * For product tree structure
      */
-    public static final String DATASTRIP_MAIN_FOLDER = "/DATASTRIP";
-    public static final String DATASTRIP_FOLDER_TAG = "MSI";
-    public static final String DATASTRIP_FILE_TAG = "MTD";
+    public static final String DATASTRIP_MAIN_FOLDER = "DATASTRIP";
+    public static final String DATASTRIP_MSI_TAG = "MSI";
+    public static final String DATASTRIP_METADATA_TAG = "MTD";
 
     /**
      * File extensions possible
