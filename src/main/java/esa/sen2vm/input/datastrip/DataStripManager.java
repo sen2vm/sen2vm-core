@@ -219,7 +219,7 @@ public class DataStripManager {
 			// we fix the EOP continuity threshold to one year instead of the normal gap ...
 			FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
 		} catch (Exception e) {
-			throw new Sen2VMException("Something went wrong during initialization of orekit ressources");
+			throw new Sen2VMException("Something went wrong during initialization of orekit ressources ", e);
 		}
 	}
 
