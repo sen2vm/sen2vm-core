@@ -18,6 +18,13 @@ public class Sen2VMConstants {
     public static final int NB_GIPP_MAX_FILE = 13;
 
     /**
+     * For product tree structure
+     */
+    public static final String DATASTRIP_MAIN_FOLDER = "/DATASTRIP";
+    public static final String DATASTRIP_FOLDER_TAG = "MSI";
+    public static final String DATASTRIP_FILE_TAG = "MTD";
+
+    /**
      * File extensions possible
      */
     public static final String xml_extention_small = ".xml";
@@ -35,10 +42,6 @@ public class Sen2VMConstants {
      */
     // Pixel size for band (in meters)
     public static final double PIXEL_HEIGHT_10 = 10.0;
-    // Pixel size for band (in meters)
-    public static final double PIXEL_HEIGHT_20 = 20.0;
-    // Pixel size for band (in meters)
-    public static final double PIXEL_HEIGHT_60 = 60.0;
 
     // Granule line (for a 10m resolution band)
     public static final double GRANULE_NB_LINE_10_M = 2304.0;

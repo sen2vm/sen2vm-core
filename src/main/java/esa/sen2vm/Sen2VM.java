@@ -111,15 +111,15 @@ public class Sen2VM
             LOGGER.info("bands = "+bands);
 
             // Read datastrip
-            File datastripFolder = new File(configFile.getL1bProduct() + "/DATASTRIP");
+            File datastripFolder = new File(configFile.getL1bProduct() + Sen2VMConstants.DATASTRIP_MAIN_FOLDER);
             File[] directories = datastripFolder.listFiles();
             String datastripFilePath = null;
             for (File dir: directories) {
                 if (!dir.isDirectory()) {
                     continue; // Ignore non-directory files
                 }
-                String filename = dir.getName().replaceAll("_N.*", "").replace("MSI", "MTD");
-                datastripFilePath = dir + "/" + filename + ".xml";
+                String filename = dir.getName().replaceAll("_N.*", "").replace(Sen2VMConstants.DATASTRIP_FOLDER_TAG, Sen2VMConstants.DATASTRIP_FILE_TAG);
+                datastripFilePath = dir + "/" + filename + Sen2VMConstants.xml_extention_small;
             }
             LOGGER.info("Reading datastrip file at path: " + datastripFilePath);
             DataStripManager dataStripManager = DataStripManager.getInstance();
