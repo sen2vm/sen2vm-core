@@ -712,10 +712,6 @@ Schema/DICO/PDI-V15/SY/image/image.xsd
 Schema/DICO/EUP-V15/PDGS/dimap/dimap2A.xsd
 Schema/DICO/PDI-V15/PDGS/dimap/dimap2A.xsd
 
-- Files changed to handle “NA” for AOT retrieval method:
-Schema/DICO/EUP-V15/PDGS/dimap/dimap2A.xsd
-Schema/DICO/PDI-V15/PDGS/dimap/dimap2A.xsd
-
 - Files changed for Moon calibration Datatake identifiers:
 Schema/DICO/EUP-V15/PDGS/dimap/dimap.xsd
 Schema/DICO/EUP-V15/SY/image/image.xsd
