@@ -6,6 +6,7 @@ public class Sen2VMConstants {
      * For bandInfo purpose
      */
     public static final int RESOLUTION_10M = 10;
+    public static final double RESOLUTION_10M_DOUBLE = 10.0;
     public static final int RESOLUTION_20M = 20;
     public static final int RESOLUTION_60M = 60;
 
@@ -40,9 +41,6 @@ public class Sen2VMConstants {
     /**
      * Rugged Manager initialisation
      */
-    // Pixel size for band (in meters)
-    public static final double PIXEL_HEIGHT_10 = 10.0;
-
     // Granule line (for a 10m resolution band)
     public static final double GRANULE_NB_LINE_10_M = 2304.0;
     // Granule line (for a 60m resolution band) ??
@@ -54,8 +52,8 @@ public class Sen2VMConstants {
     public static final double MINMAX_LINES_INTERVAL = 4.0 * MINMAX_LINES_INTERVAL_QUARTER;
 
     // Compute margin according to the band pixel size
-    public static final double BAND_PIXEL_SIZE = PIXEL_HEIGHT_10;
-    public static final double MARGIN = GRANULE_NB_LINE_60_M * PIXEL_HEIGHT_10 / BAND_PIXEL_SIZE;
+    public static final double BAND_PIXEL_SIZE = RESOLUTION_10M_DOUBLE;
+    public static final double MARGIN = GRANULE_NB_LINE_60_M * RESOLUTION_10M_DOUBLE / BAND_PIXEL_SIZE;
 
     public static final String OREKIT_DATA_DIR = "src/main/resources/orekit-data";
 }

@@ -177,7 +177,7 @@ public class Sen2VM
                 demManager,
                 DataStripManager.getInstance().getDataSensingInfos(),
                 Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
-                Sen2VMConstants.PIXEL_HEIGHT_10,
+                Sen2VMConstants.RESOLUTION_10M_DOUBLE,
                 sensorList,
                 Sen2VMConstants.MARGIN,
                 refiningInfo

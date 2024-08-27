@@ -381,7 +381,7 @@ public class DataStripManager {
         double defaultReferenceLineDouble = 1d;
         boolean found = false;
         // We get the value of a half line period for the given band resolution
-        double linePeriod = getNewPositionFromResolution(getLinePeriod(), Sen2VMConstants.PIXEL_HEIGHT_10, bandInfo.getPixelHeight());
+        double linePeriod = getNewPositionFromResolution(getLinePeriod(), Sen2VMConstants.RESOLUTION_10M_DOUBLE, bandInfo.getPixelHeight());
         double halfLinePeriod = linePeriod / 2;
         if (sensorConfiguration != null) {
             Time_Stamp timeStampElement = sensorConfiguration.getTime_Stamp();
@@ -398,7 +398,7 @@ public class DataStripManager {
                                     found = true;
                                     int refLineInt = detector.getREFERENCE_LINE();
                                     if (refLineInt != 0 && refLineInt != 1) {
-                                        referenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.PIXEL_HEIGHT_10, bandInfo.getPixelHeight());
+                                        referenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.RESOLUTION_10M_DOUBLE, bandInfo.getPixelHeight());
                                     }
                                     XMLGregorianCalendar referenceDateXML = detector.getGPS_TIME();
                                     referenceDate = new AbsoluteDate(referenceDateXML.toString(), gps);
@@ -408,7 +408,7 @@ public class DataStripManager {
                                     // If bypass is activated, we will use the last value found for missing detector
                                     int refLineInt = detector.getREFERENCE_LINE();
                                     if (refLineInt != 0 && refLineInt != 1) {
-                                        defaultReferenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.PIXEL_HEIGHT_10,
+                                        defaultReferenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.RESOLUTION_10M_DOUBLE,
                                                 bandInfo.getPixelHeight());
                                     }
                                     XMLGregorianCalendar referenceDateXML = detector.getGPS_TIME();
