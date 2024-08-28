@@ -98,6 +98,8 @@ The GIPP required are the following ones:
 * GIP_BLINDP: contains information on blind pixel, contained in BLIND_PIXEL_NUMBER tag: _[DATA/BAND/BLIND_PIXEL_NUMBER]_, available **per band**!
 
 #### 1.2.3 Altitude
+<![endif]--> The main purpose of the tool is to add geolocation to the L1B product images. Hence to be precise, the altitude shall be taken into account, as its importance is far from neglectable on final geolocation, as illustrated below:
+![Altitude importance on geolocation](/images/README_AltitudeImportanceOnGeolocation.png "Altitude importance on geolocation.")
 ==**TODO**==
 #### 1.2.4 IERS
 The IERS represents the ["International Earth Rotation and Reference Systems"](https://www.iers.org/IERS/EN/Home/home_node.html). It is important to have a valid and precise one to have a precise geolocation. During operation processing, IERS information are integrated in the L1B metadata datastrip, hence IERS information are available in the L1B product used in input, in the field _Level-1B_DataStrip_ID/Auxiliary_Data_Info/IERS_Bulletin_ as illustrated in the ==**FIGURE_XXX**==
