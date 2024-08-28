@@ -112,7 +112,7 @@ public class Sen2VM
 
             // Read datastrip
             DataStripManager dataStripManager = DataStripManager.getInstance();
-            dataStripManager.initDataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
+            dataStripManager.initDataStripManager(configFile.getDatastripFilePath(), configFile.getIers());
 
             // Read GIPP
             GIPPManager gippManager = GIPPManager.getInstance();
@@ -183,7 +183,7 @@ public class Sen2VM
                                  {1.0, 0.0}};
             double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
             LOGGER.info("pixels="+pixels[0][0]+" "+pixels[0][1]);
-            LOGGER.info("grounds="+grounds[0][0]+" "+grounds[0][1]);
+            LOGGER.info("grounds="+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
 
             LOGGER.info("End Sen2VM");
 
