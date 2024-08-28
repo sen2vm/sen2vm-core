@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 (http://www.altova.com) by auriols (C.N.E.S.) -->
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by CNES (CNES) -->
+<xs:schema xmlns:gs2="http://gs2.esa.int/doc/1.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:header="http://gs2.esa.int/GS/1.0/header/" xmlns:date_time="http://gs2.esa.int/SY/1.0/date_time/" xmlns:base="http://gs2.esa.int/SY/1.0/base/" xmlns:misc="http://gs2.esa.int/SY/1.0/misc/" xmlns:image_production="http://gs2.esa.int/GS/1.0/image_production/" xmlns:image="http://gs2.esa.int/SY/1.0/image/" targetNamespace="http://gs2.esa.int/GS/1.0/header/" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/date_time/" schemaLocation="../../../SY/1.0/date_time/date_time.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/base/" schemaLocation="../../../SY/1.0/base/base.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/misc/" schemaLocation="../../../SY/1.0/misc/misc.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/GS/1.0/image_production/" schemaLocation="../image_production/image_production.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/image/" schemaLocation="../../../SY/1.0/image/image.xsd"/>
+	<xs:complexType name="AN_INTERFACE_HEADER">
+		<xs:annotation>
+			<xs:documentation>General header</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SATELLITE" type="base:A_SATELLITE_IDENTIFIER">
+				<xs:annotation>
+					<xs:documentation>Satellite identifier</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SCHEME_VERSION" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Release number of the XML scheme</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PRODUCTION_DATE" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>Day and time of the file production in UTC</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PROVIDER" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Unique identifier of the data provider</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CONSUMER" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Unique identifier of the data consumer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_GIPP_HEADER">
+		<xs:annotation>
+			<xs:documentation>GIPP specific header</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:sequence>
+				<xs:element name="TYPE" type="image:A_GIPP_IDENTIFICATION">
+					<xs:annotation>
+						<xs:documentation>Identifies the interface name</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="APPLICABILITY_DATE" type="date_time:AN_UTC_DATE_TIME">
+					<xs:annotation>
+						<xs:documentation>Defines the applicability date of the parameters</xs:documentation>
+						<xs:appinfo>
+							<gs2:DOC>
+								<gs2:DEFINITION>This date is the beginning of the validity period. &lt;br/>
+					There is no end of validity period : the period ends when a new parameter is given.
+					If several versions of a parameters file have the same applicability date, the file with the higher version number is applicable.</gs2:DEFINITION>
+							</gs2:DOC>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="APPLICABILITY_END_DATE" type="date_time:AN_UTC_DATE_TIME" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Defines the applicability end date of the parameters</xs:documentation>
+						<xs:appinfo>
+							<gs2:DOC>
+								<gs2:DEFINITION>This date is the beginning of the validity period. &lt;br/>
+					There is no end of validity period : the period ends when a new parameter is given.
+					If several versions of a parameters file have the same applicability date, the file with the higher version number is applicable.</gs2:DEFINITION>
+							</gs2:DOC>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="VERSION_NUMBER">
+					<xs:annotation>
+						<xs:documentation>Chronological number incremented automatically for each new version of the parameters file (regardless of the applicability date). If several versions of a parameters file have the same applicability date, the file with the higher version number is applicable.</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="\d\d\d\d"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="PARAMETER_ID" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Unique identifier of the parameter : [SSSSS]_[NNN_NNN]_[VVV]_[YYYYMMDDHHMNSS]_[Q],
+with :
+[SSSSS] corresponds to satellite identifier, possible values are "S2A " or  "S2B",
+[NNN_NNN] corresponds to the GIPP interface name as defined in the following table appendix B (in uppercase) in the products definition document,
+[VVVV] corresponds to the version number of the GIPP (chronological number),
+[YYYYMMDDHHMNSS] corresponds to the applicability date of the GIPP,
+[Q] :corresponds to the GIPP status (" T " for test, " O " for operationnal).</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_IP_REQUEST_HEADER">
+		<xs:annotation>
+			<xs:documentation>Image Production Request header</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="IP_REQUEST_ID" type="image_production:AN_IP_REQUEST_ID">
+				<xs:annotation>
+					<xs:documentation>ProductionRequest identifier. This identifier is mandatory and shall be unique</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="USER_NAME" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Deposit identification </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ACKNOWLEDGEMENT_ADDRESS" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Acknowledgement Address (FTP address or e-mail) : defines the list of address to use for the first acknowledgement.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="EMAIL" type="misc:AN_EMAIL_ADDRESS">
+							<xs:annotation>
+								<xs:documentation>e-mail</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="FTP" type="misc:A_FTP_ADDRESS">
+							<xs:annotation>
+								<xs:documentation>FTP addres</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_REPORT_HEADER">
+		<xs:annotation>
+			<xs:documentation>AcknowledgeReport and ProgressReport header</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="IP_REQUEST_ID" type="image_production:AN_IP_REQUEST_ID">
+				<xs:annotation>
+					<xs:documentation>ProductionRequest identifier. This identifier shall be unique.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 (http://www.altova.com) by auriols (C.N.E.S.) -->
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by CNES (CNES) -->
+<xs:schema xmlns:gs2="http://gs2.esa.int/doc/1.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:orbital="http://gs2.esa.int/SY/1.0/orbital/" xmlns:misc="http://gs2.esa.int/SY/1.0/misc/" targetNamespace="http://gs2.esa.int/SY/1.0/orbital/" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/misc/" schemaLocation="../misc/misc.xsd"/>
+	<xs:complexType name="A_VIEWING_DIRECTIONS">
+		<xs:sequence>
+			<xs:element name="Nb_Of_Pixels">
+				<xs:annotation>
+					<xs:documentation>Number of pixels</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Tan_Psi_X_List" type="misc:A_LIST_OF_DOUBLE">
+				<xs:annotation>
+					<xs:documentation>List of Tangent Psi X in the image order (there is one data by pixel)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Tan_Psi_Y_List" type="misc:A_LIST_OF_DOUBLE">
+				<xs:annotation>
+					<xs:documentation>List of Tangent Psi Y in the image order (there is one data by pixel)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_VIEWING_DIRECTIONS_UPPER_CASE">
+		<xs:sequence>
+			<xs:element name="NB_OF_PIXELS">
+				<xs:annotation>
+					<xs:documentation>Number of pixels</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="TAN_PSI_X_LIST" type="misc:A_LIST_OF_DOUBLE">
+				<xs:annotation>
+					<xs:documentation>List of Tangent Psi X in the image order (there is one data by pixel)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TAN_PSI_Y_LIST" type="misc:A_LIST_OF_DOUBLE">
+				<xs:annotation>
+					<xs:documentation>List of Tangent Psi Y in the image order (there is one data by pixel)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="AN_ORBIT_DIRECTION">
+		<xs:annotation>
+			<xs:documentation>orbit (ascending / descending) direction</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ASCENDING"/>
+			<xs:enumeration value="DESCENDING"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

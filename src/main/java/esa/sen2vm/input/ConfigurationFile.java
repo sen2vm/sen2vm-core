@@ -1,5 +1,6 @@
 package esa.sen2vm;
 
+import java.io.File;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -38,8 +39,9 @@ public class ConfigurationFile extends InputFileManager
     /**
      * Constructor
      * @param filepath Path to the configuration file to parse
+     * @param filepath Path to the configuration file to parse
      */
-    public ConfigurationFile(String filepath) {
+    public ConfigurationFile(String filepath) throws Sen2VMException {
         this.filepath = filepath;
         if(check_schema(this.filepath, "src/test/resources/schema_config.json")) {
             parse(this.filepath);
@@ -50,18 +52,18 @@ public class ConfigurationFile extends InputFileManager
      * Parse configuration file
      * @param filepath Path to the configuration file to parse
      */
-    public void parse(String filepath) {
+    public void parse(String filepath) throws Sen2VMException {
         LOGGER.info("Parsing file "+ filepath);
 
         try (InputStream fis = new FileInputStream(filepath)) {
 
             JSONObject jsonObject = new JSONObject(new JSONTokener(fis));
 
-            this.l1bProduct = jsonObject.getString("l1b_product");
-            this.gippFolder = jsonObject.getString("gipp_folder");
+            this.l1bProduct = checkPath(jsonObject.getString("l1b_product"));
+            this.gippFolder = checkPath(jsonObject.getString("gipp_folder"));
             this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
-            this.dem = jsonObject.getString("dem");
-            this.geoid = jsonObject.getString("geoid");
+            this.dem = checkPath(jsonObject.getString("dem"));
+            this.geoid = checkPath(jsonObject.getString("geoid"));
             this.iers = jsonObject.getString("iers");
             this.pod = jsonObject.getString("pod");
             this.operation = jsonObject.getString("operation");
@@ -80,13 +82,94 @@ public class ConfigurationFile extends InputFileManager
             this.referential = inverseLoc.getString("referential");
             this.outputFolder = inverseLoc.getString("output_folder");
 
-            // TODO add verification of each parameter
-            // for file see if it does really exist
-            // for value, if possible, check that value is in the range of possible value
-
+        } catch (Sen2VMException e) {
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+     * Check that the input path exist, if not
+     * @param filepath the path we want to check if it does exist
+     */
+     public String checkPath(String filepath) throws Sen2VMException {
+        File file = new File(filepath);
+        if (!file.exists()) {
+            throw new Sen2VMException("Path " + file + " does not exist");
+        }
+        return filepath;
+     }
+
+    /*
+     * Search the datastrip metadata file path inside product folder
+     */
+    public String getDatastripFilePath() throws Sen2VMException {
+        File datastripFolder = new File(l1bProduct + "/" + Sen2VMConstants.DATASTRIP_MAIN_FOLDER);
+        if (!datastripFolder.exists()) {
+            throw new Sen2VMException("Datastrip folder " + datastripFolder + " does not exist");
+        }
+
+        File[] directories = datastripFolder.listFiles();
+        String datastripFilePath = null;
+        for (File dir: directories) {
+            if (!dir.isDirectory()) {
+                continue;
+            }
+            String filename = dir.getName().replaceAll("_N.*", "").replace(Sen2VMConstants.DATASTRIP_MSI_TAG, Sen2VMConstants.DATASTRIP_METADATA_TAG);
+            datastripFilePath = dir + "/" + filename + Sen2VMConstants.xml_extention_small;
+        }
+
+        File datastripFile = new File(datastripFilePath);
+        if (datastripFile.exists()) {
+            LOGGER.info("Find the following datastrip metadata file: " + datastripFilePath);
+            return datastripFilePath;
+        }
+        else {
+            throw new Sen2VMException("No datastrip metadata file found inside folder: " + datastripFolder);
+        }
+    }
+
+    /*
+     * Get the product folder
+     */
+    public String getL1bProduct() {
+       return l1bProduct;
+    }
+
+    /*
+     * Get the gipp folder
+     */
+    public String getGippFolder() {
+       return gippFolder;
+    }
+
+    /*
+     * Get the DEM folder
+     */
+    public String getDem() {
+       return dem;
+    }
+
+    /*
+     * Get the geoid folder
+     */
+    public String getGeoid() {
+       return geoid;
+    }
+
+    /*
+     * Get the IERS folder
+     */
+    public String getIers() throws Sen2VMException {
+       return checkPath(iers);
+    }
+
+    /*
+     * Get the POD folder
+     */
+    public String getPod() throws Sen2VMException {
+       return checkPath(pod);
     }
 }
 

@@ -1,0 +1,3779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by C.N.E.S. (C.N.E.S.) -->
+<!--edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by CNES (CNES)-->
+<xs:schema xmlns:gs2="http://gs2.esa.int/doc/1.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:gipp="http://gs2.esa.int/GS/1.0/gipp/" xmlns:base="http://gs2.esa.int/SY/1.0/base/" xmlns:misc="http://gs2.esa.int/SY/1.0/misc/" xmlns:image="http://gs2.esa.int/SY/1.0/image/" xmlns:platform="http://gs2.esa.int/SY/1.0/platform/" xmlns:tile="http://gs2.esa.int/SY/1.0/tile/" xmlns:orbital="http://gs2.esa.int/SY/1.0/orbital/" xmlns:representation="http://gs2.esa.int/SY/1.0/representation/" xmlns:date_time="http://gs2.esa.int/SY/1.0/date_time/" targetNamespace="http://gs2.esa.int/GS/1.0/gipp/" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/base/" schemaLocation="../../../SY/1.0/base/base.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/misc/" schemaLocation="../../../SY/1.0/misc/misc.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/image/" schemaLocation="../../../SY/1.0/image/image.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/platform/" schemaLocation="../../../SY/1.0/platform/platform.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/tile/" schemaLocation="../../../SY/1.0/tile/tile.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/orbital/" schemaLocation="../../../SY/1.0/orbital/orbital.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/representation/" schemaLocation="../../../SY/1.0/representation/representation.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/date_time/" schemaLocation="../../../SY/1.0/date_time/date_time.xsd"/>
+	<xs:simpleType name="AN_IMAGE_FILTER_TYPE">
+		<xs:annotation>
+			<xs:documentation>Image filter type</xs:documentation>
+			<xs:appinfo>
+				<gs2:DOC>
+					<gs2:DEFINITION>Textual enumeration of image filter types</gs2:DEFINITION>
+				</gs2:DOC>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SPATIAL"/>
+			<xs:enumeration value="FREQUENTIAL"/>
+			<xs:enumeration value="WAVELET"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="AN_IMAGE_FILTER">
+		<xs:annotation>
+			<xs:documentation>Image filter definition</xs:documentation>
+			<xs:appinfo>
+				<gs2:DOC>
+					<gs2:DEFINITION><![CDATA[An image filter is defined with :<br/>
+					<ul>
+					<li>its type (a textual enumeration);</li>
+					<li>the position of filter center : this position has different meanings according to the file type :<br>
+						 <ul>
+						 <li>  spectral filter :position of the filter center </li>
+						 <li>  spectral filter : position of the continue coef in the filter </li>
+						  <li>  wavelet filter : position of the continue coef in the filter </li>
+						  </ul>										
+					</li>
+					<li>2 oversampling factors (row wise, column wise) : usefull for geometrical transforms (resampling filters for example);</li>
+					<li>a data representation : choice between </li>
+						 <ul>
+						 <li>  an array of double for a bidim filter definition </li>
+						 <li>  2 lists of doubles representing the 2 1D-filters (row and column wise) if the image filter is separable  </li>
+						 </ul>	
+
+					</ul>]]></gs2:DEFINITION>
+				</gs2:DOC>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="FILTER_TYPE" type="gipp:AN_IMAGE_FILTER_TYPE"/>
+			<xs:element name="FILTER_CENTER">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ROW_INDEX" type="xs:positiveInteger"/>
+						<xs:element name="COL_INDEX" type="xs:positiveInteger"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FILTER_OVERSAMPLING">
+				<xs:annotation>
+					<xs:documentation>Oversampling between Filter and Image</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ROW_WISE" type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Filter tabulated at 1/ROW_WISE image pixels along the rows</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="COL_WISE" type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Filter tabulated at 1/COL_WISE image pixels along the col</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FILTER_DATA">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="BIDIM_FILTER_DATA" type="gipp:AN_ARRAY_OF_DOUBLE"/>
+						<xs:element name="SEPARABLE_FILTER_DATA">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="NB_OF_ROWS" type="xs:int"/>
+									<xs:element name="NB_OF_COLS" type="xs:int"/>
+									<xs:element name="ORIGIN" type="xs:int">
+										<xs:annotation>
+											<xs:documentation>array count start</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="ROW_COEFS" type="misc:A_LIST_OF_DOUBLE">
+										<xs:annotation>
+											<xs:documentation>coefficients for the row wise 1D filter</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="COL_COEFS" type="misc:A_LIST_OF_DOUBLE">
+										<xs:annotation>
+											<xs:documentation>coefficients for the column wise 1D filter</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="AN_INTERNAL_FILTER_NAME">
+		<xs:annotation>
+			<xs:documentation>The name of an internal filter</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BCO"/>
+			<xs:enumeration value="BLN"/>
+			<xs:enumeration value="PPV"/>
+			<xs:enumeration value="SPLINE3"/>
+			<xs:enumeration value="SPLINE5"/>
+			<xs:enumeration value="SPLINE7"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="AN_UNIDIM_FILTER">
+		<xs:annotation>
+			<xs:documentation>1D filter definition </xs:documentation>
+			<xs:appinfo>
+				<gs2:DOC>
+					<gs2:DEFINITION><![CDATA[An image filter is defined with :<br/>
+					<ul>
+					<li>its type (a textual enumeration);</li>
+					<li>the position of filter center : this position has different meanings according to the file type :<br>
+						 <ul>
+						 <li>  spectral filter :position of the filter center </li>
+						 <li>  spectral filter : position of the continue coef in the filter </li>
+						  <li>  wavelet filter : position of the continue coef in the filter </li>
+						  </ul>										
+					</li>
+					<li>2 oversampling factors (row wise, column wise) : usefull for geometrical transforms (resampling filters for example);</li>
+					<li>a data representation : choice between </li>
+						 <ul>
+						 <li>  an array of double for a bidim filter definition </li>
+						 <li>  2 lists of doubles representing the 2 1D-filters (row and column wise) if the image filter is separable  </li>
+						 </ul>	
+
+					</ul>]]></gs2:DEFINITION>
+				</gs2:DOC>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="NB_OF_ROWS">
+				<xs:annotation>
+					<xs:documentation>Number of rows of the filter (=1 for a row wise 1D filter)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="NB_OF_COLS">
+				<xs:annotation>
+					<xs:documentation>Number of columns of the filter (=1 for a column wise 1D filter)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ORIGIN">
+				<xs:annotation>
+					<xs:documentation>Center of the filter</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="COEFS" type="misc:A_LIST_OF_DOUBLE">
+				<xs:annotation>
+					<xs:documentation>Coefficients for the 1D filter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_IMAGE_RESAMPLING_FILTER">
+		<xs:annotation>
+			<xs:documentation>Resampling filter definition</xs:documentation>
+			<xs:appinfo>
+				<gs2:DOC>
+					<gs2:DEFINITION>The Resampling filter is defined by a filter name (bicubic, bilinear) knowned by LAI treatments, or by the description of a spatial filter. THE FILTER_DESCRIPTION/FILTER_TYPE should be "SPATIAL_FILTER"</gs2:DEFINITION>
+				</gs2:DOC>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="INTERNAL_FILTER">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FILTER_NAME" type="gipp:AN_INTERNAL_FILTER_NAME">
+							<xs:annotation>
+								<xs:documentation>List of internal filter name</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="MODE" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Filter application mode (default = EXACT)</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="EXACT"/>
+									<xs:enumeration value="PRECALCULE"/>
+									<xs:enumeration value="TABULE"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="PRECISION" type="xs:positiveInteger" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Computation accuracy if MODE=PRECALCULE</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="EXTERNAL_FILTER" type="gipp:AN_IMAGE_FILTER"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="AN_INTERNAL_FILTER">
+		<xs:sequence>
+			<xs:element name="FILTER_NAME" type="gipp:AN_INTERNAL_FILTER_NAME">
+				<xs:annotation>
+					<xs:documentation>List of internal filter name</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MODE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Filter application mode (default = EXACT)</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="EXACT"/>
+						<xs:enumeration value="PRECALCULE"/>
+						<xs:enumeration value="TABULE"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="PRECISION" type="xs:positiveInteger" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Computation accuracy if MODE=PRECALCULE</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_IMAGE_RESAMPLING_FILTER_INTERNAL">
+		<xs:annotation>
+			<xs:documentation>Resampling filter definition</xs:documentation>
+			<xs:appinfo>
+				<gs2:DOC>
+					<gs2:DEFINITION>The Resampling filter is defined by a filter name (bicubic, bilinear) knowned by LAI treatments, or by the description of a spatial filter. THE FILTER_DESCRIPTION/FILTER_TYPE should be "SPATIAL_FILTER"</gs2:DEFINITION>
+				</gs2:DOC>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="INTERNAL_FILTER">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FILTER_NAME" type="gipp:AN_INTERNAL_FILTER_NAME">
+							<xs:annotation>
+								<xs:documentation>List of internal filter name</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="MODE" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Filter application mode (default = EXACT)</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="EXACT"/>
+									<xs:enumeration value="PRECALCULE"/>
+									<xs:enumeration value="TABULE"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="PRECISION" type="xs:positiveInteger" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Computation accuracy if MODE=PRECALCULE</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="A_RESAMPLING_SIDE_MANAGEMENT">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="EXACT"/>
+			<xs:enumeration value="MIRROR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="A_RESAMPLING_GRID_DEF">
+		<xs:sequence>
+			<xs:element name="GRID_STEP_FACTOR_DTM" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>factor = dtm_step / grid_step  (generally &gt;0 et &gt;1)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GRID_MAX_STEP" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Maximum grid step in meters</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GRID_MIN_STEP" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Minimum grid step in meters</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_ARRAY_OF_DOUBLE">
+		<xs:annotation>
+			<xs:documentation>Description of a 2D Array of 64bits Double elements</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="NB_OF_ROWS">
+				<xs:annotation>
+					<xs:documentation>Number of rows</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="NB_OF_COLS">
+				<xs:annotation>
+					<xs:documentation>Number of columns in the array.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ORIGIN">
+				<xs:annotation>
+					<xs:documentation>Array count start</xs:documentation>
+					<xs:appinfo>
+						<gs2:DOC>
+							<gs2:DEFINITION>Array Origin can start from 0 or from 1. &lt;br>
+								Array first element is found in (0,0) (if ORIGIN=0) or in (1,1) (ORIGIN=1)</gs2:DEFINITION>
+							<gs2:INIT_VALUE>1</gs2:INIT_VALUE>
+						</gs2:DOC>
+					</xs:appinfo>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:enumeration value="0"/>
+						<xs:enumeration value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ARRAY">
+				<xs:annotation>
+					<xs:documentation>The array data storage.</xs:documentation>
+					<xs:appinfo>
+						<gs2:DOC>
+							<gs2:DEFINITION>Data are stored row by row, there are NB_OF_ROWS rows, and NB_OF_COLS elements in each row.</gs2:DEFINITION>
+						</gs2:DOC>
+					</xs:appinfo>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ROW" type="misc:A_LIST_OF_DOUBLE" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_ARRAY_OF_INT">
+		<xs:annotation>
+			<xs:documentation>Description of a 2D Array of int elements</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="NB_OF_ROWS">
+				<xs:annotation>
+					<xs:documentation>Number of rows</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="NB_OF_COLS">
+				<xs:annotation>
+					<xs:documentation>Number of columns in the array.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ORIGIN">
+				<xs:annotation>
+					<xs:documentation>Array count start</xs:documentation>
+					<xs:appinfo>
+						<gs2:DOC>
+							<gs2:DEFINITION>Array Origin can start from 0 or from 1. &lt;br>
+								Array first element is found in (0,0) (if ORIGIN=0) or in (1,1) (ORIGIN=1)</gs2:DEFINITION>
+							<gs2:INIT_VALUE>1</gs2:INIT_VALUE>
+						</gs2:DOC>
+					</xs:appinfo>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:enumeration value="0"/>
+						<xs:enumeration value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ARRAY">
+				<xs:annotation>
+					<xs:documentation>The array data storage.</xs:documentation>
+					<xs:appinfo>
+						<gs2:DOC>
+							<gs2:DEFINITION>Data are stored row by row, there are NB_OF_ROWS rows, and NB_OF_COLS elements in each row.</gs2:DEFINITION>
+						</gs2:DOC>
+					</xs:appinfo>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ROW" type="misc:A_LIST_OF_INT" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_COR_LOC_TIME_SEASONAL_DATATION_BLOCK">
+		<xs:sequence>
+			<xs:element name="NB_DATE_TIME">
+				<xs:annotation>
+					<xs:documentation>Number of applicability dates time for the correction model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DATE_TIME_LIST">
+				<xs:annotation>
+					<xs:documentation>List of the NB_DATE_TIME applicable dates time</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DATE_TIME" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Time interval = [begin date time, end date time [</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BEGIN" type="date_time:A_TAI_DATE_TIME">
+										<xs:annotation>
+											<xs:documentation>Begin date time</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="END" type="date_time:A_TAI_DATE_TIME">
+										<xs:annotation>
+											<xs:documentation>End date time</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="JULIAN_DAY" type="date_time:A_JULIAN_DAY">
+										<xs:annotation>
+											<xs:documentation>Reference Julian Day</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="COR_MODEL_VALUES" type="misc:A_LIST_OF_DOUBLE">
+										<xs:annotation>
+											<xs:documentation>List of the model correction values. If correction_model is in{TIME_POLYNOMIAL,  DATATION}, then values = coeff0 coeff1 coeff2 ...  coeffN.  If correction_model is SEASONAL, then values = Amplitude Omega Phase.  If correction_model is TIME_POLYSINUS, then values = Amplitude Omega Phase coeff0 coeff1 coeff2 ... coeffN. </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_COR_LOC_TIME_SEASONAL_DATATION_CORRECTION">
+		<xs:annotation>
+			<xs:documentation>Time, seasonal or datation correction</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="X" type="gipp:A_COR_LOC_TIME_SEASONAL_DATATION_BLOCK" minOccurs="0"/>
+			<xs:element name="Y" type="gipp:A_COR_LOC_TIME_SEASONAL_DATATION_BLOCK" minOccurs="0"/>
+			<xs:element name="Z" type="gipp:A_COR_LOC_TIME_SEASONAL_DATATION_BLOCK" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="correction_model" use="required">
+			<xs:annotation>
+				<xs:documentation>Model of correction</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="TIME_POLYNOMIAL"/>
+					<xs:enumeration value="TIME_POLYSINUS"/>
+					<xs:enumeration value="SEASONAL"/>
+					<xs:enumeration value="DATATION"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="A_COR_LOC_ORBITAL_BLOCK">
+		<xs:sequence>
+			<xs:element name="NB_DATE_TIME">
+				<xs:annotation>
+					<xs:documentation>Number of applicability dates time for the correction model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DATE_TIME_LIST">
+				<xs:annotation>
+					<xs:documentation>List of the NB_DATE_TIME applicable dates time</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DATE_TIME" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Time interval = [begin date time, end date time [</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BEGIN" type="date_time:A_TAI_DATE_TIME">
+										<xs:annotation>
+											<xs:documentation>Begin date time</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="END" type="date_time:A_TAI_DATE_TIME">
+										<xs:annotation>
+											<xs:documentation>End date time</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="PSO" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>Reference PSO</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="COR_MODEL_VALUES" type="misc:A_LIST_OF_DOUBLE">
+										<xs:annotation>
+											<xs:documentation>List of the model correction values. If correction_model is ORBITAL_POLYNOMIAL, then values = coeff0 coeff1 coeff2 ...  coeffN.  If correction_model is ORBITAL_SINUSOIDAL, then values = Amplitude Omega Phase.  If correction_model is ORBITAL_POLYSINUS, then values = Amplitude Omega Phase coeff0 coeff1 coeff2 ... coeffN. </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_COR_LOC_ORBITAL_CORRECTION">
+		<xs:annotation>
+			<xs:documentation>Orbital correction</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EQUINOX_JULIAN_DAY" type="date_time:A_JULIAN_DAY">
+				<xs:annotation>
+					<xs:documentation>Spring equinox Julian Day</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="X" type="gipp:A_COR_LOC_ORBITAL_BLOCK" minOccurs="0"/>
+			<xs:element name="Y" type="gipp:A_COR_LOC_ORBITAL_BLOCK" minOccurs="0"/>
+			<xs:element name="Z" type="gipp:A_COR_LOC_ORBITAL_BLOCK" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="correction_model" use="required">
+			<xs:annotation>
+				<xs:documentation>Model of correction</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="ORBITAL_SINUSOIDAL"/>
+					<xs:enumeration value="ORBITAL_POLYNOMIAL"/>
+					<xs:enumeration value="ORBITAL_POLYSINUS"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="A_COR_LOC_XYZ_TYPE">
+		<xs:sequence>
+			<xs:element name="DEGREE">
+				<xs:annotation>
+					<xs:documentation>Polynomial degree</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minExclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="NB_COR">
+				<xs:annotation>
+					<xs:documentation>Number of corrections</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minExclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="CORRECTION_LIST">
+				<xs:annotation>
+					<xs:documentation>Description of the NB_COR corrections</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CORRECTION" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:choice>
+									<xs:element name="TYPE_1" type="gipp:A_COR_LOC_TIME_SEASONAL_DATATION_CORRECTION">
+										<xs:annotation>
+											<xs:documentation>Time, seasonal or datation correction</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="TYPE_2" type="gipp:A_COR_LOC_ORBITAL_CORRECTION">
+										<xs:annotation>
+											<xs:documentation>Orbital correction</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:choice>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_COR_LOC_ROTATION_TRANSLATION_HOMOTHETY_TYPE">
+		<xs:sequence>
+			<xs:element name="Rotation" type="gipp:A_COR_LOC_XYZ_TYPE" minOccurs="0"/>
+			<xs:element name="Translation" type="gipp:A_COR_LOC_XYZ_TYPE" minOccurs="0"/>
+			<xs:element name="Homothety" type="gipp:A_COR_LOC_XYZ_TYPE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation> </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_QPEC_CORRELATION_PARAMETERS">
+		<xs:annotation>
+			<xs:appinfo/>
+			<xs:documentation>Set of parameters used for QPEC library</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EXPLORATION_NB_ROWS" type="xs:int"/>
+			<xs:element name="EXPLORATION_NB_COLS" type="xs:int"/>
+			<xs:element name="METHOD_TYPE">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="CORRELATION_MEASURE"/>
+						<xs:enumeration value="CORREL_LINEAIRE"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="CORREL_SIZE_NB_ROWS" type="xs:int"/>
+			<xs:element name="CORREL_SIZE_NB_COLS" type="xs:int"/>
+			<xs:element name="INITIAL_THRESHOLD" type="xs:double"/>
+			<xs:element name="FINAL_THRESHOLD" type="xs:double"/>
+			<xs:element name="MIN_FINAL_THRESHOLD" type="xs:double"/>
+			<xs:element name="CONTOUR_REDUCTION">
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SLOPE_THRESHOLD" type="xs:double"/>
+			<xs:element name="SIGMA_THRESHOLD" type="xs:double"/>
+			<xs:element name="CORREL_COMPUTING">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="CORRELATION_SPATIALE"/>
+						<xs:enumeration value="CORRELATION_FREQUENTIELLE"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="CORREL_METHOD">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="INTERPOLATION_DIRECTE_PIC"/>
+						<xs:enumeration value="RECHERCHE_ITERATIVE_PAR_REECHANT"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="INTERPOLATION_TYPE">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="INTERPOL_CNES"/>
+						<xs:enumeration value="INTERPOL_SHANNON"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SEARCH_TYPE">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="DICHOTOMIE"/>
+						<xs:enumeration value="POWELL_FLETCHER"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="IMAGE_TO_RESAMPLE">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="IMAGE_RECHERCHE"/>
+						<xs:enumeration value="NAPPE_TAUX_CORRELATION"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="LOC_PRECISION" type="xs:double"/>
+			<xs:element name="INTERPOL_TYPE">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="SPLINE"/>
+						<xs:enumeration value="BICUBIQUE_CNES"/>
+						<xs:enumeration value="BICUBIQUE_OPTIMISEE"/>
+						<xs:enumeration value="BILINEAIRE"/>
+						<xs:enumeration value="SINUS_CARDINAL"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SINC_HALF_NB_ROW" type="xs:int"/>
+			<xs:element name="SINC_HALF_NB_COL" type="xs:int"/>
+			<xs:element name="GAUSSIAN">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="PAS_DE_GAUSSIENNE"/>
+						<xs:enumeration value="GAUSSIENNE_NORMALISEE"/>
+						<xs:enumeration value="GAUSSIENNE_LIBRE"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SIGMA_COL" type="xs:double"/>
+			<xs:element name="SIGMA_ROW" type="xs:double"/>
+			<xs:element name="SPLINE_ORDER" type="xs:int"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_POLLUX_PARAMETERS">
+		<xs:annotation>
+			<xs:appinfo/>
+			<xs:documentation>Set of parameters used for POLLUX library.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TIE_POINTS_DENSITY">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="MIN_ON_IMAGE">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+									<xs:maxInclusive value="1.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MIN_BY_ZONE">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+									<xs:maxInclusive value="1.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MIN_SURFACE_RATIO" type="xs:double"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DEZOOM_PARAMETERS">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="LOCATION_PRECISION" type="xs:double"/>
+						<xs:element name="IMAGE_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ZONES_DESCRIPTION">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="MINIMAL_SCORE_FULL_MODEL">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MINIMAL_SURFACE_FULL_MODEL" type="xs:double"/>
+						<xs:element name="MINIMAL_SCORE_REDUCED_MODEL">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MINIMAL_SURFACE_REDUCED_MODEL">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="ZONES_LOCATION">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="ZONE_N" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ZONE_NUMBER" type="xs:int"/>
+												<xs:element name="COL_MIN">
+													<xs:simpleType>
+														<xs:restriction base="xs:double">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+												<xs:element name="COL_MAX">
+													<xs:simpleType>
+														<xs:restriction base="xs:double">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+												<xs:element name="LIG_MIN">
+													<xs:simpleType>
+														<xs:restriction base="xs:double">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+												<xs:element name="LIG_MAX">
+													<xs:simpleType>
+														<xs:restriction base="xs:double">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+												<xs:element name="PRIORITY">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:minInclusive value="-1"/>
+															<xs:maxInclusive value="10"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GRID_CREATION_PARAMETERS">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="MIN_NUMBER_POINTS_LEVEL1">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="4"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MIN_NUMBER_POINTS_LEVEL2">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="20"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MIN_NUMBER_POINTS_LEVEL3">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="20"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="REJECTED_POINTS_DENSITY">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="CORREL_REJECTED_POINTS_DENSITY">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MINIMAL_GRID_STEP">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="2"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MINIMAL_DENSIFICATION_GRID_LEVEL1">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minExclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MINIMAL_DENSIFICATION_GRID_LEVEL2">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minExclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MINIMAL_DENSIFICATION_GRID_LEVEL3">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minExclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CORRELATIONS_PARAMETERS">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="MASK_USE_FLAG">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+									<xs:maxInclusive value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="INTER_SCALE_STEP_LEVEL1">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:enumeration value="2"/>
+									<xs:enumeration value="4"/>
+									<xs:enumeration value="8"/>
+									<xs:enumeration value="16"/>
+									<xs:enumeration value="32"/>
+									<xs:enumeration value="64"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="INTER_SCALE_STEP_LEVEL2">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:enumeration value="2"/>
+									<xs:enumeration value="4"/>
+									<xs:enumeration value="8"/>
+									<xs:enumeration value="16"/>
+									<xs:enumeration value="32"/>
+									<xs:enumeration value="64"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="IMAGE_CORRELATION_LEVEL1" type="gipp:A_QPEC_CORRELATION_PARAMETERS"/>
+						<xs:element name="IMAGE_CORRELATION_LEVEL2" type="gipp:A_QPEC_CORRELATION_PARAMETERS"/>
+						<xs:element name="IMAGE_CORRELATION_LEVEL3" type="gipp:A_QPEC_CORRELATION_PARAMETERS"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="MODELISATION_PARAMETERS">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RESOLUTION_MIN_FOR_MODEL" type="xs:double"/>
+						<xs:element name="NB_CONTROL_POINTS_BY_ZONE">
+							<xs:annotation>
+								<xs:documentation>Number of control points by zone</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="CORNERS_STEP" type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Number of image subdivision for model variation test</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="MINIMAL_VARIATION_ON_CORNERS" type="xs:double">
+							<xs:annotation>
+								<xs:documentation>Minimal variation of model between 2 iterations in refinig phase in meters</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="MIN_DENSITY_BY_ZONE_LEVEL_1">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MIN_DENSITY_BY_ZONE_LEVEL_2">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MIN_DENSITY_BY_ZONE_LEVEL_3">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MAX_DENSITY_BY_ZONE_LEVEL_1">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MAX_DENSITY_BY_ZONE_LEVEL_2">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MAX_DENSITY_BY_ZONE_LEVEL_3">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="DENSIFYING_ITERATIONS_MAX">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="2"/>
+									<xs:maxInclusive value="100"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="K_FILTERING_LEVEL_1">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0"/>
+									<xs:maxInclusive value="100.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="K_FILTERING_LEVEL_2">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+									<xs:maxInclusive value="100.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="K_FILTERING_LEVEL_3">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0.0"/>
+									<xs:maxInclusive value="100.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="REFINING_ITERATIONS_MAX">
+							<xs:annotation>
+								<xs:documentation>Number of refining iterations</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="2"/>
+									<xs:maxInclusive value="100"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="REJECTED_POINTS_MAX_INCREASING">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0"/>
+									<xs:maxInclusive value="1.0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="REDUCED_ROW_POLYNOMIAL_NB_MON" type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Defines the monomes of the polynomial model.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="REDUCED_ROW_POLYNOMIAL">
+							<xs:annotation>
+								<xs:documentation>Defines the monomes of the polynomial model.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="COEFFICIENT" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ROW_DEGREE" type="xs:int"/>
+												<xs:element name="COL_DEGREE" type="xs:int"/>
+												<xs:element name="WEIGHT" type="xs:double"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="REDUCED_COL_POLYNOMIAL_NB_MON" type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Defines the monomes of the polynomial model.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="REDUCED_COL_POLYNOMIAL">
+							<xs:annotation>
+								<xs:documentation>Defines the monomes of the polynomial model.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="COEFFICIENT" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ROW_DEGREE" type="xs:int"/>
+												<xs:element name="COL_DEGREE" type="xs:int"/>
+												<xs:element name="WEIGHT" type="xs:double"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="FULL_ROW_POLYNOMIAL_NB_MON" type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Defines the monomes of the polynomial model.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="FULL_ROW_POLYNOMIAL">
+							<xs:annotation>
+								<xs:documentation>Defines the monomes of the polynomial model.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="COEFFICIENT" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ROW_DEGREE" type="xs:int"/>
+												<xs:element name="COL_DEGREE" type="xs:int"/>
+												<xs:element name="WEIGHT" type="xs:double"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="FULL_COL_POLYNOMIAL_NB_MON" type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Defines the monomes of the polynomial model.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="FULL_COL_POLYNOMIAL">
+							<xs:annotation>
+								<xs:documentation>Defines the monomes of the polynomial model.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="COEFFICIENT" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ROW_DEGREE" type="xs:int"/>
+												<xs:element name="COL_DEGREE" type="xs:int"/>
+												<xs:element name="WEIGHT" type="xs:double"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="MODEL_ERROR_WARNING">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MODEL_ERROR_MAX">
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MODELISE_WITH_FILTRED_POINTS">
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+									<xs:maxInclusive value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_RESTORATION_LEVELLING_VALUES">
+		<xs:sequence>
+			<xs:element name="XMIN">
+				<xs:annotation>
+					<xs:documentation>Minimum value </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="XMAX">
+				<xs:annotation>
+					<xs:documentation>Maximum value </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_ASTRID_F_CONVOLUTION_PARAMETERS">
+		<xs:annotation>
+			<xs:documentation>Set of parameters used for ASTRID library for FFT convolution</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BLOCK_SIZE_X">
+				<xs:annotation>
+					<xs:documentation>Block size in number of columns</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="BLOCK_SIZE_Y">
+				<xs:annotation>
+					<xs:documentation>Block size in number of lines</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="NORMALIZATION_CONST">
+				<xs:annotation>
+					<xs:documentation>Energy normalisation constant</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_ASTRID_W_DENOISING_PARAMETERS">
+		<xs:annotation>
+			<xs:documentation>Set of parameters used for ASTRID library for denoising</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SEGMENT_SIZE">
+				<xs:annotation>
+					<xs:documentation>Segment size</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="L2_NORM_AMPLIFICATION_COEFFICIENT" type="xs:double"/>
+			<xs:element name="SEGMENT_OVERLAP_SIZE">
+				<xs:annotation>
+					<xs:documentation>Overlap size (in number of lines and number of columns) between 2 neighbour segments. This size must be smaller than SEGMENT_SIZE.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="OBJECTIVE_NOISE_SIGMA">
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="RADIOMETRIC_MAXIMAL_VALUE">
+				<xs:annotation>
+					<xs:documentation>Radiometric maximal value for instrumental noise.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MAXIMAL_DENOISING_THRESHOLD">
+				<xs:annotation>
+					<xs:documentation>Maximal denoising threshold for learning</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:double">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_DISPLAY_GEOMETRIC_MODEL">
+		<xs:annotation>
+			<xs:documentation>The QL display geometric model </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="VIEWING_DIRECTIONS" type="orbital:A_VIEWING_DIRECTIONS_UPPER_CASE">
+				<xs:annotation>
+					<xs:documentation>Particular viewing directions</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CONNECT_COL_LIST">
+				<xs:annotation>
+					<xs:documentation>The 12 detectors are assembled  and resampled in a monolithic quicklook image. This block gives, in the quicklook geometry,  the connection columns number (last column) for each detectors (the first 11 detectors for compressed mode and 4 for uncompressed mode).</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CONNECT_COL" minOccurs="11" maxOccurs="11">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:int">
+										<xs:attribute name="detector_id" type="image:A_DETECTOR_NUMBER" use="required"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="detector_id_connect_col_unique">
+					<xs:selector xpath="./CONNECT_COL"/>
+					<xs:field xpath="@detector_id"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_DENOISING_DATA">
+		<xs:sequence>
+			<xs:element name="BAND_ID" type="image:A_BAND_NUMBER">
+				<xs:annotation>
+					<xs:documentation>Band identifier</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NOISE_IMAGE_SIGMA" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Standard deviation of the noise image before deconvolution</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DECOMPOSITION_DEPTH">
+				<xs:annotation>
+					<xs:documentation>Number of levels for the threshold to use in deconvolution. </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="DECOMPOSITION_LEVEL">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="INFO" maxOccurs="9">
+							<xs:annotation>
+								<xs:appinfo>
+									<gs2:DOC>
+										<gs2:DEFINITION>Tableau correspondant pour le niveau courant au seuil à appliquer dans le cadre de la déconvolution (NB_OF_ROWS*NB_OF_COLS).
+Remarque:
+NUMBER_OF_ROWS est compris entre 1 et L, L étant le Niveai_final,
+NUMBER_OF_COLS est compris entre 1 et C, C étant le Niveau_final.</gs2:DEFINITION>
+									</gs2:DOC>
+								</xs:appinfo>
+								<xs:documentation>Array which describes information</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="gipp:AN_ARRAY_OF_DOUBLE">
+										<xs:attribute name="LEVEL_NUMBER" use="required">
+											<xs:annotation>
+												<xs:documentation>Decomposition level associated to INFO in the case of deconvolution.</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:short">
+													<xs:minInclusive value="1"/>
+													<xs:maxInclusive value="9"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:attribute>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="level_number_unique">
+					<xs:selector xpath="./INFO"/>
+					<xs:field xpath="@LEVEL_NUMBER"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_ANA_TM_IMAGE_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SP_MIN_SIZE">
+				<xs:annotation>
+					<xs:documentation>Source packet minimal size</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MAX_ERROR_BY_SP" type="misc:A_PERCENTAGE">
+				<xs:annotation>
+					<xs:documentation>Maximal acceptable percentage of error by source packet</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MAX_ERROR_BY_DATASTRIP" type="misc:A_PERCENTAGE">
+				<xs:annotation>
+					<xs:documentation>Maximal acceptable percentage of error by datastrip</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="VCU_ACTIVE">
+				<xs:annotation>
+					<xs:documentation>Indicates the active VCU</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="NOMINAL"/>
+						<xs:enumeration value="REDUNDANT"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_ANA_TM_IMAGE_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="SP_MIN_SIZE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Source packet minimal size</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="MAX_ERROR_BY_SP" type="misc:A_PERCENTAGE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Maximal acceptable percentage of error by source packet</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MAX_ERROR_BY_DATASTRIP" type="misc:A_PERCENTAGE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Maximal acceptable percentage of error by datastrip</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="VCU_ACTIVE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicates the active VCU</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="NOMINAL"/>
+						<xs:enumeration value="REDUNDANT"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_ANA_TM_SAD_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ORBIT_OFFSET">
+				<xs:annotation>
+					<xs:documentation>The number in the absolute orbit counter of a first orbit in the cycle</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="TOTAL_ORBITS">
+				<xs:annotation>
+					<xs:documentation>Total number of orbits in the 10-day cycle</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_ANA_TM_SAD_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="ORBIT_OFFSET" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The number in the absolute orbit counter of a first orbit in the cycle</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="TOTAL_ORBITS" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total number of orbits in the 10-day cycle</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_DATATION_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="THEORETICAL_LINE_PERIOD" type="misc:A_DOUBLE_WITH_MS_UNIT_ATTR">
+				<xs:annotation>
+					<xs:documentation>The theoretical line period for the acquisition of line of 10 m full-resolution image data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TIME_SHIFT_LIST">
+				<xs:annotation>
+					<xs:documentation>The time stamp is shifted taking into account a constant signed bias (for each spectral band) corresponding to the uncertainty of the exact time stamp of the first line of the scene (beginning of the line or center of the line, depending on the resolution).</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TIME_SHIFT" maxOccurs="13">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="misc:A_DOUBLE_WITH_MS_UNIT_ATTR">
+										<xs:attribute name="band_id" type="image:A_BAND_NUMBER" use="required"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="band_id_time_shift_unique">
+					<xs:selector xpath="./TIME_SHIFT"/>
+					<xs:field xpath="@band_id"/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="GPS_TIME_TAI" type="misc:A_INT_WITH_S_UNIT_ATTR">
+				<xs:annotation>
+					<xs:documentation>GPS_time – TAI = in number of seconds</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LINEAR_REGRESSION_PARAMETERS">
+				<xs:annotation>
+					<xs:documentation>Parameters for the InitLoc Prod module "DATATION MODELS COMPUTED BY LINEAR REGRESSION"</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DATATION_DELTA_MAX_THRESHOLD" type="misc:A_DOUBLE_WITH_MS_UNIT_ATTR">
+							<xs:annotation>
+								<xs:documentation>The maximum tolerated Delta between Te and the theoretical line period (in ms)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="NSIG_THRESHOLD" type="xs:float">
+							<xs:annotation>
+								<xs:documentation>The filtering threshold (least square)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="DATATION_RESIDUAL_THRESHOLD" type="xs:double">
+							<xs:annotation>
+								<xs:documentation>The maximum tolerated quadratic error </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="EXOGENEOUS_MODEL_PARAMETERS">
+				<xs:annotation>
+					<xs:documentation>Parameters for the InitLoc Prod module "DATATION EXOGENEOUS MODEL"</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND_PARAMETERS" minOccurs="13" maxOccurs="13">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_BAND_NUMBER"/>
+									<xs:element name="DETECTOR_PARAMETERS" minOccurs="12" maxOccurs="12">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="DETECTOR_ID" type="image:A_DETECTOR_NUMBER"/>
+												<xs:element name="DELTA_ON_T0">
+													<xs:annotation>
+														<xs:documentation>Delta to add on original T0</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="REFINED_PE">
+							<xs:annotation>
+								<xs:documentation>Recomputed line period to superseed previous one.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_DATATION_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="THEORETICAL_LINE_PERIOD" type="misc:A_DOUBLE_WITH_MS_UNIT_ATTR" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The theoretical line period for the acquisition of line of 10 m full-resolution image data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TIME_SHIFT_LIST" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The time stamp is shifted taking into account a constant signed bias (for each spectral band) corresponding to the uncertainty of the exact time stamp of the first line of the scene (beginning of the line or center of the line, depending on the resolution).</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TIME_SHIFT" maxOccurs="13">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="misc:A_DOUBLE_WITH_MS_UNIT_ATTR">
+										<xs:attribute name="band_id" type="image:A_BAND_NUMBER" use="required"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="band_id_time_shift_modified_unique">
+					<xs:selector xpath="./TIME_SHIFT"/>
+					<xs:field xpath="@band_id"/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="GPS_TIME_TAI" type="misc:A_INT_WITH_S_UNIT_ATTR" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>GPS_time – TAI = in number of seconds</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LINEAR_REGRESSION_PARAMETERS" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Parameters for the InitLoc Prod module "DATATION MODELS COMPUTED BY LINEAR REGRESSION"</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DATATION_DELTA_MAX_THRESHOLD" type="misc:A_DOUBLE_WITH_MS_UNIT_ATTR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The maximum tolerated Delta between Te and the theoretical line period (in ms)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="NSIG_THRESHOLD" type="xs:float" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The filtering threshold (least square)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="DATATION_RESIDUAL_THRESHOLD" type="xs:double" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The maximum tolerated quadratic error </xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="EXOGENEOUS_MODEL_PARAMETERS" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Parameters for the InitLoc Prod module "DATATION EXOGENEOUS MODEL"</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND_PARAMETERS" minOccurs="13" maxOccurs="13">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_BAND_NUMBER"/>
+									<xs:element name="DETECTOR_PARAMETERS" minOccurs="12" maxOccurs="12">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="DETECTOR_ID" type="image:A_DETECTOR_NUMBER"/>
+												<xs:element name="DELTA_ON_T0">
+													<xs:annotation>
+														<xs:documentation>Delta to add on original T0</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="REFINED_PE">
+							<xs:annotation>
+								<xs:documentation>Recomputed line period to superseed previous one.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_LR_EXTRACTION_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BAND_LIST">
+				<xs:annotation>
+					<xs:documentation>List of the band to process</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND_ID" type="image:A_BAND_NUMBER" minOccurs="5" maxOccurs="5"/>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="band_id_unique">
+					<xs:selector xpath="BAND_ID"/>
+					<xs:field xpath="."/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="MODE">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="COMPRESSED">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER_INTERNAL">
+										<xs:annotation>
+											<xs:documentation>Resampling filter in compressed mode</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RESAMPLING_SIDE_MANAGEMENT" type="gipp:A_RESAMPLING_SIDE_MANAGEMENT"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="UNCOMPRESSED">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER_INTERNAL">
+										<xs:annotation>
+											<xs:documentation>Resampling filter in uncompressed mode</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RESAMPLING_SIDE_MANAGEMENT" type="gipp:A_RESAMPLING_SIDE_MANAGEMENT"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_LR_EXTRACTION_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="BAND_LIST" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>List of the band to process</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND_ID" type="image:A_BAND_NUMBER" minOccurs="5" maxOccurs="5"/>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="band_id_modified_unique">
+					<xs:selector xpath="BAND_ID"/>
+					<xs:field xpath="."/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="MODE" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="COMPRESSED">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER_INTERNAL">
+										<xs:annotation>
+											<xs:documentation>Resampling filter in compressed mode</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RESAMPLING_SIDE_MANAGEMENT" type="gipp:A_RESAMPLING_SIDE_MANAGEMENT"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="UNCOMPRESSED">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER_INTERNAL">
+										<xs:annotation>
+											<xs:documentation>Resampling filter in uncompressed mode</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RESAMPLING_SIDE_MANAGEMENT" type="gipp:A_RESAMPLING_SIDE_MANAGEMENT"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_INIT_LOC_INV_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="QL_RESOLUTION" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+				<xs:annotation>
+					<xs:documentation>The quicklook resolution </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="QL_BAND_LIST">
+				<xs:annotation>
+					<xs:documentation>The list of QL bands </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="QL_BAND" type="image:A_BAND_NUMBER" minOccurs="5" maxOccurs="5"/>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="ql_band_id_unique">
+					<xs:selector xpath="QL_BAND"/>
+					<xs:field xpath="."/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="DISPLAY_GEOMETRIC_MODEL" type="gipp:A_DISPLAY_GEOMETRIC_MODEL">
+				<xs:annotation>
+					<xs:documentation>The QL display geometric model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="QL_HISTOGRAM_BIN_SIZE">
+				<xs:annotation>
+					<xs:documentation>The quicklook histogram bin size</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="RESAMPLING">
+				<xs:annotation>
+					<xs:documentation>Resampling parameters</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="GRID_STEP" type="xs:double">
+							<xs:annotation>
+								<xs:documentation>Resampling grid step (between QL geometry and display geometry)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER"/>
+						<xs:element name="RESAMPLING_SIDE_MANAGEMENT" type="gipp:A_RESAMPLING_SIDE_MANAGEMENT"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AUXILIARY_DATA">
+				<xs:annotation>
+					<xs:documentation>Parameters for the auxiliary data computation</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FOOTPRINT_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+							<xs:annotation>
+								<xs:documentation>The step (in meters) used to define the geolocation on segment footprint (in meters)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="AUX_DATA_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+							<xs:annotation>
+								<xs:documentation>The step (in meters) used to define the lines to compute the geometrical auxiliary data</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_INIT_LOC_INV_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="QL_RESOLUTION" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The quicklook resolution </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="QL_BAND_LIST" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The list of QL bands </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="QL_BAND" type="image:A_BAND_NUMBER" minOccurs="5" maxOccurs="5"/>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="ql_band_id_modified_unique">
+					<xs:selector xpath="QL_BAND"/>
+					<xs:field xpath="."/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="DISPLAY_GEOMETRIC_MODEL" type="gipp:A_DISPLAY_GEOMETRIC_MODEL" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The QL display geometric model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="QL_HISTOGRAM_BIN_SIZE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The quicklook histogram bin size</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="RESAMPLING" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Resampling parameters</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="GRID_STEP" type="xs:double" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Resampling grid step (between QL geometry and display geometry)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER" minOccurs="0"/>
+						<xs:element name="RESAMPLING_SIDE_MANAGEMENT" type="gipp:A_RESAMPLING_SIDE_MANAGEMENT" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AUXILIARY_DATA" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Parameters for the auxiliary data computation</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FOOTPRINT_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The step (in meters) used to define the geolocation on segment footprint (in meters)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="AUX_DATA_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The step (in meters) used to define the lines to compute the geometrical auxiliary data</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_CLOUD_INV_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="REFL_BLUE_MAX" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>The value of the threshold for the blue band B2</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="REFL_B10_MAX" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>The value of the threshold for B10</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="REFL_SWIR_MAX" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>The value of the threshold for the SWIR band B11</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CLOUD_FILTERING" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>true = erosion+dilation; false = no filtering</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SIZE_EROSION">
+				<xs:annotation>
+					<xs:documentation>The size of the neighbourhood for the erosion (this value is used if CLOUD_FILTERING=true) </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SIZE_DILATATION">
+				<xs:annotation>
+					<xs:documentation>The size of the neighbourhood for the dilatation (this value is used if CLOUD_FILTERING=true) </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_CLOUD_INV_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="REFL_BLUE_MAX" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The value of the threshold for the blue band B2</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="REFL_B10_MAX" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The value of the threshold for B10</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="REFL_SWIR_MAX" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The value of the threshold for the SWIR band B11</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CLOUD_FILTERING" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>true = erosion+dilation; false = no filtering</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SIZE_EROSION" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The size of the neighbourhood for the erosion (this value is used if CLOUD_FILTERING=true) </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SIZE_DILATATION" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The size of the neighbourhood for the dilatation (this value is used if CLOUD_FILTERING=true) </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_INIT_LOC_PROD_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SEGMENT_CUTTING">
+				<xs:annotation>
+					<xs:documentation>Parameters for cutting modules</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="REFERENCE_BAND" type="image:A_BAND_NUMBER"/>
+						<xs:element name="REFERENCE_DETECTOR" type="image:A_DETECTOR_NUMBER"/>
+						<xs:element name="BAND_LIST">
+							<xs:annotation>
+								<xs:documentation>For each band, each detector, number of lines to cut at the beginning and the end of the segment</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND" maxOccurs="13">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="DETECTOR_LIST">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="DETECTOR" maxOccurs="12">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="BEGIN_NB_LINES_TO_CUT">
+																			<xs:annotation>
+																				<xs:documentation>Number of lines to cut at the beginning of the segment</xs:documentation>
+																			</xs:annotation>
+																			<xs:simpleType>
+																				<xs:restriction base="xs:int">
+																					<xs:minInclusive value="0"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:element>
+																		<xs:element name="END_NB_LINES_TO_CUT">
+																			<xs:annotation>
+																				<xs:documentation>Number of lines to cut at the end of the segment</xs:documentation>
+																			</xs:annotation>
+																			<xs:simpleType>
+																				<xs:restriction base="xs:int">
+																					<xs:minInclusive value="0"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:element>
+																	</xs:sequence>
+																	<xs:attribute name="detector_id" type="image:A_DETECTOR_NUMBER" use="required">
+																		<xs:annotation>
+																			<xs:documentation>detector identifier</xs:documentation>
+																		</xs:annotation>
+																	</xs:attribute>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+													<xs:unique name="detector_id_unique">
+														<xs:selector xpath="./DETECTOR"/>
+														<xs:field xpath="@detector_id"/>
+													</xs:unique>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="band_id" type="image:A_BAND_NUMBER" use="required">
+												<xs:annotation>
+													<xs:documentation>Identifier of the band</xs:documentation>
+												</xs:annotation>
+											</xs:attribute>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+							<xs:unique name="band_id_segment_cutting_unique">
+								<xs:selector xpath="./BAND"/>
+								<xs:field xpath="@band_id"/>
+							</xs:unique>
+						</xs:element>
+						<xs:element name="INTEREST_AREA_MARGIN" type="misc:A_POSITIVE_INT_WITH_M_UNIT_ATTR"/>
+						<xs:element name="COMPRESSION_MARGIN" type="misc:A_POSITIVE_INT_WITH_PIXEL_UNIT_ATTR"/>
+						<xs:element name="RADIOMETRIC_MARGIN" type="misc:A_POSITIVE_INT_WITH_PIXEL_UNIT_ATTR">
+							<xs:annotation>
+								<xs:documentation>This margin includes all the margins necessary for the radiometric processing</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CROSSTALK_FLAG" type="xs:boolean">
+							<xs:annotation>
+								<xs:documentation>Flag to indicate if the crosstalk margins are computed by InitLoc</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AUXILIARY_DATA">
+				<xs:annotation>
+					<xs:documentation>Parameters for the auxiliary data computation </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FOOTPRINT_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+							<xs:annotation>
+								<xs:documentation>The step (in meters) used to define the geolocation on segment footprint (in meters)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="AUX_DATA_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+							<xs:annotation>
+								<xs:documentation>The step (in meters) used to define the lines to compute the geometrical auxiliary data</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="H_CLOUD" type="xs:float">
+							<xs:annotation>
+								<xs:documentation>mean altitude of common clouds.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DATATION_SCENARIO">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="NOMINAL"/>
+						<xs:enumeration value="EXOGENEOUS"/>
+						<xs:enumeration value="LINEAR_REGRESSION"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AN_INIT_LOC_PROD_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="SEGMENT_CUTTING" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Parameters for cutting modules</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="REFERENCE_BAND" type="image:A_BAND_NUMBER" minOccurs="0"/>
+						<xs:element name="REFERENCE_DETECTOR" type="image:A_DETECTOR_NUMBER" minOccurs="0"/>
+						<xs:element name="BAND_LIST" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>For each band, each detector, number of lines to cut at the beginning and the end of the segment</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND" maxOccurs="13">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="DETECTOR_LIST">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="DETECTOR" maxOccurs="12">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="BEGIN_NB_LINES_TO_CUT">
+																			<xs:annotation>
+																				<xs:documentation>Number of lines to cut at the beginning of the segment</xs:documentation>
+																			</xs:annotation>
+																			<xs:simpleType>
+																				<xs:restriction base="xs:int">
+																					<xs:minInclusive value="0"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:element>
+																		<xs:element name="END_NB_LINES_TO_CUT">
+																			<xs:annotation>
+																				<xs:documentation>Number of lines to cut at the end of the segment</xs:documentation>
+																			</xs:annotation>
+																			<xs:simpleType>
+																				<xs:restriction base="xs:int">
+																					<xs:minInclusive value="0"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:element>
+																	</xs:sequence>
+																	<xs:attribute name="detector_id" type="image:A_DETECTOR_NUMBER" use="required">
+																		<xs:annotation>
+																			<xs:documentation>detector identifier</xs:documentation>
+																		</xs:annotation>
+																	</xs:attribute>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+													</xs:complexType>
+													<xs:unique name="detector_id_init_loc_prod_modified_unique">
+														<xs:selector xpath="./DETECTOR"/>
+														<xs:field xpath="@detector_id"/>
+													</xs:unique>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="band_id" type="image:A_BAND_NUMBER" use="required">
+												<xs:annotation>
+													<xs:documentation>Identifier of the band</xs:documentation>
+												</xs:annotation>
+											</xs:attribute>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+							<xs:unique name="band_id_init_loc_prod_modified_unique">
+								<xs:selector xpath="./BAND"/>
+								<xs:field xpath="@band_id"/>
+							</xs:unique>
+						</xs:element>
+						<xs:element name="INTEREST_AREA_MARGIN" type="misc:A_POSITIVE_INT_WITH_M_UNIT_ATTR" minOccurs="0"/>
+						<xs:element name="COMPRESSION_MARGIN" type="misc:A_POSITIVE_INT_WITH_PIXEL_UNIT_ATTR" minOccurs="0"/>
+						<xs:element name="RADIOMETRIC_MARGIN" type="misc:A_POSITIVE_INT_WITH_PIXEL_UNIT_ATTR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>This margin includes all the margins necessary for the radiometric processing</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CROSSTALK_FLAG" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Flag to indicate if the crosstalk margins are computed by InitLoc</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AUXILIARY_DATA" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Parameters for the auxiliary data computation </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FOOTPRINT_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The step (in meters) used to define the geolocation on segment footprint (in meters)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="AUX_DATA_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>The step (in meters) used to define the lines to compute the geometrical auxiliary data</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="H_CLOUD" type="xs:float" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>mean altitude of common clouds.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DATATION_SCENARIO" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="NOMINAL"/>
+						<xs:enumeration value="EXOGENEOUS"/>
+						<xs:enumeration value="LINEAR_REGRESSION"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_RADIO_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NOMINAL_SCENARIO">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="EQUALIZATION">
+							<xs:annotation>
+								<xs:documentation>On ground equalization of the image using an optimized polynomed correction (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_EQUALIZATION" maxOccurs="13">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="BAND_ID" type="image:A_BAND_NUMBER"/>
+												<xs:element name="EQUALIZATION_FLAG" type="xs:boolean">
+													<xs:annotation>
+														<xs:documentation>Equalization flag for a given band</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="OFFSET" type="xs:boolean">
+													<xs:annotation>
+														<xs:documentation>Offset correction (to process if EQUALIZATION_FLAG=true)</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="DARK_SIGNAL_NON_UNIFORMITY" type="xs:boolean">
+													<xs:annotation>
+														<xs:documentation>Dark signal non uniformity correction  (to process if EQUALIZATION_FLAG=true)</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="SWIR_REARRANGEMENT" type="xs:boolean">
+							<xs:annotation>
+								<xs:documentation>SWIR pixels re-arrangement (only for level 1A production). The SWIR pixels re-arrangement is applied by default when a level 1B production is required.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CROSSTALK_OPTICAL" type="xs:boolean">
+							<xs:annotation>
+								<xs:documentation>Optical crosstalk correction (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CROSSTALK_ELECTRONIC" type="xs:boolean">
+							<xs:annotation>
+								<xs:documentation>Electronic crosstalk correction (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="REMOVE_BLIND_PIXELS" type="xs:boolean">
+							<xs:annotation>
+								<xs:documentation>Blind pixel remonving</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="DEFECTIVE_PIXELS" type="image:A_PIXEL_MANAGEMENT">
+							<xs:annotation>
+								<xs:documentation>Defective pixels processing</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="RESTORATION" type="xs:boolean">
+							<xs:annotation>
+								<xs:documentation>Restoration and levelling of the product to 12 bits  (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="BINNING" type="xs:boolean">
+							<xs:annotation>
+								<xs:documentation>Binning for 60m bands (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="PIXELS_NO_DATA" type="image:A_PIXEL_MANAGEMENT">
+							<xs:annotation>
+								<xs:documentation>Management of NO_DATA pixels</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="SATURATED_PIXELS">
+							<xs:annotation>
+								<xs:documentation>Management of saturated pixels</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="no"/>
+									<xs:enumeration value="L1A"/>
+									<xs:enumeration value="L1B"/>
+									<xs:enumeration value="both"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RESTORATION_PARAMETERS_LIST">
+				<xs:annotation>
+					<xs:documentation>Parameters for the restoration processing (for each band)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RESTORATION_PARAMETERS" maxOccurs="13">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESTORATION_SCENARIO" type="image:A_RESTORATION_SCENARIO">
+										<xs:annotation>
+											<xs:documentation>Type of restoration processing</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="LEVELLING_VALUES" type="gipp:A_RESTORATION_LEVELLING_VALUES">
+										<xs:annotation>
+											<xs:documentation>Parameters for levelling : minimum and maximum value</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="F_CONVOLUTION_PARAMETERS" type="gipp:AN_ASTRID_F_CONVOLUTION_PARAMETERS">
+										<xs:annotation>
+											<xs:documentation>Isolated parameters for convolution</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="W_DENOISING_PARAMETERS" type="gipp:AN_ASTRID_W_DENOISING_PARAMETERS">
+										<xs:annotation>
+											<xs:documentation>Isolated parameters for denoising</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="band_id" type="image:A_BAND_NUMBER" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="band_id_restoration_unique">
+					<xs:selector xpath="./RESTORATION_PARAMETERS"/>
+					<xs:field xpath="@band_id"/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="PIXELS_NO_DATA_PARAMETERS">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND" maxOccurs="13">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="INTERPOLATION_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+										<xs:annotation>
+											<xs:documentation>Interpolation filter used for the management of NO_DATA pixels</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="MISSING_LINES_THRESHOLD">
+										<xs:annotation>
+											<xs:documentation>Threshold for the maximum number of missing joined lines. Beyond this threshold no correction processing is applied.</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:int">
+												<xs:minInclusive value="0"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="band_id" type="image:A_BAND_NUMBER" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SPATIAL_MARGIN">
+				<xs:annotation>
+					<xs:documentation>Spatial margin defined per band to take care of the deconvolution effect</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND" maxOccurs="13">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="MARGIN">
+										<xs:simpleType>
+											<xs:restriction base="xs:int">
+												<xs:minInclusive value="0"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="band_id" type="image:A_BAND_NUMBER" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_RADIO_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="NOMINAL_SCENARIO" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="EQUALIZATION" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>On ground equalization of the image using an optimized polynomed correction (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_EQUALIZATION" maxOccurs="13">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="BAND_ID" type="image:A_BAND_NUMBER"/>
+												<xs:element name="EQUALIZATION_FLAG" type="xs:boolean">
+													<xs:annotation>
+														<xs:documentation>Equalization flag for a given band</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="OFFSET" type="xs:boolean">
+													<xs:annotation>
+														<xs:documentation>Offset correction (to process if EQUALIZATION_FLAG=true)</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="DARK_SIGNAL_NON_UNIFORMITY" type="xs:boolean">
+													<xs:annotation>
+														<xs:documentation>Dark signal non uniformity correction  (to process if EQUALIZATION_FLAG=true)</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="SWIR_REARRANGEMENT" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>SWIR pixels re-arrangement (only for level 1A production). The SWIR pixels re-arrangement is applied by default when a level 1B production is required.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CROSSTALK_OPTICAL" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Optical crosstalk correction (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CROSSTALK_ELECTRONIC" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Electronic crosstalk correction (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="REMOVE_BLIND_PIXELS" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Blind pixel remonving</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="DEFECTIVE_PIXELS" type="image:A_PIXEL_MANAGEMENT" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Defective pixels processing</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="RESTORATION" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Restoration and levelling of the product to 12 bits  (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="BINNING" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Binning for 60m bands (only for level 1B production)</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="PIXELS_NO_DATA" type="image:A_PIXEL_MANAGEMENT" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Management of NO_DATA pixels</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="SATURATED_PIXELS" type="xs:boolean" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Management of saturated pixels</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RESTORATION_PARAMETERS_LIST" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Parameters for the restoration processing (for each band)</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RESTORATION_PARAMETERS" maxOccurs="13">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESTORATION_SCENARIO" type="image:A_RESTORATION_SCENARIO" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Type of restoration processing</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="LEVELLING_VALUES" type="gipp:A_RESTORATION_LEVELLING_VALUES" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Parameters for levelling : minimum and maximum value</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="F_CONVOLUTION_PARAMETERS" type="gipp:AN_ASTRID_F_CONVOLUTION_PARAMETERS" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Isolated parameters for convolution</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="W_DENOISING_PARAMETERS" type="gipp:AN_ASTRID_W_DENOISING_PARAMETERS" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Isolated parameters for denoising</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="band_id" type="image:A_BAND_NUMBER" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="band_id_restoration_modified_unique">
+					<xs:selector xpath="./RESTORATION_PARAMETERS"/>
+					<xs:field xpath="@band_id"/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="PIXELS_NO_DATA_PARAMETERS" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="INTERPOLATION_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Interpolation filter used for the management of NO_DATA pixels</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="MISSING_LINES_THRESHOLD" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Threshold for the maximum number of missing joined lines. Beyond this threshold no correction processing is applied.</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="MARGIN" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Spatial margin to take care of the deconvolution effect</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_GEO_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="REFINING_TYPE">
+				<xs:annotation>
+					<xs:documentation>The type of refining</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="image:A_REFINING_TYPE"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="GEOMETRIC_MODEL_REFINING">
+				<xs:annotation>
+					<xs:documentation>Refining parameters if REFINING_TYPE= REFINING or REFINING_REGISTRATION </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="REFERENCE_BAND" type="image:A_BAND_NUMBER">
+							<xs:annotation>
+								<xs:documentation>Default reference channel</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="VNIR_SWIR_REGISTRATION">
+				<xs:annotation>
+					<xs:documentation>Refining parameters if REFINING_TYPE= REGISTRATION or REFINING_REGISTRATION </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SWIR_BAND" type="image:A_SWIR_BAND_NUMBER"/>
+						<xs:element name="VNIR_BAND" type="image:A_VNIR_BAND_NUMBER"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="REGISTRATION_PERFORMANCE">
+				<xs:annotation>
+					<xs:documentation>Multi-spectral registration performance</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND_10M" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+							<xs:annotation>
+								<xs:documentation>Value for 10m bands</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="BAND_20M" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+							<xs:annotation>
+								<xs:documentation>Value for 20m bands</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="BAND_60M" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+							<xs:annotation>
+								<xs:documentation>Value for 60m bands</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GEOLOCATION_PERFORMANCE">
+				<xs:annotation>
+					<xs:documentation>Used for Geolocation performance indicator which is the quadratic sum of the reference geolocation (GIPP) and of the mean residual distance in meters</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="REFERENCE_GEOLOCATION" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FOOTPRINT_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+				<xs:annotation>
+					<xs:documentation>The step (in meters) used to define the geolocation on segment footprint (in meters) (footprint discretization step)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GCP_DISTANCE_THRESHOLD" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>During  the  spatiotriangulation  process,  a  mean  remaining 
+distance  shall  be  computed  between  the  GCP  geolocation  and  the  location  on  ground  of 
+these  points,  computed  by  the  refined  model.  If  this  remaining  distance  is  higher  than  gcp_distance_threshold  the refining shall fail and an exception is raised </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SIGMA_PARAMETERS">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RESAMPLING_GRIDS">
+							<xs:annotation>
+								<xs:documentation>Parameters for all the resampling grids computation (intermediate and final grids).</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="GRID_STEP_FACTOR_DEM" type="xs:positiveInteger">
+										<xs:annotation>
+											<xs:documentation>grid_step = dem_step / factor</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="GRID_MAX_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+										<xs:annotation>
+											<xs:documentation>maximal grid step in meters</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="LOW_RESOLUTION_FACTOR" type="xs:positiveInteger">
+										<xs:annotation>
+											<xs:documentation>grid_step_low_resolution = grid_step * LOW_RESOLUTION_FACTOR</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="TILES_SIZE">
+										<xs:annotation>
+											<xs:documentation>Size of the SIGMA tiles in resampling processing (it is a recommendation: SIGMA can readjust these sizes). These sizes are defined in the initial geometry.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="NB_OF_COLS">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:minInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+												<xs:element name="NB_OF_ROWS">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:minInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="RESAMPLING">
+							<xs:annotation>
+								<xs:documentation>Default parameters for SIGMA resampling processing.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+										<xs:annotation>
+											<xs:documentation>Resampling filter description</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RESAMPLING_SIDE_MANAGEMENT">
+										<xs:annotation>
+											<xs:documentation>Resampling side management</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="EXACT"/>
+												<xs:enumeration value="MIRROR"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="GEOMETRIC_MODEL_REFINING">
+							<xs:annotation>
+								<xs:documentation>Parameters for geometric model refining</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+										<xs:annotation>
+											<xs:documentation>Interpolation filter for resampling in the common geometry</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="CORRELATION_PARAMETERS" type="gipp:A_POLLUX_PARAMETERS">
+										<xs:annotation>
+											<xs:documentation>Correlation and dezoom parameters (for automatic tie point selection using ‘POLLUX’ library)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="SPATIO_PARAMS">
+										<xs:annotation>
+											<xs:documentation>Precisions for spatiotriangulation algorithm</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="PRECISION_IMAGE" type="xs:double">
+													<xs:annotation>
+														<xs:documentation>Image precision in pixels in the full resolution</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="PRECISION_PLANI" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+													<xs:annotation>
+														<xs:documentation>Ground precisions of the GCP in meters</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="PRECISION_ALTI" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+													<xs:annotation>
+														<xs:documentation>Z precision in meters</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="REGISTRATION">
+							<xs:annotation>
+								<xs:documentation>Parameters for registration</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+										<xs:annotation>
+											<xs:documentation>Interpolation filter for resampling in the common geometry</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="CORRELATION_PARAMETERS" type="gipp:A_POLLUX_PARAMETERS">
+										<xs:annotation>
+											<xs:documentation>Correlation and dezoom parameters (for automatic tie point selection using ‘POLLUX’ library)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="SPATIO_PARAMS">
+										<xs:annotation>
+											<xs:documentation>Precisions for spatiotriangulation algorithm</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="PRECISION_IMAGE" type="xs:double">
+													<xs:annotation>
+														<xs:documentation>Image precision in pixels in full resolution</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="PRECISION_PLANI" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+													<xs:annotation>
+														<xs:documentation>Ground precisions of the GCP in meters</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="PRECISION_ALTI" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+													<xs:annotation>
+														<xs:documentation>Z precision in meters</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_GEO_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="REFINING_TYPE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The type of refining</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="image:A_REFINING_TYPE"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="GEOMETRIC_MODEL_REFINING" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Refining parameters if REFINING_TYPE= REFINING or REFINING_REGISTRATION </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="REFERENCE_BAND" type="image:A_BAND_NUMBER">
+							<xs:annotation>
+								<xs:documentation>Default reference channel</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="VNIR_SWIR_REGISTRATION" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Refining parameters if REFINING_TYPE= REGISTRATION or REFINING_REGISTRATION </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="SWIR_BAND" type="image:A_SWIR_BAND_NUMBER" minOccurs="0"/>
+						<xs:element name="VNIR_BAND" type="image:A_VNIR_BAND_NUMBER" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="REGISTRATION_PERFORMANCE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Multi-spectral registration performance</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND_10M" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Value for 10m bands</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="BAND_20M" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Value for 20m bands</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="BAND_60M" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Value for 60m bands</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SIGMA_PARAMETERS" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RESAMPLING_GRIDS" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Parameters for all the resampling grids computation (intermediate and final grids).</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="GRID_STEP_FACTOR_DEM" type="xs:positiveInteger">
+										<xs:annotation>
+											<xs:documentation>grid_step = dem_step / factor</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="GRID_MAX_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+										<xs:annotation>
+											<xs:documentation>maximal grid step in meters</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="TILES_SIZE">
+										<xs:annotation>
+											<xs:documentation>Size of the SIGMA tiles in resampling processing (it is a recommendation: SIGMA can readjust these sizes). These sizes are defined in the initial geometry.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="NB_OF_COLS">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:minInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+												<xs:element name="NB_OF_ROWS">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:minInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="RESAMPLING" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Default parameters for SIGMA resampling processing.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+										<xs:annotation>
+											<xs:documentation>Resampling filter description</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RESAMPLING_SIDE_MANAGEMENT">
+										<xs:annotation>
+											<xs:documentation>Resampling side management</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="EXACT"/>
+												<xs:enumeration value="MIRROR"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="GEOMETRIC_MODEL_REFINING" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Parameters for geometric model refining</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+										<xs:annotation>
+											<xs:documentation>Interpolation filter for resampling in the common geometry</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="CORRELATION_PARAMETERS" type="gipp:A_POLLUX_PARAMETERS">
+										<xs:annotation>
+											<xs:documentation>Correlation and dezoom parameters (for automatic tie point selection using ‘POLLUX’ library)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="SPATIO_PARAMS">
+										<xs:annotation>
+											<xs:documentation>Precisions for spatiotriangulation algorithm</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="PRECISION_IMAGE" type="xs:double">
+													<xs:annotation>
+														<xs:documentation>Image precision in pixels in the full resolution</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="PRECISION_PLANI" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+													<xs:annotation>
+														<xs:documentation>Ground precisions of the GCP in meters</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="PRECISION_ALTI" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+													<xs:annotation>
+														<xs:documentation>Z precision in meters</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="REGISTRATION" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Parameters for registration</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+										<xs:annotation>
+											<xs:documentation>Interpolation filter for resampling in the common geometry</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="CORRELATION_PARAMETERS" type="gipp:A_POLLUX_PARAMETERS">
+										<xs:annotation>
+											<xs:documentation>Correlation and dezoom parameters (for automatic tie point selection using ‘POLLUX’ library)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="SPATIO_PARAMS">
+										<xs:annotation>
+											<xs:documentation>Precisions for spatiotriangulation algorithm</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="PRECISION_IMAGE" type="xs:double">
+													<xs:annotation>
+														<xs:documentation>Image precision in pixels in full resolution</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="PRECISION_PLANI" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+													<xs:annotation>
+														<xs:documentation>Ground precisions of the GCP in meters</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="PRECISION_ALTI" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+													<xs:annotation>
+														<xs:documentation>Z precision in meters</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_TILING_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="REPRESENTATION_CODE_LIST" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>At least, one list of pre-defined tiles in a given representation (Geographic or EPSG code).</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="REPRESENTATION_TYPE" type="representation:A_PROJECTION_CODE"/>
+						<xs:element name="TILE_LIST">
+							<xs:annotation>
+								<xs:documentation>List of tiles in the representation type</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="TILE" type="tile:A_TILE_DESCRIPTION_GIPP" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Description of a tile with its bounding box in a given representation</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FINAL_REPRESENTATION" type="representation:A_PROJECTION_CODE">
+				<xs:annotation>
+					<xs:documentation>Final representation type to use by default</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="INCIDENCE_ANGLES">
+				<xs:annotation>
+					<xs:documentation>List of spectral bands for incidences angles computations and incidence angle grid steps</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND_ID" type="image:A_BAND_NUMBER" maxOccurs="13">
+							<xs:annotation>
+								<xs:documentation>Indexes of bands on which the incidence angle grids shall be computed</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="GRID_STEP">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="ALONG_LINES" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The along lines step</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="ALONG_COLUMNS" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The along columns step</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_TILING_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="REPRESENTATION_CODE_LIST" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>At least, one list of pre-defined tiles in a given representation (Geographic or EPSG code).</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="REPRESENTATION_TYPE" type="representation:A_PROJECTION_CODE"/>
+						<xs:element name="TILE_LIST">
+							<xs:annotation>
+								<xs:documentation>List of tiles in the representation type</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="TILE" type="tile:A_TILE_DESCRIPTION_GIPP" maxOccurs="unbounded">
+										<xs:annotation>
+											<xs:documentation>Description of a tile with its bounding box in a given representation</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FINAL_REPRESENTATION" type="representation:A_PROJECTION_CODE" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Final representation type to use by default</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="INCIDENCE_ANGLES" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BAND_ID" type="image:A_BAND_NUMBER" minOccurs="0" maxOccurs="13"/>
+						<xs:element name="GRID_STEP" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="ALONG_LINES" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The along lines step</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="ALONG_COLUMNS" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The along columns step</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_RESAMPLE_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MASK">
+				<xs:annotation>
+					<xs:documentation>Parameters for vector masks computation</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DISCRETISATION_STEP" type="xs:double">
+							<xs:annotation>
+								<xs:documentation>Discretisation step</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="TOLERANCE">
+							<xs:annotation>
+								<xs:documentation>Simplification step (in meters)</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SIGMA_PARAMETERS">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RESAMPLING_GRIDS">
+							<xs:annotation>
+								<xs:documentation>Parameters for all the resampling grids computation (intermediate and final grids).</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="GRID_STEP_FACTOR_DEM" type="xs:positiveInteger">
+										<xs:annotation>
+											<xs:documentation>grid_step = dem_step / factor</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="GRID_MAX_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+										<xs:annotation>
+											<xs:documentation>maximal grid step in meters</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="TILES_SIZE">
+										<xs:annotation>
+											<xs:documentation>Size of the SIGMA tiles in resampling processing (it is a recommendation: SIGMA can readjust these sizes). These sizes are defined in the initial geometry.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="NB_OF_COLS">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:minInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+												<xs:element name="NB_OF_ROWS">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:minInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="RESAMPLING">
+							<xs:annotation>
+								<xs:documentation>Default parameters for SIGMA resampling processing.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+										<xs:annotation>
+											<xs:documentation>Resampling filter description</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RESAMPLING_SIDE_MANAGEMENT">
+										<xs:annotation>
+											<xs:documentation>Resampling side management</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="EXACT"/>
+												<xs:enumeration value="MIRROR"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_RESAMPLE_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="MASK" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Parameters for vector masks computation</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DISCRETISATION_STEP" type="xs:double" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Discretisation step</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="TOLERANCE" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Simplification step (in meters)</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:double">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SIGMA_PARAMETERS" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RESAMPLING_GRIDS" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Parameters for all the resampling grids computation (intermediate and final grids).</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="GRID_STEP_FACTOR_DEM" type="xs:positiveInteger">
+										<xs:annotation>
+											<xs:documentation>grid_step = dem_step / factor</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="GRID_MAX_STEP" type="misc:A_DOUBLE_WITH_M_UNIT_ATTR">
+										<xs:annotation>
+											<xs:documentation>maximal grid step in meters</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="TILES_SIZE">
+										<xs:annotation>
+											<xs:documentation>Size of the SIGMA tiles in resampling processing (it is a recommendation: SIGMA can readjust these sizes). These sizes are defined in the initial geometry.</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="NB_OF_COLS">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:minInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+												<xs:element name="NB_OF_ROWS">
+													<xs:simpleType>
+														<xs:restriction base="xs:int">
+															<xs:minInclusive value="1"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="RESAMPLING" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Default parameters for SIGMA resampling processing.</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RESAMPLING_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+										<xs:annotation>
+											<xs:documentation>Resampling filter description</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="RESAMPLING_SIDE_MANAGEMENT">
+										<xs:annotation>
+											<xs:documentation>Resampling side management</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="EXACT"/>
+												<xs:enumeration value="MIRROR"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_MASK_PARAMETERS">
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>NOT USED FOR GPP</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CLOUD_DETECTION">
+				<xs:annotation>
+					<xs:documentation>Cloud detection : three spectral bands are used</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BLUE_BAND">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_VNIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the blue band</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="B10_SPECTRAL_THRESHOLD" type="xs:double">
+							<xs:annotation>
+								<xs:documentation>The value of the threshold for the B10</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="SWIR_BAND">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_SWIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the SWIR band</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="SIZE_EROSION">
+							<xs:annotation>
+								<xs:documentation>The size of the neighbourhoods needed for the erosion processing</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="SIZE_DILATATION">
+							<xs:annotation>
+								<xs:documentation>The size of the neighbourhoods needed for the dilatation processing</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="LAND_WATER_CLASSIFICATION_BANDS">
+				<xs:annotation>
+					<xs:documentation>Land/water classification : three spectral bands  are used</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="VNIR_BAND">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_VNIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the first band</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="SWIR_BAND_1">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_SWIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the second band </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="SWIR_BAND_2">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_SWIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the third band</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UNDERSAMPLING_10M_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+				<xs:annotation>
+					<xs:documentation>The resampling filter for the undersampling of the 10 m resolution band</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UNDERSAMPLING_20M_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER">
+				<xs:annotation>
+					<xs:documentation>The resampling filter for the undersampling of the 20 m resolution band</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RESAMPLING_SIDE_MANAGEMENT" type="gipp:A_RESAMPLING_SIDE_MANAGEMENT"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_MASK_PARAMETERS_MODIFIED">
+		<xs:annotation>
+			<xs:documentation>Optional parameters</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TRACE_MODE" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="CLOUD_DETECTION" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Cloud detection : three spectral bands are used</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BLUE_BAND">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_VNIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the blue band</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="B10_SPECTRAL_THRESHOLD" type="xs:double">
+							<xs:annotation>
+								<xs:documentation>The value of the threshold for the B10</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="SWIR_BAND">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_SWIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the SWIR band</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="SIZE_EROSION">
+							<xs:annotation>
+								<xs:documentation>The size of the neighbourhoods needed for the erosion processing</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="SIZE_DILATATION">
+							<xs:annotation>
+								<xs:documentation>The size of the neighbourhoods needed for the dilatation processing</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:int">
+									<xs:minInclusive value="0"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="LAND_WATER_CLASSIFICATION_BANDS" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Land/water classification : three spectral bands  are used</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="VNIR_BAND">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_VNIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the first band</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="SWIR_BAND_1">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_SWIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the second band </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="SWIR_BAND_2">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="BAND_ID" type="image:A_SWIR_BAND_NUMBER"/>
+									<xs:element name="SPECTRAL_THRESHOLD" type="xs:double">
+										<xs:annotation>
+											<xs:documentation>The value of the threshold for the third band</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UNDERSAMPLING_10M_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The resampling filter for the undersampling of the 10 m resolution band</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UNDERSAMPLING_20M_FILTER" type="gipp:AN_IMAGE_RESAMPLING_FILTER" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The resampling filter for the undersampling of the 20 m resolution band</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RESAMPLING_SIDE_MANAGEMENT" type="gipp:A_RESAMPLING_SIDE_MANAGEMENT" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

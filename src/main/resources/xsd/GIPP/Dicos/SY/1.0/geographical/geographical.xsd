@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 (http://www.altova.com) by auriols (C.N.E.S.) -->
+<!-- edited with XMLSPY v2004 rel. 2 U (http://www.xmlspy.com) by CNES (CNES) -->
+<xs:schema xmlns:gs2="http://gs2.esa.int/doc/1.0/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:geographical="http://gs2.esa.int/GS/1.0/geographical/" xmlns:misc="http://gs2.esa.int/SY/1.0/misc/" xmlns:image="http://gs2.esa.int/SY/1.0/image/" targetNamespace="http://gs2.esa.int/GS/1.0/geographical/" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/misc/" schemaLocation="../misc/misc.xsd"/>
+	<xs:import namespace="http://gs2.esa.int/SY/1.0/image/" schemaLocation="../image/image.xsd"/>
+	<xs:complexType name="A_POINT_COORDINATES">
+		<xs:annotation>
+			<xs:documentation>A Lat/Lon coordinate</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="LATITUDE" type="geographical:A_LATITUDE"/>
+			<xs:element name="LONGITUDE" type="geographical:A_LONGITUDE"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_LAT_LON_POLYGON">
+		<xs:annotation>
+			<xs:documentation>A polygon defined by n Lat/Lon points</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="POINT" type="geographical:A_POINT_COORDINATES" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="A_LONGITUDE">
+		<xs:annotation>
+			<xs:documentation>A -180/+180 degree longitude</xs:documentation>
+			<xs:appinfo>
+				<gs2:DOC>
+					<gs2:DEFINITION/>
+					<gs2:UNIT>Degree</gs2:UNIT>
+				</gs2:DOC>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:double">
+			<xs:minInclusive value="-180"/>
+			<xs:maxInclusive value="180"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="A_LATITUDE">
+		<xs:annotation>
+			<xs:documentation>A -90/+90 degree latitude</xs:documentation>
+			<xs:appinfo>
+				<gs2:DOC>
+					<gs2:DEFINITION/>
+					<gs2:UNIT>Degree</gs2:UNIT>
+				</gs2:DOC>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:double">
+			<xs:minInclusive value="-90"/>
+			<xs:maxInclusive value="90"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AN_ALTITUDE">
+		<xs:annotation>
+			<xs:documentation>Altitude (m)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:double"/>
+	</xs:simpleType>
+	<xs:complexType name="A_GML_POLYGON_2D">
+		<xs:annotation>
+			<xs:documentation>List of 2D vertices counter-clockwise oriented (for WFS compatibility). The polygon must be closed (the first and last vertices are the same).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EXT_POS_LIST" type="misc:A_LIST_OF_DOUBLE">
+				<xs:annotation>
+					<xs:documentation>Point list. The coordinates of the points are entered as pairs of latitude and longitude values, or X and Y, or other</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="INT_POS_LIST" type="misc:A_LIST_OF_DOUBLE" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Point list. The coordinates of the points are entered as pairs of latitude and longitude values, or X and Y, or other</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="A_GML_POLYGON_3D">
+		<xs:annotation>
+			<xs:documentation>List of 3D vertices counter-clockwise oriented (for WFS compatibility). The polygon must be closed (the first and last vertices are the same).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EXT_POS_LIST" type="misc:A_LIST_OF_DOUBLE">
+				<xs:annotation>
+					<xs:documentation>Point list. The coordinates of the points are entered as triplets of latitude, longitude and altitude values, or X, Y and Z, or other</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="INT_POS_LIST" type="misc:A_LIST_OF_DOUBLE" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Point list. The coordinates of the points are entered as triplets of latitude, longitude and altitude values, or X, Y and Z, or other</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
