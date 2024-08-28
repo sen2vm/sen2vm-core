@@ -100,11 +100,8 @@ The GIPP required are the following ones:
 #### 1.2.3 Altitude
 ==**TODO**==
 #### 1.2.4 IERS
-<![endif]-->
-
 The IERS represents the ["International Earth Rotation and Reference Systems"](https://www.iers.org/IERS/EN/Home/home_node.html). It is important to have a valid and precise one to have a precise geolocation. During operation processing, IERS information are integrated in the L1B metadata datastrip, hence IERS information are available in the L1B product used in input, in the field _Level-1B_DataStrip_ID/Auxiliary_Data_Info/IERS_Bulletin_ as illustrated in the ==**FIGURE_XXX**==
 
-<![endif]-->
 
 IERS bulletins are used seamlessly with OREKIT, leading in very precise EOPhandling. However, the IERS available in the L1B Datastrip metadata is not in the right format, hence EOP (Earth Orientation Parameters) entries are initialized directly with the information, as “custom EOP”, skipping the IERS bulletins reader parts.
 
@@ -124,7 +121,7 @@ Format of the IERS bulletin that can be provided is [Bulletin A](https://www.ier
 #### 1.2.5 ==POD==
 ==**DESCOPED**==
 
-### 1.3 Parameters files
+### 1.3 Parameters file
 Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent mode, user might want to process only parts of the Datastrip per thread. This is handled by SXGEO and was propagated to Sen2VM. Configuration of the detectors/bands to process are done through the parameters file which is a json. **If not available, Sen2VM will process all detectors/bands**.
 
 The configuration file contains 2 fields:
@@ -136,5 +133,110 @@ The configuration file contains 2 fields:
 If a field (“detectors” or “bands”) **is missing in** the params.json file, **all items of the missing field** will be processed. For example, if “bands” if absent from the previous example in ==**FIGURE_XXX**==, Sen2VM will process all bands of detectors 1, 3 and 4.
 
 **It is to be noted that a small optimization in SXGEO is done not to reload DEM tiles when processing bands of the same resolution for the same detector.**
+
+## 2. Outputs
+Output can be direct location grids or inverse location grids. Their computation is parametrized by:
+* Detector/bands,
+* Grid step,
+* Computation options (refining for example).
+
+Direct and inverse location grids are different subject. Only the direct location grids will be included in the input product and handled by gdal. Inverse location grids, as they represent an area on the ground will be exported outside the product, in a folder chosen by the user (which can be inside the input product if wanted).
+
+### 2.1 Direct location grids
+A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular in sensor reference frame (for one band and one detector).
+
+Sen2VM direct location grid computation takes as input product and auxiliary information (see ==**TODO**==) and grid parametrization:
+* Band/detector to process,
+* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (floating number).
+
+As output:
+* At granule level: geolocation grids will be written (per granules/bands).
+* At datastrip level: several .vrt (virtual dataset) will be written (per detectors/bands).
+
+#### 2.1.1 Direct locations grids' outputs
+Output grids will be integrated directly in the input product. Hence writing rights in the input L1B folder will be **mandatory**. Before processing, **a check will be done** to see if direct location grids are already available in the input L1B product folder, for the detectors/bands selected. If at least one is present for one couple detector/band, Sen2VM **will raise an error and stop**. Both granules and datastrip folder will be checked (see output grids format and location in the rest of this section).
+
+##### 2.1.1.1 Granule level
+Grids’ location and naming is at granules level:
+* 1 grid per couple “L1B granule”/”Sentinel-2 band”,
+* Grids **include 2 (_optionally 3_) bands (Lat/Long/_alt_)**
+* Grids are in **geotiff format with float32 coding positions** which allow approximately centimetre precision on lat/lon coordinates. JP2000 cannot be used at it does not allow float32 encoding, meaning the precision will not be enough,
+* Grids location will be inside a **GEO_DATA folder** which will be inside each granules folders (at the same level than IMG_DATA and QI_DATA folders),
+* Grids naming conventions will respect the corresponding image data inside the IMG_DATA folder with:
+-- GEO instead of MSI
+-- .tif instead of .jp2 extension as jp2 encoding is not possible for float32 data.
+
+As example, for an image of the IMG_DATA folder, named:
+* S2B_OPER_**MSI**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.**jp2**
+
+The direct location grid will be generated in the GEO_DATA folder, and named:
+* S2B_OPER_**GEO**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.**tif**
+
+##### 2.1.1.2 Datastrip level
+At datastrip level grids’ location and naming is:
+* 1 vrt per couple “detector”/”Sentinel-2 band”,
+* Grids **include 2 (_optionally 3_) bands (Lat/Long/_alt_)**
+* Grid location will be inside a **GEO_DATA folder** inside **DATASTRIP** folder (at the same level QI_DATA folder)
+* Grids naming conventions will respect the corresponding datastrip metadata convention with:
+-- GEO instead of MTD
+-- _DXX_BYY.vrt instead of .xml extension.
+
+As example, for an datastrip metadata of the DATASTRIP folder, named:
+* S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801**.xml**
+
+A folder named GEO_DATA, beside the QI_DATA folder and datastrip metadata will contain 156 vrt files (12detectorsx13bands) named:
+* S2B_OPER_**GEO**_L1B_DS_DPRM_20140630T140000_S20230428T150801**_DXX_BYY.vrt**
+
+==**TODO: example of product with grid inside it**==
+
+#### 2.1.2 Direct location grids’ specifications
+==**TODO**==
+
+#### 2.1.3 Grid handling
+==**TODO**==
+
+#### 2.1.4 Degraded cases
+==**TODO**==
+
+### 2.2 Inverse location grids
+An inverse location grid is a grid which maps ground coordinates with sensor ones.
+Inverse location grids are georeferenced in **geographic or cartographic reference frame**.
+Inverse location grid is regular in **ground reference frame** (for one band and one detector).
+
+To define the extend of the inverse location grid, parameters are described in section ==**XXX**==, but it can be resumed at:
+* A referential system,
+* A square defined by:
+-- One Upper Left point (UL),
+-- One Lower Right point (LR),
+* 3 steps, one per band resolution (10m, 20m, 60m) in the referential metrics,
+* An output folder.
+
+As output, a geolocation grid will be created **for each band and detector** to process.
+#### 2.2.1 Inverse location grids’ outputs
+Outputs will be **written in the folder provided by the user**. For inverse location grids, granule level is not foreseen, since granule footprint can result in large margins in projected data.
+
+Output grids’ convention will be:
+* 13 grids (1 per Sentinel-2 band) per detector intersecting the area,
+* Grids are in **geotiff format with float32 coding positions** which allow decimal information on row/col positions. JP2000 cannot be used at it does not allow float32 encoding, meaning the precision will not be enough,
+* Grids naming conventions will respect the corresponding datastrip metadata convention with:
+-- GEO instead of MTD,
+-- _DXX_BYY.tif instead of .xml extension.
+
+As example, for an datastrip metadata of the DATASTRIP folder:
+* S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801**.xml**
+* S2B_OPER_**INV**_L1B_DS_DPRM_20140630T140000_S20230428T150801**_DXX_BYY.tif**
+
+==**TODO: graph to illustrate.**==
+
+
+#### 2.2.2 Inverse location grids’ specifications
+==**TODO**==
+
+#### 2.2.3 Grid handling
+==**TODO**==
+
+#### 2.2.4 Degraded cases
+==**TODO**==
+
 
 
