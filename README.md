@@ -3,8 +3,8 @@ Sen2VM standalone tool that will also be called by Sen2VM SNAP Plugin
 
 This documentation is split into 3 parts:
 * Expected inputs description and format + how to run Sen2VM: §[Inputs](#1-inputs)
-* Outputs description: §[Outputs](2-outputs)
-* Validation description (tests and test data used): §[Validation](3-validation)
+* Outputs description: §[Outputs](#2-outputs)
+* Validation description (tests and test data used): §[Validation](#3-validation)
 
 ## 1. Inputs
 Inputs required by Sen2VM are:
@@ -94,7 +94,8 @@ The version used in operation of the GIPP are listed in the L1B Datastrip Metada
 
 ![GIPP list in L1B Datastrip metadata](/assets/images/README_GIPPListInL1BDatastripMetadata.png "GIPP list in L1B Datastrip metadata.")
 
-GIPP are however not directly available in the L1B product, then shall then be downloaded beforehand by the user. All versions are available at <mark>**XXX**</mark>.
+> [!CAUTION]
+> GIPP are however not directly available in the L1B product, then shall then be downloaded beforehand by the user. All versions are available at <mark>**XXX**</mark>.
 
 The GIPP required are the following ones:
 * **GIP_VIEDIR**: contains Viewing Direction required by Rugged to create viewing model from TAN_PSI_X/Y_LIST tags, one GIP_VIEDIR file **per band**, each file containing information per **detector!** (in _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_X_LIST]_ and _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_Y_LIST]_
@@ -190,10 +191,10 @@ Grids’ location and naming is at granules level:
     * .tif instead of .jp2 extension as jp2 encoding is not possible for float32 data.
 
 As example, for an image of the IMG_DATA folder, named:
-* S2B_OPER_**MSI**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.**jp2**
+* S2B_OPER_**MSI**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.<strong>jp2</strong>
 
 The direct location grid will be generated in the GEO_DATA folder, and named:
-* S2B_OPER_**GEO**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.**tif**
+* S2B_OPER_**GEO**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.<strong>tif</strong>
 
 ##### 2.1.1.2 Datastrip level
 At datastrip level grids’ location and naming is:
@@ -202,13 +203,13 @@ At datastrip level grids’ location and naming is:
 * Grid location will be inside a **GEO_DATA folder** inside **DATASTRIP** folder (at the same level QI_DATA folder)
 * Grids naming conventions will respect the corresponding datastrip metadata convention with:
     * **GEO** instead of **MTD**
-    * **_DXX_BYY.vrt** instead of **.xml** extension.
+    * <strong>_DXX_BYY.vrt</strong> instead of <strong>.xml</strong> extension.
 
 As example, for an datastrip metadata of the DATASTRIP folder, named:
-* S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801**.xml**
+* S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>.xml</strong>
 
 A folder named GEO_DATA, beside the QI_DATA folder and datastrip metadata will contain 156 vrt files (12detectorsx13bands) named:
-* S2B_OPER_**GEO**_L1B_DS_DPRM_20140630T140000_S20230428T150801**_DXX_BYY.vrt**
+* S2B_OPER_**GEO**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.vrt</strong>
 
 <mark>**TODO: example of product with grid inside it**</mark>
 
@@ -243,11 +244,13 @@ Output grids’ convention will be:
 * Grids are in **geotiff format with float32 coding positions** which allow decimal information on row/col positions. JP2000 cannot be used at it does not allow float32 encoding, meaning the precision will not be enough,
 * Grids naming conventions will respect the corresponding datastrip metadata convention with:
     * **INV** instead of **MTD**,
-    * **_DXX_BYY.tif** instead of **.xml** extension.
+    * <strong>_DXX_BYY.tif</strong> instead of <strong>.xml</strong> extension.
 
 As example, for a Datastrip metadata of the DATASTRIP folder:
-* S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801**.xml**
-* S2B_OPER_**INV**_L1B_DS_DPRM_20140630T140000_S20230428T150801**_DXX_BYY.tif**
+* S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>.xml</strong>
+
+Output will be named:
+* S2B_OPER_**INV**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.tif</strong>
 
 <mark>**TODO: Graph to illustrate.**</mark>
 
