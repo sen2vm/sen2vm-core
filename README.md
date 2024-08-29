@@ -2,9 +2,9 @@
 Sen2VM standalone tool that will also be called by Sen2VM SNAP Plugin
 
 This documentation is split into 3 parts:
-* Expected inputs description and format + how to run Sen2VM: §[Inputs](#1.-inputs)
-* Outputs description: §[Outputs](2.-outputs)
-* Validation description (tests and test data used): §[Validation](3.-validation)
+* Expected inputs description and format + how to run Sen2VM: §[Inputs](#1-inputs)
+* Outputs description: §[Outputs](2-outputs)
+* Validation description (tests and test data used): §[Validation](3-validation)
 
 ## 1. Inputs
 Inputs required by Sen2VM are:
@@ -30,7 +30,7 @@ java -jar target/sen2vm-core-0.0.1-SNAPSHOT.jar -c [configuration_filepath] [-p 
 
 Where:
 * <NN.NN.NN> is the version number of Sen2VM launched,
-* configuration_filepath: **Mandatory**. configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[1.2 Configuration file](#1.2-configuration-file) for further information),
+* configuration_filepath: **Mandatory**. configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[1.2 Configuration file](#12-configuration-file) for further information),
 * parameters_filepath: **Optional**. File to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §XXX for further information).
 
 Example from current repository:
@@ -55,7 +55,7 @@ Each parameter description can be found in the table below. More information abo
 |dem          | string   | **Mandatory** | Path to the FOLDER containing a DEM in the right format (cf <mark>**XXX**</mark>)|
 |geoid        | string   | **Mandatory** | Path to the FOLDER containing a GEOID in the right format (cf <mark>**XXX**</mark>)|
 | <mark>pod</mark>     |<mark>string</mark>| <mark>Optional</mark>  |<mark>Path to the POD FILE in the right format (cf <mark>**XXX**</mark>)</mark>|
-| iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf <mark>**XXX**==)|
+| iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf <mark>**XXX**</mark>)|
 |operation    | string   | **Mandatory** | Possibilities:<ul><li>“direct”: to configure Sen2VM to compute direct location grids</li><li>“inverse”: to configure Sen2VM to compute inverse location grids</li></ul>|
 | deactivate_available_refining| boolean  | Optional      | If false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf product description in §<mark>**XXX**</mark>|
 | steps       | float    | **Mandatory** | <ul><li>One per resolution: “10m_bands”, “20m_bands” & “60m_bands”</li><li>Accept only floating numbers (NNNN.DDD)</li><li>Unit in pixel</li></ul>|
@@ -91,6 +91,7 @@ GIPP are configuration files used in operation to:
 By nature, GIPP are then versionnable. It is important to process with the version used to generate the L1B product. **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf <mark>**XXX**</mark>). **This parameter is optional, and by default, its value is at true and the check is done, it can be forced at false if needed**.
 
 The version used in operation of the GIPP are listed in the L1B Datastrip Metadata of the L1B product (see L1B_PRODUCT section), in the following section: Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST, as illustrated below:
+
 ![GIPP list in L1B Datastrip metadata](/assets/images/README_GIPPListInL1BDatastripMetadata.png "GIPP list in L1B Datastrip metadata.")
 
 GIPP are however not directly available in the L1B product, then shall then be downloaded beforehand by the user. All versions are available at <mark>**XXX**</mark>.
@@ -142,7 +143,7 @@ The configuration file contains 2 fields:
 * “detectors”: Detectors are passed through string representing Sentinel-2 detectors encoded in **2 digits**, **separated by “-”.** Detectors indexes are from **“01” to “12”.**
 * “bands”: Bands are passed through string representing Sentinel-2 bands encoded in **2 digits with a “B”** before and **separated from “-”**. Bands are going from **“B01” to “B12”, including a “B8A”.**
 
-==**TODO Link Example**==
+<mark>**TODO Link Example**</mark>
 
 ![Parameters file example](/assets/images/README_ParametersFileExample.png "Parameters file example.")
 
@@ -241,8 +242,8 @@ Output grids’ convention will be:
 * 13 grids (1 per Sentinel-2 band) per detector intersecting the area,
 * Grids are in **geotiff format with float32 coding positions** which allow decimal information on row/col positions. JP2000 cannot be used at it does not allow float32 encoding, meaning the precision will not be enough,
 * Grids naming conventions will respect the corresponding datastrip metadata convention with:
--- **INV** instead of **MTD**,
--- **_DXX_BYY.tif** instead of **.xml** extension.
+    * **INV** instead of **MTD**,
+    * **_DXX_BYY.tif** instead of **.xml** extension.
 
 As example, for a Datastrip metadata of the DATASTRIP folder:
 * S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801**.xml**
@@ -267,9 +268,8 @@ As example, for a Datastrip metadata of the DATASTRIP folder:
 
 ### 3.2 Tests description
 <mark>**TODO**</mark>
-`#FFFF00`test
-`$${\color{yellow}Yellow test}$$`
-<mark>Test Yellow</mark>
+
+<mark>List demo:</mark>
 - [x] Test done
 - [ ] Test Not Done
 - [ ] Final Issue :tada:
