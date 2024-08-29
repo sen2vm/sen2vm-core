@@ -43,7 +43,7 @@ public class ConfigurationFile extends InputFileManager
      */
     public ConfigurationFile(String filepath) throws Sen2VMException {
         this.filepath = filepath;
-        if(check_schema(this.filepath, "src/test/resources/schema_config.json")) {
+        if(check_schema(this.filepath, "src/main/resources/schema_config.json")) {
             parse(this.filepath);
         }
     }
