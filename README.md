@@ -74,23 +74,29 @@ The field “inverse_location_additional_info” is not required and will be ign
 | output_folder | string   | **Mandatory**|Output path where the inverse location grids will be written (see §<mark>**XXX**</mark>)|
 
 #### 1.2.1 L1B Product
-L1B products can be downloaded at <mark>**XXX**</mark>
-The expected format is then SAFE format, i.e. a folder structured as illustrated in <mark>**TODO**</mark>
+> [!NOTE]
+> L1B products can be downloaded at <mark>**XXX**</mark>
+
+> [!IMPORTANT]
+> The expected format is the SAFE format, i.e. a folder structured as illustrated in <mark>**TODO**</mark>
 
 Refining information can be found in the datastrip Metadata. If refined, the model of the satellite shall be modified accordingly. Information is stored in the filed “Level-1B_DataStrip_ID/Image_Data_Info//Geometric_Info/Refined_Corrections_List/Refined_Corrections/MSI_State”. They are present only if the flag “Image_Refining” is set at “REFINED” and absent if set at “NOT_REFINED”.
 ![Refining information inside Datastrip metadata](/assets/images/README_RefiningInformationInsideDatastripMetadata.png "Refining information inside Datastrip metadata.")
 
 An optional boolean argument is available in the configuration file (see §[1.2 Configuration file](#1.2-configuration-file)): deactivate_available_refining.
-**By default, it is set at false**, meaning that the refining **information shall be taken into account** if available in the Datastrip Metadata. However, **if set at true**, the datastrip shall be **considered as NOT_REFINED**, meaning ignoring the refining information.
+> [!WARNING]
+> **By default, it is set at false**, meaning that the refining **information shall be taken into account** if available in the Datastrip Metadata. However, **if set at true**, the datastrip shall be **considered as NOT_REFINED**, meaning ignoring the refining information.
 #### 1.2.2 GIPP
 GIPP are configuration files used in operation to:
 * represent the stable satellite information,
 * configure calibration parameters of the satellite,
 * configure the several algorithms of the processing chain.
 
-By nature, GIPP are then versionnable. It is important to process with the version used to generate the L1B product. **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf <mark>**XXX**</mark>). **This parameter is optional, and by default, its value is at true and the check is done, it can be forced at false if needed**.
+By nature, GIPP are then versionnable. It is important to process with the version used to generate the L1B product.
+> [!WARNING]
+>  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf <mark>**XXX**</mark>). **This parameter is optional, and by default, its value is at true and the check is done, it can be forced at false if needed**.
 
-The version used in operation of the GIPP are listed in the L1B Datastrip Metadata of the L1B product (see L1B_PRODUCT section), in the following section: Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST, as illustrated below:
+The version used in operation of the GIPP are listed in the L1B Datastrip Metadata of the L1B product (see §[1.2.2 L1B Product](#121-l1b-product)), in the following section: _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
 
 ![GIPP list in L1B Datastrip metadata](/assets/images/README_GIPPListInL1BDatastripMetadata.png "GIPP list in L1B Datastrip metadata.")
 
