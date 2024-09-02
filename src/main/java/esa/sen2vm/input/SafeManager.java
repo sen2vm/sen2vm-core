@@ -3,6 +3,7 @@ package esa.sen2vm;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.File;
+import java.util.List;
 
 
 
@@ -45,7 +46,7 @@ public class SafeManager {
         }
     }
 
-    public void checkEmptyGrid(String[] detectors,String[] bands) {
+    public void checkEmptyGrid(List<DetectorInfo> detectors, List<BandInfo> bands) {
         for(int g = 0 ; g < this.listGranules.size() ; g++) {
             String det = this.listGranules.get(g).getDetector() ;
         }

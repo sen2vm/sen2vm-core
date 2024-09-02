@@ -90,8 +90,6 @@ public class Sen2VM
             String configFilepath = cmd.getOptionValue("config");
             String sensorManagerFile = cmd.getOptionValue("param");
 
-            LOGGER.info("Start Sen2VM");
-
             // Read configuration file
             ConfigurationFile configFile = new ConfigurationFile(configFilepath);
 
@@ -115,6 +113,7 @@ public class Sen2VM
             File datastripFolder = new File(configFile.getL1bProduct() + "/DATASTRIP");
             File[] directories = datastripFolder.listFiles();
             String datastripFilePath = null;
+
             for (File dir: directories) {
                 if (!dir.isDirectory()) {
                     continue; // Ignore non-directory files
@@ -125,6 +124,15 @@ public class Sen2VM
             LOGGER.info("Reading datastrip file at path: " + datastripFilePath);
             DataStripManager dataStripManager = DataStripManager.getInstance();
             dataStripManager.initDataStripManager(datastripFilePath, configFile.getIers());
+
+            String granulesFolder = configFile.getL1bProduct() + "/GRANULE/";
+            String granuleExempleFolder = granulesFolder + "S2B_OPER_MSI_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08_N05.11/S2B_OPER_MTD_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08.xml" ;
+            LOGGER.info("Granule" + granuleExempleFolder);
+
+            dataStripManager.computeFullSize(granulesFolder);
+            //GranuleManager granuleManager = GranuleManager.getInstance();
+            //granuleManager.initGranuleManager(granuleExempleFolder);
+
 
             // Read GIPP
             GIPPManager gippManager = GIPPManager.getInstance();
@@ -139,11 +147,13 @@ public class Sen2VM
             if(!demFileManager.findRasterFile()) {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
+
             DemManager demManager = new DemManager(
                 demFileManager,
                 geoidManager,
                 isOverlappingTiles);
 
+            /*
             // Build sensor list
 
             // Save sensors for each focal plane
@@ -197,9 +207,6 @@ public class Sen2VM
             LOGGER.info("pixels="+pixels[0][0]+" "+pixels[0][1]);
             LOGGER.info("grounds="+grounds[0][0]+" "+grounds[0][1]);
 
-            String[] detectors = {"D01"} ;
-            String[] bands = {"B01"} ;
-
             System.out.println();
             System.out.println();
             System.out.println("Start");
@@ -215,8 +222,8 @@ public class Sen2VM
             SafeManager sm = new SafeManager();
 
             // Load all images and geo grid already existing (granule x det x band)
-            sm.setAndProcessGranules("../data/S2A_MSIL1B_20240508T075611_N0510_R035_20240605T140412.SAFE/GRANULE");
-            sm.setAndProcessDataStrip("../data/S2A_MSIL1B_20240508T075611_N0510_R035_20240605T140412.SAFE/DATASTRIP");
+            sm.setAndProcessGranules(configFile.getL1bProduct() + "/GRANULE");
+            sm.setAndProcessDataStrip(configFile.getL1bProduct() + "/DATASTRIP");
             sm.checkEmptyGrid(detectors, bands) ;
 
             // VERFIER QUIL Y A QU DOSSIER S2* DANS DS
@@ -233,9 +240,8 @@ public class Sen2VM
 
             OutputFileManager outputFileManager = new OutputFileManager();
 
-            for (int b = 0 ; b < bands.length ; b++) {
-                String bandName = bands[b];
-                BandInfo band = BandInfo.getBandInfoFromNameWithB(bandName);
+            for (int b = 0 ; b < bands.size() ; b++) {
+                BandInfo band = bands.get(b);
                 Float step ;
 
                 switch(band.getPixelHeight()){
@@ -252,9 +258,8 @@ public class Sen2VM
 
                 double[][] sensorGrid = dirGrid.get2Dgrid();
 
-                for (int d = 0 ; d < detectors.length ; d++) {
-                    String detectorName =  detectors[d];
-                    DetectorInfo detector = DetectorInfo.getDetectorInfoFromNameWithD(detectorName);
+                for (int d = 0 ; d < detectors.size() ; d++) {
+                    DetectorInfo detector =  detectors.get(d);
                     System.out.println("Detector: " + detector.getName());
 
                     ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detector, band);
@@ -284,7 +289,7 @@ public class Sen2VM
             }
 
             LOGGER.info("End Sen2VM");
-
+            */
         } catch ( IOException exception ) {
             throw new Sen2VMException(exception);
         } catch ( SXGeoException exception ) {

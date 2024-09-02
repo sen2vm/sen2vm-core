@@ -79,19 +79,19 @@ public class Granule {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
             String bandName = name[name.length-1];
             int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
-            System.out.println(bandName + ": " + list_img[i].getName());
+            // System.out.println(bandName + ": " + list_img[i].getName());
             this.images[indexBand] = list_img[i] ;
         }
     }
 
     private void loadGrids(File geo_data) {
         File[] list_img = geo_data.listFiles();
-        System.out.println("Number of grids already existing:" + String.valueOf(list_img.length));
+        System.out.println("Number of grids already existing: " + String.valueOf(list_img.length));
         for (int i = 0; i < list_img.length; i++) {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
             String bandName = name[name.length-1];
             int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
-            System.out.println(bandName + ": " + list_img[i].getName());
+            // System.out.println(bandName + ": " + list_img[i].getName());
             this.images[indexBand] = list_img[i] ;
         }
     }

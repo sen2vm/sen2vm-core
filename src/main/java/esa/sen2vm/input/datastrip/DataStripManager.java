@@ -2,6 +2,7 @@ package esa.sen2vm;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +45,7 @@ import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_SENSOR_CONFIG
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_TIME_STAMP;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_TIME_STAMP.Band_Time_Stamp.Detector;
 import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_datastrip_metadata.Level1B_DataStrip;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL1B;
 
 /**
  * Manager for SAD file
@@ -80,13 +82,20 @@ public class DataStripManager {
     protected List<TimeStampedPVCoordinates> satellitePVList = null;
 
     /**
+     * List of granule positon by Detector in Datatrip (10m)
+     */
+    protected Map[] positionGranuleByDetector ;
+
+    /**
      * Min granule line found in Datastrip (10m)
      */
     protected Map<String, Double> minLinePerSensor = null;
+
     /**
      * Max granule line found in Datastrip (10m)
      */
     protected Map<String, Double> maxLinePerSensor = null;
+
 
     /**
      * Time reference
@@ -190,8 +199,69 @@ public class DataStripManager {
         }
     }
 
+    /**
+     * Compute min and max date line
+     */
+    private void computeMinMaxLinePerSensor() {
+        // minLinePerSensor = new HashMap<String, int>();
+        // maxLinePerSensor = new HashMap<String, int>();
+
+
+        positionGranuleByDetector= new Map[12]; // todo
+
+        System.out.println("Insert my need");
+        List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector> det_list = l1B_datastrip.getImage_Data_Info().getGranules_Information().getDetector_List().getDetector() ;
+        for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector det : det_list) {
+            System.out.println("Det " + det.getDetectorId());
+            List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule> gr_list = det.getGranule_List().getGranule() ;
+            Map<String, Integer> granulePosition = new HashMap<>();
+
+            for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule gr : gr_list) {
+                granulePosition.put(gr.getGranuleId(), gr.getPOSITION());
+            }
+            /*Map.Entry<String, Integer> min = Collections.min(granulePosition.entrySet(),  Map.Entry.comparingByValue());
+            Map.Entry<String, Integer> max = Collections.max(granulePosition.entrySet(),  Map.Entry.comparingByValue());
+
+
+            String minGranulePath = configFile.getL1bProduct() + "/GRANULE/";
+            String granuleExempleFolder = granulesFolder + "S2B_OPER_MSI_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08_N05.11/S2B_OPER_MTD_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08.xml" ;
+            LOGGER.info("Granule" + granuleExempleFolder);
+
+            GranuleManager granuleManager = GranuleManager.getInstance();
+            granuleManager.initGranuleManager(granuleExempleFolder);
+
+
+            System.out.println("min " + min);*/
+            positionGranuleByDetector[Integer.valueOf(det.getDetectorId()) - 1] = granulePosition;
+        }
+
+        /*for (DetectorInfo detectorInfo: DetectorInfo.getAllDetectorInfo()) {
+            for (BandInfo bandInfo: BandInfo.getAllBandInfo()) {
+                String sensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
+                System.out.println(sensor);
+                minLinePerSensor.put(sensor, 1.0);
+                maxLinePerSensor.put(sensor, 1.0);
+            }
+        }*/
+        System.out.println("List OK");
+        System.out.println("List OK");
+    }
+
+    public void computeFullSize(String granulesFolder) {
+        for (Map granulesDetector : positionGranuleByDetector) {
+            Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+            Map.Entry<String, Integer> max = Collections.max(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+            System.out.println("min " + min);
+        }
+    }
+
+
+
     public static synchronized void initOrekitRessources(String iersDirectoryPath) throws Sen2VMException {
 		try {
+		    System.out.println("initOrekitRessources");
+		    System.out.println(iersDirectoryPath);
+
 			if (iersDirectoryPath != null && !iersDirectoryPath.equals("")) {
 				File iersDir = new File(iersDirectoryPath);
 				if (!iersDir.exists()) {
@@ -210,7 +280,8 @@ public class DataStripManager {
 			}
 			// set up default Orekit data
 			File orekitDataDir = new File(System.getProperty("user.dir") + "/" + Sen2VMConstants.OREKIT_DATA_DIR);
-			if (orekitDataDir == null || (!orekitDataDir.exists())) {
+			System.out.println(orekitDataDir);
+		    if (orekitDataDir == null || (!orekitDataDir.exists())) {
 			    throw new Sen2VMException("Orekit data not found");
 			}
 			DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
@@ -325,21 +396,6 @@ public class DataStripManager {
             Sen2VMException exception = new Sen2VMException(e);
             throw exception;
         }
-    }
-
-    /**
-     * Compute min and max date line
-     */
-    private void computeMinMaxLinePerSensor() {
-        minLinePerSensor = new HashMap<String, Double>();
-        maxLinePerSensor = new HashMap<String, Double>();
-//        for (DetectorInfo detectorInfo: DetectorInfo.getAllDetectorInfo()) {
-//            for (BandInfo bandInfo: BandInfo.getAllBandInfo()) {
-//                String sensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
-//                minLinePerSensor.put(sensor, 1.0);
-//                maxLinePerSensor.put(sensor, 1.0);
-//            }
-//        }
     }
 
     /*

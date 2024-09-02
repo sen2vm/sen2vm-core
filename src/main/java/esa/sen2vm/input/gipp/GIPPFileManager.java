@@ -59,6 +59,7 @@ public class GIPPFileManager {
         List<File> foundFiles = new ArrayList<File>();
 
         for (File dir: directories) {
+
             if (!dir.isDirectory()) {
                 continue; // Ignore non-directory files
             }
