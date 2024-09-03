@@ -39,6 +39,13 @@ public class Sen2VM
     // Get sen2VM logger
     private static final Logger LOGGER = Logger.getLogger(Sen2VM.class.getName());
 
+    public static final void showPoints(double[][] pixels, double[][] grounds) {
+        for (int i=0; i<pixels.length; i++) {
+            LOGGER.info("pixels = "+pixels[i][0]+" "+pixels[i][1]+" grounds = "+grounds[i][0]+" "+grounds[i][1]+" "+grounds[i][2]);
+            LOGGER.info("diff : "+(grounds[i][0]-27.2042759)+" "+(grounds[i][1]+6.37418559));
+        }
+    }
+
     /**
      * Main process
      * @param args first arg: input json file. second param (optional): parameter json file
@@ -111,12 +118,10 @@ public class Sen2VM
             LOGGER.info("bands = "+bands);
 
             // Read datastrip
-            DataStripManager dataStripManager = DataStripManager.getInstance();
-            dataStripManager.initDataStripManager(configFile.getDatastripFilePath(), configFile.getIers());
+            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
 
             // Read GIPP
-            GIPPManager gippManager = GIPPManager.getInstance();
-            gippManager.setGippFolderPath(configFile.getGippFolder(), bands);
+            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager);
 
             // Initialize SimpleLocEngine
 
@@ -135,12 +140,11 @@ public class Sen2VM
             // Build sensor list
 
             // Save sensors for each focal plane
-            HashMap<String, ArrayList<Sensor>> focalplaneSensors = new HashMap<String, ArrayList<Sensor>>();
             List<Sensor> sensorList = new ArrayList<Sensor>();
             for (DetectorInfo detectorInfo: detectors) {
                 for (BandInfo bandInfo: bands) {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = DataStripManager.getInstance().getLineDatation(bandInfo, detectorInfo);
+                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
                     SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
@@ -164,26 +168,28 @@ public class Sen2VM
             RefiningInfo refiningInfo = new RefiningInfo();
             RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
                 demManager,
-                DataStripManager.getInstance().getDataSensingInfos(),
+                dataStripManager.getDataSensingInfos(),
                 Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
                 Sen2VMConstants.RESOLUTION_10M_DOUBLE,
                 sensorList,
                 Sen2VMConstants.MARGIN,
-                refiningInfo
+                dataStripManager.getRefiningInfo()
             );
 
             // Init simpleLocEngine
             SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
-                DataStripManager.getInstance().getDataSensingInfos(),
+                dataStripManager.getDataSensingInfos(),
                 ruggedManager,
                 demManager
             );
 
-            double[][] pixels = {{0.0, 0.0},
-                                 {1.0, 0.0}};
+            double[][] pixels = {{0.6, 0.25},
+                                 {55650, 424}};
+            LOGGER.info("sensorList="+sensorList.get(0).getName());
+            LOGGER.info("sensorList="+sensorList.get(0).getLineDatation());
+
             double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
-            LOGGER.info("pixels="+pixels[0][0]+" "+pixels[0][1]);
-            LOGGER.info("grounds="+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
+            showPoints(pixels, grounds);
 
             LOGGER.info("End Sen2VM");
 
