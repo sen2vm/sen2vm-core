@@ -52,7 +52,6 @@ public class Sen2VM
     public static final void showPoints(double[][] pixels, double[][] grounds) {
         for (int i=0; i<pixels.length; i++) {
             LOGGER.info("pixels = "+pixels[i][0]+" "+pixels[i][1]+" grounds = "+grounds[i][0]+" "+grounds[i][1]+" "+grounds[i][2]);
-            LOGGER.info("diff : "+(grounds[i][0]-27.2042759)+" "+(grounds[i][1]+6.37418559));
         }
     }
 
