@@ -39,10 +39,11 @@ public class ConfigurationFile extends InputFileManager
     /**
      * Constructor
      * @param filepath Path to the configuration file to parse
+     * @param filepath Path to the configuration file to parse
      */
     public ConfigurationFile(String filepath) throws Sen2VMException {
         this.filepath = filepath;
-        if(check_schema(this.filepath, "src/test/resources/schema_config.json")) {
+        if(check_schema(this.filepath, "src/main/resources/schema_config.json")) {
             parse(this.filepath);
         }
     }
@@ -140,7 +141,7 @@ public class ConfigurationFile extends InputFileManager
      * Get the gipp folder
      */
     public String getGippFolder() {
-       return gippFolder;
+        return gippFolder;
     }
 
     /*
@@ -169,6 +170,13 @@ public class ConfigurationFile extends InputFileManager
      */
     public String getPod() throws Sen2VMException {
        return checkPath(pod);
+    }
+
+    /*
+     * Get the boolean that tell if we want to deactivate the available refining or not
+     */
+    public Boolean getBooleanRefining() {
+       return refining;
     }
 
      /*

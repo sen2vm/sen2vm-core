@@ -54,51 +54,25 @@ public class GIPPManager {
     private Unmarshaller jaxbUnmarshaller;
 
     /**
-     * Unique GIPPManager instance
+     *
      */
-    protected static GIPPManager singleton = null;
+    private DataStripManager dataStripManager;
 
     /**
      * Load GIPP from XML folder
+     * @param gippFolder path to a folder that contains all the GIPP required
+     * @param bands a list of all the bands that will be (comes from parameter configuration file)
+     * @param dataStripManager
      * @throws Sen2VMException
      */
-    protected GIPPManager() throws Sen2VMException {
+    protected GIPPManager(String gippFolder, List<BandInfo> bands, DataStripManager dataStripManager) throws Sen2VMException {
         try {
+            this.dataStripManager = dataStripManager;
+
             // All GIPP have same package ("generated")
             JAXBContext jaxbContext = JAXBContext.newInstance(GS2_VIEWING_DIRECTIONS.class.getPackage().getName());
 
             jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            gippFileManager = new GIPPFileManager();
-            viewingDirectionMap = new HashMap<>();
-        } catch (Exception e) {
-            Sen2VMException exception = new Sen2VMException(e.getMessage(), e);
-            throw exception;
-        }
-    }
-
-    /**
-     * Get instance
-     * @return instance
-     * @throws Sen2VMException
-     */
-    public static synchronized GIPPManager getInstance() throws Sen2VMException {
-        if (singleton == null) {
-            singleton = new GIPPManager();
-        }
-        return singleton;
-    }
-
-    /**
-     * To use when all GIPP are in the same folder
-     * Used only by Junit tests
-     * @param gippFolder a folder that is supposed to contain all wanted GIPP
-     * @throws Sen2VMException
-     */
-    public void setGippFolderPath(String gippFolder, List<BandInfo> bands) throws Sen2VMException {
-        try {
-
-            System.out.println(gippFolder);
-
             gippFileManager = new GIPPFileManager(gippFolder);
             viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
             LOGGER.info("Get through GIPP folder: "+ gippFolder);
@@ -191,7 +165,7 @@ public class GIPPManager {
             // for band 2 3 11 and 12 we get the VIEWING_DIRECTIONS_LIST having TDI_CONFIGURATION with same value than in SAD sensor config element
 
             // Get TDI_CONFIGURATION value from SAD for the given band
-            String tdiConfVal = DataStripManager.getInstance().getTdiConfVal(bandInfo);
+            String tdiConfVal = dataStripManager.getTdiConfVal(bandInfo);
 
             // Get viewingDirection corresponding to tdi configuration value from SAD
             for (VIEWING_DIRECTIONS_LIST viewingDirectionList : data.getVIEWING_DIRECTIONS_LIST()) {

@@ -44,7 +44,7 @@ public class ParamFile extends InputFileManager
      */
     public ParamFile(String jsonFilePath) {
         this.filepath = jsonFilePath;
-        if(check_schema(this.filepath, "src/test/resources/schema_params.json")) {
+        if(check_schema(this.filepath, "src/main/resources/schema_params.json")) {
             parse(this.filepath);
         }
     }
