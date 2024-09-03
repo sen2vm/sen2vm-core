@@ -15,7 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Vector;
 
 import org.orekit.rugged.linesensor.LineDatation;
 
@@ -90,6 +91,8 @@ public class Sen2VM
             String configFilepath = cmd.getOptionValue("config");
             String sensorManagerFile = cmd.getOptionValue("param");
 
+            LOGGER.info("Start Sen2VM");
+
             // Read configuration file
             ConfigurationFile configFile = new ConfigurationFile(configFilepath);
 
@@ -110,29 +113,17 @@ public class Sen2VM
             LOGGER.info("bands = "+bands);
 
             // Read datastrip
-            File datastripFolder = new File(configFile.getL1bProduct() + "/DATASTRIP");
-            File[] directories = datastripFolder.listFiles();
-            String datastripFilePath = null;
-
-            for (File dir: directories) {
-                if (!dir.isDirectory()) {
-                    continue; // Ignore non-directory files
-                }
-                String filename = dir.getName().replaceAll("_N.*", "").replace("MSI", "MTD");
-                datastripFilePath = dir + "/" + filename + ".xml";
-            }
-            LOGGER.info("Reading datastrip file at path: " + datastripFilePath);
             DataStripManager dataStripManager = DataStripManager.getInstance();
-            dataStripManager.initDataStripManager(datastripFilePath, configFile.getIers());
+            dataStripManager.initDataStripManager(configFile.getDatastripFilePath(), configFile.getIers());
 
             String granulesFolder = configFile.getL1bProduct() + "/GRANULE/";
-            String granuleExempleFolder = granulesFolder + "S2B_OPER_MSI_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08_N05.11/S2B_OPER_MTD_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08.xml" ;
-            LOGGER.info("Granule" + granuleExempleFolder);
 
-            dataStripManager.computeFullSize(granulesFolder);
-            //GranuleManager granuleManager = GranuleManager.getInstance();
-            //granuleManager.initGranuleManager(granuleExempleFolder);
-
+            /*
+                String granuleExempleFolder = granulesFolder + "S2B_OPER_MSI_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08_N05.11/S2B_OPER_MTD_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08.xml" ;
+                LOGGER.info("Granule " + granuleExempleFolder);
+                GranuleManager granuleManager = GranuleManager.getInstance();
+                granuleManager.initGranuleManager(granuleExempleFolder);
+            */
 
             // Read GIPP
             GIPPManager gippManager = GIPPManager.getInstance();
@@ -147,13 +138,11 @@ public class Sen2VM
             if(!demFileManager.findRasterFile()) {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
-
             DemManager demManager = new DemManager(
                 demFileManager,
                 geoidManager,
                 isOverlappingTiles);
 
-            /*
             // Build sensor list
 
             // Save sensors for each focal plane
@@ -188,7 +177,7 @@ public class Sen2VM
                 demManager,
                 DataStripManager.getInstance().getDataSensingInfos(),
                 Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
-                Sen2VMConstants.PIXEL_HEIGHT_10,
+                Sen2VMConstants.RESOLUTION_10M_DOUBLE,
                 sensorList,
                 Sen2VMConstants.MARGIN,
                 refiningInfo
@@ -205,91 +194,97 @@ public class Sen2VM
                                  {1.0, 0.0}};
             double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
             LOGGER.info("pixels="+pixels[0][0]+" "+pixels[0][1]);
-            LOGGER.info("grounds="+grounds[0][0]+" "+grounds[0][1]);
+            LOGGER.info("grounds="+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
+
+            LOGGER.info("End Sen2VM");
+
+
+
+
 
             System.out.println();
             System.out.println();
             System.out.println("Start");
             System.out.println();
 
-            // GIPP
-            int pixelOffset = 0;
-            int lineOffset = 0;
-            int startPixel = 1 ;
-            int startLine = 1 ;
+
 
             // Safe Manager
             SafeManager sm = new SafeManager();
 
             // Load all images and geo grid already existing (granule x det x band)
-            sm.setAndProcessGranules(configFile.getL1bProduct() + "/GRANULE");
-            sm.setAndProcessDataStrip(configFile.getL1bProduct() + "/DATASTRIP");
-            sm.checkEmptyGrid(detectors, bands) ;
+            sm.setAndProcessDataStrip(configFile.getL1bProduct() + "/" + Sen2VMConstants.DATASTRIP);
+            sm.setAndProcessGranules(configFile.getL1bProduct() + "/" + Sen2VMConstants.GRANULE);
+            // sm.checkEmptyGrid(detectors, bands) ;
 
             // VERFIER QUIL Y A QU DOSSIER S2* DANS DS
 
             // Datastrip Information
             Datastrip ds = sm.getDatastrip();
 
-            // Load all ifnormations and geo grid already existing (granule x det x band)
-            int fullSizeLine = 200 ; // DS + Granule
-            int fullSizePixel = 93 ; // DS + Granule
-
-
+            // GIPP
+            int pixelOffset = 0;
+            int lineOffset = 0;
 
 
             OutputFileManager outputFileManager = new OutputFileManager();
+            LOGGER.info("bands = "+bands);
 
-            for (int b = 0 ; b < bands.size() ; b++) {
-                BandInfo band = bands.get(b);
-                Float step ;
+            for (BandInfo bandInfo: bands) {
+                LOGGER.info("### BAND " + bandInfo.getName() );
+                Float step = configFile.getStepFromBandInfo(bandInfo);
 
-                switch(band.getPixelHeight()){
-                    case Sen2VMConstants.RESOLUTION_10M:
-                        step = configFile.getStepBand10m() ; break;
-                    case Sen2VMConstants.RESOLUTION_20M:
-                        step = configFile.getStepBand20m() ; break;
-                    default:
-                        step = configFile.getStepBand60m() ; break;
-                }
+                for (DetectorInfo detectorInfo: detectors) {
+                    LOGGER.info("### DET " + detectorInfo.getName() );
 
-                DirectLocGrid dirGrid = new DirectLocGrid(pixelOffset, lineOffset, step,
+                    int[] BBox = dataStripManager.computeFullSize(granulesFolder, bandInfo, detectorInfo);
+                    int startPixel = BBox[0] ;
+                    int startLine = BBox[1] ;
+
+                    int fullSizeLine = BBox[2];
+                    int fullSizePixel = BBox[3];
+
+                    DirectLocGrid dirGrid = new DirectLocGrid(pixelOffset, lineOffset, step,
                                 startPixel, startLine, fullSizePixel, fullSizeLine);
 
-                double[][] sensorGrid = dirGrid.get2Dgrid();
+                    double[][] sensorGrid = dirGrid.get2Dgrid();
+                    System.out.println(Arrays.deepToString(sensorGrid));
 
-                for (int d = 0 ; d < detectors.size() ; d++) {
-                    DetectorInfo detector =  detectors.get(d);
-                    System.out.println("Detector: " + detector.getName());
-
-                    ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detector, band);
+                    ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detectorInfo, bandInfo);
                     System.out.print("Number of granules found: ");
                     System.out.println(granulesToCompute.size());
 
-                    double[][] directLocGrid = sensorGrid; // TODO
+                    LOGGER.info("pixels="+sensorGrid[0][0]+" "+sensorGrid[0][1]);
+                    double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(0), sensorGrid);
+                    System.out.println(Arrays.deepToString(directLocGrid));
+                    LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
 
-                    for(int g = 0 ; g < granulesToCompute.size() ; g++ ) {
+
+                    Vector<String> inputTIFs = new Vector<String>();
+                    for(int g = 0 ; g < 1; g++ ) { // granulesToCompute.size();
                         Granule gr = granulesToCompute.get(g) ;
-                        String gridFileName = gr.getCorrespondingGeoFileName(band);
 
-                        int startGranule = 20; // MTD granule
-                        int sizeGranule = 20; // MTD granule
+                        int startGranule = 1; // MTD granule
+                        int sizeGranule = 1000; // MTD granule
 
                         double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
+                        System.out.println(Arrays.deepToString(subDirectLocGrid));
                         String srs = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433],AUTHORITY[\"EPSG\",\"4326\"]]" ;
-                        // Jonathan
+
+                        // Save in TIF
+                        String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
                         outputFileManager.createGeoTiff(gridFileName, 1, startGranule, step, 2, srs, subDirectLocGrid) ;
 
-
+                        // Add TIF to the futur VRT
+                        inputTIFs.add(gridFileName) ;
                     }
-                    // System.out.print(ds.getCorrespondingVRTFileName(detector, band));
-                    // create list vrt
-                    // outputFileManager.createVRT(ds.getCorrespondingVRTFileName(detector, band), Vector<String> inputVRTs) ;
+
+                    // Create VRT
+                    outputFileManager.createVRT(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
+
                 }
             }
 
-            LOGGER.info("End Sen2VM");
-            */
         } catch ( IOException exception ) {
             throw new Sen2VMException(exception);
         } catch ( SXGeoException exception ) {

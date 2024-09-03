@@ -8,24 +8,74 @@ import java.util.Vector;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Granule {
 
+    /**
+     * Get sen2VM logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(SafeManager.class.getName());
+
+    /**
+     * Name of the granule
+     */
     private String name;
+
+    /**
+     * Name of the detector of the granule
+     */
     private String detector;
+
+    /**
+     * Path of the granule
+     */
     private File path;
+
+    /**
+     * File of xml metadata file
+     */
     private File path_mtd;
 
+    /**
+     * List of the 13 images (by bands index) of the granule
+     */
     private File[] images; // juste 1x13 bandes
-    private File[] grids;
 
+     /**
+     * List of the 13 geo grid (by bands index, if exists)
+     */
+     private File[] grids;
+
+     /**
+     * Pixel Origin of the granule (from granule metadata)
+     */
     private Integer pixelOrigin ;
+
+    /**
+     * Pixel Origin of the granule (from granule metadata)
+     */
     private Integer granulePosition ;
+
+    /**
+     * Dimensions in x for all the res {res 10, res 20, res 60}
+     */
     private ArrayList<Integer> granuleDimensions_nrows ;
+
+    /**
+     * Dimensions in y for all the res {res 10, res 20, res 60}
+     */
     private ArrayList<Integer> granuleDimensions_ncols ;
 
-    // constructor
-    public Granule(File path) {
+    /**
+     * Constructor
+     * @param path path to granule directory
+     */
+     public Granule(File path) {
         this.path = path;
         this.name = path.getName() ;
         System.out.print("Granule " + this.name);
@@ -41,36 +91,38 @@ public class Granule {
         if(listOfFiles != null) {
             for (int p = 0; p < listOfFiles.length; p++) {
                 if (listOfFiles[p].isDirectory() ) {
-                    if (listOfFiles[p].getName().equals("IMG_DATA")) {
+                    if (listOfFiles[p].getName().equals(Sen2VMConstants.IMG_DATA)) {
                         loadImages(listOfFiles[p]) ;
                     }
-                    if (listOfFiles[p].getName().equals("GEO_DATA")) {
+                    if (listOfFiles[p].getName().equals(Sen2VMConstants.GEO_DATA_GR)) {
                         loadGrids(listOfFiles[p]) ;
                     }
                 } else if (listOfFiles[p].isFile()) {
                     this.path_mtd = listOfFiles[p] ;
-                    loadMTDinformations() ;
+                    // loadMTDinformations() ;
                 }
             }
         }
-        System.out.println();
-
     }
 
+    /**
+     * Get Granule Name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Get Detector Name
+     */
     public String getDetector() {
         return this.detector;
     }
 
-    private void loadMTDinformations() {
+    private void loadMTDinformations() throws Sen2VMException {
         // [TODO]
-        this.pixelOrigin = 1 ;
-        this.granulePosition = 100 ;
-        this.granuleDimensions_nrows = new ArrayList<Integer>() {{add(50);add(50);add(50);}};
-        this.granuleDimensions_ncols = new ArrayList<Integer>(){{add(100);add(100);add(100);}};
+        GranuleManager granuleManager = GranuleManager.getInstance();
+        granuleManager.initGranuleManager(this.path_mtd.toString());
     }
 
     private void loadImages(File img_data) {
@@ -79,35 +131,48 @@ public class Granule {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
             String bandName = name[name.length-1];
             int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
-            // System.out.println(bandName + ": " + list_img[i].getName());
             this.images[indexBand] = list_img[i] ;
         }
     }
 
-    private void loadGrids(File geo_data) {
+     /*
+     * Get image in images array by index of a specific band
+     * return path file
+     */
+     private void loadGrids(File geo_data) {
         File[] list_img = geo_data.listFiles();
-        System.out.println("Number of grids already existing: " + String.valueOf(list_img.length));
+        System.out.println(" --> Number of grids already existing: " + String.valueOf(list_img.length));
         for (int i = 0; i < list_img.length; i++) {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
             String bandName = name[name.length-1];
             int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
-            // System.out.println(bandName + ": " + list_img[i].getName());
             this.images[indexBand] = list_img[i] ;
         }
     }
 
-    public File getImage(BandInfo band) {
+     /*
+     * Get image in images array by index of a specific band
+     * return path file
+     */
+     public File getImage(BandInfo band) {
         String bandName = band.getName();
         int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
         return this.images[indexBand];
     }
 
-    public File getGrid(String detector, String band) {
+    /*
+     * Get geo grid in geo grids array by index of a specific band
+     * return path file
+     */
+     public File getGrid(String band) {
         int indexBand = BandInfo.valueOf(band).ordinal();
-        int indexDetector = DetectorInfo.valueOf(detector).ordinal();
         return this.grids[indexBand];
     }
 
+    /*
+     * Get geo grid file name for this granule and a specific band
+     * return path file
+     */
     public Map<String, Object> infoForGridDirectLocation(String detector, String band) {
         Map<String, Object> info = new HashMap<>();
         info.put("pixelOrigin", this.pixelOrigin);
@@ -127,6 +192,10 @@ public class Granule {
         return info;
     }
 
+    /*
+     * Get geo grid file name for this granule and a specific band
+     * return path file
+     */
     public String getCorrespondingGeoFileName(BandInfo band) {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         if(geo_data.mkdir()) {

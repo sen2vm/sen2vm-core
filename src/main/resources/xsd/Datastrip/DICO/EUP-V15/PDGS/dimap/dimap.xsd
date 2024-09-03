@@ -3307,7 +3307,7 @@ Information is provided on QL geometry or on the full resolution</xs:documentati
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="">
+			<xs:element name="PIXEL_ORIGIN">
 				<xs:annotation>
 					<xs:documentation>First pixel number (convention)</xs:documentation>
 				</xs:annotation>

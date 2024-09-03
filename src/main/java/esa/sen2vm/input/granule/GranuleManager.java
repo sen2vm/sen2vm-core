@@ -151,19 +151,53 @@ public class GranuleManager {
             throw exception;
         }
 
+        System.out.println(pixel_origin);
+        System.out.println(granule_position);
+        System.out.println("10 x:" + String.valueOf(sizeRes10[0]));
+        System.out.println("10 y:" + String.valueOf(sizeRes10[1]));
+        System.out.println("20 x:" +String.valueOf(sizeRes20[0]));
+        System.out.println("20 y:" +String.valueOf(sizeRes20[1]));
+        System.out.println("60 x:" +String.valueOf(sizeRes60[0]));
+        System.out.println("60 y:" +String.valueOf(sizeRes60[1]));
+
+
         System.out.println();
         LOGGER.info("\n ------ \n" );
     }
 
-    public int[] computeBRPixel(int resolution) {
+    public int[] getBRpixel(double resolution) {
         int[] pixel = null ;
-        if (resolution == Sen2VMConstants.RESOLUTION_10M) {
-            pixel = new int[]{ granule_position + sizeRes10[0], sizeRes10[1]};
-        } else if (resolution == Sen2VMConstants.RESOLUTION_20M) {
-            pixel = new int[]{ (granule_position - pixel_origin)/2 + pixel_origin + sizeRes10[0], sizeRes10[1]};
-        } else {
-            pixel = new int[]{ (granule_position - pixel_origin)/6 + pixel_origin + sizeRes10[0], sizeRes10[1]};
+        System.out.println(resolution);
+        System.out.println(Sen2VMConstants.RESOLUTION_10M);
+
+        switch((int) resolution){
+            case Sen2VMConstants.RESOLUTION_10M:
+                pixel = new int[]{ this.granule_position + this.sizeRes10[0], this.sizeRes10[1]};
+            case Sen2VMConstants.RESOLUTION_20M:
+                pixel = new int[]{ (this.granule_position - this.pixel_origin)/2 + this.pixel_origin + this.sizeRes10[0], this.sizeRes10[1]};
+            default:
+                pixel = new int[]{ (this.granule_position - this.pixel_origin)/6 + this.pixel_origin + this.sizeRes10[0], this.sizeRes10[1]};
+
         }
+
+
+        System.out.println("Pixel max DS x:" + String.valueOf(pixel[0]));
+        System.out.println("Pixel max DS y:" + String.valueOf(pixel[1]));
+
+
+        return pixel ;
+    }
+
+    public int[] getULpixel(double resolution) {
+        int[] pixel = null ;
+        System.out.println(resolution);
+        System.out.println(Sen2VMConstants.RESOLUTION_10M);
+
+        pixel = new int[]{this.granule_position, this.pixel_origin};
+
+        System.out.println("Pixel max DS x:" + String.valueOf(pixel[0]));
+        System.out.println("Pixel max DS y:" + String.valueOf(pixel[1]));
+
         return pixel ;
     }
 }

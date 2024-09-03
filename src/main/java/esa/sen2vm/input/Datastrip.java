@@ -35,6 +35,12 @@ public class Datastrip {
                     this.path_mtd = listOfFiles[p] ;
                     loadMTDinformations() ;
                 }
+
+                if (listOfFiles[p].getName().equals(Sen2VMConstants.GEO_DATA_DS)) {
+                    // loadVRTs(listOfFiles[p]) ;
+                    // TODO
+                    System.out.println("GEO DATA EXISTS IN DS");
+                }
             }
         }
     }

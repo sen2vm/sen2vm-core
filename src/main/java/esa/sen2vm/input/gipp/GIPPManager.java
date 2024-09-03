@@ -95,10 +95,18 @@ public class GIPPManager {
      * @throws Sen2VMException
      */
     public void setGippFolderPath(String gippFolder, List<BandInfo> bands) throws Sen2VMException {
-        gippFileManager = new GIPPFileManager(gippFolder);
-        viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
-        LOGGER.info("Get through GIPP folder: "+ gippFolder);
-        loadAllGIPP(bands);
+        try {
+
+            System.out.println(gippFolder);
+
+            gippFileManager = new GIPPFileManager(gippFolder);
+            viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
+            LOGGER.info("Get through GIPP folder: "+ gippFolder);
+            loadAllGIPP(bands);
+        } catch (Exception e) {
+            Sen2VMException exception = new Sen2VMException(e.getMessage(), e);
+            throw exception;
+        }
     }
 
     /*

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
+import java.util.Arrays;
 
 import java.io.File;
 
@@ -16,8 +17,19 @@ import org.gdal.gdalconst.gdalconst;
 import org.gdal.osr.SpatialReference;
 import org.gdal.gdal.BuildVRTOptions;
 
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 public class OutputFileManager
 {
+    /**
+     * Get sen2VM logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(OutputFileManager.class.getName());
+
     protected Dataset dataset = null;
     protected Driver driver = null;
     protected Double noDataRasterValue = Double.NaN;
@@ -33,7 +45,7 @@ public class OutputFileManager
 
     public void create_archi() {
         // File dossier = new File(this.filepath + File.separator + "dir");
-        //boolean res = dossier.mkdir();
+        // boolean res = dossier.mkdir();
     }
 
 
@@ -51,7 +63,7 @@ public class OutputFileManager
         Band band1;
         Band band2;
 
-        ds = driver.Create(fileName, nbPixels, nbLines, nbBand, gdalconst.GDT_Int32);
+        ds = driver.Create(fileName, nbPixels, nbLines, nbBand, gdalconst.GDT_Float64);
 
         GdalGridFileInfo fileInfo = new GdalGridFileInfo();
         fileInfo.setDs(ds);
@@ -78,6 +90,10 @@ public class OutputFileManager
                 band2_online[j] = band2val[i][j];
             }
 
+            System.out.println(i);
+            System.out.println(Arrays.toString(band1_online));
+            System.out.println(Arrays.toString(band2_online));
+
             band1.WriteRaster(0, i, nbPixels, 1, band1_online);
             band2.WriteRaster(0, i, nbPixels, 1, band2_online);
         }
@@ -86,7 +102,7 @@ public class OutputFileManager
         ds.GetRasterBand(2).FlushCache();
         close(ds, band1, band2);
 
-        System.out.println("Tiff saved in:" + fileName);
+        System.out.println("Tiff saved in: " + fileName);
     }
 
 
@@ -112,7 +128,7 @@ public class OutputFileManager
         return gtInfo;
     }
 
-    public void createVRT(String vrtFilePath, Vector<String> inputVRTs){
+    public void createVRT(String vrtFilePath, Vector<String> inputTIFs){
 
         final Vector<String> buildVRTOptions = new Vector<String>();
 
@@ -121,8 +137,10 @@ public class OutputFileManager
         // buildVRTOptions.add("start granule"); // surement deja fait
 
         gdal.AllRegister();
-        final Dataset dataset = gdal.BuildVRT(vrtFilePath, inputVRTs, new BuildVRTOptions( buildVRTOptions));
+        final Dataset dataset = gdal.BuildVRT(vrtFilePath, inputTIFs, new BuildVRTOptions(buildVRTOptions));
         dataset.delete();
+        LOGGER.info("VRT saved in: " + vrtFilePath);
+
     }
 
 

@@ -1,5 +1,6 @@
 package esa.sen2vm;
 
+import java.io.File;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -25,9 +26,9 @@ public class ConfigurationFile extends InputFileManager
     private String pod;
     private String operation;
     private boolean refining;
-    private float stepBand10m;
-    private float stepBand20m;
-    private float stepBand60m;
+    private float band10m;
+    private float band20m;
+    private float band60m;
     private float ul_x;
     private float ul_y;
     private float lr_x;
@@ -39,7 +40,7 @@ public class ConfigurationFile extends InputFileManager
      * Constructor
      * @param filepath Path to the configuration file to parse
      */
-    public ConfigurationFile(String filepath) {
+    public ConfigurationFile(String filepath) throws Sen2VMException {
         this.filepath = filepath;
         if(check_schema(this.filepath, "src/test/resources/schema_config.json")) {
             parse(this.filepath);
@@ -50,27 +51,27 @@ public class ConfigurationFile extends InputFileManager
      * Parse configuration file
      * @param filepath Path to the configuration file to parse
      */
-    public void parse(String filepath) {
+    public void parse(String filepath) throws Sen2VMException {
         LOGGER.info("Parsing file "+ filepath);
 
         try (InputStream fis = new FileInputStream(filepath)) {
 
             JSONObject jsonObject = new JSONObject(new JSONTokener(fis));
 
-            this.l1bProduct = jsonObject.getString("l1b_product");
-            this.gippFolder = jsonObject.getString("gipp_folder");
+            this.l1bProduct = checkPath(jsonObject.getString("l1b_product"));
+            this.gippFolder = checkPath(jsonObject.getString("gipp_folder"));
             this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
-            this.dem = jsonObject.getString("dem");
-            this.geoid = jsonObject.getString("geoid");
+            this.dem = checkPath(jsonObject.getString("dem"));
+            this.geoid = checkPath(jsonObject.getString("geoid"));
             this.iers = jsonObject.getString("iers");
             this.pod = jsonObject.getString("pod");
             this.operation = jsonObject.getString("operation");
             this.refining = jsonObject.getBoolean("deactivate_available_refining");
 
             JSONObject steps = jsonObject.getJSONObject("steps");
-            this.stepBand10m = steps.getFloat("10m_bands");
-            this.stepBand20m = steps.getFloat("20m_bands");
-            this.stepBand60m = steps.getFloat("60m_bands");
+            this.band10m = steps.getFloat("10m_bands");
+            this.band20m = steps.getFloat("20m_bands");
+            this.band60m = steps.getFloat("60m_bands");
 
             JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
             this.ul_x = inverseLoc.getFloat("ul_x");
@@ -80,12 +81,51 @@ public class ConfigurationFile extends InputFileManager
             this.referential = inverseLoc.getString("referential");
             this.outputFolder = inverseLoc.getString("output_folder");
 
-            // TODO add verification of each parameter
-            // for file see if it does really exist
-            // for value, if possible, check that value is in the range of possible value
-
+        } catch (Sen2VMException e) {
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /*
+     * Check that the input path exist, if not
+     * @param filepath the path we want to check if it does exist
+     */
+     public String checkPath(String filepath) throws Sen2VMException {
+        File file = new File(filepath);
+        if (!file.exists()) {
+            throw new Sen2VMException("Path " + file + " does not exist");
+        }
+        return filepath;
+     }
+
+    /*
+     * Search the datastrip metadata file path inside product folder
+     */
+    public String getDatastripFilePath() throws Sen2VMException {
+        File datastripFolder = new File(l1bProduct + "/" + Sen2VMConstants.DATASTRIP_MAIN_FOLDER);
+        if (!datastripFolder.exists()) {
+            throw new Sen2VMException("Datastrip folder " + datastripFolder + " does not exist");
+        }
+
+        File[] directories = datastripFolder.listFiles();
+        String datastripFilePath = null;
+        for (File dir: directories) {
+            if (!dir.isDirectory()) {
+                continue;
+            }
+            String filename = dir.getName().replaceAll("_N.*", "").replace(Sen2VMConstants.DATASTRIP_MSI_TAG, Sen2VMConstants.DATASTRIP_METADATA_TAG);
+            datastripFilePath = dir + "/" + filename + Sen2VMConstants.xml_extention_small;
+        }
+
+        File datastripFile = new File(datastripFilePath);
+        if (datastripFile.exists()) {
+            LOGGER.info("Find the following datastrip metadata file: " + datastripFilePath);
+            return datastripFilePath;
+        }
+        else {
+            throw new Sen2VMException("No datastrip metadata file found inside folder: " + datastripFolder);
         }
     }
 
@@ -104,28 +144,6 @@ public class ConfigurationFile extends InputFileManager
     }
 
     /*
-     * Get the step of 10m band
-     */
-    public Float getStepBand10m() {
-       return this.stepBand10m;
-    }
-
-    /*
-     * Get the step of 20m band
-     */
-    public Float getStepBand20m() {
-       return this.stepBand20m;
-    }
-
-    /*
-     * Get Float step of 60m band
-     */
-    public Float getStepBand60m() {
-       return this.stepBand60m;
-    }
-
-
-    /*
      * Get the DEM folder
      */
     public String getDem() {
@@ -142,8 +160,56 @@ public class ConfigurationFile extends InputFileManager
     /*
      * Get the IERS folder
      */
-    public String getIers() {
-       return iers;
+    public String getIers() throws Sen2VMException {
+       return checkPath(iers);
     }
+
+    /*
+     * Get the POD folder
+     */
+    public String getPod() throws Sen2VMException {
+       return checkPath(pod);
+    }
+
+     /*
+     * Get the step of 10m band
+     */
+    public Float getStepBand10m() {
+       return this.band10m;
+    }
+
+    /*
+     * Get the step of 20m band
+     */
+    public Float getStepBand20m() {
+       return this.band20m;
+    }
+
+    /*
+     * Get Float step of 60m band
+     */
+    public Float getStepBand60m() {
+       return this.band60m;
+    }
+
+    /*
+     * Get Float step from a given band info
+     */
+    public Float getStepFromBandInfo(BandInfo bandInfo) {
+        Float step ;
+        switch((int) bandInfo.getPixelHeight()){
+            case Sen2VMConstants.RESOLUTION_10M:
+                step = this.getStepBand10m() ;
+                break;
+            case Sen2VMConstants.RESOLUTION_20M:
+                step = this.getStepBand20m() ;
+                break;
+            default:
+                step = this.getStepBand60m() ;
+                break;
+        }
+        return step ;
+    }
+
 }
 

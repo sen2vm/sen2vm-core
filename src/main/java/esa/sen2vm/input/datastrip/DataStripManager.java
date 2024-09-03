@@ -84,7 +84,7 @@ public class DataStripManager {
     /**
      * List of granule positon by Detector in Datatrip (10m)
      */
-    protected Map[] positionGranuleByDetector ;
+    protected static Map[] positionGranuleByDetector ;
 
     /**
      * Min granule line found in Datastrip (10m)
@@ -219,49 +219,43 @@ public class DataStripManager {
             for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule gr : gr_list) {
                 granulePosition.put(gr.getGranuleId(), gr.getPOSITION());
             }
-            /*Map.Entry<String, Integer> min = Collections.min(granulePosition.entrySet(),  Map.Entry.comparingByValue());
-            Map.Entry<String, Integer> max = Collections.max(granulePosition.entrySet(),  Map.Entry.comparingByValue());
 
-
-            String minGranulePath = configFile.getL1bProduct() + "/GRANULE/";
-            String granuleExempleFolder = granulesFolder + "S2B_OPER_MSI_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08_N05.11/S2B_OPER_MTD_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08.xml" ;
-            LOGGER.info("Granule" + granuleExempleFolder);
-
-            GranuleManager granuleManager = GranuleManager.getInstance();
-            granuleManager.initGranuleManager(granuleExempleFolder);
-
-
-            System.out.println("min " + min);*/
             positionGranuleByDetector[Integer.valueOf(det.getDetectorId()) - 1] = granulePosition;
         }
 
-        /*for (DetectorInfo detectorInfo: DetectorInfo.getAllDetectorInfo()) {
-            for (BandInfo bandInfo: BandInfo.getAllBandInfo()) {
-                String sensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
-                System.out.println(sensor);
-                minLinePerSensor.put(sensor, 1.0);
-                maxLinePerSensor.put(sensor, 1.0);
-            }
-        }*/
-        System.out.println("List OK");
-        System.out.println("List OK");
+        System.out.println("Listes granules par det OK");
     }
 
-    public void computeFullSize(String granulesFolder) {
-        for (Map granulesDetector : positionGranuleByDetector) {
-            Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
-            Map.Entry<String, Integer> max = Collections.max(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
-            System.out.println("min " + min);
-        }
+    public static synchronized int[] computeFullSize(String granulesFolder, BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException {
+        System.out.println("computeFullSize");
+        System.out.println(detectorInfo.getName());
+        System.out.println();
+        Map granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
+        Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+        Map.Entry<String, Integer> max = Collections.max(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+
+        String minGranuleXML = granulesFolder + min.getKey() ;
+        String maxGranuleXML = granulesFolder + max.getKey() ;
+
+
+        String exGranuleXML = granulesFolder + "S2B_OPER_MSI_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08_N05.11/S2B_OPER_MTD_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08.xml" ;
+        LOGGER.info("ex granule" + exGranuleXML);
+        GranuleManager granuleManager = GranuleManager.getInstance();
+        granuleManager.initGranuleManager(exGranuleXML);
+
+        System.out.println("Checkpoint");
+
+        int[] ULpixel =  {1, 1} ; // granuleManager.getULpixel(bandInfo.getPixelHeight());
+        int[] BRpixel = {1200, 666} ; // granuleManager.getBRpixel(bandInfo.getPixelHeight());
+        int[] bb = {ULpixel[0], ULpixel[1], BRpixel[0], BRpixel[1]} ;
+        return bb ;
+
     }
 
 
 
     public static synchronized void initOrekitRessources(String iersDirectoryPath) throws Sen2VMException {
 		try {
-		    System.out.println("initOrekitRessources");
-		    System.out.println(iersDirectoryPath);
-
 			if (iersDirectoryPath != null && !iersDirectoryPath.equals("")) {
 				File iersDir = new File(iersDirectoryPath);
 				if (!iersDir.exists()) {
@@ -280,8 +274,7 @@ public class DataStripManager {
 			}
 			// set up default Orekit data
 			File orekitDataDir = new File(System.getProperty("user.dir") + "/" + Sen2VMConstants.OREKIT_DATA_DIR);
-			System.out.println(orekitDataDir);
-		    if (orekitDataDir == null || (!orekitDataDir.exists())) {
+			if (orekitDataDir == null || (!orekitDataDir.exists())) {
 			    throw new Sen2VMException("Orekit data not found");
 			}
 			DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
@@ -290,7 +283,7 @@ public class DataStripManager {
 			// we fix the EOP continuity threshold to one year instead of the normal gap ...
 			FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
 		} catch (Exception e) {
-			throw new Sen2VMException("Something went wrong during initialization of orekit ressources");
+			throw new Sen2VMException("Something went wrong during initialization of orekit ressources ", e);
 		}
 	}
 
@@ -437,7 +430,7 @@ public class DataStripManager {
         double defaultReferenceLineDouble = 1d;
         boolean found = false;
         // We get the value of a half line period for the given band resolution
-        double linePeriod = getNewPositionFromResolution(getLinePeriod(), Sen2VMConstants.PIXEL_HEIGHT_10, bandInfo.getPixelHeight());
+        double linePeriod = getNewPositionFromResolution(getLinePeriod(), Sen2VMConstants.RESOLUTION_10M_DOUBLE, bandInfo.getPixelHeight());
         double halfLinePeriod = linePeriod / 2;
         if (sensorConfiguration != null) {
             Time_Stamp timeStampElement = sensorConfiguration.getTime_Stamp();
@@ -454,7 +447,7 @@ public class DataStripManager {
                                     found = true;
                                     int refLineInt = detector.getREFERENCE_LINE();
                                     if (refLineInt != 0 && refLineInt != 1) {
-                                        referenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.PIXEL_HEIGHT_10, bandInfo.getPixelHeight());
+                                        referenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.RESOLUTION_10M_DOUBLE, bandInfo.getPixelHeight());
                                     }
                                     XMLGregorianCalendar referenceDateXML = detector.getGPS_TIME();
                                     referenceDate = new AbsoluteDate(referenceDateXML.toString(), gps);
@@ -464,7 +457,7 @@ public class DataStripManager {
                                     // If bypass is activated, we will use the last value found for missing detector
                                     int refLineInt = detector.getREFERENCE_LINE();
                                     if (refLineInt != 0 && refLineInt != 1) {
-                                        defaultReferenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.PIXEL_HEIGHT_10,
+                                        defaultReferenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.RESOLUTION_10M_DOUBLE,
                                                 bandInfo.getPixelHeight());
                                     }
                                     XMLGregorianCalendar referenceDateXML = detector.getGPS_TIME();
@@ -527,4 +520,6 @@ public class DataStripManager {
         }
         return linePeriod;
     }
+
+
 }
