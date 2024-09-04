@@ -19,10 +19,10 @@ public class DirectLocGrid {
     protected ArrayList<Double> gridPixels ;
     protected ArrayList<Double> gridLines ;
 
-    public DirectLocGrid(int pixelOffset, int lineOffset,
+    public DirectLocGrid(int lineOffset, int pixelOffset,
                          Float step,
-                         int pixelOrigin, int lineOrigin,
-                         int sizePixels, int sizeLines) {
+                         int lineOrigin, int pixelOrigin,
+                         int sizeLines, int sizePixels) {
         this.pixelOffset = pixelOffset;
         this.lineOffset = lineOffset;
         this.step = step;
@@ -90,31 +90,36 @@ public class DirectLocGrid {
     }
 
     public double[][][] extractPointsDirectLoc(double[][] directLocGrid, int startGranule, int sizeGranule) {
+
+
         Boolean insideGranule = true;
 
-        int i_grid = 0;
+        Float res_i = ((startGranule - 1 + this.step / 2 ) / this.step);
+        int grid_row_start = (int) Math.floor(res_i) ;
+        Float res_e = ((startGranule - 1 + sizeGranule + this.step / 2 ) / this.step);
+        int grid_row_end = (int) Math.ceil(res_e) ;
 
-        int grid_row_start = (int) ((startGranule - 1) / this.step);
-        int grid_row_end = (int) ((startGranule - 1 + sizeGranule) / this.step + 1);
         System.out.println("GRID ROW: " +String.valueOf(grid_row_start) + " -> " + String.valueOf(grid_row_end));
 
-
         int nbLines = grid_row_end - grid_row_start ;
+
         int nbCols = this.gridPixels.size();
+        System.out.println("nbLines" + String.valueOf(nbLines) + "; nbCols" + String.valueOf(nbCols));
 
         double[][][] subDirectLocGrid = new double[2][nbLines][nbCols];
 
-        for (int l = grid_row_start; l < nbLines; l++) {
+        for (int l = 0; l < nbLines; l++) {
             for (int c = 0; c < nbCols; c++) {
-                subDirectLocGrid[0][l][c] = directLocGrid[l*nbCols + c][0] ;
-                subDirectLocGrid[1][l][c] = directLocGrid[l*nbCols + c][1] ;
+                System.out.println("nb :" + String.valueOf(l*nbCols + c));
+
+                subDirectLocGrid[0][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][0] ;
+                subDirectLocGrid[1][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][1] ;
             }
         }
-        System.out.println("Granule: " +String.valueOf(startGranule) + " -> " + String.valueOf(sizeGranule));
+        System.out.println("Granule: " +String.valueOf(startGranule) + " -> " + String.valueOf(startGranule + sizeGranule));
         System.out.print("start: " + String.valueOf(grid_row_start) + " (");
         System.out.print(String.valueOf(this.gridLines.get(grid_row_start)) + ")");
         System.out.print(" -> end: " + String.valueOf(grid_row_end) + " (");
-        System.out.println(String.valueOf(this.gridLines.get(grid_row_end)) + ")");
         return subDirectLocGrid;
     }
 

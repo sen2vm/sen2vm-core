@@ -249,10 +249,7 @@ public class DataStripManager {
         System.out.println("Listes granules par det OK");
     }
 
-    public static synchronized int[] computeFullSize(String granulesFolder, BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException {
-        System.out.println("computeFullSize");
-        System.out.println(detectorInfo.getName());
-        System.out.println();
+    public int[] computeFullSize(String granulesFolder, BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException {
         Map granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
         Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
         Map.Entry<String, Integer> max = Collections.max(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
@@ -260,15 +257,13 @@ public class DataStripManager {
         String minGranuleXML = granulesFolder + min.getKey() ;
         String maxGranuleXML = granulesFolder + max.getKey() ;
 
-
         String exGranuleXML = granulesFolder + "S2B_OPER_MSI_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08_N05.11/S2B_OPER_MTD_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08.xml" ;
         LOGGER.info("ex granule" + exGranuleXML);
-        GranuleManager granuleManager = GranuleManager.getInstance();
-        granuleManager.initGranuleManager(exGranuleXML);
+        GranuleManager granuleManager = new GranuleManager(exGranuleXML);
 
         System.out.println("Checkpoint");
 
-        int[] ULpixel =  {1, 1} ; // granuleManager.getULpixel(bandInfo.getPixelHeight());
+        int[] ULpixel = {1,1} ; //granuleManager.getULpixel(bandInfo.getPixelHeight());
         int[] BRpixel = {1200, 666} ; // granuleManager.getBRpixel(bandInfo.getPixelHeight());
         int[] bb = {ULpixel[0], ULpixel[1], BRpixel[0], BRpixel[1]} ;
         return bb ;
@@ -277,7 +272,7 @@ public class DataStripManager {
 
 
 
-    public static synchronized void initOrekitRessources(String iersDirectoryPath) throws Sen2VMException {
+    public void initOrekitRessources(String iersDirectoryPath) throws Sen2VMException {
 		try {
 			if (iersDirectoryPath != null && !iersDirectoryPath.equals("")) {
 				File iersDir = new File(iersDirectoryPath);
@@ -660,21 +655,6 @@ public class DataStripManager {
         // Polynomial model of refining corrections are computed with that the time centered on this value;
         // i.e. this time is 0 for the polynoms
         return new AbsoluteDate(datastripStartDateUTC, halfDatastripDuration);
-    }
-
-    /**
-     * Compute min and max date line
-     */
-    private void computeMinMaxLinePerSensor() {
-        minLinePerSensor = new HashMap<String, Double>();
-        maxLinePerSensor = new HashMap<String, Double>();
-//        for (DetectorInfo detectorInfo: DetectorInfo.getAllDetectorInfo()) {
-//            for (BandInfo bandInfo: BandInfo.getAllBandInfo()) {
-//                String sensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
-//                minLinePerSensor.put(sensor, 1.0);
-//                maxLinePerSensor.put(sensor, 1.0);
-//            }
-//        }
     }
 
     /*

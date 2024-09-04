@@ -28,14 +28,10 @@ public class Datastrip {
 
         // this.vrt = new File[];
 
+
         File[] listOfFiles = this.path.listFiles();
         if(listOfFiles != null) {
             for (int p = 0; p < listOfFiles.length; p++) {
-                if (listOfFiles[p].isFile()) {
-                    this.path_mtd = listOfFiles[p] ;
-                    loadMTDinformations() ;
-                }
-
                 if (listOfFiles[p].getName().equals(Sen2VMConstants.GEO_DATA_DS)) {
                     // loadVRTs(listOfFiles[p]) ;
                     // TODO
@@ -52,10 +48,6 @@ public class Datastrip {
         return this.name;
     }
 
-    private void loadMTDinformations() {
-
-    }
-
     /**
      * Get name of the future vrt from a detector and a band in {Datastrip}/GEO_DATA (create it if none)
      * @param detector
@@ -63,14 +55,21 @@ public class Datastrip {
      */
     public String getCorrespondingVRTFileName(DetectorInfo detector, BandInfo band) {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
+        System.out.println(geo_data.toPath());
+        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + ".vrt";
+        System.out.println("suf: " + suffix);
+        System.out.println(this.path_mtd);
+        String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_GEO_");
+        System.out.println("vrt: " + vrt);
+
         if(geo_data.mkdir()) {
             System.out.println("Already Existing");
         }
+        /*
 
-        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + ".vrt";
-        String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_GEO_");
-        return new File(geo_data.getPath() + File.separator + vrt).getPath();
 
+        return new File(geo_data.getPath() + File.separator + vrt).getPath();*/
+        return this.name;
     }
 
 }

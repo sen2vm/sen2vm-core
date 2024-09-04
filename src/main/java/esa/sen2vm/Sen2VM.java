@@ -193,39 +193,15 @@ public class Sen2VM
                 demManager
             );
 
-            double[][] pixels = {{0.6, 0.25},
-                                 {55650, 424}};
-            LOGGER.info("sensorList="+sensorList.get(0).getName());
-            LOGGER.info("sensorList="+sensorList.get(0).getLineDatation());
-
-            double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
-            showPoints(pixels, grounds);
-
-            LOGGER.info("End Sen2VM");
-
-
-
-
-
-            System.out.println();
-            System.out.println();
-            System.out.println("Start");
-            System.out.println();
 
 
 
             // Safe Manager
-            SafeManager sm = new SafeManager();
+            SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
+            Datastrip ds = sm.getDatastrip() ;
 
-            // Load all images and geo grid already existing (granule x det x band)
-            sm.setAndProcessDataStrip(configFile.getL1bProduct() + "/" + Sen2VMConstants.DATASTRIP);
-            sm.setAndProcessGranules(configFile.getL1bProduct() + "/" + Sen2VMConstants.GRANULE);
             // sm.checkEmptyGrid(detectors, bands) ;
-
             // VERFIER QUIL Y A QU DOSSIER S2* DANS DS
-
-            // Datastrip Information
-            Datastrip ds = sm.getDatastrip();
 
             // GIPP
             int pixelOffset = 0;
@@ -243,17 +219,18 @@ public class Sen2VM
                     LOGGER.info("### DET " + detectorInfo.getName() );
 
                     int[] BBox = dataStripManager.computeFullSize(granulesFolder, bandInfo, detectorInfo);
-                    int startPixel = BBox[0] ;
-                    int startLine = BBox[1] ;
 
-                    int fullSizeLine = BBox[2];
-                    int fullSizePixel = BBox[3];
+                    int startLine = BBox[0] ;
+                    int startPixel = BBox[1] ;
+                    int sizeLine = BBox[2] - BBox[0];
+                    int sizePixel = BBox[3] - BBox[1];
+                    System.out.println(step);
 
                     DirectLocGrid dirGrid = new DirectLocGrid(pixelOffset, lineOffset, step,
-                                startPixel, startLine, fullSizePixel, fullSizeLine);
+                                startPixel, startLine, sizeLine, sizePixel);
 
                     double[][] sensorGrid = dirGrid.get2Dgrid();
-                    System.out.println(Arrays.deepToString(sensorGrid));
+                    // System.out.println(Arrays.deepToString(sensorGrid));
 
                     ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detectorInfo, bandInfo);
                     System.out.print("Number of granules found: ");
@@ -261,19 +238,18 @@ public class Sen2VM
 
                     LOGGER.info("pixels="+sensorGrid[0][0]+" "+sensorGrid[0][1]);
                     double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(0), sensorGrid);
-                    System.out.println(Arrays.deepToString(directLocGrid));
                     LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
 
+                    showPoints(sensorGrid, directLocGrid);
 
                     Vector<String> inputTIFs = new Vector<String>();
-                    for(int g = 0 ; g < 1; g++ ) { // granulesToCompute.size();
+                    for(int g = 0 ; g < granulesToCompute.size(); g++ ) {
                         Granule gr = granulesToCompute.get(g) ;
 
-                        int startGranule = 1; // MTD granule
-                        int sizeGranule = 1000; // MTD granule
+                        int startGranule = 1000; // MTD granule
+                        int sizeGranule = 200; // MTD granule
 
                         double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
-                        System.out.println(Arrays.deepToString(subDirectLocGrid));
                         String srs = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433],AUTHORITY[\"EPSG\",\"4326\"]]" ;
 
                         // Save in TIF
@@ -285,6 +261,9 @@ public class Sen2VM
                     }
 
                     // Create VRT
+                    LOGGER.info(ds.getName());
+                    LOGGER.info(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo));
+
                     outputFileManager.createVRT(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
 
                 }

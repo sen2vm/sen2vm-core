@@ -41,7 +41,15 @@ public class SafeManager {
     /**
      * Constructor
      */
-    public SafeManager() {
+    public SafeManager(String path, DataStripManager dataStripManager) {
+         // Inventory of the Datastrip
+         String datastrip_path = path  + "/" + Sen2VMConstants.DATASTRIP;
+         this.setAndProcessDataStrip(datastrip_path, dataStripManager);
+
+         // Inventory of the Granules
+         // Load all images and geo grid already existing (granule x det x band)
+         String granules_path = path + "/" + Sen2VMConstants.GRANULE;
+         this.setAndProcessGranules(granules_path);
     }
 
     /**
@@ -68,7 +76,7 @@ public class SafeManager {
      * Create Datastrip with corresponding information
      * @param path directory the datastrip
      */
-     public void setAndProcessDataStrip(String path) {
+     public void setAndProcessDataStrip(String path, DataStripManager dataStripManager) {
         this.dirDataStrip = new File(path);
 
         File[] listOfFiles = this.dirDataStrip.listFiles();

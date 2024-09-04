@@ -121,8 +121,7 @@ public class Granule {
 
     private void loadMTDinformations() throws Sen2VMException {
         // [TODO]
-        GranuleManager granuleManager = GranuleManager.getInstance();
-        granuleManager.initGranuleManager(this.path_mtd.toString());
+        GranuleManager granuleManager = new GranuleManager(this.path_mtd.toString());
     }
 
     private void loadImages(File img_data) {

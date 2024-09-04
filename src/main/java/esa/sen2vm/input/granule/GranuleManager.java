@@ -56,14 +56,10 @@ public class GranuleManager {
     protected File granuleFile = null;
 
     /**
-     * Unique GranuleManager instance
-     */
-    protected static GranuleManager singleton = null;
-
-    /**
      * Pixel origin
      */
     protected int pixel_origin;
+
     /**
      * Granule Start Position in DS
      */
@@ -73,33 +69,16 @@ public class GranuleManager {
      * Size of the granule for band res = 10
      */
     protected int[] sizeRes10 = null;
+
     /**
      * Size of the granule for band res = 20
      */
     protected int[] sizeRes20 = null;
+
     /**
      * Size of the granule for band res = 60
      */
     protected int[] sizeRes60 = null;
-
-
-    /**
-     * Get instance
-     * @return instance
-     */
-    public static synchronized GranuleManager getInstance() {
-        return singleton;
-    }
-
-    /**
-     * Init new GranuleManager instance
-     * @param sadXmlFilePath path to SAD XML file
-     * @throws Sen2VMException
-     */
-    public static synchronized GranuleManager initGranuleManager(String granuleFilePath) throws Sen2VMException {
-        singleton = new GranuleManager(granuleFilePath);
-        return singleton;
-    }
 
     /**
      * Constructor from SAD XML file

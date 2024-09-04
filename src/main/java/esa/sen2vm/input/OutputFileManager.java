@@ -29,7 +29,6 @@ public class OutputFileManager
      * Get sen2VM logger
      */
     private static final Logger LOGGER = Logger.getLogger(OutputFileManager.class.getName());
-
     protected Dataset dataset = null;
     protected Driver driver = null;
     protected Double noDataRasterValue = Double.NaN;
