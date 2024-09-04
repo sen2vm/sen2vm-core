@@ -194,12 +194,11 @@ public class DataStripManager {
 
             // Get quaternions and positions/velocities list from xml file
             computeSatelliteQList();
-            computeSatellitePVList(this.refiningInfo);
+            computeSatellitePVList(activateAvailableRefining);
             computeMinMaxLinePerSensor();
 
             // Instanciate dataSensingInfos that will be use for SimpleLocEngine
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
-            LOGGER.info("dataSensingInfos="+dataSensingInfos);
 
         } catch (JAXBException e){
             Sen2VMException exception = new Sen2VMException(e);
@@ -214,32 +213,27 @@ public class DataStripManager {
         }
     }
 
-    public static synchronized void initOrekitRessources(String iersDirectoryPath) throws Sen2VMException {
+    /**
+     * Load IERS file
+     * @param iersDirectoryPath path to the IERS directory
+     * @throws Sen2VMException
+     */
+    public static synchronized void initOrekitRessources(String iersFilePath) throws Sen2VMException {
 		try {
-			if (iersDirectoryPath != null && !iersDirectoryPath.equals("")) {
-				File iersDir = new File(iersDirectoryPath);
-				if (!iersDir.exists()) {
-					throw new Sen2VMException("Can't read IERS directory " + iersDirectoryPath);
+			if (iersFilePath != null && !iersFilePath.equals("")) {
+				File iersFile = new File(iersFilePath);
+				if (!iersFile.exists()) {
+					throw new Sen2VMException("Can't read IERS file " + iersFile);
 				}
-				File[] files = iersDir.listFiles();
-				if (files != null) {
-					for (File file : files) {
-						FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, file.getName());
-					}
-
-					if (files.length > 0) {
-						DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(iersDir));
-					}
-				}
+				FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
 			}
+
 			// set up default Orekit data
 			File orekitDataDir = new File(System.getProperty("user.dir") + "/" + Sen2VMConstants.OREKIT_DATA_DIR);
 			if (orekitDataDir == null || (!orekitDataDir.exists())) {
 			    throw new Sen2VMException("Orekit data not found");
 			}
 			DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
-
-			TimeScale timeScales = TimeScalesFactory.getUTC();
 
 			// When using a single IERS A bulletin some gaps may arise : to allow the use of such bulletin,
 			// we fix the EOP continuity threshold to one year instead of the normal gap ...
@@ -249,160 +243,13 @@ public class DataStripManager {
 		}
 	}
 
-    /**
-     * Fill satelliteQList using values from SAD XML file
-     * @throws Sen2VMException
-     */
-    protected void computeSatelliteQList() throws Sen2VMException {
-        satelliteQList = new ArrayList<TimeStampedAngularCoordinates>();
 
-        // This HashSet is used only to check a duplicate date in the quaternions
-        HashSet<AbsoluteDate> dateSet = new HashSet<AbsoluteDate>();
-
-        // Loop over Corrected Attitudes value list
-        List<Values> correctedAttitudeValueList = l1B_datastrip.getSatellite_Ancillary_Data_Info().getAttitudes().getCorrected_Attitudes().getValues();
-        for (Values values : correctedAttitudeValueList) {
-            XMLGregorianCalendar gpsTime = values.getGPS_TIME();
-            if (gpsTime == null) {
-                Sen2VMException se = new Sen2VMException(Sen2VMConstants.ERROR_QUATERNION_NULL_GPS);
-                throw se;
-            }
-            // Extract Quaternion values from XML
-            AbsoluteDate attitudeDate = new AbsoluteDate(gpsTime.toString(), gps);
-            List<Double> quaternionValues = values.getQUATERNION_VALUES();
-            Double q1 = quaternionValues.get(0);
-            Double q2 = quaternionValues.get(1);
-            Double q3 = quaternionValues.get(2);
-            Double q0 = quaternionValues.get(3);
-
-            Rotation rotation = new Rotation(q0, q1, q2, q3, true);
-            TimeStampedAngularCoordinates pair = new TimeStampedAngularCoordinates(attitudeDate, rotation, Vector3D.ZERO, Vector3D.ZERO);
-
-            if (dateSet.contains(attitudeDate)) {
-                // duplicate data for the current ephemeris date => we aldeady add this quaternion => we just ignore it
-                LOGGER.warning("Duplicate quaternion with date : " + values.getGPS_TIME().toString());
-            } else {
-                dateSet.add(attitudeDate);
-                satelliteQList.add(pair);
-            }
-        }
-    }
-
-    /**
-     * Fill satellitePVList using values from SAD XML file
-     * @throws Sen2VMException
-     */
-    protected void computeSatellitePVList(RefiningInfo refiningInfo) throws Sen2VMException {
-        try {
-            // Init of used frames
-            Frame eme2000 = FramesFactory.getEME2000();
-            Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, true);
-
-            satellitePVList = new ArrayList<TimeStampedPVCoordinates>();
-            HashSet<AbsoluteDate> dateSet = new HashSet<AbsoluteDate>();
-
-            // Loop over ephemeris value list
-            List<GPS_Point> ephemerisGpsPointList = l1B_datastrip.getSatellite_Ancillary_Data_Info().getEphemeris().getGPS_Points_List().getGPS_Point();
-            for (GPS_Point ephemeris : ephemerisGpsPointList) {
-                XMLGregorianCalendar gpsTime = ephemeris.getGPS_TIME();
-                if (gpsTime == null) {
-                    continue;
-                }
-                // extract PV from XML objects
-                AbsoluteDate ephemerisDate = new AbsoluteDate(gpsTime.toString(), gps);
-                List<Long> positionValues = ephemeris.getPOSITION_VALUES().getValue();
-                List<Long> velocityValues = ephemeris.getVELOCITY_VALUES().getValue();
-
-                // Get position in ITRF (defined in mm)
-                Double px = positionValues.get(0).doubleValue() / 1000d;
-                Double py = positionValues.get(1).doubleValue() / 1000d;
-                Double pz = positionValues.get(2).doubleValue() / 1000d;
-                Vector3D position = new Vector3D(px, py, pz);
-
-                // Get velocity in ITRF (defined in mm/s)
-                Double vx = velocityValues.get(0).doubleValue() / 1000d;
-                Double vy = velocityValues.get(1).doubleValue() / 1000d;
-                Double vz = velocityValues.get(2).doubleValue() / 1000d;
-                Vector3D velocity = new Vector3D(vx, vy, vz);
-                PVCoordinates pvITRF = new PVCoordinates(position, velocity);
-
-                // Compute the transformation from ITRF to EME2000 at the ephemerisDate
-                Transform transform = itrf.getTransformTo(eme2000, ephemerisDate);
-
-                PVCoordinates pvEME2000 = transform.transformPVCoordinates(pvITRF);
-
-                // Convert PV from ITRF to EME2000
-                TimeStampedPVCoordinates pair = new TimeStampedPVCoordinates(ephemerisDate, pvEME2000.getPosition(), pvEME2000.getVelocity(), Vector3D.ZERO);
-
-                if (dateSet.contains(ephemerisDate)) {
-                    // duplicate data for the current ephemeris date => we aldeady add this pv coordinate => we just ignore it
-                    System.out.println("Duplicate PV !" + ephemeris.getGPS_TIME().toString());
-                } else {
-                    // Compute refining corrections before updating satellite PVlist
-                    if (refiningInfo.isRefined()) {
-                        // Test if the polynoms and the acquisition center time  are not null before applying them
-                        if (refiningInfo.getEphemerisXpolyFunc() != null &&
-                            refiningInfo.getEphemerisYpolyFunc() != null &&
-                            refiningInfo.getEphemerisZpolyFunc() != null &&
-                            refiningInfo.getAcquisitionCenterTime() != null) {
-
-                            // Simple way to compute the transformation from EME2000 to LOF,
-                            // as we need only to perform the transform for the current point
-                            Transform EME2000ToLOF = transformFromEME2000toLOF(ephemerisDate, pair);
-
-                            // compute in seconds the delta t wrt acquisition time center
-                            double timeFromAcquisitionCenterTime = ephemerisDate.durationFrom(refiningInfo.getAcquisitionCenterTime());
-
-                            // compute the XYZ corrections in LOF (unit : m)
-                            double XcorrectionInLOF = refiningInfo.getEphemerisXpolyFunc().value(timeFromAcquisitionCenterTime);
-                            double YcorrectionInLOF = refiningInfo.getEphemerisYpolyFunc().value(timeFromAcquisitionCenterTime);
-                            double ZcorrectionInLOF = refiningInfo.getEphemerisZpolyFunc().value(timeFromAcquisitionCenterTime);
-                            Vector3D posCorrections = new Vector3D(XcorrectionInLOF, YcorrectionInLOF, ZcorrectionInLOF);
-                            TimeStampedPVCoordinates pvInLOFCorrections = new TimeStampedPVCoordinates(ephemerisDate, posCorrections, Vector3D.ZERO);
-                            TimeStampedPVCoordinates pairCorrected = EME2000ToLOF.getInverse().transformPVCoordinates(pvInLOFCorrections);
-
-                            // update the current pair of PV in EME2000
-                            pair = pairCorrected;
-                        }
-                    }
-
-                    dateSet.add(ephemerisDate);
-                    satellitePVList.add(pair);
-                }
-            }
-        } catch (Exception e) {
-            Sen2VMException exception = new Sen2VMException(e);
-            throw exception;
-        }
-    }
-
-    /** Get the transform from an inertial frame defining position-velocity and the local orbital frame.
-     * @param date current date
-     * @param pv position-velocity of the spacecraft in inertial frame EME2000
-     * @return transform from the frame where position-velocity are defined to local orbital frame
-     */
-    protected Transform transformFromEME2000toLOF(final AbsoluteDate date, final PVCoordinates pvEME2000) {
-
-        // compute the translation part of the transform
-        final Transform translation = new Transform(date, pvEME2000.negate());
-
-        // compute the rotation from inertial to LOF
-        // where LOF is defined by:
-        // Z axis aligned with opposite of position, X axis aligned with orbital momentum [cross product of speed vector ^ Z axis]
-        Rotation rotationFromEME2000toLOF = new Rotation(pvEME2000.getPosition(), pvEME2000.getMomentum(),
-                                                         Vector3D.MINUS_K, Vector3D.PLUS_I);
-
-        // compute the rotation part of the transform
-        Vector3D p = pvEME2000.getPosition();
-        Vector3D momentum = pvEME2000.getMomentum();
-        Transform rotation = new Transform(date, rotationFromEME2000toLOF,
-                             new Vector3D(1.0 / p.getNormSq(), rotationFromEME2000toLOF.applyTo(momentum)));
-
-        return new Transform(date, translation, rotation);
-
-    }
-
-    private void readRefinedCorrections(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo, List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1) throws OrekitException {
+	/**
+	 * Fill
+	 * @param dataStripTimeInfo
+	 * @param refinedCorrectionsListL1
+	 */
+	private void readRefinedCorrections(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo, List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1) throws OrekitException {
 
         // compute acquisition center time:
         // the refining corrections are computed related to this time
@@ -413,7 +260,6 @@ public class DataStripManager {
         // --------------------------
         // test if the whole list is not empty !
         if (refinedCorrectionsListL1 != null){
-
             // TBN: the list will always contain only one item although the XSD structure (no node name="focal_plane_id_unique")
             for (https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS refinedCorrections: refinedCorrectionsListL1){
 
@@ -523,6 +369,159 @@ public class DataStripManager {
                 }
             }
         }
+    }
+
+    /**
+     * Fill satelliteQList using values from SAD XML file
+     * @throws Sen2VMException
+     */
+    protected void computeSatelliteQList() throws Sen2VMException {
+        satelliteQList = new ArrayList<TimeStampedAngularCoordinates>();
+
+        // This HashSet is used only to check a duplicate date in the quaternions
+        HashSet<AbsoluteDate> dateSet = new HashSet<AbsoluteDate>();
+
+        // Loop over Corrected Attitudes value list
+        List<Values> correctedAttitudeValueList = l1B_datastrip.getSatellite_Ancillary_Data_Info().getAttitudes().getCorrected_Attitudes().getValues();
+        for (Values values : correctedAttitudeValueList) {
+            XMLGregorianCalendar gpsTime = values.getGPS_TIME();
+            if (gpsTime == null) {
+                Sen2VMException se = new Sen2VMException(Sen2VMConstants.ERROR_QUATERNION_NULL_GPS);
+                throw se;
+            }
+            // Extract Quaternion values from XML
+            AbsoluteDate attitudeDate = new AbsoluteDate(gpsTime.toString(), gps);
+            List<Double> quaternionValues = values.getQUATERNION_VALUES();
+            Double q1 = quaternionValues.get(0);
+            Double q2 = quaternionValues.get(1);
+            Double q3 = quaternionValues.get(2);
+            Double q0 = quaternionValues.get(3);
+
+            Rotation rotation = new Rotation(q0, q1, q2, q3, true);
+            TimeStampedAngularCoordinates pair = new TimeStampedAngularCoordinates(attitudeDate, rotation, Vector3D.ZERO, Vector3D.ZERO);
+
+            if (dateSet.contains(attitudeDate)) {
+                // duplicate data for the current ephemeris date => we aldeady add this quaternion => we just ignore it
+                LOGGER.warning("Duplicate quaternion with date : " + values.getGPS_TIME().toString());
+            } else {
+                dateSet.add(attitudeDate);
+                satelliteQList.add(pair);
+            }
+        }
+    }
+
+    /**
+     * Fill satellitePVList using values from SAD XML file
+     * @throws Sen2VMException
+     */
+    protected void computeSatellitePVList(Boolean activateAvailableRefining) throws Sen2VMException {
+        try {
+            // Init of used frames
+            Frame eme2000 = FramesFactory.getEME2000();
+            Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, true);
+
+            satellitePVList = new ArrayList<TimeStampedPVCoordinates>();
+            HashSet<AbsoluteDate> dateSet = new HashSet<AbsoluteDate>();
+
+            // Loop over ephemeris value list
+            List<GPS_Point> ephemerisGpsPointList = l1B_datastrip.getSatellite_Ancillary_Data_Info().getEphemeris().getGPS_Points_List().getGPS_Point();
+            for (GPS_Point ephemeris : ephemerisGpsPointList) {
+                XMLGregorianCalendar gpsTime = ephemeris.getGPS_TIME();
+                if (gpsTime == null) {
+                    continue;
+                }
+                // extract PV from XML objects
+                AbsoluteDate ephemerisDate = new AbsoluteDate(gpsTime.toString(), gps);
+                List<Long> positionValues = ephemeris.getPOSITION_VALUES().getValue();
+                List<Long> velocityValues = ephemeris.getVELOCITY_VALUES().getValue();
+
+                // Get position in ITRF (defined in mm)
+                Double px = positionValues.get(0).doubleValue() / 1000d;
+                Double py = positionValues.get(1).doubleValue() / 1000d;
+                Double pz = positionValues.get(2).doubleValue() / 1000d;
+                Vector3D position = new Vector3D(px, py, pz);
+
+                // Get velocity in ITRF (defined in mm/s)
+                Double vx = velocityValues.get(0).doubleValue() / 1000d;
+                Double vy = velocityValues.get(1).doubleValue() / 1000d;
+                Double vz = velocityValues.get(2).doubleValue() / 1000d;
+                Vector3D velocity = new Vector3D(vx, vy, vz);
+                PVCoordinates pvITRF = new PVCoordinates(position, velocity);
+
+                // Compute the transformation from ITRF to EME2000 at the ephemerisDate
+                Transform transform = itrf.getTransformTo(eme2000, ephemerisDate);
+
+                PVCoordinates pvEME2000 = transform.transformPVCoordinates(pvITRF);
+
+                // Convert PV from ITRF to EME2000
+                TimeStampedPVCoordinates pair = new TimeStampedPVCoordinates(ephemerisDate, pvEME2000.getPosition(), pvEME2000.getVelocity(), Vector3D.ZERO);
+
+                if (dateSet.contains(ephemerisDate)) {
+                    // duplicate data for the current ephemeris date => we aldeady add this pv coordinate => we just ignore it
+                    System.out.println("Duplicate PV !" + ephemeris.getGPS_TIME().toString());
+                } else {
+                    // Compute refining corrections before updating satellite PVlist
+                    if (activateAvailableRefining) {
+                        // Test if the polynoms and the acquisition center time  are not null before applying them
+                        if (refiningInfo.getEphemerisXpolyFunc() != null &&
+                            refiningInfo.getEphemerisYpolyFunc() != null &&
+                            refiningInfo.getEphemerisZpolyFunc() != null &&
+                            refiningInfo.getAcquisitionCenterTime() != null) {
+
+                            // Simple way to compute the transformation from EME2000 to LOF,
+                            // as we need only to perform the transform for the current point
+                            Transform EME2000ToLOF = transformFromEME2000toLOF(ephemerisDate, pair);
+
+                            // compute in seconds the delta t wrt acquisition time center
+                            double timeFromAcquisitionCenterTime = ephemerisDate.durationFrom(refiningInfo.getAcquisitionCenterTime());
+
+                            // compute the XYZ corrections in LOF (unit : m)
+                            double XcorrectionInLOF = refiningInfo.getEphemerisXpolyFunc().value(timeFromAcquisitionCenterTime);
+                            double YcorrectionInLOF = refiningInfo.getEphemerisYpolyFunc().value(timeFromAcquisitionCenterTime);
+                            double ZcorrectionInLOF = refiningInfo.getEphemerisZpolyFunc().value(timeFromAcquisitionCenterTime);
+                            Vector3D posCorrections = new Vector3D(XcorrectionInLOF, YcorrectionInLOF, ZcorrectionInLOF);
+                            TimeStampedPVCoordinates pvInLOFCorrections = new TimeStampedPVCoordinates(ephemerisDate, posCorrections, Vector3D.ZERO);
+                            TimeStampedPVCoordinates pairCorrected = EME2000ToLOF.getInverse().transformPVCoordinates(pvInLOFCorrections);
+
+                            // update the current pair of PV in EME2000
+                            pair = pairCorrected;
+                        }
+                    }
+
+                    dateSet.add(ephemerisDate);
+                    satellitePVList.add(pair);
+                }
+            }
+        } catch (Exception e) {
+            Sen2VMException exception = new Sen2VMException(e);
+            throw exception;
+        }
+    }
+
+    /** Get the transform from an inertial frame defining position-velocity and the local orbital frame.
+     * @param date current date
+     * @param pv position-velocity of the spacecraft in inertial frame EME2000
+     * @return transform from the frame where position-velocity are defined to local orbital frame
+     */
+    protected Transform transformFromEME2000toLOF(final AbsoluteDate date, final PVCoordinates pvEME2000) {
+
+        // compute the translation part of the transform
+        final Transform translation = new Transform(date, pvEME2000.negate());
+
+        // compute the rotation from inertial to LOF
+        // where LOF is defined by:
+        // Z axis aligned with opposite of position, X axis aligned with orbital momentum [cross product of speed vector ^ Z axis]
+        Rotation rotationFromEME2000toLOF = new Rotation(pvEME2000.getPosition(), pvEME2000.getMomentum(),
+                                                         Vector3D.MINUS_K, Vector3D.PLUS_I);
+
+        // compute the rotation part of the transform
+        Vector3D p = pvEME2000.getPosition();
+        Vector3D momentum = pvEME2000.getMomentum();
+        Transform rotation = new Transform(date, rotationFromEME2000toLOF,
+                             new Vector3D(1.0 / p.getNormSq(), rotationFromEME2000toLOF.applyTo(momentum)));
+
+        return new Transform(date, translation, rotation);
+
     }
 
     /** Create a polynomial function for refined corrections
