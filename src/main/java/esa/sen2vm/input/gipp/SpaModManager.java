@@ -34,6 +34,10 @@ public class SpaModManager {
     protected static int[] msiToFocalPlaneAngleSigns = {1, 1, 1};
     protected static int[] focalPlaneToDetectorAngleSigns = {1, 1, 1};
 
+    /*
+     * SpaModManager constructor
+     * @throws Sen2VMException
+     */
     public SpaModManager(GS2_SPACECRAFT_MODEL_PARAMETERS spaModData) throws Sen2VMException {
         if (spaModData != null) {
 

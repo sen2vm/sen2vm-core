@@ -67,20 +67,17 @@ public class GIPPManager {
      */
     protected GIPPManager(String gippFolder, List<BandInfo> bands, DataStripManager dataStripManager) throws Sen2VMException {
         try {
-            this.dataStripManager = dataStripManager;
-
-            // All GIPP have same package ("generated")
             JAXBContext jaxbContext = JAXBContext.newInstance(GS2_VIEWING_DIRECTIONS.class.getPackage().getName());
-
             jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            gippFileManager = new GIPPFileManager(gippFolder);
-            viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
-            LOGGER.info("Get through GIPP folder: "+ gippFolder);
-            loadAllGIPP(bands);
         } catch (Exception e) {
-            Sen2VMException exception = new Sen2VMException(e.getMessage(), e);
-            throw exception;
+            throw new Sen2VMException(e);
         }
+
+        this.dataStripManager = dataStripManager;
+        this.gippFileManager = new GIPPFileManager(gippFolder);
+        this.viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
+
+        loadAllGIPP(bands);
     }
 
     /*
@@ -98,7 +95,7 @@ public class GIPPManager {
                 blindPixelInfo = (GS2_BLIND_PIXELS) jaxbUnmarshaller.unmarshal(fileBlindPixel);
             }
         } catch (Exception e) {
-            LOGGER.severe("Error when reading the blind pixel GIPP file: " + fileBlindPixel + " with message: " + e.getMessage());
+            throw new Sen2VMException("Error when reading the blind pixel GIPP file: " + fileBlindPixel, e);
         }
 
         // Load spacecraft model gipp
@@ -111,7 +108,7 @@ public class GIPPManager {
                 spaModMgr = new SpaModManager(spaModInfo);
             }
         } catch (Exception e) {
-            LOGGER.severe("Error when reading spacecraft model GIPP file: " + fileSpaMod + " with message: " + e.getMessage());
+            throw new Sen2VMException("Error when reading spacecraft model GIPP file: " + fileSpaMod, e);
         }
 
         // Load viewing directions gipp
@@ -131,7 +128,7 @@ public class GIPPManager {
                 viewingDirectionMap.put(bandInfo, viewingDirection);
             }
         } catch (Exception e) {
-            LOGGER.severe("Error when reading viewing directions GIPP files with message: " + e.getMessage());
+            throw new Sen2VMException("Error when reading viewing directions GIPP files from", e);
         }
     }
 
