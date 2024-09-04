@@ -170,13 +170,13 @@ public class GIPPFileManager {
         File[] directories = gippFolder.listFiles();
 
         // get viewing direction file
-        viewingDirectionFileList = findGippFiles(directories, Sen2VMConstants.GIPP_VIEWDIR_NAME, validExtensions);
+        viewingDirectionFileList = findGippFiles(directories, Sen2VMConstants.GIPP_VIEWDIR_PAT, validExtensions);
 
         // get blind pixel file
-        blindPixelFile = findFile(directories, Sen2VMConstants.GIPP_BLINDP_NAME, validExtensions);
+        blindPixelFile = findFile(directories, Sen2VMConstants.GIPP_BLINDP_PAT, validExtensions);
 
         // get spacecraft model file
-        spaModFile = findFile(directories, Sen2VMConstants.GIPP_SPAMOD_NAME, validExtensions);
+        spaModFile = findFile(directories, Sen2VMConstants.GIPP_SPAMOD_PAT, validExtensions);
     }
 
     /**

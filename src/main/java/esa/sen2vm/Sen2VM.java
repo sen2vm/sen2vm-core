@@ -121,7 +121,7 @@ public class Sen2VM
             DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
 
             // Read GIPP
-            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager);
+            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
 
             // Initialize SimpleLocEngine
 

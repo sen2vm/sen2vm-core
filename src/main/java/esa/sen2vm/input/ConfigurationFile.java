@@ -21,7 +21,7 @@ public class ConfigurationFile extends InputFileManager
     private String filepath;
     private String l1bProduct;
     private String gippFolder;
-    private boolean gippVersionCheck;
+    private boolean gippVersionCheck = true;
     private String dem;
     private String geoid;
     private String iers;
@@ -148,6 +148,14 @@ public class ConfigurationFile extends InputFileManager
      */
     public String getGippFolder() {
         return gippFolder;
+    }
+
+    /*
+     * Get the boolean gippVersionCheck which, if set to false, will deactivate the
+     * version check made on each GIPP to ensure compatibility
+     */
+    public Boolean getGippVersionCheck() {
+        return gippVersionCheck;
     }
 
     /*
