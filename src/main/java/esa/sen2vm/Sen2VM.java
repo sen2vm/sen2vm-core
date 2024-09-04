@@ -58,6 +58,7 @@ public class Sen2VM
     /**
      * Main process
      * @param args first arg: input json file. second param (optional): parameter json file
+     * @throws Sen2VMException
      */
     public static void main( String[] args ) throws Sen2VMException
     {

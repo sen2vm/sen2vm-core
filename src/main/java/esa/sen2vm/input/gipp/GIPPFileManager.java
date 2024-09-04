@@ -55,6 +55,7 @@ public class GIPPFileManager {
      * @param a regex that match a specific type of GIPP
      * @param list of all valid extensions
      * @return a list that contains all files that correspond to the input regex
+     * @throws Sen2VMException
      */
     public static List<File> findGippFiles(File[] directories, String regexPattern, List<String> validExtensions) throws Sen2VMException {
         Pattern pattern = Pattern.compile(regexPattern);
@@ -140,6 +141,7 @@ public class GIPPFileManager {
      * @param a regex that match a specific type of GIPP
      * @param list of all valid extensions
      * @return the first occurrence that correspond to the input regex
+     * @throws Sen2VMException
      */
     public File findFile(File[] directories, String regexPattern, List<String> validExtensions) throws Sen2VMException {
         List<File> foundFiles = findGippFiles(directories, regexPattern, validExtensions);
@@ -158,8 +160,10 @@ public class GIPPFileManager {
     /**
      * Constructor
      * @param folder contains the GIPP xml files
+     * @throws Sen2VMException
      */
     public GIPPFileManager(String folder) throws Sen2VMException {
+        LOGGER.info("Get through GIPP folder: "+ folder);
         List<String> validExtensions = Arrays.asList(Sen2VMConstants.xml_extention_small,
                                                      Sen2VMConstants.xml_extention_big,
                                                      Sen2VMConstants.dbl_extention_small,

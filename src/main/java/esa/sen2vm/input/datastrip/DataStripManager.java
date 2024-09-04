@@ -136,7 +136,7 @@ public class DataStripManager {
     /**
      * Refining information (null is not present or not asked for)
      */
-    private RefiningInfo refiningInfo;
+    private RefiningInfo refiningInfo = new RefiningInfo();
 
     /**
      * Refined Corrections List for L1B data
@@ -177,8 +177,6 @@ public class DataStripManager {
 
             initOrekitRessources(iersDirectoryPath);
 
-            this.refiningInfo = new RefiningInfo();
-
             // Test if we need to take refining data into account according to the flag
             if (activateAvailableRefining) {
                 if (l1B_datastrip.getImage_Data_Info().getGeometric_Info().getImage_Refining() != null)
@@ -205,16 +203,12 @@ public class DataStripManager {
             // Instanciate dataSensingInfos that will be use for SimpleLocEngine
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
 
-        } catch (JAXBException e){
-            Sen2VMException exception = new Sen2VMException(e);
-            throw exception;
-        }  catch (OrekitException oe){
-            Sen2VMException exception = new Sen2VMException(oe);
-            oe.printStackTrace();
-            throw exception;
-        } catch (SXGeoException e){
-            Sen2VMException exception = new Sen2VMException(e);
-            throw exception;
+        } catch (JAXBException e) {
+            throw new Sen2VMException(e);
+        }  catch (OrekitException e) {
+            throw new Sen2VMException(e);
+        } catch (SXGeoException e) {
+            throw new Sen2VMException(e);
         }
     }
 
@@ -225,13 +219,13 @@ public class DataStripManager {
      */
     public static synchronized void initOrekitRessources(String iersFilePath) throws Sen2VMException {
 		try {
-			if (iersFilePath != null && !iersFilePath.equals("")) {
-				File iersFile = new File(iersFilePath);
-				if (!iersFile.exists()) {
-					throw new Sen2VMException("Can't read IERS file " + iersFile);
-				}
-				FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
-			}
+		    // Get IERS file and instantiate FramesFactory with it
+			File iersFile = new File(iersFilePath);
+			FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
+
+			// When using a single IERS A bulletin some gaps may arise : to allow the use of such bulletin,
+			// we fix the EOP continuity threshold to one year instead of the normal gap ...
+			FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
 
 			// set up default Orekit data
 			File orekitDataDir = new File(System.getProperty("user.dir") + "/" + Sen2VMConstants.OREKIT_DATA_DIR);
@@ -239,12 +233,8 @@ public class DataStripManager {
 			    throw new Sen2VMException("Orekit data not found");
 			}
 			DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
-
-			// When using a single IERS A bulletin some gaps may arise : to allow the use of such bulletin,
-			// we fix the EOP continuity threshold to one year instead of the normal gap ...
-			FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
 		} catch (Exception e) {
-			throw new Sen2VMException("Something went wrong during initialization of orekit ressources ", e);
+			throw new Sen2VMException("Something went wrong during initialization of IERS and orekit ressources ", e);
 		}
 	}
 
@@ -391,8 +381,7 @@ public class DataStripManager {
         for (Values values : correctedAttitudeValueList) {
             XMLGregorianCalendar gpsTime = values.getGPS_TIME();
             if (gpsTime == null) {
-                Sen2VMException se = new Sen2VMException(Sen2VMConstants.ERROR_QUATERNION_NULL_GPS);
-                throw se;
+                throw new Sen2VMException(Sen2VMConstants.ERROR_QUATERNION_NULL_GPS);
             }
             // Extract Quaternion values from XML
             AbsoluteDate attitudeDate = new AbsoluteDate(gpsTime.toString(), gps);
@@ -498,8 +487,7 @@ public class DataStripManager {
                 }
             }
         } catch (Exception e) {
-            Sen2VMException exception = new Sen2VMException(e);
-            throw exception;
+            throw new Sen2VMException(e);
         }
     }
 

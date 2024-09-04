@@ -8,6 +8,8 @@ import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
@@ -43,6 +45,7 @@ public class ConfigurationFile extends InputFileManager
      * Constructor
      * @param filepath Path to the configuration file to parse
      * @param filepath Path to the configuration file to parse
+     * @throws Sen2VMException
      */
     public ConfigurationFile(String filepath) throws Sen2VMException {
         this.filepath = filepath;
@@ -54,6 +57,7 @@ public class ConfigurationFile extends InputFileManager
     /**
      * Parse configuration file
      * @param filepath Path to the configuration file to parse
+     * @throws Sen2VMException
      */
     public void parse(String filepath) throws Sen2VMException {
         LOGGER.info("Parsing file "+ filepath);
@@ -85,16 +89,17 @@ public class ConfigurationFile extends InputFileManager
             this.referential = inverseLoc.getString("referential");
             this.outputFolder = inverseLoc.getString("output_folder");
 
-        } catch (Sen2VMException e) {
-            throw e;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new Sen2VMException(e);
+        } catch (IOException e) {
+            throw new Sen2VMException(e);
         }
     }
 
     /*
      * Check that the input path exist, if not
      * @param filepath the path we want to check if it does exist
+     * @throws Sen2VMException
      */
      public String checkPath(String filepath) throws Sen2VMException {
         File file = new File(filepath);
@@ -106,6 +111,7 @@ public class ConfigurationFile extends InputFileManager
 
     /*
      * Search the datastrip metadata file path inside product folder
+     * @throws Sen2VMException
      */
     public String getDatastripFilePath() throws Sen2VMException {
         File datastripFolder = new File(l1bProduct + "/" + Sen2VMConstants.DATASTRIP_MAIN_FOLDER);
@@ -163,6 +169,7 @@ public class ConfigurationFile extends InputFileManager
 
     /*
      * Get the IERS folder
+     * @throws Sen2VMException
      */
     public String getIers() throws Sen2VMException {
        return checkPath(iers);
@@ -170,6 +177,7 @@ public class ConfigurationFile extends InputFileManager
 
     /*
      * Get the POD folder
+     * @throws Sen2VMException
      */
     public String getPod() throws Sen2VMException {
        return checkPath(pod);

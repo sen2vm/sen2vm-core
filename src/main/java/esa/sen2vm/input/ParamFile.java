@@ -30,8 +30,9 @@ public class ParamFile extends InputFileManager
     /**
      * Constructor
      * @param jsonFilePath Path to the parameter file to parse
+     * @throws Sen2VMException
      */
-    public ParamFile(String jsonFilePath) {
+    public ParamFile(String jsonFilePath) throws Sen2VMException {
         this.filepath = jsonFilePath;
         if(check_schema(this.filepath, "src/main/resources/schema_params.json")) {
             parse(this.filepath);
