@@ -56,23 +56,31 @@ public class GIPPFileManager {
      * @param list of all valid extensions
      * @return a list that contains all files that correspond to the input regex
      */
-    public static List<File> findGippFiles(File[] directories, String regexPattern, List<String> validExtensions) throws Exception {
+    public static List<File> findGippFiles(File[] directories, String regexPattern, List<String> validExtensions) throws Sen2VMException {
         Pattern pattern = Pattern.compile(regexPattern);
         Map<String, Set<String>> fileMap = new HashMap<>();
         List<File> foundFiles = new ArrayList<File>();
 
         for (File dir: directories) {
-            if (!dir.isDirectory()) {
-                continue; // Ignore non-directory files
-            }
+            File[] matchedFiles = null;
 
-            File[] matchedFiles = dir.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return pattern.matcher(name).matches() &&
-                            validExtensions.stream().anyMatch(name::endsWith);
+            if (!dir.isDirectory()) {
+                // if non-directory files
+                if (pattern.matcher(dir.getName()).matches() &&
+                            validExtensions.stream().anyMatch(dir.getName()::endsWith)) {
+                    matchedFiles = new File[1];
+                    matchedFiles[0] = dir;
                 }
-            });
+            }
+            else {
+                matchedFiles = dir.listFiles(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File dir, String name) {
+                        return pattern.matcher(name).matches() &&
+                                validExtensions.stream().anyMatch(name::endsWith);
+                    }
+                });
+            }
 
             if (matchedFiles != null) {
                 for (File file: matchedFiles) {
@@ -82,9 +90,9 @@ public class GIPPFileManager {
                     // Check for duplicate file names with different extensions
                     if (fileMap.containsKey(filepathWithoutExtension)) {
                         if (fileMap.get(filepathWithoutExtension).contains(extension)) {
-                            throw new Exception("Duplicate GIPP file type found: " + filepathWithoutExtension);
+                            throw new Sen2VMException("Duplicate GIPP file type found: " + filepathWithoutExtension);
                         } else {
-                            throw new Exception("File with same name but different extension found: " + file.getName());
+                            throw new Sen2VMException("File with same name but different extension found: " + file.getName());
                         }
                     } else {
                         Set<String> extensions = new HashSet<>();
@@ -133,23 +141,17 @@ public class GIPPFileManager {
      * @param list of all valid extensions
      * @return the first occurrence that correspond to the input regex
      */
-    public File findFile(File[] directories, String regexPattern, List<String> validExtensions) throws Exception {
-        List<File> foundFiles = null;
-        try {
-             foundFiles = findGippFiles(directories, regexPattern, validExtensions);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+    public File findFile(File[] directories, String regexPattern, List<String> validExtensions) throws Sen2VMException {
+        List<File> foundFiles = findGippFiles(directories, regexPattern, validExtensions);
 
         if (foundFiles != null && foundFiles.size() == 1) {
             return foundFiles.get(0);
         }
         else if (foundFiles != null && foundFiles.size() > 1) {
-            throw new Exception("Duplicate GIPP file of type " + regexPattern + " find");
+            throw new Sen2VMException("Duplicate GIPP file of type " + regexPattern + " find");
         }
         else {
-            throw new Exception("No GIPP file of type " + regexPattern + " were find");
+            throw new Sen2VMException("No GIPP file of type " + regexPattern + " were find");
         }
     }
 
@@ -157,17 +159,14 @@ public class GIPPFileManager {
      * Constructor
      * @param folder contains the GIPP xml files
      */
-    public GIPPFileManager(String folder) throws Exception {
-        File gippFolder = new File(folder);
-        if (!gippFolder.exists() || !gippFolder.isDirectory()) {
-            LOGGER.severe("The gipp folder " + gippFolder + " doesn't exist or is not a directory");
-        }
-        File[] directories = gippFolder.listFiles();
-
+    public GIPPFileManager(String folder) throws Sen2VMException {
         List<String> validExtensions = Arrays.asList(Sen2VMConstants.xml_extention_small,
                                                      Sen2VMConstants.xml_extention_big,
                                                      Sen2VMConstants.dbl_extention_small,
                                                      Sen2VMConstants.dbl_extention_big);
+
+        File gippFolder = new File(folder);
+        File[] directories = gippFolder.listFiles();
 
         // get viewing direction file
         viewingDirectionFileList = findGippFiles(directories, Sen2VMConstants.GIPP_VIEWDIR_NAME, validExtensions);
@@ -177,7 +176,6 @@ public class GIPPFileManager {
 
         // get spacecraft model file
         spaModFile = findFile(directories, Sen2VMConstants.GIPP_SPAMOD_NAME, validExtensions);
-
     }
 
     /**
