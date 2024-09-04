@@ -136,11 +136,11 @@ public class Sen2VM
 
             // Init demManager
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
-            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
             SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
             if(!demFileManager.findRasterFile()) {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
+            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
                 demFileManager,
                 geoidManager,
@@ -159,9 +159,8 @@ public class Sen2VM
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
 
                     // Save sensor information
-                    String sensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
-                    Sensor j_sensor = new Sensor(
-                        sensor,
+                    Sensor sensor = new Sensor(
+                        bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
                         viewing,
                         lineDatation,
                         bandInfo.getPixelHeight(),
@@ -169,12 +168,11 @@ public class Sen2VM
                         msiToFocalplane,
                         pilotingToMsi
                     );
-                    sensorList.add(j_sensor);
+                    sensorList.add(sensor);
                 }
             }
 
             // Init rugged instance
-            RefiningInfo refiningInfo = new RefiningInfo();
             RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
                 demManager,
                 dataStripManager.getDataSensingInfos(),
@@ -184,6 +182,8 @@ public class Sen2VM
                 Sen2VMConstants.MARGIN,
                 dataStripManager.getRefiningInfo()
             );
+            ruggedManager.setLightTimeCorrection(false);
+            ruggedManager.setAberrationOfLightCorrection(false);
 
             // Init simpleLocEngine
             SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
@@ -192,11 +192,7 @@ public class Sen2VM
                 demManager
             );
 
-            double[][] pixels = {{0.6, 0.25},
-                                 {55650, 424}};
-            LOGGER.info("sensorList="+sensorList.get(0).getName());
-            LOGGER.info("sensorList="+sensorList.get(0).getLineDatation());
-
+            double[][] pixels = {{0., 0.}};
             double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
             showPoints(pixels, grounds);
 

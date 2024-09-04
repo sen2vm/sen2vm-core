@@ -66,7 +66,7 @@ public class GIPPManager {
      * Load GIPP from XML folder
      * @param gippFolder path to a folder that contains all the GIPP required
      * @param bands a list of all the bands that will be (comes from parameter configuration file)
-     * @param dataStripManager
+     * @param dataStripManager datastrip manager
      * @throws Sen2VMException
      */
     public GIPPManager(String gippFolder, List<BandInfo> bands, DataStripManager dataStripManager) throws Sen2VMException {
