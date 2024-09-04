@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
 

@@ -44,6 +44,9 @@ import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
 
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_AUXILIARY_DATA_INFO_DSL1B;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST.GIPP_FILENAME;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_ATTITUDE_DATA_INV.Corrected_Attitudes.Values;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_EPHEMERIS_DATA_INV.GPS_Points_List.GPS_Point;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL0;
@@ -86,6 +89,11 @@ public class DataStripManager {
      * Sensor configuration
      */
     protected A_SENSOR_CONFIGURATION sensorConfiguration = null;
+
+    /**
+     * Info about auxiliary data like GIPP and IERS
+     */
+    protected AN_AUXILIARY_DATA_INFO_DSL1B auxiliaryDataInfo = null;
 
     /**
      * List of Pair (date, rotation)
@@ -174,6 +182,8 @@ public class DataStripManager {
             l1B_datastrip = jaxbElement.getValue();
 
             sensorConfiguration = l1B_datastrip.getImage_Data_Info().getSensor_Configuration();
+
+            auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
 
             initOrekitRessources(iersDirectoryPath);
 
@@ -630,6 +640,54 @@ public class DataStripManager {
             }
         }
         return tdiConfVal;
+    }
+
+    /**
+     * Check if the GIPP version is supported
+     * @param gippType is the type of GIPP, can be GIP_SPAMOD or GIP_BLINDP
+     * @param gippVersion is the version of the input GIPP
+     * @throws Sen2VMException
+     */
+    public void checkGIPPVersion(String gippType, String gippVersion) throws Sen2VMException {
+        boolean compatibleVersion = false;
+        if (gippVersion != null) {
+            List<A_GIPP_LIST.GIPP_FILENAME> gippList = auxiliaryDataInfo.getGIPP_List().getGIPP_FILENAME();
+            for (GIPP_FILENAME gipp_filename : gippList) {
+                if (gippType.equals(gipp_filename.getType()) && gippVersion.equals(gipp_filename.getVersion())) {
+                    compatibleVersion = true;
+                }
+            }
+        } else {
+            throw new Sen2VMException("GIPP version could not be find for " + gippType);
+        }
+
+        if (!compatibleVersion) {
+            throw new Sen2VMException("GIPP of type " + gippType + " with version " + gippVersion + " is not supported by current datastrip " + dsFile);
+        }
+    }
+
+    /**
+     * Function dedicated to viewing direction GIPPs to check if the GIPP version is supported
+     * @param gippFilepath is the GIPP filepath
+     * @param gippVersion is the version of the input GIPP
+     * @throws Sen2VMException
+     */
+    public void checkGIPPVersionViewDirection(String gippFilepath, String gippVersion) throws Sen2VMException {
+        boolean compatibleVersion = false;
+        if (gippVersion != null) {
+            List<A_GIPP_LIST.GIPP_FILENAME> gippList = auxiliaryDataInfo.getGIPP_List().getGIPP_FILENAME();
+            for (GIPP_FILENAME gipp_filename : gippList) {
+                if (gippFilepath.contains(gipp_filename.getValue()) && gippVersion.equals(gipp_filename.getVersion())) {
+                    compatibleVersion = true;
+                }
+            }
+        } else {
+            throw new Sen2VMException("GIPP version could not be find for " + gippFilepath);
+        }
+
+        if (!compatibleVersion) {
+            throw new Sen2VMException("GIPP " + gippFilepath + " with version " + gippVersion + " is not supported by current datastrip " + dsFile);
+        }
     }
 
     /**

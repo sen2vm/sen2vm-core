@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import esa.sen2vm.exception.Sen2VMException;
+
 public class InputFileManager
 {
     private static final Logger LOGGER = Logger.getLogger(InputFileManager.class.getName());
