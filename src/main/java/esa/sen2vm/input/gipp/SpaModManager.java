@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input.gipp;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +16,9 @@ import generated.GS2_SPACECRAFT_MODEL_PARAMETERS.DATA.FOCAL_PLANE_TO_DETECTOR.FO
 import generated.GS2_SPACECRAFT_MODEL_PARAMETERS.DATA.MSI_TO_FOCAL_PLANE;
 
 import _int.esa.gs2.sy._1_0.misc.A_ROTATION_AROUND_THREE_AXIS_AND_SCALE;
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
 
 /**
  * Class used to manage SPAMOD GIPP data

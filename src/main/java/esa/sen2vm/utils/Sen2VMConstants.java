@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.utils;
 
 public class Sen2VMConstants {
 

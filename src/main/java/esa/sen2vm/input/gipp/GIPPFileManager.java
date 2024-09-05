@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input.gipp;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -11,6 +11,9 @@ import java.util.logging.Logger;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import esa.sen2vm.utils.Sen2VMConstants;
+
 import java.util.Set;
 
 /**

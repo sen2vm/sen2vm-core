@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input.datastrip;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,6 +34,13 @@ import org.orekit.utils.TimeStampedAngularCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
 import org.sxgeo.input.datamodels.DataSensingInfos;
+
+import esa.sen2vm.Sen2VM;
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
+
 import org.sxgeo.exception.SXGeoException;
 
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_ATTITUDE_DATA_INV.Corrected_Attitudes.Values;

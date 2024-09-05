@@ -1,8 +1,11 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 import java.io.File;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.Sen2VMConstants;
 
 import java.io.FileInputStream;
 import java.io.InputStream;

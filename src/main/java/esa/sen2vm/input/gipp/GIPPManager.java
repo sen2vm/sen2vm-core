@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input.gipp;
 
 import java.io.File;
 import java.util.HashMap;
@@ -10,6 +10,10 @@ import javax.xml.bind.Unmarshaller;
 import org.sxgeo.input.datamodels.sensor.SensorViewingDirection;
 import org.sxgeo.input.datamodels.sensor.SpaceCraftModelTransformation;
 
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.input.datastrip.DataStripManager;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
 import generated.GS2_BLIND_PIXELS;
 import generated.GS2_SPACECRAFT_MODEL_PARAMETERS;
 import generated.GS2_VIEWING_DIRECTIONS;

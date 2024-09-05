@@ -1,8 +1,11 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
