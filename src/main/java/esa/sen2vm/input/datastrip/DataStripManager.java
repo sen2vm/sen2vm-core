@@ -648,37 +648,17 @@ public class DataStripManager {
      * @param gippVersion is the version of the input GIPP
      * @throws Sen2VMException
      */
-    public void checkGIPPVersion(String gippType, String gippVersion) throws Sen2VMException {
+    public void checkGIPPVersion(String gippFilepath, String gippVersion) throws Sen2VMException {
         boolean compatibleVersion = false;
+        String expectedVersion = null;
         if (gippVersion != null) {
             List<A_GIPP_LIST.GIPP_FILENAME> gippList = auxiliaryDataInfo.getGIPP_List().getGIPP_FILENAME();
             for (GIPP_FILENAME gipp_filename : gippList) {
-                if (gippType.equals(gipp_filename.getType()) && gippVersion.equals(gipp_filename.getVersion())) {
-                    compatibleVersion = true;
-                }
-            }
-        } else {
-            throw new Sen2VMException("GIPP version could not be find for " + gippType);
-        }
-
-        if (!compatibleVersion) {
-            throw new Sen2VMException("GIPP of type " + gippType + " with version " + gippVersion + " is not supported by current datastrip " + dsFile);
-        }
-    }
-
-    /**
-     * Function dedicated to viewing direction GIPPs to check if the GIPP version is supported
-     * @param gippFilepath is the GIPP filepath
-     * @param gippVersion is the version of the input GIPP
-     * @throws Sen2VMException
-     */
-    public void checkGIPPVersionViewDirection(String gippFilepath, String gippVersion) throws Sen2VMException {
-        boolean compatibleVersion = false;
-        if (gippVersion != null) {
-            List<A_GIPP_LIST.GIPP_FILENAME> gippList = auxiliaryDataInfo.getGIPP_List().getGIPP_FILENAME();
-            for (GIPP_FILENAME gipp_filename : gippList) {
-                if (gippFilepath.contains(gipp_filename.getValue()) && gippVersion.equals(gipp_filename.getVersion())) {
-                    compatibleVersion = true;
+                if (gippFilepath.contains(gipp_filename.getValue())) {
+                    expectedVersion = gipp_filename.getVersion();
+                    if (gippVersion.equals(gipp_filename.getVersion())) {
+                        compatibleVersion = true;
+                    }
                 }
             }
         } else {
@@ -686,7 +666,11 @@ public class DataStripManager {
         }
 
         if (!compatibleVersion) {
-            throw new Sen2VMException("GIPP " + gippFilepath + " with version " + gippVersion + " is not supported by current datastrip " + dsFile);
+            String errorMessage = gippFilepath + " with version " + gippVersion + " is not supported by current datastrip " + dsFile + ".";
+            if (expectedVersion != null) {
+                throw new Sen2VMException(errorMessage + " Expected version is " + expectedVersion + ".");
+            }
+            throw new Sen2VMException(errorMessage);
         }
     }
 

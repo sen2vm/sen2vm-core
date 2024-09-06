@@ -109,7 +109,7 @@ public class GIPPManager {
 
                 if (gippVersionCheck) {
                     String gippVersion = blindPixelInfo.getSPECIFIC_HEADER().getVERSION_NUMBER();
-                    dataStripManager.checkGIPPVersion(Sen2VMConstants.GIPP_BLINDP_TYPE, gippVersion);
+                    dataStripManager.checkGIPPVersion(fileBlindPixel.getName(), gippVersion);
                 }
             }
         } catch (Exception e) {
@@ -126,7 +126,7 @@ public class GIPPManager {
 
                 if (gippVersionCheck) {
                     String gippVersion = spaModInfo.getSPECIFIC_HEADER().getVERSION_NUMBER();
-                    dataStripManager.checkGIPPVersion(Sen2VMConstants.GIPP_SPAMOD_TYPE, gippVersion);
+                    dataStripManager.checkGIPPVersion(fileSpaMod.getName(), gippVersion);
                 }
 
                 spaModMgr = new SpaModManager(spaModInfo);
@@ -150,7 +150,7 @@ public class GIPPManager {
 
                 if (gippVersionCheck) {
                     String gippVersion = viewingDirection.getSPECIFIC_HEADER().getVERSION_NUMBER();
-                    dataStripManager.checkGIPPVersionViewDirection(file.getName(), gippVersion);
+                    dataStripManager.checkGIPPVersion(file.getName(), gippVersion);
                 }
 
                 int bandId = viewingDirection.getDATA().getBAND_ID();
