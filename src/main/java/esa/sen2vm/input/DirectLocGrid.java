@@ -9,7 +9,7 @@ public class DirectLocGrid {
 
     protected int pixelOffset ;
     protected int lineOffset ;
-    protected Float step ;
+    protected int step ;
 
     protected int pixelOrigin ;
     protected int lineOrigin ;
@@ -20,7 +20,7 @@ public class DirectLocGrid {
     protected ArrayList<Double> gridLines ;
 
     public DirectLocGrid(int lineOffset, int pixelOffset,
-                         Float step,
+                         int step,
                          int lineOrigin, int pixelOrigin,
                          int sizeLines, int sizePixels) {
         this.pixelOffset = pixelOffset;
@@ -31,12 +31,11 @@ public class DirectLocGrid {
         this.sizePixels = sizePixels;
         this.sizeLines = sizeLines;
 
-        System.out.println("# Grid information");
+        /*System.out.println("# Grid information");
         System.out.print("Offset: (" + String.valueOf(this.lineOffset) + ", " + String.valueOf(this.pixelOffset) + ") ; ");
         System.out.print("Step: (" + String.valueOf(this.step) + ", " + String.valueOf(this.step) + ") ; ");
         System.out.print("Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ") ; ");
-        System.out.println("Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")");
-        System.out.println();
+        System.out.println("Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")");*/
 
         this.gridPixels = grid_1D(this.pixelOrigin, this.sizePixels, this.pixelOrigin, this.pixelOffset, this.step);
         this.gridLines = grid_1D(this.lineOrigin, this.sizeLines, this.pixelOrigin, this.lineOffset, this.step);
@@ -45,7 +44,6 @@ public class DirectLocGrid {
 
         System.out.println("Grid Pixel: " + this.gridPixels);
         System.out.println("Grid Line: " + this.gridLines);
-        System.out.println();
 
     }
 
@@ -59,7 +57,6 @@ public class DirectLocGrid {
 
         for (int l = 0 ; l < nbLines ; l ++){
             for (int c = 0 ; c < nbCols ; c ++){
-                System.out.println();
                 grid[l*nbCols + c][0] = this.gridLines.get(l);
                 grid[l*nbCols + c][1] = this.gridPixels.get(c);
             }
@@ -70,7 +67,7 @@ public class DirectLocGrid {
 
 
 
-    private ArrayList<Double> grid_1D(int start, int size, double origin, double offset, float step) {
+    private ArrayList<Double> grid_1D(int start, int size, double origin, double offset, int step) {
         Boolean insideGranule = true;
         ArrayList<Double> grid = new ArrayList<Double>();
         int i_grid = 0;
@@ -89,29 +86,32 @@ public class DirectLocGrid {
         return grid;
     }
 
+    public int getStartRow(int startGranule) {
+
+        double res_i = ((startGranule - 1 + this.step / 2 ) * 1.0 / this.step);
+        int grid_row_start = (int) Math.floor(res_i)  ;
+
+        return grid_row_start;
+    }
+
     public double[][][] extractPointsDirectLoc(double[][] directLocGrid, int startGranule, int sizeGranule) {
 
 
         Boolean insideGranule = true;
 
-        Float res_i = ((startGranule - 1 + this.step / 2 ) / this.step);
+        Double res_i = ((startGranule - 1 + this.step / 2 ) * 1.0 / this.step);
         int grid_row_start = (int) Math.floor(res_i) ;
-        Float res_e = ((startGranule - 1 + sizeGranule + this.step / 2 ) / this.step);
+        Double res_e = ((startGranule - 1 + sizeGranule + this.step / 2 ) * 1.0  / this.step);
         int grid_row_end = (int) Math.ceil(res_e) ;
 
-        System.out.println("GRID ROW: " +String.valueOf(grid_row_start) + " -> " + String.valueOf(grid_row_end));
 
-        int nbLines = grid_row_end - grid_row_start ;
-
+        int nbLines = grid_row_end - grid_row_start + 1;
         int nbCols = this.gridPixels.size();
-        System.out.println("nbLines" + String.valueOf(nbLines) + "; nbCols" + String.valueOf(nbCols));
 
         double[][][] subDirectLocGrid = new double[2][nbLines][nbCols];
 
         for (int l = 0; l < nbLines; l++) {
             for (int c = 0; c < nbCols; c++) {
-                System.out.println("nb :" + String.valueOf(l*nbCols + c));
-
                 subDirectLocGrid[0][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][0] ;
                 subDirectLocGrid[1][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][1] ;
             }
@@ -120,6 +120,7 @@ public class DirectLocGrid {
         System.out.print("start: " + String.valueOf(grid_row_start) + " (");
         System.out.print(String.valueOf(this.gridLines.get(grid_row_start)) + ")");
         System.out.print(" -> end: " + String.valueOf(grid_row_end) + " (");
+        System.out.print(String.valueOf(this.gridLines.get(grid_row_end)) + ")");
         return subDirectLocGrid;
     }
 

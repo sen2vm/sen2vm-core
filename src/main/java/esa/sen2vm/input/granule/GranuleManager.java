@@ -58,12 +58,12 @@ public class GranuleManager {
     /**
      * Pixel origin
      */
-    protected int pixel_origin;
+    protected int pixelOrigin;
 
     /**
      * Granule Start Position in DS
      */
-    protected int granule_position;
+    protected int granulePosition;
 
     /**
      * Size of the granule for band res = 10
@@ -97,9 +97,6 @@ public class GranuleManager {
      */
     protected void loadFile(String granuleFilePath) throws Sen2VMException {
         // Load SAD xml file
-        LOGGER.info("\n ------ \n loadFile = "+granuleFilePath);
-        System.out.println();
-        System.out.println("Test");
 
         try {
             // Load SAD xml file
@@ -112,8 +109,8 @@ public class GranuleManager {
             l1B_granule = jaxbElement.getValue();
 
             A_GEOMETRIC_INFO geometricInfo = l1B_granule.getGeometric_Info();
-            pixel_origin = geometricInfo.getGranule_Footprint().getPIXEL_ORIGIN();
-            granule_position = geometricInfo.getGranule_Position().getPOSITION();
+            pixelOrigin = geometricInfo.getGranule_Footprint().getPIXEL_ORIGIN();
+            granulePosition = geometricInfo.getGranule_Position().getPOSITION();
             List<A_GEOMETRIC_INFO.Granule_Dimensions.Size> list_res = geometricInfo.getGranule_Dimensions().getSize();
 
             for (A_GEOMETRIC_INFO.Granule_Dimensions.Size res : list_res) {
@@ -129,54 +126,28 @@ public class GranuleManager {
             Sen2VMException exception = new Sen2VMException(e);
             throw exception;
         }
-
-        System.out.println(pixel_origin);
-        System.out.println(granule_position);
-        System.out.println("10 x:" + String.valueOf(sizeRes10[0]));
-        System.out.println("10 y:" + String.valueOf(sizeRes10[1]));
-        System.out.println("20 x:" +String.valueOf(sizeRes20[0]));
-        System.out.println("20 y:" +String.valueOf(sizeRes20[1]));
-        System.out.println("60 x:" +String.valueOf(sizeRes60[0]));
-        System.out.println("60 y:" +String.valueOf(sizeRes60[1]));
-
-
-        System.out.println();
-        LOGGER.info("\n ------ \n" );
     }
 
-    public int[] getBRpixel(double resolution) {
-        int[] pixel = null ;
-        System.out.println(resolution);
-        System.out.println(Sen2VMConstants.RESOLUTION_10M);
 
-        switch((int) resolution){
-            case Sen2VMConstants.RESOLUTION_10M:
-                pixel = new int[]{ this.granule_position + this.sizeRes10[0], this.sizeRes10[1]};
-            case Sen2VMConstants.RESOLUTION_20M:
-                pixel = new int[]{ (this.granule_position - this.pixel_origin)/2 + this.pixel_origin + this.sizeRes10[0], this.sizeRes10[1]};
-            default:
-                pixel = new int[]{ (this.granule_position - this.pixel_origin)/6 + this.pixel_origin + this.sizeRes10[0], this.sizeRes10[1]};
-
-        }
-
-
-        System.out.println("Pixel max DS x:" + String.valueOf(pixel[0]));
-        System.out.println("Pixel max DS y:" + String.valueOf(pixel[1]));
-
-
-        return pixel ;
+    public int getPixelOrigin() {
+        return pixelOrigin;
     }
 
-    public int[] getULpixel(double resolution) {
-        int[] pixel = null ;
-        System.out.println(resolution);
-        System.out.println(Sen2VMConstants.RESOLUTION_10M);
-
-        pixel = new int[]{this.granule_position, this.pixel_origin};
-
-        System.out.println("Pixel max DS x:" + String.valueOf(pixel[0]));
-        System.out.println("Pixel max DS y:" + String.valueOf(pixel[1]));
-
-        return pixel ;
+     public int getGranulePosition() {
+        return granulePosition;
     }
+
+     public int[] getSizeRes10() {
+        return sizeRes10;
+    }
+
+    public int[] getSizeRes20() {
+        return sizeRes20;
+    }
+
+    public int[] getSizeRes60() {
+        return sizeRes60;
+    }
+    
+
 }

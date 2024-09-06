@@ -41,14 +41,14 @@ public class SafeManager {
     /**
      * Constructor
      */
-    public SafeManager(String path, DataStripManager dataStripManager) {
+    public SafeManager(String path, DataStripManager dataStripManager) throws Sen2VMException {
          // Inventory of the Datastrip
          String datastrip_path = path  + "/" + Sen2VMConstants.DATASTRIP;
          this.setAndProcessDataStrip(datastrip_path, dataStripManager);
 
          // Inventory of the Granules
          // Load all images and geo grid already existing (granule x det x band)
-         String granules_path = path + "/" + Sen2VMConstants.GRANULE;
+         String granules_path = path + "/" + Sen2VMConstants.GRANULE + "/";
          this.setAndProcessGranules(granules_path);
     }
 
@@ -56,7 +56,7 @@ public class SafeManager {
      * Take inventory of all granules with all images and geo info already existing
      * @param path directory contraing all granules
      */
-    public void setAndProcessGranules(String path) {
+    public void setAndProcessGranules(String path) throws Sen2VMException {
         this.listGranules = new ArrayList<Granule>() ;
         this.dirGranules = new File(path) ;
 
@@ -117,4 +117,31 @@ public class SafeManager {
         return listGranulesToCompute ;
     }
 
+    public int[] getFullSize(DataStripManager dataStripManager, BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException {
+        String[] minmax = dataStripManager.getMinMaxGranule(bandInfo, detectorInfo);
+        String minGranuleName = minmax[0];
+
+        Granule minGranule = getGranuleByName(minGranuleName) ;
+        int[] ULpixel = minGranule.getULpixel(bandInfo.getPixelHeight());
+        int[] BRpixel_ = minGranule.getBRpixel(bandInfo.getPixelHeight());
+
+        String maxGranuleName = minmax[1];
+        Granule maxGranule = getGranuleByName(maxGranuleName) ;
+        int[] ULpixel_ = maxGranule.getULpixel(bandInfo.getPixelHeight());
+        int[] BRpixel = maxGranule.getBRpixel(bandInfo.getPixelHeight());
+
+        int[] bb = { ULpixel[0], ULpixel[1], BRpixel[0], BRpixel[1]} ;
+        return bb ;
+
+    }
+
+    public Granule getGranuleByName(String name) {
+        Granule res = null ;
+        for(int g = 0 ; g < this.listGranules.size() ; g++) {
+            if (this.listGranules.get(g).getName().equals(name)) {
+                res = this.listGranules.get(g);
+            }
+        }
+        return res ;
+    }
 }

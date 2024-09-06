@@ -49,7 +49,7 @@ public class OutputFileManager
 
 
     public void createGeoTiff(String fileName, int startPixel, int startLine,
-            float step, int nbBand, String srs, double[][][] bandVal) {
+            int step, int nbBand, String srs, double[][][] bandVal) {
 
         double[][] band1val = bandVal[0];
         double[][] band2val = bandVal[1];
@@ -80,6 +80,8 @@ public class OutputFileManager
         ds.SetGeoTransform(gtInfo);
         ds.SetProjection(srs);
 
+
+
         for (int i = 0; i < nbLines; i++) {
             double[] band1_online = new double[nbPixels];
             double[] band2_online = new double[nbPixels];
@@ -88,10 +90,6 @@ public class OutputFileManager
                 band1_online[j] = band1val[i][j];
                 band2_online[j] = band2val[i][j];
             }
-
-            System.out.println(i);
-            System.out.println(Arrays.toString(band1_online));
-            System.out.println(Arrays.toString(band2_online));
 
             band1.WriteRaster(0, i, nbPixels, 1, band1_online);
             band2.WriteRaster(0, i, nbPixels, 1, band2_online);
@@ -113,17 +111,16 @@ public class OutputFileManager
 
 
 
-    public double[] getGeoTransformInfo(int pixelStartIndex, float gridXStep, int upperLine, float gridYStep)  {
+    public double[] getGeoTransformInfo(int originX, int gridXStep, int originY, int gridYStep)  {
 
         double[] gtInfo = new double[6];
         int idx = 0;
-        gtInfo[idx++] = pixelStartIndex;
+        gtInfo[idx++] = originX;
         gtInfo[idx++] = gridXStep;
         gtInfo[idx++] = 0d;
-        gtInfo[idx++] = upperLine;
+        gtInfo[idx++] = originY;
         gtInfo[idx++] = 0d;
-        gtInfo[idx++] = -gridYStep;
-
+        gtInfo[idx++] = gridYStep;
         return gtInfo;
     }
 

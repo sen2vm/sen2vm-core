@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.util.Arrays;
 
 public class Granule {
 
@@ -62,20 +63,25 @@ public class Granule {
     private Integer granulePosition ;
 
     /**
-     * Dimensions in x for all the res {res 10, res 20, res 60}
+     * Size of the granule for band res = 10
      */
-    private ArrayList<Integer> granuleDimensions_nrows ;
+    protected int[] sizeRes10 = null;
 
     /**
-     * Dimensions in y for all the res {res 10, res 20, res 60}
+     * Size of the granule for band res = 20
      */
-    private ArrayList<Integer> granuleDimensions_ncols ;
+    protected int[] sizeRes20 = null;
+
+    /**
+     * Size of the granule for band res = 60
+     */
+    protected int[] sizeRes60 = null;
 
     /**
      * Constructor
      * @param path path to granule directory
      */
-     public Granule(File path) {
+     public Granule(File path) throws Sen2VMException {
         this.path = path;
         this.name = path.getName() ;
         System.out.print("Granule " + this.name);
@@ -99,7 +105,7 @@ public class Granule {
                     }
                 } else if (listOfFiles[p].isFile()) {
                     this.path_mtd = listOfFiles[p] ;
-                    // loadMTDinformations() ;
+                    loadMTDinformations() ;
                 }
             }
         }
@@ -120,10 +126,35 @@ public class Granule {
     }
 
     private void loadMTDinformations() throws Sen2VMException {
-        // [TODO]
         GranuleManager granuleManager = new GranuleManager(this.path_mtd.toString());
+        pixelOrigin = granuleManager.getPixelOrigin();
+        granulePosition = granuleManager.getGranulePosition();
+        sizeRes10 = granuleManager.getSizeRes10();
+        sizeRes20 = granuleManager.getSizeRes20();
+        sizeRes60 = granuleManager.getSizeRes60();
     }
 
+    public void verifyInfo() throws Sen2VMException {
+        GranuleManager granuleManager = new GranuleManager(this.path_mtd.toString());
+        pixelOrigin = granuleManager.getPixelOrigin();
+        granulePosition = granuleManager.getGranulePosition();
+        sizeRes10 = granuleManager.getSizeRes10();
+        sizeRes20 = granuleManager.getSizeRes20();
+        sizeRes60 = granuleManager.getSizeRes60();
+        System.out.println("pixelOrigin:" + String.valueOf(pixelOrigin));
+        System.out.println("granulePosition:" + String.valueOf(granulePosition));
+        System.out.println(Arrays.toString(sizeRes10));
+        System.out.println(Arrays.toString(sizeRes20));
+        System.out.println(Arrays.toString(sizeRes60));
+    }
+
+    public void verifyInfoIntern() throws Sen2VMException {
+        System.out.println("pixelOrigin:" + String.valueOf(this.pixelOrigin));
+        System.out.println("granulePosition:" + String.valueOf(this.granulePosition));
+        System.out.println(Arrays.toString(this.sizeRes10));
+        System.out.println(Arrays.toString(this.sizeRes20));
+        System.out.println(Arrays.toString(this.sizeRes60));
+    }
     private void loadImages(File img_data) {
         File[] list_img = img_data.listFiles();
         for (int i = 0; i < list_img.length; i++) {
@@ -178,14 +209,14 @@ public class Granule {
         info.put("granulePosition", this.granulePosition);
         int indexBand = BandInfo.valueOf(band).ordinal();
         if (BandInfo.values()[indexBand].getPixelHeight() == Sen2VMConstants.RESOLUTION_10M) {
-            info.put("granuleDimensions_nrows", this.granuleDimensions_nrows.get(0));
-            info.put("granuleDimensions_ncols", this.granuleDimensions_ncols.get(0));
+            info.put("granuleDimensions_nrows", this.sizeRes10[0]);
+            info.put("granuleDimensions_ncols", this.sizeRes10[1]);
         } else if (BandInfo.values()[indexBand].getPixelHeight() == Sen2VMConstants.RESOLUTION_20M) {
-            info.put("granuleDimensions_nrows", this.granuleDimensions_nrows.get(1));
-            info.put("granuleDimensions_ncols", this.granuleDimensions_ncols.get(1));
+            info.put("granuleDimensions_nrows", this.sizeRes20[0]);
+            info.put("granuleDimensions_ncols", this.sizeRes20[1]);
         } else {
-            info.put("granuleDimensions_nrows", this.granuleDimensions_nrows.get(2));
-            info.put("granuleDimensions_ncols", this.granuleDimensions_ncols.get(2));
+            info.put("granuleDimensions_nrows", this.sizeRes60[0]);
+            info.put("granuleDimensions_ncols", this.sizeRes60[1]);
         }
 
         return info;
@@ -204,6 +235,58 @@ public class Granule {
         String image = this.images[band.index].getName();
         String grid = image.replace(".jp2", ".tif").replace("_MSI_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + grid).getPath();
+    }
+
+    public int[] getBRpixel(double resolution) {
+        int[] pixel = null ;
+        if (this.granulePosition == 1){
+            switch((int) resolution){
+                case Sen2VMConstants.RESOLUTION_10M:
+                    pixel = new int[]{ this.granulePosition + this.sizeRes10[0], this.sizeRes10[1]};
+                case Sen2VMConstants.RESOLUTION_20M:
+                    pixel = new int[]{ this.granulePosition + this.sizeRes20[0], this.sizeRes20[1]};
+                default:
+                    pixel = new int[]{ this.granulePosition + this.sizeRes60[0], this.sizeRes60[1]};
+
+            }
+        } else {
+            switch((int) resolution){
+                case Sen2VMConstants.RESOLUTION_10M:
+                    pixel = new int[]{ this.granulePosition + this.sizeRes10[0], this.sizeRes10[1]};
+                case Sen2VMConstants.RESOLUTION_20M:
+                    pixel = new int[]{ (this.granulePosition - this.pixelOrigin)/2 + this.pixelOrigin + this.sizeRes20[0], this.sizeRes20[1]};
+                default:
+                    pixel = new int[]{ (this.granulePosition - this.pixelOrigin)/6 + this.pixelOrigin + this.sizeRes60[0], this.sizeRes60[1]};
+
+            }
+        }
+
+
+        //System.out.println("Pixel max Gr y:" + String.valueOf(pixel[0]));
+        //System.out.println("Pixel max Gr x:" + String.valueOf(pixel[1]));
+
+
+        return pixel ;
+    }
+
+    public int[] getULpixel(double resolution) {
+        int[] pixel = null ;
+
+        if (this.granulePosition == 1){
+            pixel = new int[]{this.granulePosition, this.pixelOrigin };
+        } else {
+            switch((int) resolution){
+                case Sen2VMConstants.RESOLUTION_10M:
+                    pixel = new int[]{this.granulePosition, this.pixelOrigin };
+                case Sen2VMConstants.RESOLUTION_20M:
+                    pixel = new int[]{(this.granulePosition - this.pixelOrigin) / 2 + this.pixelOrigin  , this.pixelOrigin};
+                default:
+                    pixel = new int[]{(this.granulePosition - this.pixelOrigin) / 6 + this.pixelOrigin, this.pixelOrigin};
+            }
+        }
+        //System.out.println("Pixel min Gr y:" + String.valueOf(pixel[0]));
+        //System.out.println("Pixel min Gr x:" + String.valueOf(pixel[1]));
+        return pixel ;
     }
 
 }

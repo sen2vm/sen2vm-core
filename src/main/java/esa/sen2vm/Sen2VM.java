@@ -121,15 +121,6 @@ public class Sen2VM
             // Read datastrip
             DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
 
-            String granulesFolder = configFile.getL1bProduct() + "/GRANULE/";
-
-            /*
-                String granuleExempleFolder = granulesFolder + "S2B_OPER_MSI_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08_N05.11/S2B_OPER_MTD_L1B_GR_2BPS_20240804T104054_S20240804T083750_D08.xml" ;
-                LOGGER.info("Granule " + granuleExempleFolder);
-                GranuleManager granuleManager = GranuleManager.getInstance();
-                granuleManager.initGranuleManager(granuleExempleFolder);
-            */
-
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager);
 
@@ -137,11 +128,11 @@ public class Sen2VM
 
             // Init demManager
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
-            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
             SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
             if(!demFileManager.findRasterFile()) {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
+            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
                 demFileManager,
                 geoidManager,
@@ -160,9 +151,8 @@ public class Sen2VM
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
 
                     // Save sensor information
-                    String sensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
-                    Sensor j_sensor = new Sensor(
-                        sensor,
+                    Sensor sensor = new Sensor(
+                        bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
                         viewing,
                         lineDatation,
                         bandInfo.getPixelHeight(),
@@ -170,12 +160,11 @@ public class Sen2VM
                         msiToFocalplane,
                         pilotingToMsi
                     );
-                    sensorList.add(j_sensor);
+                    sensorList.add(sensor);
                 }
             }
 
             // Init rugged instance
-            RefiningInfo refiningInfo = new RefiningInfo();
             RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
                 demManager,
                 dataStripManager.getDataSensingInfos(),
@@ -185,6 +174,8 @@ public class Sen2VM
                 Sen2VMConstants.MARGIN,
                 dataStripManager.getRefiningInfo()
             );
+            ruggedManager.setLightTimeCorrection(false);
+            ruggedManager.setAberrationOfLightCorrection(false);
 
             // Init simpleLocEngine
             SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
@@ -193,6 +184,9 @@ public class Sen2VM
                 demManager
             );
 
+            double[][] pixels = {{0., 0.}};
+            double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
+            showPoints(pixels, grounds);
 
 
 
@@ -213,58 +207,61 @@ public class Sen2VM
 
             for (BandInfo bandInfo: bands) {
                 LOGGER.info("### BAND " + bandInfo.getName() );
-                Float step = configFile.getStepFromBandInfo(bandInfo);
-
+                int step = (int) (configFile.getStepFromBandInfo(bandInfo)).intValue();;
                 for (DetectorInfo detectorInfo: detectors) {
                     LOGGER.info("### DET " + detectorInfo.getName() );
-
-                    int[] BBox = dataStripManager.computeFullSize(granulesFolder, bandInfo, detectorInfo);
+                    int[] BBox = sm.getFullSize(dataStripManager, bandInfo, detectorInfo);
 
                     int startLine = BBox[0] ;
                     int startPixel = BBox[1] ;
                     int sizeLine = BBox[2] - BBox[0];
                     int sizePixel = BBox[3] - BBox[1];
-                    System.out.println(step);
 
                     DirectLocGrid dirGrid = new DirectLocGrid(pixelOffset, lineOffset, step,
                                 startPixel, startLine, sizeLine, sizePixel);
 
                     double[][] sensorGrid = dirGrid.get2Dgrid();
-                    // System.out.println(Arrays.deepToString(sensorGrid));
 
                     ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detectorInfo, bandInfo);
-                    System.out.print("Number of granules found: ");
-                    System.out.println(granulesToCompute.size());
+                    //System.out.print("Number of granules found: ");
+                    //System.out.println(granulesToCompute.size());
 
-                    LOGGER.info("pixels="+sensorGrid[0][0]+" "+sensorGrid[0][1]);
+                    //LOGGER.info("pixels="+sensorGrid[0][0]+" "+sensorGrid[0][1]);
                     double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(0), sensorGrid);
-                    LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
+                    //LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
 
-                    showPoints(sensorGrid, directLocGrid);
+
+
+                    // showPoints(sensorGrid, directLocGrid);
 
                     Vector<String> inputTIFs = new Vector<String>();
-                    for(int g = 0 ; g < granulesToCompute.size(); g++ ) {
+                    for(int g = 0 ; g <  granulesToCompute.size(); g++ ) { ; //
                         Granule gr = granulesToCompute.get(g) ;
+                        // String[] minmax = dataStripManager.getMinMaxGranule(bandInfo, detectorInfo);
+                        // String maxGranuleName = minmax[g];
+                        // Granule gr = sm.getGranuleByName(maxGranuleName) ;
 
-                        int startGranule = 1000; // MTD granule
-                        int sizeGranule = 200; // MTD granule
+                        int[] ULpixel = gr.getULpixel(bandInfo.getPixelHeight());
+                        int[] BRpixel = gr.getBRpixel(bandInfo.getPixelHeight());
+                        int startGranule = ULpixel[0];
+                        int sizeGranule = BRpixel[0] - ULpixel[0] ;
 
                         double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
                         String srs = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433],AUTHORITY[\"EPSG\",\"4326\"]]" ;
 
                         // Save in TIF
                         String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
-                        outputFileManager.createGeoTiff(gridFileName, 1, startGranule, step, 2, srs, subDirectLocGrid) ;
+                        outputFileManager.createGeoTiff(gridFileName, subDirectLocGrid[0][0].length * detectorInfo.getIndex() * step, dirGrid.getStartRow(startGranule) * step, step, 2, srs, subDirectLocGrid) ;
 
                         // Add TIF to the futur VRT
-                        inputTIFs.add(gridFileName) ;
+                        int origin = gridFileName.indexOf("GEO_DATA");
+                        inputTIFs.add(gridFileName.substring(origin)) ;
                     }
 
                     // Create VRT
-                    LOGGER.info(ds.getName());
-                    LOGGER.info(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo));
+                    System.out.println(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo));
 
-                    outputFileManager.createVRT(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
+                    //outputFileManager.createVRT(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
 
                 }
             }

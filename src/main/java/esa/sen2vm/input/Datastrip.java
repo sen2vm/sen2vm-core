@@ -36,6 +36,9 @@ public class Datastrip {
                     // loadVRTs(listOfFiles[p]) ;
                     // TODO
                     System.out.println("GEO DATA EXISTS IN DS");
+                } else if (listOfFiles[p].isFile()) {
+                    this.path_mtd = listOfFiles[p] ;
+
                 }
             }
         }
@@ -55,21 +58,14 @@ public class Datastrip {
      */
     public String getCorrespondingVRTFileName(DetectorInfo detector, BandInfo band) {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
-        System.out.println(geo_data.toPath());
-        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + ".vrt";
-        System.out.println("suf: " + suffix);
-        System.out.println(this.path_mtd);
-        String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_GEO_");
-        System.out.println("vrt: " + vrt);
-
         if(geo_data.mkdir()) {
             System.out.println("Already Existing");
         }
-        /*
 
+        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + ".vrt";
+        String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_GEO_");
+        return new File(geo_data.getPath() + File.separator + vrt).getPath();
 
-        return new File(geo_data.getPath() + File.separator + vrt).getPath();*/
-        return this.name;
     }
 
 }
