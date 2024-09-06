@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input.gipp;
 
 import java.io.File;
 import java.util.HashMap;
@@ -10,6 +10,11 @@ import javax.xml.bind.Unmarshaller;
 import org.sxgeo.input.datamodels.sensor.SensorViewingDirection;
 import org.sxgeo.input.datamodels.sensor.SpaceCraftModelTransformation;
 
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.input.datastrip.DataStripManager;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
 import generated.GS2_BLIND_PIXELS;
 import generated.GS2_SPACECRAFT_MODEL_PARAMETERS;
 import generated.GS2_VIEWING_DIRECTIONS;
@@ -54,33 +59,38 @@ public class GIPPManager {
     private Unmarshaller jaxbUnmarshaller;
 
     /**
-     *
+     * DataStripManager object use to manage everything related to
      */
     private DataStripManager dataStripManager;
+
+    /**
+     * Boolean to activate or deactivate gipp version check
+     */
+    private Boolean gippVersionCheck;
 
     /**
      * Load GIPP from XML folder
      * @param gippFolder path to a folder that contains all the GIPP required
      * @param bands a list of all the bands that will be (comes from parameter configuration file)
      * @param dataStripManager datastrip manager
+     * @param gippVersionCheck a version check is made, by default, on each GIPP to ensure compatibility.
+     * This check can be deactivate manually by setting gippVersionCheck to False.
      * @throws Sen2VMException
      */
-    protected GIPPManager(String gippFolder, List<BandInfo> bands, DataStripManager dataStripManager) throws Sen2VMException {
+    public GIPPManager(String gippFolder, List<BandInfo> bands, DataStripManager dataStripManager, Boolean gippVersionCheck) throws Sen2VMException {
         try {
-            this.dataStripManager = dataStripManager;
-
-            // All GIPP have same package ("generated")
             JAXBContext jaxbContext = JAXBContext.newInstance(GS2_VIEWING_DIRECTIONS.class.getPackage().getName());
-
             jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            gippFileManager = new GIPPFileManager(gippFolder);
-            viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
-            LOGGER.info("Get through GIPP folder: "+ gippFolder);
-            loadAllGIPP(bands);
         } catch (Exception e) {
-            Sen2VMException exception = new Sen2VMException(e.getMessage(), e);
-            throw exception;
+            throw new Sen2VMException(e);
         }
+
+        this.dataStripManager = dataStripManager;
+        this.gippVersionCheck = gippVersionCheck;
+        this.gippFileManager = new GIPPFileManager(gippFolder);
+        this.viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
+
+        loadAllGIPP(bands);
     }
 
     /*
@@ -96,9 +106,14 @@ public class GIPPManager {
             if (fileBlindPixel != null) {
                 LOGGER.info("Read blind pixel file: "+ fileBlindPixel);
                 blindPixelInfo = (GS2_BLIND_PIXELS) jaxbUnmarshaller.unmarshal(fileBlindPixel);
+
+                if (gippVersionCheck) {
+                    String gippVersion = blindPixelInfo.getSPECIFIC_HEADER().getVERSION_NUMBER();
+                    dataStripManager.checkGIPPVersion(fileBlindPixel.getName(), gippVersion);
+                }
             }
         } catch (Exception e) {
-            LOGGER.severe("Error when reading the blind pixel GIPP file: " + fileBlindPixel + " with message: " + e.getMessage());
+            throw new Sen2VMException("Error when reading the blind pixel GIPP file: " + fileBlindPixel, e);
         }
 
         // Load spacecraft model gipp
@@ -108,10 +123,16 @@ public class GIPPManager {
             if (fileSpaMod != null) {
                 LOGGER.info("Read spacecraft model file: "+ fileSpaMod);
                 GS2_SPACECRAFT_MODEL_PARAMETERS spaModInfo = (GS2_SPACECRAFT_MODEL_PARAMETERS) jaxbUnmarshaller.unmarshal(fileSpaMod);
+
+                if (gippVersionCheck) {
+                    String gippVersion = spaModInfo.getSPECIFIC_HEADER().getVERSION_NUMBER();
+                    dataStripManager.checkGIPPVersion(fileSpaMod.getName(), gippVersion);
+                }
+
                 spaModMgr = new SpaModManager(spaModInfo);
             }
         } catch (Exception e) {
-            LOGGER.severe("Error when reading spacecraft model GIPP file: " + fileSpaMod + " with message: " + e.getMessage());
+            throw new Sen2VMException("Error when reading spacecraft model GIPP file: " + fileSpaMod, e);
         }
 
         // Load viewing directions gipp
@@ -126,12 +147,18 @@ public class GIPPManager {
                 // Load GIPP DATA
                 LOGGER.info("Read viewingDirection file: "+ file);
                 GS2_VIEWING_DIRECTIONS viewingDirection = (GS2_VIEWING_DIRECTIONS) jaxbUnmarshaller.unmarshal(file);
+
+                if (gippVersionCheck) {
+                    String gippVersion = viewingDirection.getSPECIFIC_HEADER().getVERSION_NUMBER();
+                    dataStripManager.checkGIPPVersion(file.getName(), gippVersion);
+                }
+
                 int bandId = viewingDirection.getDATA().getBAND_ID();
                 BandInfo bandInfo = BandInfo.getBandInfoFromIndex(bandId);
                 viewingDirectionMap.put(bandInfo, viewingDirection);
             }
         } catch (Exception e) {
-            LOGGER.severe("Error when reading viewing directions GIPP files with message: " + e.getMessage());
+            throw new Sen2VMException("Error when reading viewing directions GIPP files from", e);
         }
     }
 

@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input.datastrip;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,12 +34,20 @@ import org.orekit.utils.IERSConventions;
 import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.TimeStampedAngularCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
-
 import org.sxgeo.input.datamodels.DataSensingInfos;
 import org.sxgeo.input.datamodels.RefiningInfo;
 import org.sxgeo.input.datamodels.sensor.Sensor;
 import org.sxgeo.exception.SXGeoException;
 
+import esa.sen2vm.Sen2VM;
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
+
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_AUXILIARY_DATA_INFO_DSL1B;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST.GIPP_FILENAME;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_ATTITUDE_DATA_INV.Corrected_Attitudes.Values;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_EPHEMERIS_DATA_INV.GPS_Points_List.GPS_Point;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL0;
@@ -82,6 +90,11 @@ public class DataStripManager {
      * Sensor configuration
      */
     protected A_SENSOR_CONFIGURATION sensorConfiguration = null;
+
+    /**
+     * Info about auxiliary data like GIPP and IERS
+     */
+    protected AN_AUXILIARY_DATA_INFO_DSL1B auxiliaryDataInfo = null;
 
     /**
      * List of Pair (date, rotation)
@@ -138,7 +151,7 @@ public class DataStripManager {
     /**
      * Refining information (null is not present or not asked for)
      */
-    private RefiningInfo refiningInfo;
+    private RefiningInfo refiningInfo = new RefiningInfo();
 
     /**
      * Refined Corrections List for L1B data
@@ -152,7 +165,7 @@ public class DataStripManager {
      * @param activateAvailableRefining if true use refining parameters present in the datastrip, else will ignore available refining
      * @throws Sen2VMException
      */
-    protected DataStripManager(String dsFilePath, String iersDirectoryPath, Boolean activateAvailableRefining) throws Sen2VMException {
+    public DataStripManager(String dsFilePath, String iersDirectoryPath, Boolean activateAvailableRefining) throws Sen2VMException {
         this.dsFile = new File(dsFilePath);
         gps = TimeScalesFactory.getGPS();
         loadFile(dsFilePath, iersDirectoryPath, activateAvailableRefining);
@@ -177,9 +190,9 @@ public class DataStripManager {
 
             sensorConfiguration = l1B_datastrip.getImage_Data_Info().getSensor_Configuration();
 
-            initOrekitRessources(iersDirectoryPath);
+            auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
 
-            this.refiningInfo = new RefiningInfo();
+            initOrekitRessources(iersDirectoryPath);
 
             // Test if we need to take refining data into account according to the flag
             if (activateAvailableRefining) {
@@ -207,16 +220,12 @@ public class DataStripManager {
             // Instanciate dataSensingInfos that will be use for SimpleLocEngine
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
 
-        } catch (JAXBException e){
-            Sen2VMException exception = new Sen2VMException(e);
-            throw exception;
-        }  catch (OrekitException oe){
-            Sen2VMException exception = new Sen2VMException(oe);
-            oe.printStackTrace();
-            throw exception;
-        } catch (SXGeoException e){
-            Sen2VMException exception = new Sen2VMException(e);
-            throw exception;
+        } catch (JAXBException e) {
+            throw new Sen2VMException(e);
+        }  catch (OrekitException e) {
+            throw new Sen2VMException(e);
+        } catch (SXGeoException e) {
+            throw new Sen2VMException(e);
         }
     }
 
@@ -259,13 +268,13 @@ public class DataStripManager {
      */
     public void initOrekitRessources(String iersFilePath) throws Sen2VMException {
 		try {
-			if (iersFilePath != null && !iersFilePath.equals("")) {
-				File iersFile = new File(iersFilePath);
-				if (!iersFile.exists()) {
-					throw new Sen2VMException("Can't read IERS file " + iersFile);
-				}
-				FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
-			}
+		    // Get IERS file and instantiate FramesFactory with it
+			File iersFile = new File(iersFilePath);
+			FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
+
+			// When using a single IERS A bulletin some gaps may arise : to allow the use of such bulletin,
+			// we fix the EOP continuity threshold to one year instead of the normal gap ...
+			FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
 
 			// set up default Orekit data
 			File orekitDataDir = new File(System.getProperty("user.dir") + "/" + Sen2VMConstants.OREKIT_DATA_DIR);
@@ -273,12 +282,8 @@ public class DataStripManager {
 			    throw new Sen2VMException("Orekit data not found");
 			}
 			DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
-
-			// When using a single IERS A bulletin some gaps may arise : to allow the use of such bulletin,
-			// we fix the EOP continuity threshold to one year instead of the normal gap ...
-			FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
 		} catch (Exception e) {
-			throw new Sen2VMException("Something went wrong during initialization of orekit ressources ", e);
+			throw new Sen2VMException("Something went wrong during initialization of IERS and orekit ressources ", e);
 		}
 	}
 
@@ -425,8 +430,7 @@ public class DataStripManager {
         for (Values values : correctedAttitudeValueList) {
             XMLGregorianCalendar gpsTime = values.getGPS_TIME();
             if (gpsTime == null) {
-                Sen2VMException se = new Sen2VMException(Sen2VMConstants.ERROR_QUATERNION_NULL_GPS);
-                throw se;
+                throw new Sen2VMException(Sen2VMConstants.ERROR_QUATERNION_NULL_GPS);
             }
             // Extract Quaternion values from XML
             AbsoluteDate attitudeDate = new AbsoluteDate(gpsTime.toString(), gps);
@@ -532,8 +536,7 @@ public class DataStripManager {
                 }
             }
         } catch (Exception e) {
-            Sen2VMException exception = new Sen2VMException(e);
-            throw exception;
+            throw new Sen2VMException(e);
         }
     }
 
@@ -661,6 +664,38 @@ public class DataStripManager {
             }
         }
         return tdiConfVal;
+    }
+
+    /**
+     * Check if the GIPP version is supported
+     * @param gippType is the type of GIPP, can be GIP_SPAMOD or GIP_BLINDP
+     * @param gippVersion is the version of the input GIPP
+     * @throws Sen2VMException
+     */
+    public void checkGIPPVersion(String gippFilepath, String gippVersion) throws Sen2VMException {
+        boolean compatibleVersion = false;
+        String expectedVersion = null;
+        if (gippVersion != null) {
+            List<A_GIPP_LIST.GIPP_FILENAME> gippList = auxiliaryDataInfo.getGIPP_List().getGIPP_FILENAME();
+            for (GIPP_FILENAME gipp_filename : gippList) {
+                if (gippFilepath.contains(gipp_filename.getValue())) {
+                    expectedVersion = gipp_filename.getVersion();
+                    if (gippVersion.equals(gipp_filename.getVersion())) {
+                        compatibleVersion = true;
+                    }
+                }
+            }
+        } else {
+            throw new Sen2VMException("GIPP version could not be find for " + gippFilepath);
+        }
+
+        if (!compatibleVersion) {
+            String errorMessage = gippFilepath + " with version " + gippVersion + " is not supported by current datastrip " + dsFile + ".";
+            if (expectedVersion != null) {
+                throw new Sen2VMException(errorMessage + " Expected version is " + expectedVersion + ".");
+            }
+            throw new Sen2VMException(errorMessage);
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input.gipp;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -11,6 +11,10 @@ import java.util.logging.Logger;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.Sen2VMConstants;
+
 import java.util.Set;
 
 /**
@@ -52,6 +56,7 @@ public class GIPPFileManager {
      * @param a regex that match a specific type of GIPP
      * @param list of all valid extensions
      * @return a list that contains all files that correspond to the input regex
+     * @throws Sen2VMException
      */
     public static List<File> findGippFiles(File[] directories, String regexPattern, List<String> validExtensions) throws Sen2VMException {
         Pattern pattern = Pattern.compile(regexPattern);
@@ -140,6 +145,7 @@ public class GIPPFileManager {
      * @param a regex that match a specific type of GIPP
      * @param list of all valid extensions
      * @return the first occurrence that correspond to the input regex
+     * @throws Sen2VMException
      */
     public File findFile(File[] directories, String regexPattern, List<String> validExtensions) throws Sen2VMException {
         List<File> foundFiles = findGippFiles(directories, regexPattern, validExtensions);
@@ -158,8 +164,10 @@ public class GIPPFileManager {
     /**
      * Constructor
      * @param folder contains the GIPP xml files
+     * @throws Sen2VMException
      */
     public GIPPFileManager(String folder) throws Sen2VMException {
+        LOGGER.info("Get through GIPP folder: "+ folder);
         List<String> validExtensions = Arrays.asList(Sen2VMConstants.xml_extention_small,
                                                      Sen2VMConstants.xml_extention_big,
                                                      Sen2VMConstants.dbl_extention_small,
@@ -169,13 +177,13 @@ public class GIPPFileManager {
         File[] directories = gippFolder.listFiles();
 
         // get viewing direction file
-        viewingDirectionFileList = findGippFiles(directories, Sen2VMConstants.GIPP_VIEWDIR_NAME, validExtensions);
+        viewingDirectionFileList = findGippFiles(directories, Sen2VMConstants.GIPP_VIEWDIR_PAT, validExtensions);
 
         // get blind pixel file
-        blindPixelFile = findFile(directories, Sen2VMConstants.GIPP_BLINDP_NAME, validExtensions);
+        blindPixelFile = findFile(directories, Sen2VMConstants.GIPP_BLINDP_PAT, validExtensions);
 
         // get spacecraft model file
-        spaModFile = findFile(directories, Sen2VMConstants.GIPP_SPAMOD_NAME, validExtensions);
+        spaModFile = findFile(directories, Sen2VMConstants.GIPP_SPAMOD_PAT, validExtensions);
     }
 
     /**

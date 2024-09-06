@@ -30,6 +30,16 @@ import org.sxgeo.input.dem.DemFileManager;
 import org.sxgeo.input.dem.SrtmFileManager;
 import org.sxgeo.input.dem.GeoidManager;
 import org.sxgeo.rugged.RuggedManager;
+
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.input.ConfigurationFile;
+import esa.sen2vm.input.ParamFile;
+import esa.sen2vm.input.datastrip.DataStripManager;
+import esa.sen2vm.input.gipp.GIPPManager;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
+
 import org.sxgeo.exception.SXGeoException;
 
 /**
@@ -50,6 +60,7 @@ public class Sen2VM
     /**
      * Main process
      * @param args first arg: input json file. second param (optional): parameter json file
+     * @throws Sen2VMException
      */
     public static void main( String[] args ) throws Sen2VMException
     {
@@ -122,7 +133,7 @@ public class Sen2VM
             DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
 
             // Read GIPP
-            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager);
+            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
 
             // Initialize SimpleLocEngine
 
