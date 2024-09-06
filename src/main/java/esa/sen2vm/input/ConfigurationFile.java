@@ -3,6 +3,7 @@ package esa.sen2vm.input;
 import java.io.File;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.json.JSONException;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.Sen2VMConstants;
@@ -27,10 +28,10 @@ public class ConfigurationFile extends InputFileManager
     private boolean gippVersionCheck = true;
     private String dem;
     private String geoid;
-    private String iers;
+    private String iers = "";
     private String pod;
     private String operation;
-    private boolean refining;
+    private boolean refining = false;
     private float band10m;
     private float band20m;
     private float band60m;
@@ -68,26 +69,45 @@ public class ConfigurationFile extends InputFileManager
 
             this.l1bProduct = checkPath(jsonObject.getString("l1b_product"));
             this.gippFolder = checkPath(jsonObject.getString("gipp_folder"));
-            this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
             this.dem = checkPath(jsonObject.getString("dem"));
             this.geoid = checkPath(jsonObject.getString("geoid"));
-            this.iers = jsonObject.getString("iers");
             this.pod = jsonObject.getString("pod");
             this.operation = jsonObject.getString("operation");
-            this.refining = jsonObject.getBoolean("deactivate_available_refining");
 
             JSONObject steps = jsonObject.getJSONObject("steps");
             this.band10m = steps.getFloat("10m_bands");
             this.band20m = steps.getFloat("20m_bands");
             this.band60m = steps.getFloat("60m_bands");
 
-            JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
-            this.ul_x = inverseLoc.getFloat("ul_x");
-            this.ul_y = inverseLoc.getFloat("ul_y");
-            this.lr_x = inverseLoc.getFloat("lr_x");
-            this.lr_y = inverseLoc.getFloat("lr_y");
-            this.referential = inverseLoc.getString("referential");
-            this.outputFolder = inverseLoc.getString("output_folder");
+            // Optional parameters
+            if (jsonObject.has("gipp_version_check")) {
+                this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
+            }
+            if (jsonObject.has("iers")) {
+                this.iers = jsonObject.getString("iers");
+                checkPath(this.iers);
+            }
+            if (jsonObject.has("deactivate_available_refining")) {
+                this.refining = jsonObject.getBoolean("deactivate_available_refining");
+            }
+            if (this.operation.equals("inverse")) {
+                if (!jsonObject.has("inverse_location_additional_info")) {
+                    throw new Sen2VMException("Error inverse_location_additional_info parameter initialization is required when using inverse operation");
+                }
+                else {
+                   try {
+                       JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
+                       this.ul_x = inverseLoc.getFloat("ul_x");
+                       this.ul_y = inverseLoc.getFloat("ul_y");
+                       this.lr_x = inverseLoc.getFloat("lr_x");
+                       this.lr_y = inverseLoc.getFloat("lr_y");
+                       this.referential = inverseLoc.getString("referential");
+                       this.outputFolder = inverseLoc.getString("output_folder");
+                   } catch(JSONException e) {
+                       throw new Sen2VMException("Error when initializing inverse_location_additional_info", e);
+                   }
+                }
+            }
 
         } catch (FileNotFoundException e) {
             throw new Sen2VMException(e);
@@ -177,18 +197,16 @@ public class ConfigurationFile extends InputFileManager
 
     /*
      * Get the IERS folder
-     * @throws Sen2VMException
      */
-    public String getIers() throws Sen2VMException {
-       return checkPath(iers);
+    public String getIers() {
+       return iers;
     }
 
     /*
      * Get the POD folder
-     * @throws Sen2VMException
      */
-    public String getPod() throws Sen2VMException {
-       return checkPath(pod);
+    public String getPod() {
+       return pod;
     }
 
     /*

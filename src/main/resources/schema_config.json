@@ -78,5 +78,5 @@
           "required":["ul_x", "ul_y", "lr_x", "lr_y", "referential", "output_folder"]
         }
     },
-    "required": ["l1b_product", "gipp_folder", "dem", "geoid", "operation", "steps", "inverse_location_additional_info"]
+    "required": ["l1b_product", "gipp_folder", "dem", "geoid", "operation", "steps"]
 }
