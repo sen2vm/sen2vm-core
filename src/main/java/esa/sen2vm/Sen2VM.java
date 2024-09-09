@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.HashMap;
 
 import org.orekit.rugged.linesensor.LineDatation;
 
@@ -158,7 +159,7 @@ public class Sen2VM
             // Build sensor list
 
             // Save sensors for each focal plane
-            List<Sensor> sensorList = new ArrayList<Sensor>();
+            HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
             for (DetectorInfo detectorInfo: detectors) {
                 for (BandInfo bandInfo: bands) {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
@@ -177,7 +178,7 @@ public class Sen2VM
                         msiToFocalplane,
                         pilotingToMsi
                     );
-                    sensorList.add(sensor);
+                    sensorList.put(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(), sensor);
                 }
             }
 
@@ -187,7 +188,7 @@ public class Sen2VM
                 dataStripManager.getDataSensingInfos(),
                 Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
                 Sen2VMConstants.RESOLUTION_10M_DOUBLE,
-                sensorList,
+                new ArrayList(sensorList.values()),
                 Sen2VMConstants.MARGIN,
                 dataStripManager.getRefiningInfo()
             );
@@ -234,8 +235,8 @@ public class Sen2VM
                     ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detectorInfo, bandInfo);
                     LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
 
+                    double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGrid);
                     // LOGGER.info("pixels="+sensorGrid[0][0]+" "+sensorGrid[0][1]);
-                    double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(0), sensorGrid);
                     // LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
                     // showPoints(sensorGrid, directLocGrid);
 
