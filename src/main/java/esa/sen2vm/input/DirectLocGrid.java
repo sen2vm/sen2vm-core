@@ -1,15 +1,23 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class DirectLocGrid {
 
+    // Get sen2VM logger
+    private static final Logger LOGGER = Logger.getLogger(DirectLocGrid.class.getName());
+
     protected int pixelOffset ;
     protected int lineOffset ;
-    protected Float step ;
+    protected int step ;
 
     protected int pixelOrigin ;
     protected int lineOrigin ;
@@ -19,10 +27,10 @@ public class DirectLocGrid {
     protected ArrayList<Double> gridPixels ;
     protected ArrayList<Double> gridLines ;
 
-    public DirectLocGrid(int pixelOffset, int lineOffset,
-                         Float step,
-                         int pixelOrigin, int lineOrigin,
-                         int sizePixels, int sizeLines) {
+    public DirectLocGrid(int lineOffset, int pixelOffset,
+                         int step,
+                         int lineOrigin, int pixelOrigin,
+                         int sizeLines, int sizePixels) {
         this.pixelOffset = pixelOffset;
         this.lineOffset = lineOffset;
         this.step = step;
@@ -31,21 +39,19 @@ public class DirectLocGrid {
         this.sizePixels = sizePixels;
         this.sizeLines = sizeLines;
 
-        System.out.println("# Grid information");
-        System.out.print("Offset: (" + String.valueOf(this.pixelOffset) + ", " + String.valueOf(this.lineOffset) + ") ; ");
+        /*System.out.println("# Grid information");
+        System.out.print("Offset: (" + String.valueOf(this.lineOffset) + ", " + String.valueOf(this.pixelOffset) + ") ; ");
         System.out.print("Step: (" + String.valueOf(this.step) + ", " + String.valueOf(this.step) + ") ; ");
-        System.out.print("Start: (" + String.valueOf(this.pixelOrigin) + ", " + String.valueOf(this.lineOrigin) + ") ; ");
-        System.out.println("Size: (" + String.valueOf(this.sizePixels) + ", " + String.valueOf(this.sizeLines) + ")");
-        System.out.println();
+        System.out.print("Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ") ; ");
+        System.out.println("Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")");*/
 
         this.gridPixels = grid_1D(this.pixelOrigin, this.sizePixels, this.pixelOrigin, this.pixelOffset, this.step);
         this.gridLines = grid_1D(this.lineOrigin, this.sizeLines, this.pixelOrigin, this.lineOffset, this.step);
 
         // ArrayList<Double> grids = mersh2D(this.gridPixels, this.gridPixels);
 
-        System.out.println("Grid Pixel: " + this.gridPixels);
-        System.out.println("Grid Line: " + this.gridLines);
-        System.out.println();
+        LOGGER.info("Grid Pixel: " + this.gridPixels);
+        LOGGER.info("Grid Line: " + this.gridLines);
 
     }
 
@@ -59,7 +65,6 @@ public class DirectLocGrid {
 
         for (int l = 0 ; l < nbLines ; l ++){
             for (int c = 0 ; c < nbCols ; c ++){
-                System.out.println();
                 grid[l*nbCols + c][0] = this.gridLines.get(l);
                 grid[l*nbCols + c][1] = this.gridPixels.get(c);
             }
@@ -70,12 +75,12 @@ public class DirectLocGrid {
 
 
 
-    private ArrayList<Double> grid_1D(int start, int size, double origin, double offset, float step) {
+    private ArrayList<Double> grid_1D(int start, int size, double origin, double offset, int step) {
         Boolean insideGranule = true;
         ArrayList<Double> grid = new ArrayList<Double>();
         int i_grid = 0;
 
-        double value = offset + (i_grid - origin + 1) * this.step - this.step / 2 + start;
+        double value = offset + (i_grid - origin + 1) * step - step / 2 + start;
         grid.add(value);
 
         while (insideGranule) {
@@ -89,26 +94,35 @@ public class DirectLocGrid {
         return grid;
     }
 
+    public int getStartRow(int startGranule) {
+        double start = ((startGranule - 1 + this.step / 2 ) * 1.0 / this.step);
+        return (int) Math.floor(start) ;
+    }
+
+    public int getEndRow(int startGranule, int sizeGranule) {
+        double end = ((startGranule - 1 + sizeGranule + this.step / 2 ) * 1.0  / this.step);
+        return (int) Math.ceil(end);
+    }
+
     public double[][][] extractPointsDirectLoc(double[][] directLocGrid, int startGranule, int sizeGranule) {
         Boolean insideGranule = true;
 
-        int i_grid = 0;
+        int grid_row_start = getStartRow(startGranule);
+        int grid_row_end = getEndRow(startGranule, sizeGranule) ;
 
-        int grid_row_start = (int) ((startGranule - 1) / this.step);
-        int grid_row_end = (int) ((startGranule - 1 + sizeGranule) / this.step + 1);
-
-        int nbLines = grid_row_end - grid_row_start ;
+        int nbLines = grid_row_end - grid_row_start + 1;
         int nbCols = this.gridPixels.size();
 
         double[][][] subDirectLocGrid = new double[2][nbLines][nbCols];
 
-        for (int l = grid_row_start; l < grid_row_end; l++) {
+        for (int l = 0; l < nbLines; l++) {
             for (int c = 0; c < nbCols; c++) {
-                subDirectLocGrid[0][l][c] = directLocGrid[l*nbCols + c][0] ;
-                subDirectLocGrid[1][l][c] = directLocGrid[l*nbCols + c][1] ;
+                subDirectLocGrid[0][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][0] ;
+                subDirectLocGrid[1][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][1] ;
             }
         }
 
+        System.out.print("Granule: " + String.valueOf(startGranule) + " -> " + String.valueOf(startGranule + sizeGranule) + "     ");
         System.out.print("start: " + String.valueOf(grid_row_start) + " (");
         System.out.print(String.valueOf(this.gridLines.get(grid_row_start)) + ")");
         System.out.print(" -> end: " + String.valueOf(grid_row_end) + " (");
@@ -127,13 +141,13 @@ public class DirectLocGrid {
         System.out.print("Origin: (" + String.valueOf(pixelOrigin) + ", " + String.valueOf(lineOrigin) + ") ; ");
         System.out.println("Size: (" + String.valueOf(sizePixels) + ", " + String.valueOf(sizeLines) + ")");
 
-        this.gridPixels = grid_1D(pixelOrigin, sizePixels, pixelOrigin, this.pixelOffset, this.step);
         this.gridLines = grid_1D(lineOrigin, sizeLines, pixelOrigin, this.lineOffset, this.step);
+        this.gridPixels = grid_1D(pixelOrigin, sizePixels, pixelOrigin, this.pixelOffset, this.step);
 
         // ArrayList<Double> grids = mersh2D(this.gridPixels, this.gridPixels);
 
-        System.out.println("Grid Pixel: " + this.gridPixels);
-        System.out.println("Grid Line: " + this.gridLines);
+        LOGGER.info("Grid Line: " + this.gridLines);
+        LOGGER.info("Grid Pixel: " + this.gridPixels);
         System.out.println();
     }
 

@@ -1,13 +1,19 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -16,19 +22,34 @@ import java.util.logging.Logger;
  */
 public class ParamFile extends InputFileManager
 {
+    /**
+     * Get sen2VM logger
+     */
     private static final Logger LOGGER = Logger.getLogger(ParamFile.class.getName());
 
+    /**
+     * File path of param file
+     */
     private String filepath;
+
+    /**
+     * JSONArray of the detectors
+     */
     public JSONArray detectors;
-    public JSONArray bands;
+
+    /**
+     * JSONArray of the bands
+     */
+     public JSONArray bands;
 
     /**
      * Constructor
      * @param jsonFilePath Path to the parameter file to parse
+     * @throws Sen2VMException
      */
-    public ParamFile(String jsonFilePath) {
+    public ParamFile(String jsonFilePath) throws Sen2VMException {
         this.filepath = jsonFilePath;
-        if(check_schema(this.filepath, "src/test/resources/schema_params.json")) {
+        if(check_schema(this.filepath, "src/main/resources/schema_params.json")) {
             parse(this.filepath);
         }
     }
@@ -52,5 +73,41 @@ public class ParamFile extends InputFileManager
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+     * Get the detectors list
+     */
+    public JSONArray getDetectors() {
+       return detectors;
+    }
+
+    /*
+     * Get the bands list
+     */
+    public List<DetectorInfo> getDetectorsList() {
+       List<DetectorInfo> detectorsList = new ArrayList<DetectorInfo>();
+       for(int i=0; i<detectors.length(); i++) {
+          detectorsList.add(DetectorInfo.getDetectorInfoFromName(detectors.getString(i)));
+       }
+       return detectorsList;
+    }
+
+    /*
+     * Get the bands list
+     */
+    public JSONArray getBands() {
+       return bands;
+    }
+
+    /*
+     * Get the bands list
+     */
+    public List<BandInfo> getBandsList() {
+       List<BandInfo> bandsList = new ArrayList<BandInfo>();
+       for(int i=0; i<bands.length(); i++) {
+          bandsList.add(BandInfo.getBandInfoFromNameWithB(bands.getString(i)));
+       }
+       return bandsList;
     }
 }

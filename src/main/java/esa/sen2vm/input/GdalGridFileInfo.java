@@ -1,4 +1,5 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
+
 import java.util.ArrayList;
 
 import org.gdal.gdal.Band;

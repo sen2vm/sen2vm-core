@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit test for simple App.
+ * Unit test for simple Sen2VMTest.
  */
-public class AppTest
+public class Sen2VMTest
 {
     /**
      * Rigorous Test :-)
@@ -21,6 +21,6 @@ public class AppTest
     @Test
     public void shouldAnswerWithTrue()
     {
-        assertTrue( true );
+        assertTrue( false );
     }
 }

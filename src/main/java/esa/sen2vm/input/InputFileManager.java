@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaLoader;
@@ -9,6 +9,8 @@ import org.json.JSONTokener;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.logging.Logger;
+
+import esa.sen2vm.exception.Sen2VMException;
 
 public class InputFileManager
 {
@@ -21,8 +23,9 @@ public class InputFileManager
      * @param configSchema, path to the file that contains the json schema to respect
      * @return true if the input file contains the required fields given by the json schema
      *  and false if it doesn't
+     * @throws Sen2VMException
      */
-    public boolean check_schema(String filepath, String configSchema) {
+    public boolean check_schema(String filepath, String configSchema) throws Sen2VMException {
         boolean correct_schema = false;
 
         try (InputStream schemaStream = new FileInputStream(configSchema);
@@ -36,13 +39,8 @@ public class InputFileManager
             schema.validate(jsonObject);
 
             correct_schema = true;
-        } catch (ValidationException e) {
-            LOGGER.severe("Validation schema failed for " + filepath);
-            e.getCausingExceptions().stream()
-                .map(ValidationException::getMessage)
-                .forEach(System.err::println);
         } catch (Exception e) {
-            LOGGER.severe("Error during check_schema with message : " + e.getMessage());
+            throw new Sen2VMException("Validation schema has failed for: " + filepath, e);
         }
 
         return correct_schema;

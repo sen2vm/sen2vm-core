@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,18 +7,18 @@ import java.util.List;
  * Information on detector
  */
 public enum DetectorInfo {
-    DETECTOR_1("01", 0, UnionBand.B9B2),
-    DETECTOR_2("02", 1, UnionBand.B2B9),
-    DETECTOR_3("03", 2, UnionBand.B9B2),
-    DETECTOR_4("04", 3, UnionBand.B2B9),
-    DETECTOR_5("05", 4, UnionBand.B9B2),
-    DETECTOR_6("06", 5, UnionBand.B2B9),
-    DETECTOR_7("07", 6, UnionBand.B9B2),
-    DETECTOR_8("08", 7, UnionBand.B2B9),
-    DETECTOR_9("09", 8, UnionBand.B9B2),
-    DETECTOR_10("10", 9, UnionBand.B2B9),
-    DETECTOR_11("11", 10, UnionBand.B9B2),
-    DETECTOR_12("12", 11, UnionBand.B2B9);
+    DETECTOR_1("01", 0),
+    DETECTOR_2("02", 1),
+    DETECTOR_3("03", 2),
+    DETECTOR_4("04", 3),
+    DETECTOR_5("05", 4),
+    DETECTOR_6("06", 5),
+    DETECTOR_7("07", 6),
+    DETECTOR_8("08", 7),
+    DETECTOR_9("09", 8),
+    DETECTOR_10("10", 9),
+    DETECTOR_11("11", 10),
+    DETECTOR_12("12", 11);
 
     /**
      * Detector name
@@ -31,24 +31,18 @@ public enum DetectorInfo {
     protected int index = 0;
 
     /**
-     * Detector bandUnion
-     */
-    protected UnionBand bandUnion = null;
-
-    /**
      * Private constructor
-     * @param name detector name
-     * @param resolution detector resolution
+     * @param name detector name, e.g. "01", "02", ... "12"
+     * @param index detector index (from 0 to 11)
      */
-    private DetectorInfo(String name, int index, UnionBand bandUnion) {
+    private DetectorInfo(String name, int index) {
         this.name = name;
         this.index = index;
-        this.bandUnion = bandUnion;
     }
 
     /**
      * Get DetectorInfo from sensor name
-     * @param sensorName sensor name
+     * @param sensorName sensor name in the shape of BXX/DXX, e.g. "B01/D01", "B01/D02", ... "B01/D12"
      * @return the detector having the given name. Null if not found
      */
     public static DetectorInfo getDetectorInfoFromSensorName(String sensorName) {
@@ -59,27 +53,12 @@ public enum DetectorInfo {
 
     /**
      * Get DetectorInfo from detector name
-     * @param detectorName detector name
+     * @param detectorName detector name, e.g. "01", "02", ... "12".
      * @return the detector having the given name. Null if not found
      */
     public static DetectorInfo getDetectorInfoFromName(String detectorName) {
-        for (DetectorInfo detector : DetectorInfo.values()) {
+        for (DetectorInfo detector: DetectorInfo.values()) {
             if (detector.name.equals(detectorName)) {
-                return detector;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get DetectorInfo from detector name
-     * @param detectorName detector name
-     * @return the detector having the given name. Null if not found
-     */
-    public static DetectorInfo getDetectorInfoFromNameWithD(String detectorName) {
-        for (DetectorInfo detector : DetectorInfo.values()) {
-            String name = "D" + detectorName;
-            if (detectorName.equals("D" + detector.name)) {
                 return detector;
             }
         }
@@ -114,10 +93,10 @@ public enum DetectorInfo {
     }
 
     /**
-     * @return the bandUnion
+     * @return the name
      */
-    public UnionBand getBandUnion() {
-        return bandUnion;
+    public String getNameWithD() {
+        return "D" + name;
     }
 
     /**
@@ -126,7 +105,7 @@ public enum DetectorInfo {
      */
     public static List<DetectorInfo> getAllDetectorInfo() {
         List<DetectorInfo> detectorInfoList = new ArrayList<>();
-        for (DetectorInfo detectorInfo : DetectorInfo.values()) {
+        for (DetectorInfo detectorInfo: DetectorInfo.values()) {
             detectorInfoList.add(detectorInfo);
         }
         return detectorInfoList;

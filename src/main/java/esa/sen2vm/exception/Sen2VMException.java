@@ -1,11 +1,13 @@
-package esa.sen2vm;
+package esa.sen2vm.exception;
 
 /**
  * Sen2VMException
  */
 public class Sen2VMException extends Exception {
 
-    public Sen2VMException() {
+    private static final long serialVersionUID = 1L;
+
+	public Sen2VMException() {
         super();
     }
 
