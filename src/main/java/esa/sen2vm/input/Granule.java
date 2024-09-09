@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 import org.apache.commons.cli.*;
 import java.util.ArrayList;
@@ -14,6 +14,12 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.Arrays;
+
+import esa.sen2vm.input.granule.GranuleManager;
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
 
 public class Granule {
 
@@ -228,11 +234,9 @@ public class Granule {
      */
     public String getCorrespondingGeoFileName(BandInfo band) {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
-        if(geo_data.mkdir()) {
-            System.out.println("Already Existing");
-        }
+        geo_data.mkdir();
 
-        String image = this.images[band.index].getName();
+        String image = this.images[band.getIndex()].getName();
         String grid = image.replace(".jp2", ".tif").replace("_MSI_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + grid).getPath();
     }
@@ -270,7 +274,7 @@ public class Granule {
     }
 
     public int[] getULpixel(double resolution) {
-        int[] pixel = null ;
+       int[] pixel = null ;
 
         if (this.granulePosition == 1){
             pixel = new int[]{this.granulePosition, this.pixelOrigin };
@@ -279,7 +283,7 @@ public class Granule {
                 case Sen2VMConstants.RESOLUTION_10M:
                     pixel = new int[]{this.granulePosition, this.pixelOrigin };
                 case Sen2VMConstants.RESOLUTION_20M:
-                    pixel = new int[]{(this.granulePosition - this.pixelOrigin) / 2 + this.pixelOrigin  , this.pixelOrigin};
+                    pixel = new int[]{(this.granulePosition - this.pixelOrigin) / 2 + this.pixelOrigin, this.pixelOrigin};
                 default:
                     pixel = new int[]{(this.granulePosition - this.pixelOrigin) / 6 + this.pixelOrigin, this.pixelOrigin};
             }
@@ -289,4 +293,55 @@ public class Granule {
         return pixel ;
     }
 
+
+    public int  getSizeLines(double resolution) {
+        int pixel = 0  ;
+        switch((int) resolution){
+            case Sen2VMConstants.RESOLUTION_10M:
+                pixel = this.sizeRes10[0];
+            case Sen2VMConstants.RESOLUTION_20M:
+                pixel = this.sizeRes20[0];
+            default:
+                pixel = this.sizeRes60[0];
+        }
+
+
+        return pixel ;
+    }
+    public int getFirstLine(double resolution) {
+
+        int pixel = 0 ;
+        if (this.granulePosition == 1){
+            pixel = this.granulePosition;
+        } else {
+            switch((int) resolution){
+                case Sen2VMConstants.RESOLUTION_10M:
+                    pixel = this.granulePosition;
+                case Sen2VMConstants.RESOLUTION_20M:
+                    pixel = (this.granulePosition - this.pixelOrigin) / 2 + this.pixelOrigin;
+                default:
+                    pixel = (this.granulePosition - this.pixelOrigin) / 6 + this.pixelOrigin;
+            }
+        }
+        return pixel ;
+
+    }
+
+    public int getFirstPixel() {
+        return this.pixelOrigin;
+    }
+
+    public int getSizePixels(double resolution) {
+         int pixel ;
+         switch((int) resolution){
+            case Sen2VMConstants.RESOLUTION_10M:
+                pixel = this.sizeRes10[1];
+            case Sen2VMConstants.RESOLUTION_20M:
+                pixel = this.sizeRes20[1];
+            default:
+                pixel = this.sizeRes60[1];
+        }
+        return pixel;
+
+    }
 }

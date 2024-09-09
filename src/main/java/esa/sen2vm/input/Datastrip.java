@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 import org.apache.commons.cli.*;
 import java.util.ArrayList;
@@ -8,6 +8,11 @@ import java.util.Vector;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
 
 public class Datastrip {
 
@@ -58,9 +63,7 @@ public class Datastrip {
      */
     public String getCorrespondingVRTFileName(DetectorInfo detector, BandInfo band) {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
-        if(geo_data.mkdir()) {
-            System.out.println("Already Existing");
-        }
+        geo_data.mkdir();
 
         String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + ".vrt";
         String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_GEO_");

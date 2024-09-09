@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input.granule;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,6 +34,9 @@ import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.TimeStampedAngularCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.Sen2VMConstants;
+
 import org.sxgeo.input.datamodels.DataSensingInfos;
 import org.sxgeo.exception.SXGeoException;
 
@@ -48,7 +51,7 @@ public class GranuleManager {
     /**
      * Get sen2VM logger
      */
-    private static final Logger LOGGER = Logger.getLogger(Sen2VM.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GranuleManager.class.getName());
 
     /**
      * File path granule file
@@ -85,7 +88,7 @@ public class GranuleManager {
      * @param granuleFilePath path to SAD XML file
      * @throws Sen2VMException
      */
-    protected GranuleManager(String granuleFilePath) throws Sen2VMException {
+    public GranuleManager(String granuleFilePath) throws Sen2VMException {
         this.granuleFile = new File(granuleFilePath);
         loadFile(granuleFilePath);
     }

@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,12 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
+import esa.sen2vm.input.datastrip.DataStripManager;
 
 public class SafeManager {
 
@@ -123,14 +129,12 @@ public class SafeManager {
 
         Granule minGranule = getGranuleByName(minGranuleName) ;
         int[] ULpixel = minGranule.getULpixel(bandInfo.getPixelHeight());
-        int[] BRpixel_ = minGranule.getBRpixel(bandInfo.getPixelHeight());
 
         String maxGranuleName = minmax[1];
         Granule maxGranule = getGranuleByName(maxGranuleName) ;
-        int[] ULpixel_ = maxGranule.getULpixel(bandInfo.getPixelHeight());
         int[] BRpixel = maxGranule.getBRpixel(bandInfo.getPixelHeight());
 
-        int[] bb = { ULpixel[0], ULpixel[1], BRpixel[0], BRpixel[1]} ;
+        int[] bb = {ULpixel[0], ULpixel[1], BRpixel[0] - ULpixel[0], BRpixel[1] - ULpixel[1]} ;
         return bb ;
 
     }

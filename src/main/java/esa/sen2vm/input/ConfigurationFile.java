@@ -13,6 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
+
 /**
  * ConfigurationFile class
  *

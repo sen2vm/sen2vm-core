@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.Vector;
 import java.util.Arrays;
 
 import java.io.File;
+import java.io.*;
 
 import org.gdal.gdal.Band;
 import org.gdal.gdal.Dataset;
@@ -80,8 +81,6 @@ public class OutputFileManager
         ds.SetGeoTransform(gtInfo);
         ds.SetProjection(srs);
 
-
-
         for (int i = 0; i < nbLines; i++) {
             double[] band1_online = new double[nbPixels];
             double[] band2_online = new double[nbPixels];
@@ -99,7 +98,7 @@ public class OutputFileManager
         ds.GetRasterBand(2).FlushCache();
         close(ds, band1, band2);
 
-        System.out.println("Tiff saved in: " + fileName);
+        LOGGER.info("Tiff saved in: " + fileName);
     }
 
 
@@ -120,21 +119,49 @@ public class OutputFileManager
         gtInfo[idx++] = 0d;
         gtInfo[idx++] = originY;
         gtInfo[idx++] = 0d;
-        gtInfo[idx++] = gridYStep;
+        gtInfo[idx++] = -gridYStep;
         return gtInfo;
     }
 
-    public void createVRT(String vrtFilePath, Vector<String> inputTIFs){
+    public void createVRT(String vrtFilePath, Vector<String> inputTIFs)  throws Exception{
 
         final Vector<String> buildVRTOptions = new Vector<String>();
 
         // Option code here
         // buildVRTOptions.add("-te");
-        // buildVRTOptions.add("start granule"); // surement deja fait
+        // buildVRTOptions.add("start granule");
 
         gdal.AllRegister();
         final Dataset dataset = gdal.BuildVRT(vrtFilePath, inputTIFs, new BuildVRTOptions(buildVRTOptions));
         dataset.delete();
+
+        // File reader
+        File file = new File(vrtFilePath);
+        FileReader fr = new FileReader(file);
+        BufferedReader br = new BufferedReader(fr);
+
+        String s = br.readLine();
+
+        // File writer
+        File file_relative_path = new File(vrtFilePath);
+        FileWriter fw = new FileWriter(file_relative_path);
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        // Read file
+        while(s != null)
+        {
+            // change the reference  of the path
+            if (s.contains("SourceFilename")) {
+                int origin = s.indexOf("GRANULE");
+                s = "      <SourceFilename relativeToVRT=\"0\">./" + s.substring(origin) ;
+            }
+            bw.write(s);
+            bw.newLine();
+            s = br.readLine();
+
+        }
+        bw.flush();
+        bw.close();
         LOGGER.info("VRT saved in: " + vrtFilePath);
 
     }

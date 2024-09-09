@@ -35,7 +35,13 @@ import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.ConfigurationFile;
 import esa.sen2vm.input.ParamFile;
 import esa.sen2vm.input.datastrip.DataStripManager;
+import esa.sen2vm.input.granule.GranuleManager;
 import esa.sen2vm.input.gipp.GIPPManager;
+import esa.sen2vm.input.SafeManager;
+import esa.sen2vm.input.Granule;
+import esa.sen2vm.input.Datastrip;
+import esa.sen2vm.input.OutputFileManager;
+import esa.sen2vm.input.DirectLocGrid;
 import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
@@ -195,38 +201,30 @@ public class Sen2VM
                 demManager
             );
 
-            double[][] pixels = {{0., 0.}};
-            double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
-            showPoints(pixels, grounds);
-
-
-
             // Safe Manager
             SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
             Datastrip ds = sm.getDatastrip() ;
-
             // sm.checkEmptyGrid(detectors, bands) ;
-            // VERFIER QUIL Y A QU DOSSIER S2* DANS DS
 
             // GIPP
             int pixelOffset = 0;
             int lineOffset = 0;
 
-
             OutputFileManager outputFileManager = new OutputFileManager();
-            LOGGER.info("bands = "+bands);
+            LOGGER.info("bands = " + bands);
 
             for (BandInfo bandInfo: bands) {
                 LOGGER.info("### BAND " + bandInfo.getName() );
                 int step = (int) (configFile.getStepFromBandInfo(bandInfo)).intValue();;
+
                 for (DetectorInfo detectorInfo: detectors) {
                     LOGGER.info("### DET " + detectorInfo.getName() );
                     int[] BBox = sm.getFullSize(dataStripManager, bandInfo, detectorInfo);
 
                     int startLine = BBox[0] ;
                     int startPixel = BBox[1] ;
-                    int sizeLine = BBox[2] - BBox[0];
-                    int sizePixel = BBox[3] - BBox[1];
+                    int sizeLine = BBox[2];
+                    int sizePixel = BBox[3];
 
                     DirectLocGrid dirGrid = new DirectLocGrid(pixelOffset, lineOffset, step,
                                 startPixel, startLine, sizeLine, sizePixel);
@@ -234,28 +232,22 @@ public class Sen2VM
                     double[][] sensorGrid = dirGrid.get2Dgrid();
 
                     ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detectorInfo, bandInfo);
-                    //System.out.print("Number of granules found: ");
-                    //System.out.println(granulesToCompute.size());
+                    LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
 
-                    //LOGGER.info("pixels="+sensorGrid[0][0]+" "+sensorGrid[0][1]);
+                    // LOGGER.info("pixels="+sensorGrid[0][0]+" "+sensorGrid[0][1]);
                     double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(0), sensorGrid);
-                    //LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
-
-
-
+                    // LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
                     // showPoints(sensorGrid, directLocGrid);
 
                     Vector<String> inputTIFs = new Vector<String>();
-                    for(int g = 0 ; g <  granulesToCompute.size(); g++ ) { ; //
+                    for(int g = 0 ; g <  granulesToCompute.size(); g++ ) { ;
                         Granule gr = granulesToCompute.get(g) ;
                         // String[] minmax = dataStripManager.getMinMaxGranule(bandInfo, detectorInfo);
                         // String maxGranuleName = minmax[g];
                         // Granule gr = sm.getGranuleByName(maxGranuleName) ;
 
-                        int[] ULpixel = gr.getULpixel(bandInfo.getPixelHeight());
-                        int[] BRpixel = gr.getBRpixel(bandInfo.getPixelHeight());
-                        int startGranule = ULpixel[0];
-                        int sizeGranule = BRpixel[0] - ULpixel[0] ;
+                        int startGranule = gr.getFirstLine(bandInfo.getPixelHeight());
+                        int sizeGranule = gr.getSizeLines(bandInfo.getPixelHeight());
 
                         double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
                         String srs = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433],AUTHORITY[\"EPSG\",\"4326\"]]" ;
@@ -265,14 +257,12 @@ public class Sen2VM
                         outputFileManager.createGeoTiff(gridFileName, subDirectLocGrid[0][0].length * detectorInfo.getIndex() * step, dirGrid.getStartRow(startGranule) * step, step, 2, srs, subDirectLocGrid) ;
 
                         // Add TIF to the futur VRT
-                        int origin = gridFileName.indexOf("GEO_DATA");
-                        inputTIFs.add(gridFileName.substring(origin)) ;
+                        inputTIFs.add(gridFileName) ;
+
                     }
 
                     // Create VRT
-                    System.out.println(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo));
-
-                    //outputFileManager.createVRT(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
+                    outputFileManager.createVRT(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
 
                 }
             }
@@ -281,6 +271,8 @@ public class Sen2VM
             throw new Sen2VMException(exception);
         } catch ( SXGeoException exception ) {
             throw new Sen2VMException(exception);
+        }  catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

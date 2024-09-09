@@ -1,11 +1,19 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class DirectLocGrid {
+
+    // Get sen2VM logger
+    private static final Logger LOGGER = Logger.getLogger(DirectLocGrid.class.getName());
 
     protected int pixelOffset ;
     protected int lineOffset ;
@@ -42,8 +50,8 @@ public class DirectLocGrid {
 
         // ArrayList<Double> grids = mersh2D(this.gridPixels, this.gridPixels);
 
-        System.out.println("Grid Pixel: " + this.gridPixels);
-        System.out.println("Grid Line: " + this.gridLines);
+        LOGGER.info("Grid Pixel: " + this.gridPixels);
+        LOGGER.info("Grid Line: " + this.gridLines);
 
     }
 
@@ -87,23 +95,20 @@ public class DirectLocGrid {
     }
 
     public int getStartRow(int startGranule) {
+        double start = ((startGranule - 1 + this.step / 2 ) * 1.0 / this.step);
+        return (int) Math.floor(start) ;
+    }
 
-        double res_i = ((startGranule - 1 + this.step / 2 ) * 1.0 / this.step);
-        int grid_row_start = (int) Math.floor(res_i)  ;
-
-        return grid_row_start;
+    public int getEndRow(int startGranule, int sizeGranule) {
+        double end = ((startGranule - 1 + sizeGranule + this.step / 2 ) * 1.0  / this.step);
+        return (int) Math.ceil(end);
     }
 
     public double[][][] extractPointsDirectLoc(double[][] directLocGrid, int startGranule, int sizeGranule) {
-
-
         Boolean insideGranule = true;
 
-        Double res_i = ((startGranule - 1 + this.step / 2 ) * 1.0 / this.step);
-        int grid_row_start = (int) Math.floor(res_i) ;
-        Double res_e = ((startGranule - 1 + sizeGranule + this.step / 2 ) * 1.0  / this.step);
-        int grid_row_end = (int) Math.ceil(res_e) ;
-
+        int grid_row_start = getStartRow(startGranule);
+        int grid_row_end = getEndRow(startGranule, sizeGranule) ;
 
         int nbLines = grid_row_end - grid_row_start + 1;
         int nbCols = this.gridPixels.size();
@@ -116,11 +121,12 @@ public class DirectLocGrid {
                 subDirectLocGrid[1][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][1] ;
             }
         }
-        System.out.println("Granule: " +String.valueOf(startGranule) + " -> " + String.valueOf(startGranule + sizeGranule));
+
+        System.out.print("Granule: " + String.valueOf(startGranule) + " -> " + String.valueOf(startGranule + sizeGranule) + "     ");
         System.out.print("start: " + String.valueOf(grid_row_start) + " (");
         System.out.print(String.valueOf(this.gridLines.get(grid_row_start)) + ")");
         System.out.print(" -> end: " + String.valueOf(grid_row_end) + " (");
-        System.out.print(String.valueOf(this.gridLines.get(grid_row_end)) + ")");
+        System.out.println(String.valueOf(this.gridLines.get(grid_row_end)) + ")");
         return subDirectLocGrid;
     }
 
@@ -140,8 +146,8 @@ public class DirectLocGrid {
 
         // ArrayList<Double> grids = mersh2D(this.gridPixels, this.gridPixels);
 
-        System.out.println("Grid Line: " + this.gridLines);
-        System.out.println("Grid Pixel: " + this.gridPixels);
+        LOGGER.info("Grid Line: " + this.gridLines);
+        LOGGER.info("Grid Pixel: " + this.gridPixels);
         System.out.println();
     }
 

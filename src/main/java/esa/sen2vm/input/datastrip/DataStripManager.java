@@ -74,7 +74,7 @@ public class DataStripManager {
     /**
      * Get sen2VM logger
      */
-    private static final Logger LOGGER = Logger.getLogger(Sen2VM.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DataStripManager.class.getName());
 
     /**
      * File path of datastrip file
