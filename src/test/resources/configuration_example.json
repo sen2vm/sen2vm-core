@@ -16,8 +16,8 @@
   "inverse_location_additional_info": {
 	"ul_x": 15000,
 	"ul_y": 7000,
-	"lr_x": 15000,
-	"lr_y": 7000,
+	"lr_x": 15700,
+	"lr_y": 6500,
 	"referential": "EPSG:4326",
 	"output_folder": "PATH_TO_OUTPUT_FOLDER_FOR_INVERSE_LOCATION_GRIDS"
   }

@@ -71,4 +71,19 @@ public class Datastrip {
 
     }
 
+    /**
+     * Get corresponding inverse loc grid file name by band/detector in output dir
+     * @param detector
+     * @param band
+     */
+    public String getCorrespondingInverseLocGrid(DetectorInfo detector, BandInfo band, String outputDir) {
+        File geo_data = new File(outputDir);
+        geo_data.mkdir();
+
+        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + ".vrt";
+        String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_INV_");
+        return new File(geo_data.getPath() + File.separator + vrt).getPath();
+
+    }
+
 }

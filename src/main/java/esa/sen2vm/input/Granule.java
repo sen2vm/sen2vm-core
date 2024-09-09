@@ -228,11 +228,12 @@ public class Granule {
         return info;
     }
 
+
     /*
-     * Get geo grid file name for this granule and a specific band
+     * Get direct geo grid file name for this granule and a specific band
      * return path file
      */
-    public String getCorrespondingGeoFileName(BandInfo band) {
+    public String getCorrespondingDirGeoFileName(BandInfo band) {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         geo_data.mkdir();
 
@@ -240,6 +241,7 @@ public class Granule {
         String grid = image.replace(".jp2", ".tif").replace("_MSI_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + grid).getPath();
     }
+
 
     public int[] getBRpixel(double resolution) {
         int[] pixel = null ;

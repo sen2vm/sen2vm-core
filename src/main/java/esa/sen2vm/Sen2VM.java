@@ -226,6 +226,7 @@ public class Sen2VM
                     int sizeLine = BBox[2];
                     int sizePixel = BBox[3];
 
+                    /*
                     DirectLocGrid dirGrid = new DirectLocGrid(pixelOffset, lineOffset, step,
                                 startPixel, startLine, sizeLine, sizePixel);
 
@@ -256,15 +257,30 @@ public class Sen2VM
                         String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
                         outputFileManager.createGeoTiff(gridFileName, subDirectLocGrid[0][0].length * detectorInfo.getIndex() * step, dirGrid.getStartRow(startGranule) * step, step, 2, srs, subDirectLocGrid) ;
 
-                        // Add TIF to the futur VRT
+                        // Add TIF to the future VRT
                         inputTIFs.add(gridFileName) ;
 
                     }
 
                     // Create VRT
                     outputFileManager.createVRT(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
+                    */
 
+                    Float[] bb =  configFile.getInverseLocBound() ;
+                    String epsg = configFile.getInverseLocReferential() ;
+                    String invOutputDir = configFile.getInverseLocOutputFolder() ;
+
+                    InverseLocGrid invGrid = new InverseLocGrid(15000, 7000, 15000 + step * 3, 7000 - step * 4,
+                    epsg, invOutputDir, step, startPixel, startLine, sizePixel, sizeLine);
+                    double[][] groundGrid = invGrid.get2Dgrid();
+                    System.out.println(Arrays.deepToString(groundGrid));
+                    // double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(0), groundGrid, "EPSG:4326");
+
+                    // outputFileManager.createGeoTiff(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
+                    System.out.println(Arrays.deepToString(groundGrid));
                 }
+
+
             }
 
         } catch ( IOException exception ) {

@@ -7,28 +7,42 @@ import java.lang.Math;
 import java.text.DecimalFormat;
 
 public class Coordinates {
-    private Float x;
-    private Float y;
-    private Float z;
+    private int x;
+    private int y;
+    private int z;
     private SpatialReference sourceSRS;
     private Double latitude;
     private Double longitude;
     private Double altitude;
 
-    public Coordinates(Float x, Float y, int epsg) {
+    public Coordinates(int y, int x, int epsg) {
         this.x = x;
         this.y = y;
-        this.z = 0f;
+        this.z = 0;
         this.sourceSRS = new SpatialReference();
         this.sourceSRS.ImportFromEPSG(epsg);
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public Double getLatitude() {
+        return this.latitude;
+    }
+
+    public Double getLongitude() {
+        return this.longitude;
     }
 
     public void transform() {
 
         SpatialReference targetSRS = new SpatialReference();
         targetSRS.ImportFromEPSG(4326);
-        System.out.println(sourceSRS); // does get printed
-        System.out.println(targetSRS); // doesn't get printed!?
 
         CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
 		double[] res = transformer.TransformPoint(x, y, z);
