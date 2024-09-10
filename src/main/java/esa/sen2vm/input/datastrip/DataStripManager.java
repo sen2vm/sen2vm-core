@@ -254,126 +254,112 @@ public class DataStripManager {
 	 * @param dataStripTimeInfo
 	 * @param refinedCorrectionsListL1
 	 */
-	private void readRefinedCorrections(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo, List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1) throws OrekitException {
+	private void readRefinedCorrections(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo, List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1) throws OrekitException, Sen2VMException {
 
-        // compute acquisition center time:
-        // the refining corrections are computed related to this time
+        // refining corrections are computed related to compute acquisition center time
         AbsoluteDate acquisitionCenterTime = computeAcquisitionCenter(dataStripTimeInfo);
-        this.refiningInfo.setAcquisitionCenterTime(acquisitionCenterTime);
 
-        // Read the refining polynoms
-        // --------------------------
-        // test if the whole list is not empty !
-        if (refinedCorrectionsListL1 != null){
-            // TBN: the list will always contain only one item although the XSD structure (no node name="focal_plane_id_unique")
-            for (https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS refinedCorrections: refinedCorrectionsListL1){
+        if (refinedCorrectionsListL1 == null) {
+            throw new Sen2VMException("refinedCorrectionsListL1 is null");
+        }
 
-                // The only corrections to be taken into account are defined in GEOREF-DPM par 4.4.4 Issue 3.2
-                // -------------------------------------------------------------------------------------------
-                // Spacecraft position
-                AN_UNCERTAINTIES_XYZ_TYPE spacecraftPositionUncertainties =  refinedCorrections.getSpacecraft_Position();
-                // Spacecraft/Piloting to MSI transformation
-                A_ROTATION_TRANSLATION_HOMOTHETY_UNCERTAINTIES_TYPE_LOWER_CASE msiStateUncertainties = refinedCorrections.getMSI_State();
-                // MSI to Focal plane transformation
-                List<A_REFINED_CORRECTIONS.Focal_Plane_State> focalPlaneStateUncertaintiesList = refinedCorrections.getFocal_Plane_State();
-                // Focal plane to detector
-                // in the current XSD:
-                // no node SENSOR (for focal plane to detector transformations)
-                //      => impossible to code this part without XSD definition
+        A_POLYNOMIAL_MODEL ephemerisXpolynom = null;
+        A_POLYNOMIAL_MODEL ephemerisYpolynom = null;
+        A_POLYNOMIAL_MODEL ephemerisZpolynom = null;
 
-                if (spacecraftPositionUncertainties != null){
-                    // Spacecraft position (expressed in meters) in the local spacecraft reference frame (EVG Euclidium state)
+        // Fix the transformation angle signs
+        // TODO see what to do in case there is another convention in the definition of the angles
+        int[] refiningMSIstateAnglesSigns = {1, 1, 1};
+        int[] refiningFocalPlaneStateAngleSigns = {1, 1, 1};
 
-                    // Init of the polynomial functions for each correction
-                    A_POLYNOMIAL_MODEL ephemerisXpolynom = spacecraftPositionUncertainties.getX();
-                    this.refiningInfo.setEphemerisXpolyFunc(createPolynomialFunction(ephemerisXpolynom));
+        A_POLYNOMIAL_MODEL spacecraftToMSIRotationX = null;
+        A_POLYNOMIAL_MODEL spacecraftToMSIRotationY = null;
+        A_POLYNOMIAL_MODEL spacecraftToMSIRotationZ = null;
+        A_POLYNOMIAL_MODEL spacecraftToMSIhomothetyZ = null;
 
-                    A_POLYNOMIAL_MODEL ephemerisYpolynom = spacecraftPositionUncertainties.getY();
-                    this.refiningInfo.setEphemerisYpolyFunc(createPolynomialFunction(ephemerisYpolynom));
+        // Init of the polynomial functions for each correction
+        HashMap<Sensor, PolynomialFunction> msiToFocalPlaneRotationX = new HashMap<Sensor, PolynomialFunction>();
+        HashMap<Sensor, PolynomialFunction> msiToFocalPlaneRotationY = new HashMap<Sensor, PolynomialFunction>();
+        HashMap<Sensor, PolynomialFunction> msiToFocalPlaneRotationZ = new HashMap<Sensor, PolynomialFunction>();
+        HashMap<Sensor, PolynomialFunction> msiToFocalPlaneHomothety = new HashMap<Sensor, PolynomialFunction>();
 
-                    A_POLYNOMIAL_MODEL ephemerisZpolynom = spacecraftPositionUncertainties.getZ();
-                    this.refiningInfo.setEphemerisZpolyFunc(createPolynomialFunction(ephemerisZpolynom));
+        for (https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS refinedCorrections: refinedCorrectionsListL1){
+
+            // Spacecraft position
+            AN_UNCERTAINTIES_XYZ_TYPE spacecraftPositionUncertainties =  refinedCorrections.getSpacecraft_Position();
+            // Spacecraft/Piloting to MSI transformation
+            A_ROTATION_TRANSLATION_HOMOTHETY_UNCERTAINTIES_TYPE_LOWER_CASE msiStateUncertainties = refinedCorrections.getMSI_State();
+            // MSI to Focal plane transformation
+            List<A_REFINED_CORRECTIONS.Focal_Plane_State> focalPlaneStateUncertaintiesList = refinedCorrections.getFocal_Plane_State();
+
+            if (spacecraftPositionUncertainties != null) {
+                // Spacecraft position (expressed in meters) in the local spacecraft reference frame (EVG Euclidium state)
+                // Init of the polynomial functions for each correction
+                ephemerisXpolynom = spacecraftPositionUncertainties.getX();
+                ephemerisYpolynom = spacecraftPositionUncertainties.getY();
+                ephemerisZpolynom = spacecraftPositionUncertainties.getZ();
+            }
+
+            // Spacecraft/Piloting to MSI transformation
+            if (msiStateUncertainties != null) {
+                // Init of the polynomial functions for each correction
+                AN_UNCERTAINTIES_XYZ_TYPE spaceCraftToMSIRotation = msiStateUncertainties.getRotation();
+                // rotation parts
+                spacecraftToMSIRotationX = spaceCraftToMSIRotation.getX();
+                spacecraftToMSIRotationY = spaceCraftToMSIRotation.getY();
+                spacecraftToMSIRotationZ = spaceCraftToMSIRotation.getZ();
+
+                // homothety part on Z axis only
+                if (msiStateUncertainties.getHomothety() != null)
+                {
+                  spacecraftToMSIhomothetyZ = msiStateUncertainties.getHomothety().getZ();
                 }
+            }
 
-                // Fix the transformation angle signs
-                // TODO see what to do in case there is another convention in the definition of the angles
-                int[] refiningMSIstateAnglesSigns = {1, 1, 1};
-                int[] refiningFocalPlaneStateAngleSigns = {1, 1, 1};
+            // MSI to Focal plane transformation
+            if (focalPlaneStateUncertaintiesList != null) {
+                for (https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS.Focal_Plane_State focalPlaneStateUncertainties : focalPlaneStateUncertaintiesList) {
+                    if (focalPlaneStateUncertainties != null) {
+                        String focalPlaneName = focalPlaneStateUncertainties.getFocalPlaneId().value();
+                        Sensor sensor = new Sensor(focalPlaneName, null, null, 0.0, null, null, null);
 
-                if (msiStateUncertainties != null){
-                    // Spacecraft/Piloting to MSI transformation
+                        // rotation parts
+                        AN_UNCERTAINTIES_XYZ_TYPE msiToFocalPlaneRotationXYZ = focalPlaneStateUncertainties.getRotation();
 
-                    // Init of the polynomial functions for each correction
-                    AN_UNCERTAINTIES_XYZ_TYPE spaceCraftToMSIRotation = msiStateUncertainties.getRotation();
-                    // rotation parts
-                    A_POLYNOMIAL_MODEL spacecraftToMSIRotationX = spaceCraftToMSIRotation.getX();
-                    this.refiningInfo.setSpacecraftToMSITransfoMatrixXFunc(createAnglePolynomialFunction(spacecraftToMSIRotationX,refiningMSIstateAnglesSigns[0]));
-                    A_POLYNOMIAL_MODEL spacecraftToMSIRotationY = spaceCraftToMSIRotation.getY();
-                    this.refiningInfo.setSpacecraftToMSITransfoMatrixYFunc(createAnglePolynomialFunction(spacecraftToMSIRotationY,refiningMSIstateAnglesSigns[1]));
-                    A_POLYNOMIAL_MODEL spacecraftToMSIRotationZ = spaceCraftToMSIRotation.getZ();
-                    this.refiningInfo.setSpacecraftToMSITransfoMatrixZFunc(createAnglePolynomialFunction(spacecraftToMSIRotationZ,refiningMSIstateAnglesSigns[2]));
+                        // Check if the node exist (different from null)
+                        if (msiToFocalPlaneRotationXYZ != null) {
+                            msiToFocalPlaneRotationX.put(sensor, createAnglePolynomialFunction(msiToFocalPlaneRotationXYZ.getX(),refiningFocalPlaneStateAngleSigns[0]));
+                            msiToFocalPlaneRotationY.put(sensor, createAnglePolynomialFunction(msiToFocalPlaneRotationXYZ.getY(),refiningFocalPlaneStateAngleSigns[1]));
+                            msiToFocalPlaneRotationZ.put(sensor, createAnglePolynomialFunction(msiToFocalPlaneRotationXYZ.getZ(),refiningFocalPlaneStateAngleSigns[2]));
+                        }
 
-                    // homothety part
-                    // Only Z axis homothety
-                    if (msiStateUncertainties.getHomothety() != null)
-                    {
-                      A_POLYNOMIAL_MODEL spacecraftToMSIhomothetyZ = msiStateUncertainties.getHomothety().getZ();
-                      this.refiningInfo.setSpacecraftToMSIHomothetyZFunc(createPolynomialFunction(spacecraftToMSIhomothetyZ));
-                    }
-                }
+                        // homothety part
+                        AN_UNCERTAINTIES_XYZ_TYPE msiToFocalPlaneHomothetyXYZ = focalPlaneStateUncertainties.getHomothety();
 
-                if (focalPlaneStateUncertaintiesList != null){
-                    // MSI to Focal plane transformation
-                    // There will between 0 and 2 Focal_Plane_State corrections
-
-                    // Init of the polynomial functions for each correction
-                    HashMap<Sensor, PolynomialFunction> msiToFocalPlaneRotationX = new HashMap<Sensor, PolynomialFunction>();
-                    HashMap<Sensor, PolynomialFunction> msiToFocalPlaneRotationY = new HashMap<Sensor, PolynomialFunction>();
-                    HashMap<Sensor, PolynomialFunction> msiToFocalPlaneRotationZ = new HashMap<Sensor, PolynomialFunction>();
-                    HashMap<Sensor, PolynomialFunction> msiToFocalPlaneHomothety = new HashMap<Sensor, PolynomialFunction>();
-
-                    for (https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS.Focal_Plane_State focalPlaneStateUncertainties : focalPlaneStateUncertaintiesList) {
-                        if (focalPlaneStateUncertainties != null){
-                            String focalPlaneName = focalPlaneStateUncertainties.getFocalPlaneId().value();
-                            Sensor sensor = new Sensor(focalPlaneName, null, null, 0.0, null, null, null);
-
-                            // rotation parts
-                            AN_UNCERTAINTIES_XYZ_TYPE msiToFocalPlaneRotationXYZ = focalPlaneStateUncertainties.getRotation();
-
-                            // Check if the node exist (different from null)
-                            if (msiToFocalPlaneRotationXYZ != null) {
-                                msiToFocalPlaneRotationX.put(sensor, createAnglePolynomialFunction(msiToFocalPlaneRotationXYZ.getX(),refiningFocalPlaneStateAngleSigns[0]));
-                                msiToFocalPlaneRotationY.put(sensor, createAnglePolynomialFunction(msiToFocalPlaneRotationXYZ.getY(),refiningFocalPlaneStateAngleSigns[1]));
-                                msiToFocalPlaneRotationZ.put(sensor, createAnglePolynomialFunction(msiToFocalPlaneRotationXYZ.getZ(),refiningFocalPlaneStateAngleSigns[2]));
+                        if (msiToFocalPlaneHomothetyXYZ != null) {
+                            // Only Z axis homothety
+                            PolynomialFunction msiToFocalPlaneHomothetyZ = createPolynomialFunction(focalPlaneStateUncertainties.getHomothety().getZ());
+                            if (msiToFocalPlaneHomothetyZ != null) {
+                                msiToFocalPlaneHomothety.put(sensor, msiToFocalPlaneHomothetyZ);
                             }
-
-                            // homothety part
-                            AN_UNCERTAINTIES_XYZ_TYPE msiToFocalPlaneHomothetyXYZ = focalPlaneStateUncertainties.getHomothety();
-
-                            // Check if the node exist (different from null)
-                            if (msiToFocalPlaneHomothetyXYZ != null){
-                                // Only Z axis homothety
-                                PolynomialFunction msiToFocalPlaneHomothetyZ = createPolynomialFunction(focalPlaneStateUncertainties.getHomothety().getZ());
-
-                                // Check if the node exist (different from null)
-                                if (msiToFocalPlaneHomothetyZ != null){
-                                    // ... for current focal plane
-                                    msiToFocalPlaneHomothety.put(sensor, msiToFocalPlaneHomothetyZ);
-                                }
-                            }
-
-                            // no translation to be taken into account
                         }
                     }
-
-                    // fill in the refining info for all the focal plane (SWIR and VNIR)
-                    this.refiningInfo.setMsiToFocalPlaneTransfoMatrixXFunc(msiToFocalPlaneRotationX);
-                    this.refiningInfo.setMsiToFocalPlaneTransfoMatrixYFunc(msiToFocalPlaneRotationY);
-                    this.refiningInfo.setMsiToFocalPlaneTransfoMatrixZFunc(msiToFocalPlaneRotationZ);
-                    this.refiningInfo.setMsiToFocalPlaneHomothetyZFunc(msiToFocalPlaneHomothety);
                 }
             }
         }
+
+        refiningInfo = new RefiningInfo(true, acquisitionCenterTime,
+            createPolynomialFunction(ephemerisXpolynom),
+            createPolynomialFunction(ephemerisYpolynom),
+            createPolynomialFunction(ephemerisZpolynom),
+            createAnglePolynomialFunction(spacecraftToMSIRotationX,refiningMSIstateAnglesSigns[0]),
+            createAnglePolynomialFunction(spacecraftToMSIRotationY,refiningMSIstateAnglesSigns[1]),
+            createAnglePolynomialFunction(spacecraftToMSIRotationZ,refiningMSIstateAnglesSigns[2]),
+            createPolynomialFunction(spacecraftToMSIhomothetyZ),
+            msiToFocalPlaneRotationX,
+            msiToFocalPlaneRotationY,
+            msiToFocalPlaneRotationZ,
+            msiToFocalPlaneHomothety);
     }
 
     /**

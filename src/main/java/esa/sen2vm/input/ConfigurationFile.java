@@ -88,7 +88,7 @@ public class ConfigurationFile extends InputFileManager
                 checkPath(this.iers);
             }
             if (jsonObject.has("deactivate_available_refining")) {
-                this.refining = jsonObject.getBoolean("deactivate_available_refining");
+                this.refining = ! jsonObject.getBoolean("deactivate_available_refining");
             }
             if (this.operation.equals("inverse")) {
                 if (!jsonObject.has("inverse_location_additional_info")) {
