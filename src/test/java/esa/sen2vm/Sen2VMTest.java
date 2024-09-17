@@ -10,17 +10,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.input.ConfigurationFile;
+
 /**
- * Unit test for simple App.
+ * Unit test for Sen2VM.
  */
 public class Sen2VMTest
 {
     /**
-     * Rigorous Test :-)
+     * Functional test
      */
     @Test
-    public void shouldAnswerWithTrue()
+    public void readConfigurationFile ()
     {
-        assertTrue( true );
+        try {
+            // Read configuration file
+            ConfigurationFile configFile = new ConfigurationFile("src/test/resources/configuration_example.json");
+            System.out.println("Datastrip file path: " + configFile.getDatastripFilePath() + "\nIERS bulletin path: "+ configFile.getIers() + "\nboolean refining: " + configFile.getBooleanRefining());
+        }
+        catch (Sen2VMException e) {
+            e.printStackTrace();
+        }
     }
 }
