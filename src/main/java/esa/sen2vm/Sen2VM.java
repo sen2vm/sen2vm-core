@@ -28,6 +28,16 @@ import org.sxgeo.input.dem.DemFileManager;
 import org.sxgeo.input.dem.SrtmFileManager;
 import org.sxgeo.input.dem.GeoidManager;
 import org.sxgeo.rugged.RuggedManager;
+
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.input.ConfigurationFile;
+import esa.sen2vm.input.ParamFile;
+import esa.sen2vm.input.datastrip.DataStripManager;
+import esa.sen2vm.input.gipp.GIPPManager;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
+
 import org.sxgeo.exception.SXGeoException;
 
 /**
@@ -39,9 +49,16 @@ public class Sen2VM
     // Get sen2VM logger
     private static final Logger LOGGER = Logger.getLogger(Sen2VM.class.getName());
 
+    public static final void showPoints(double[][] pixels, double[][] grounds) {
+        for (int i=0; i<pixels.length; i++) {
+            LOGGER.info("pixels = "+pixels[i][0]+" "+pixels[i][1]+" grounds = "+grounds[i][0]+" "+grounds[i][1]+" "+grounds[i][2]);
+        }
+    }
+
     /**
      * Main process
      * @param args first arg: input json file. second param (optional): parameter json file
+     * @throws Sen2VMException
      */
     public static void main( String[] args ) throws Sen2VMException
     {
@@ -111,22 +128,20 @@ public class Sen2VM
             LOGGER.info("bands = "+bands);
 
             // Read datastrip
-            DataStripManager dataStripManager = DataStripManager.getInstance();
-            dataStripManager.initDataStripManager(configFile.getDatastripFilePath(), configFile.getIers());
+            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
 
             // Read GIPP
-            GIPPManager gippManager = GIPPManager.getInstance();
-            gippManager.setGippFolderPath(configFile.getGippFolder(), bands);
+            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
 
             // Initialize SimpleLocEngine
 
             // Init demManager
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
-            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
             SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
             if(!demFileManager.findRasterFile()) {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
+            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
                 demFileManager,
                 geoidManager,
@@ -135,20 +150,18 @@ public class Sen2VM
             // Build sensor list
 
             // Save sensors for each focal plane
-            HashMap<String, ArrayList<Sensor>> focalplaneSensors = new HashMap<String, ArrayList<Sensor>>();
             List<Sensor> sensorList = new ArrayList<Sensor>();
             for (DetectorInfo detectorInfo: detectors) {
                 for (BandInfo bandInfo: bands) {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = DataStripManager.getInstance().getLineDatation(bandInfo, detectorInfo);
+                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
                     SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
 
                     // Save sensor information
-                    String sensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
-                    Sensor j_sensor = new Sensor(
-                        sensor,
+                    Sensor sensor = new Sensor(
+                        bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
                         viewing,
                         lineDatation,
                         bandInfo.getPixelHeight(),
@@ -156,34 +169,33 @@ public class Sen2VM
                         msiToFocalplane,
                         pilotingToMsi
                     );
-                    sensorList.add(j_sensor);
+                    sensorList.add(sensor);
                 }
             }
 
             // Init rugged instance
-            RefiningInfo refiningInfo = new RefiningInfo();
             RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
                 demManager,
-                DataStripManager.getInstance().getDataSensingInfos(),
+                dataStripManager.getDataSensingInfos(),
                 Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
                 Sen2VMConstants.RESOLUTION_10M_DOUBLE,
                 sensorList,
                 Sen2VMConstants.MARGIN,
-                refiningInfo
+                dataStripManager.getRefiningInfo()
             );
+            ruggedManager.setLightTimeCorrection(false);
+            ruggedManager.setAberrationOfLightCorrection(false);
 
             // Init simpleLocEngine
             SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
-                DataStripManager.getInstance().getDataSensingInfos(),
+                dataStripManager.getDataSensingInfos(),
                 ruggedManager,
                 demManager
             );
 
-            double[][] pixels = {{0.0, 0.0},
-                                 {1.0, 0.0}};
+            double[][] pixels = {{0., 0.}};
             double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
-            LOGGER.info("pixels="+pixels[0][0]+" "+pixels[0][1]);
-            LOGGER.info("grounds="+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
+            showPoints(pixels, grounds);
 
             LOGGER.info("End Sen2VM");
 

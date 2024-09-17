@@ -1,8 +1,12 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,10 +31,11 @@ public class ParamFile extends InputFileManager
     /**
      * Constructor
      * @param jsonFilePath Path to the parameter file to parse
+     * @throws Sen2VMException
      */
-    public ParamFile(String jsonFilePath) {
+    public ParamFile(String jsonFilePath) throws Sen2VMException {
         this.filepath = jsonFilePath;
-        if(check_schema(this.filepath, "src/test/resources/schema_params.json")) {
+        if(check_schema(this.filepath, "src/main/resources/schema_params.json")) {
             parse(this.filepath);
         }
     }

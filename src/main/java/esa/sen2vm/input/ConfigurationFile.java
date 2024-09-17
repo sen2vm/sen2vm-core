@@ -1,10 +1,16 @@
-package esa.sen2vm;
+package esa.sen2vm.input;
 
 import java.io.File;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.json.JSONException;
+
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.Sen2VMConstants;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
@@ -19,13 +25,13 @@ public class ConfigurationFile extends InputFileManager
     private String filepath;
     private String l1bProduct;
     private String gippFolder;
-    private boolean gippVersionCheck;
+    private boolean gippVersionCheck = true;
     private String dem;
     private String geoid;
-    private String iers;
+    private String iers = "";
     private String pod;
     private String operation;
-    private boolean refining;
+    private boolean refining = false;
     private float band10m;
     private float band20m;
     private float band60m;
@@ -40,10 +46,11 @@ public class ConfigurationFile extends InputFileManager
      * Constructor
      * @param filepath Path to the configuration file to parse
      * @param filepath Path to the configuration file to parse
+     * @throws Sen2VMException
      */
     public ConfigurationFile(String filepath) throws Sen2VMException {
         this.filepath = filepath;
-        if(check_schema(this.filepath, "src/test/resources/schema_config.json")) {
+        if(check_schema(this.filepath, "src/main/resources/schema_config.json")) {
             parse(this.filepath);
         }
     }
@@ -51,6 +58,7 @@ public class ConfigurationFile extends InputFileManager
     /**
      * Parse configuration file
      * @param filepath Path to the configuration file to parse
+     * @throws Sen2VMException
      */
     public void parse(String filepath) throws Sen2VMException {
         LOGGER.info("Parsing file "+ filepath);
@@ -61,37 +69,57 @@ public class ConfigurationFile extends InputFileManager
 
             this.l1bProduct = checkPath(jsonObject.getString("l1b_product"));
             this.gippFolder = checkPath(jsonObject.getString("gipp_folder"));
-            this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
             this.dem = checkPath(jsonObject.getString("dem"));
             this.geoid = checkPath(jsonObject.getString("geoid"));
-            this.iers = jsonObject.getString("iers");
             this.pod = jsonObject.getString("pod");
             this.operation = jsonObject.getString("operation");
-            this.refining = jsonObject.getBoolean("deactivate_available_refining");
 
             JSONObject steps = jsonObject.getJSONObject("steps");
             this.band10m = steps.getFloat("10m_bands");
             this.band20m = steps.getFloat("20m_bands");
             this.band60m = steps.getFloat("60m_bands");
 
-            JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
-            this.ul_x = inverseLoc.getFloat("ul_x");
-            this.ul_y = inverseLoc.getFloat("ul_y");
-            this.lr_x = inverseLoc.getFloat("lr_x");
-            this.lr_y = inverseLoc.getFloat("lr_y");
-            this.referential = inverseLoc.getString("referential");
-            this.outputFolder = inverseLoc.getString("output_folder");
+            // Optional parameters
+            if (jsonObject.has("gipp_version_check")) {
+                this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
+            }
+            if (jsonObject.has("iers")) {
+                this.iers = jsonObject.getString("iers");
+                checkPath(this.iers);
+            }
+            if (jsonObject.has("deactivate_available_refining")) {
+                this.refining = ! jsonObject.getBoolean("deactivate_available_refining");
+            }
+            if (this.operation.equals("inverse")) {
+                if (!jsonObject.has("inverse_location_additional_info")) {
+                    throw new Sen2VMException("Error inverse_location_additional_info parameter initialization is required when using inverse operation");
+                }
+                else {
+                   try {
+                       JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
+                       this.ul_x = inverseLoc.getFloat("ul_x");
+                       this.ul_y = inverseLoc.getFloat("ul_y");
+                       this.lr_x = inverseLoc.getFloat("lr_x");
+                       this.lr_y = inverseLoc.getFloat("lr_y");
+                       this.referential = inverseLoc.getString("referential");
+                       this.outputFolder = inverseLoc.getString("output_folder");
+                   } catch(JSONException e) {
+                       throw new Sen2VMException("Error when initializing inverse_location_additional_info", e);
+                   }
+                }
+            }
 
-        } catch (Sen2VMException e) {
-            throw e;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new Sen2VMException(e);
+        } catch (IOException e) {
+            throw new Sen2VMException(e);
         }
     }
 
     /*
      * Check that the input path exist, if not
      * @param filepath the path we want to check if it does exist
+     * @throws Sen2VMException
      */
      public String checkPath(String filepath) throws Sen2VMException {
         File file = new File(filepath);
@@ -103,6 +131,7 @@ public class ConfigurationFile extends InputFileManager
 
     /*
      * Search the datastrip metadata file path inside product folder
+     * @throws Sen2VMException
      */
     public String getDatastripFilePath() throws Sen2VMException {
         File datastripFolder = new File(l1bProduct + "/" + Sen2VMConstants.DATASTRIP_MAIN_FOLDER);
@@ -141,7 +170,15 @@ public class ConfigurationFile extends InputFileManager
      * Get the gipp folder
      */
     public String getGippFolder() {
-       return gippFolder;
+        return gippFolder;
+    }
+
+    /*
+     * Get the boolean gippVersionCheck which, if set to false, will deactivate the
+     * version check made on each GIPP to ensure compatibility
+     */
+    public Boolean getGippVersionCheck() {
+        return gippVersionCheck;
     }
 
     /*
@@ -159,17 +196,24 @@ public class ConfigurationFile extends InputFileManager
     }
 
     /*
-     * Get the IERS folder
+     * Get the IERS bulletin file
      */
-    public String getIers() throws Sen2VMException {
-       return checkPath(iers);
+    public String getIers() {
+       return iers;
     }
 
     /*
      * Get the POD folder
      */
-    public String getPod() throws Sen2VMException {
-       return checkPath(pod);
+    public String getPod() {
+       return pod;
+    }
+
+    /*
+     * Get the boolean that tell if we want to deactivate the available refining or not
+     */
+    public Boolean getBooleanRefining() {
+       return refining;
     }
 }
 

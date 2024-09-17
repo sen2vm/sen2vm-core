@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.utils;
 
 public class Sen2VMConstants {
 
@@ -13,9 +13,9 @@ public class Sen2VMConstants {
     /**
      * For GIPP purpose
      */
-    public static final String GIPP_VIEWDIR_NAME = ".*GIP_VIEDIR.*";
-    public static final String GIPP_BLINDP_NAME = ".*GIP_BLINDP.*";
-    public static final String GIPP_SPAMOD_NAME = ".*GIP_SPAMOD.*";
+    public static final String GIPP_VIEWDIR_PAT = ".*GIP_VIEDIR.*";
+    public static final String GIPP_BLINDP_PAT = ".*GIP_BLINDP.*";
+    public static final String GIPP_SPAMOD_PAT = ".*GIP_SPAMOD.*";
     public static final int NB_GIPP_MAX_FILE = 13;
 
     /**
@@ -32,6 +32,11 @@ public class Sen2VMConstants {
     public static final String xml_extention_big = ".XML";
     public static final String dbl_extention_small = ".dbl";
     public static final String dbl_extention_big = ".DBL";
+
+    /**
+     * For IERS purpose
+     */
+    public static final Boolean simpleEOP = true;
 
     /**
      * Error management
