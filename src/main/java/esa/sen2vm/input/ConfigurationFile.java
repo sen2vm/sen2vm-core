@@ -196,7 +196,7 @@ public class ConfigurationFile extends InputFileManager
     }
 
     /*
-     * Get the IERS folder
+     * Get the IERS bulletin file
      */
     public String getIers() {
        return iers;

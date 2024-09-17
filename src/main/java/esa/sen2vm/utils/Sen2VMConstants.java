@@ -34,6 +34,11 @@ public class Sen2VMConstants {
     public static final String dbl_extention_big = ".DBL";
 
     /**
+     * For IERS purpose
+     */
+    public static final Boolean simpleEOP = true;
+
+    /**
      * Error management
      */
     public static final String ERROR_QUATERNION_NULL_GPS = "error.quaternion.null.gps";

@@ -408,7 +408,7 @@ public class DataStripManager {
         try {
             // Init of used frames
             Frame eme2000 = FramesFactory.getEME2000();
-            Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, true);
+            Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, Sen2VMConstants.simpleEOP);
 
             satellitePVList = new ArrayList<TimeStampedPVCoordinates>();
             HashSet<AbsoluteDate> dateSet = new HashSet<AbsoluteDate>();
