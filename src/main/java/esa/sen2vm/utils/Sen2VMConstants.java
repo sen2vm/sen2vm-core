@@ -1,5 +1,7 @@
 package esa.sen2vm.utils;
 
+import org.hipparchus.util.MathUtils;
+
 public class Sen2VMConstants {
 
     /**
@@ -37,6 +39,18 @@ public class Sen2VMConstants {
      * For IERS purpose
      */
     public static final Boolean simpleEOP = true;
+    public static final double lod = 0.0;
+    public static final double ddPsi = 0.0;
+    public static final double ddEps = 0.0;
+    public static final double dx = 0.0;
+    public static final double dy = 0.0;
+    // Conversion factor from arc seconds to radians: 2*PI/(360*60*60)
+    public static final double ARC_SECONDS_TO_RADIANS = MathUtils.TWO_PI / 1296000;
+    // Offset between julian day epoch and modified julian day epoch
+    public static final double JD_TO_MJD = 2400000.5;
+    // Duration of a mean solar day: 86400.0 s
+    public static final double JULIAN_DAY = 86400.0;
+
 
     /**
      * Error management
