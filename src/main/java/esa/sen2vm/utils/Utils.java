@@ -1,8 +1,6 @@
 package esa.sen2vm.utils;
 
-import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.data.DataContext;
-import org.orekit.data.DataProvidersManager;
 import org.orekit.data.LazyLoadedDataContext;
 import org.orekit.forces.gravity.potential.GravityFieldFactory;
 import org.orekit.frames.EOPEntry;
@@ -49,10 +47,6 @@ public class Utils {
         TimeScale utc = DataContext.getDefault().getTimeScales().getUTC();
         double jd = absDate.getComponents(utc).offsetFrom(DateTimeComponents.JULIAN_EPOCH) / Constants.JULIAN_DAY;
         double mjd = jd - Sen2VMConstants.JD_TO_MJD;
-        System.out.println("absDate="+absDate);
-        System.out.println("jd="+jd);
-        System.out.println("mjd="+mjd);
-        System.out.println("dt="+dt);
 
         final List<EOPEntry> list = new ArrayList<EOPEntry>();
         for (int i = -5; i <= 5; i++) {
@@ -75,42 +69,5 @@ public class Utils {
                 history.addAll(eop);
             }
         });
-
-    }
-
-    public static double getMJD() {
-        return getJD() - Sen2VMConstants.JD_TO_MJD;
-    }
-
-    /**
-     * Return the given date as a Modified Julian Date expressed in given timescale.
-     *
-     * @param ts time scale
-     *
-     * @return double representation of the given date as Modified Julian Date.
-     *
-     * @since 12.2
-     */
-    public static double getMJD(TimeScale ts) {
-        return getJD(ts) - Sen2VMConstants.JD_TO_MJD;
-    }
-
-    public static double getJD() {
-        System.out.println("JD: "+TimeScalesFactory.getUTC());
-        return getJD(TimeScalesFactory.getUTC());
-    }
-
-    /**
-     * Return the given date as a Julian Date expressed in given timescale.
-     *
-     * @param ts time scale
-     *
-     * @return double representation of the given date as Julian Date.
-     *
-     * @since 12.2
-     */
-    public static double getJD(TimeScale ts) {
-        AbsoluteDate absDate = new AbsoluteDate();
-        return absDate.getComponents(ts).offsetFrom(DateTimeComponents.JULIAN_EPOCH) / Constants.JULIAN_DAY;
     }
 }
