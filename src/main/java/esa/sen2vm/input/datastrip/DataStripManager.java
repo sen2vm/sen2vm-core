@@ -252,10 +252,12 @@ public class DataStripManager {
 
 		        XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
                 AbsoluteDate datastripStartDateUTC = new AbsoluteDate(datastripStartDateGregorian.toString(), TimeScalesFactory.getUTC());
+                int year = datastripStartDateUTC.getComponents(TimeScalesFactory.getUTC()).getDate().getYear();
+                System.out.println("year = "+year);
 
                 Utils.setLoaders(IERSConventions.IERS_2010,
                                  Utils.buildEOPList(IERSConventions.IERS_2010,
-                                 ITRFVersion.ITRF_2014,
+                                 getBestFitITRFVersion(year),
                                  datastripStartDateUTC,
                                  ut1tutc.getValue(),
                                  poleUAngle.getValue(),
@@ -272,12 +274,29 @@ public class DataStripManager {
                 // we fix the EOP continuity threshold to one year instead of the normal gap ...
                 FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
             }
-
 		} catch (Exception e) {
 			throw new Sen2VMException("Something went wrong during initialization of IERS and orekit ressources ", e);
 		}
 	}
 
+    /**
+     * Get last supported ITRF version, the best fitted version for input year
+     */
+    public ITRFVersion getBestFitITRFVersion(int targetYear) {
+        ITRFVersion closestYear = ITRFVersion.ITRF_1988;
+        int minDifference = Integer.MAX_VALUE;
+        for (final ITRFVersion iv : ITRFVersion.values()) {
+            int currentYear = iv.getYear();
+            if (currentYear <= targetYear) {
+                int difference = targetYear - currentYear;
+                if (difference < minDifference) {
+                    closestYear = iv;
+                    minDifference = difference;
+                }
+            }
+        }
+        return closestYear;
+    }
 
 	/**
 	 * Fill

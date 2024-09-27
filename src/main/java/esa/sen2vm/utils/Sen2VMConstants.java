@@ -44,6 +44,7 @@ public class Sen2VMConstants {
     public static final double ddEps = 0.0;
     public static final double dx = 0.0;
     public static final double dy = 0.0;
+    public static final int EOP_MARGIN = 5;
     // Conversion factor from arc seconds to radians: 2*PI/(360*60*60)
     public static final double ARC_SECONDS_TO_RADIANS = MathUtils.TWO_PI / 1296000;
     // Offset between julian day epoch and modified julian day epoch

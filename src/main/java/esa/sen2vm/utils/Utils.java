@@ -19,7 +19,7 @@ import java.util.SortedSet;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 /**
- * Manager for SAD file
+ * Class to manage IERS information
  */
 
 public class Utils {
@@ -31,7 +31,7 @@ public class Utils {
         double mjd = jd - Sen2VMConstants.JD_TO_MJD;
 
         final List<EOPEntry> list = new ArrayList<EOPEntry>();
-        for (int i = -5; i <= 5; i++) {
+        for (int i = -Sen2VMConstants.EOP_MARGIN; i <= Sen2VMConstants.EOP_MARGIN; i++) {
             double mjd_inc = mjd + i;
             list.add(new EOPEntry((int) mjd_inc, dt, Sen2VMConstants.lod,
                                   Sen2VMConstants.ARC_SECONDS_TO_RADIANS * x,
