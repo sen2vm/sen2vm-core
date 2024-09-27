@@ -22,6 +22,7 @@ import org.orekit.data.DirectoryCrawler;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
+import org.orekit.frames.ITRFVersion;
 import org.orekit.frames.Transform;
 import org.orekit.rugged.linesensor.LineDatation;
 import org.orekit.rugged.linesensor.LinearLineDatation;
@@ -42,9 +43,13 @@ import esa.sen2vm.Sen2VM;
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Utils;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_AUXILIARY_DATA_INFO_DSL1B;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN.UT1_UTC;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN.GPS_TIME_TAI;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST.GIPP_FILENAME;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_ATTITUDE_DATA_INV.Corrected_Attitudes.Values;
@@ -60,6 +65,8 @@ import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_SENSOR_CONFIG
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_SENSOR_CONFIGURATION.Time_Stamp;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_TIME_STAMP;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_TIME_STAMP.Band_Time_Stamp.Detector;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_DOUBLE_WITH_ARCSEC_UNIT_ATTR;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_DOUBLE_WITH_S_UNIT_ATTR;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.AN_UNCERTAINTIES_XYZ_TYPE;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_POLYNOMIAL_MODEL;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_ROTATION_TRANSLATION_HOMOTHETY_UNCERTAINTIES_TYPE_LOWER_CASE;
@@ -185,7 +192,7 @@ public class DataStripManager {
 
             auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
 
-            initOrekitRessources(iersDirectoryPath);
+            initOrekitRessources(iersDirectoryPath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
 
             // Test if we need to take refining data into account according to the flag
             if (activateAvailableRefining) {
@@ -227,27 +234,69 @@ public class DataStripManager {
      * @param iersDirectoryPath path to the IERS directory
      * @throws Sen2VMException
      */
-    public static synchronized void initOrekitRessources(String iersFilePath) throws Sen2VMException {
+    public void initOrekitRessources(String iersFilePath, A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo) throws Sen2VMException {
 		try {
-		    // Get IERS file and instantiate FramesFactory with it
-			File iersFile = new File(iersFilePath);
-			FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
-
-			// When using a single IERS A bulletin some gaps may arise : to allow the use of such bulletin,
-			// we fix the EOP continuity threshold to one year instead of the normal gap ...
-			FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
-
-			// set up default Orekit data
+		    // set up default Orekit data
 			File orekitDataDir = new File(System.getProperty("user.dir") + "/" + Sen2VMConstants.OREKIT_DATA_DIR);
 			if (orekitDataDir == null || (!orekitDataDir.exists())) {
 			    throw new Sen2VMException("Orekit data not found");
 			}
 			DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
+
+            // Read IERS information from metadata
+		    if (iersFilePath.equals("")) {
+		        AN_IERS_BULLETIN iersBulletin = auxiliaryDataInfo.getIERS_Bulletin();
+		        AN_IERS_BULLETIN.UT1_UTC ut1tutc = iersBulletin.getUT1_UTC();
+		        A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleUAngle = iersBulletin.getPOLE_U_ANGLE();
+		        A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleVAngle = iersBulletin.getPOLE_V_ANGLE();
+
+		        XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
+                AbsoluteDate datastripStartDateUTC = new AbsoluteDate(datastripStartDateGregorian.toString(), TimeScalesFactory.getUTC());
+                int year = datastripStartDateUTC.getComponents(TimeScalesFactory.getUTC()).getDate().getYear();
+                System.out.println("year = "+year);
+
+                Utils.setLoaders(IERSConventions.IERS_2010,
+                                 Utils.buildEOPList(IERSConventions.IERS_2010,
+                                 getBestFitITRFVersion(year),
+                                 datastripStartDateUTC,
+                                 ut1tutc.getValue(),
+                                 poleUAngle.getValue(),
+                                 poleVAngle.getValue()));
+            }
+            // Or get IERS bulletin file and instantiate FramesFactory with it
+            else {
+                File iersFile = new File(iersFilePath);
+                FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
+
+                DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(iersFile.getParentFile()));
+
+                // When using a single IERS A bulletin some gaps may arise : to allow the use of such bulletin,
+                // we fix the EOP continuity threshold to one year instead of the normal gap ...
+                FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
+            }
 		} catch (Exception e) {
 			throw new Sen2VMException("Something went wrong during initialization of IERS and orekit ressources ", e);
 		}
 	}
 
+    /**
+     * Get last supported ITRF version, the best fitted version for input year
+     */
+    public ITRFVersion getBestFitITRFVersion(int targetYear) {
+        ITRFVersion closestYear = ITRFVersion.ITRF_1988;
+        int minDifference = Integer.MAX_VALUE;
+        for (final ITRFVersion iv : ITRFVersion.values()) {
+            int currentYear = iv.getYear();
+            if (currentYear <= targetYear) {
+                int difference = targetYear - currentYear;
+                if (difference < minDifference) {
+                    closestYear = iv;
+                    minDifference = difference;
+                }
+            }
+        }
+        return closestYear;
+    }
 
 	/**
 	 * Fill
@@ -734,7 +783,7 @@ public class DataStripManager {
      * @param wantedSize wanted size
      * @return
      */
-    public static double getNewPositionFromSize(double position, double pixelSize, double wantedSize) {
+    public double getNewPositionFromSize(double position, double pixelSize, double wantedSize) {
         double returned = position * pixelSize / wantedSize;
         return returned;
     }
