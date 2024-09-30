@@ -31,6 +31,7 @@ import org.sxgeo.rugged.RuggedManager;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.ConfigurationFile;
+import esa.sen2vm.input.SnapDemFileManager;
 import esa.sen2vm.input.ParamFile;
 import esa.sen2vm.input.datastrip.DataStripManager;
 import esa.sen2vm.input.gipp.GIPPManager;
@@ -138,6 +139,8 @@ public class Sen2VM
             // Init demManager
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
             SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
+//            SnapDemFileManager snapDemFileManager = new SnapDemFileManager(configFile.getDem());
+//            snapDemFileManager.buildMap(configFile.getDem());
             if(!demFileManager.findRasterFile()) {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
