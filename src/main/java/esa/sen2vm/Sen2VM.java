@@ -4,6 +4,7 @@ import org.apache.commons.cli.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.Float;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -88,7 +89,9 @@ public class Sen2VM
 
         // Set sen2VM logger
         try {
-            LogManager.getLogManager().readConfiguration( new FileInputStream("src/main/resources/log.properties") );
+            InputStream logProperties = Thread.currentThread().getContextClassLoader().getResourceAsStream("log.properties");
+            LogManager.getLogManager().readConfiguration(logProperties);
+//            LogManager.getLogManager().readConfiguration( new FileInputStream("src/main/resources/log.properties") );
 
             // Create a custom FileHandler with date and time in the filename
             String pattern = "/tmp/sen2VM-%s.log";
