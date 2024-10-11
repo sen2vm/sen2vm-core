@@ -8,19 +8,32 @@ import java.util.Vector;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
 
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 public class Datastrip {
 
+    // Get sen2VM logger
+    private static final Logger LOGGER = Logger.getLogger(Datastrip.class.getName());
+
     private String name;
-    private String detector;
     private File path;
     private File path_mtd;
 
+    /**
+     * List of the vrt (by [dets index] and [bands index]) of the geo grid
+     */
+    private File[][] vrts;
 
     /**
      * Constructor
@@ -29,23 +42,35 @@ public class Datastrip {
     public Datastrip(File path) {
         this.path = path;
         this.name = path.getName() ;
-        System.out.print("Datastrip " + this.name);
+        LOGGER.info("Datastrip " + this.name);
 
-        // this.vrt = new File[];
-
+        this.vrts = new File[Sen2VMConstants.NB_DETS][Sen2VMConstants.NB_BANDS];
 
         File[] listOfFiles = this.path.listFiles();
         if(listOfFiles != null) {
             for (int p = 0; p < listOfFiles.length; p++) {
                 if (listOfFiles[p].getName().equals(Sen2VMConstants.GEO_DATA_DS)) {
-                    // loadVRTs(listOfFiles[p]) ;
-                    // TODO
-                    System.out.println("GEO DATA EXISTS IN DS");
+                    loadVRTs(listOfFiles[p]) ;
                 } else if (listOfFiles[p].isFile()) {
                     this.path_mtd = listOfFiles[p] ;
-
                 }
             }
+        }
+    }
+
+    /**
+     * Load all VRT in vrts list by dectector/band indices in directory
+     * @param directory
+     */
+    private void loadVRTs(File directory) {
+        File[] list_img = directory.listFiles();
+        for (int i = 0; i < list_img.length; i++) {
+            String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
+            String bandName = name[name.length-1];
+            int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
+            String detectorName = name[name.length-2].substring(1);
+            int indexDetector = Integer.valueOf(detectorName);
+            this.vrts[indexDetector-1][indexBand] = list_img[i] ;
         }
     }
 

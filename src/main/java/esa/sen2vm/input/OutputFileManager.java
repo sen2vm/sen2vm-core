@@ -43,14 +43,20 @@ public class OutputFileManager
         gdal.AllRegister();
     }
 
-    public void create_archi() {
-        // File dossier = new File(this.filepath + File.separator + "dir");
-        // boolean res = dossier.mkdir();
-    }
 
 
-    public void createGeoTiff(String fileName, int startPixel, int startLine,
-            int step, int nbBand, String srs, double[][][] bandVal) {
+    /**
+     * Save grid in TIFF
+     * @param fileName path the file to save the grid in
+     * @param startPixel pixel upper left
+     * @param startLine line upper left
+     * @param endLine line bottom left
+     * @param step step of the grid (metadata)
+     * @param bandVal grid to save
+     * @param srs subLineOffset line offset of the grid (metadata)
+     */
+     public void createGeoTiff(String fileName, Float startPixel, Float startLine, Float endLine,
+            Float step, double[][][] bandVal, Float lineOffset) {
 
         double[][] band1val = bandVal[0];
         double[][] band2val = bandVal[1];
@@ -62,11 +68,25 @@ public class OutputFileManager
         Dataset ds;
         Band band1;
         Band band2;
+        // Band band3;
 
-        ds = driver.Create(fileName, nbPixels, nbLines, nbBand, gdalconst.GDT_Float64);
+        ds = driver.Create(fileName, nbPixels, nbLines, 2, gdalconst.GDT_Float64);
+        // ds = driver.Create(fileName, nbPixels, nbLines, 3, gdalconst.GDT_Float64);
 
         GdalGridFileInfo fileInfo = new GdalGridFileInfo();
         fileInfo.setDs(ds);
+
+        // Add metadata
+        ds.SetMetadataItem("X_BAND", "1") ;
+        ds.SetMetadataItem("Y_BAND", "2");
+        ds.SetMetadataItem("Z_BAND", "3");
+        ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(lineOffset));
+        ds.SetMetadataItem("PIXEL_STEP", String.valueOf(step));
+        ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
+        ds.SetMetadataItem("LINE_STEP", String.valueOf(step));
+        ds.SetMetadataItem("SRS", "EPSG:4326");
+        ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "TOP_LEFT_CORNER");
+        // ds.SetDescription("Direct Location Grid") ;
 
         band1 = ds.GetRasterBand(1);
         fileInfo.setXBand(band1);
@@ -76,42 +96,52 @@ public class OutputFileManager
         fileInfo.setYBand(band2);
         band2.SetNoDataValue(noDataRasterValue);
 
+        // band3 = ds.GetRasterBand(3);
+        // fileInfo.setYBand(band3);
+        // band3.SetNoDataValue(noDataRasterValue);
 
-        double[] gtInfo = getGeoTransformInfo(startPixel, step, startLine, step) ;
+        double[] gtInfo = getGeoTransformInfo(startPixel, step, -startLine, -step) ;
         ds.SetGeoTransform(gtInfo);
-        ds.SetProjection(srs);
+        ds.SetProjection("");
 
         for (int i = 0; i < nbLines; i++) {
             double[] band1_online = new double[nbPixels];
             double[] band2_online = new double[nbPixels];
+            // double[] band3_online = new double[nbPixels];
 
             for (int j = 0; j < nbPixels; j++) {
                 band1_online[j] = band1val[i][j];
                 band2_online[j] = band2val[i][j];
+                // band3_online[j] = band3val[i][j];
             }
 
             band1.WriteRaster(0, i, nbPixels, 1, band1_online);
             band2.WriteRaster(0, i, nbPixels, 1, band2_online);
+            // band3.WriteRaster(0, i, nbPixels, 1, band3_online);
         }
 
         ds.GetRasterBand(1).FlushCache();
         ds.GetRasterBand(2).FlushCache();
-        close(ds, band1, band2);
+        // ds.GetRasterBand(3).FlushCache();
+        ds.FlushCache();
+
+        band1.delete();
+        band2.delete();
+        // band3.delete();
+        ds.delete();
 
         LOGGER.info("Tiff saved in: " + fileName);
     }
 
 
-    protected void close(Dataset ds, Band pixelBand, Band lineBand) {
-        pixelBand.delete();
-        lineBand.delete();
-        ds.delete();
-    }
-
-
-
-    public double[] getGeoTransformInfo(int originX, int gridXStep, int originY, int gridYStep)  {
-
+    /**
+     * Create geotransform for the image
+     * @param originX x-coordinate of the upper-left corner of the upper-left pixel.
+     * @param gridXStep w-e pixel resolution / pixel width.
+     * @param originY y-coordinate of the upper-left corner of the upper-left pixel.
+     * @param gridYStep n-s pixel resolution / pixel height (negative value for a north-up image).
+     */
+    public double[] getGeoTransformInfo(Float originX, Float gridXStep, Float originY, Float gridYStep)  {
         double[] gtInfo = new double[6];
         int idx = 0;
         gtInfo[idx++] = originX;
@@ -119,27 +149,72 @@ public class OutputFileManager
         gtInfo[idx++] = 0d;
         gtInfo[idx++] = originY;
         gtInfo[idx++] = 0d;
-        gtInfo[idx++] = -gridYStep;
+        gtInfo[idx++] = gridYStep;
         return gtInfo;
     }
 
-    public void createVRT(String vrtFilePath, Vector<String> inputTIFs)  throws Exception{
 
-        final Vector<String> buildVRTOptions = new Vector<String>();
+    /**
+     * Build VRT from a list of input TIFFs and transform absolute to relative path from DS directory
+     * @param vrtFilePath path of the VRT file to save to create # TODO tmp
+     * @param inputTIFs list of TIFFs
+     */
+     public void createVRT(String vrtFilePath, Vector<String> inputTIFs,  Float step, Float lineOffset) {
+
+        // Create file tmp
+        String vrtFilePath_tmp = vrtFilePath.substring(0, vrtFilePath.length() -4) + "_tmp.vrt";
 
         // Option code here
-        // buildVRTOptions.add("-te");
-        // buildVRTOptions.add("start granule");
+        final Vector<String> buildVRTOptions = new Vector<String>();
+        // buildVRTOptions.add("-non_strict");
 
+        // Start build VRT process
         gdal.AllRegister();
-        final Dataset dataset = gdal.BuildVRT(vrtFilePath, inputTIFs, new BuildVRTOptions(buildVRTOptions));
-        dataset.delete();
+        final Dataset ds = gdal.BuildVRT(vrtFilePath_tmp, inputTIFs, new BuildVRTOptions(buildVRTOptions));
+
+        // Add metadata
+        ds.SetMetadataItem("X_BAND", "1") ; // Longitude
+        ds.SetMetadataItem("Y_BAND", "2"); // Latitude
+        // ds.SetMetadataItem("Z_BAND", "3"); // Altitude
+        ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(lineOffset));
+        ds.SetMetadataItem("PIXEL_STEP", String.valueOf(step));
+        ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
+        ds.SetMetadataItem("LINE_STEP", String.valueOf(step));
+        ds.SetMetadataItem("SRS", "EPSG:4326");
+        ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "TOP_LEFT_CORNER");
+        ds.delete();
+    }
+
+
+    /**
+     * Change GeoTransform stepY to -stepY and originY to -originY
+     * @param inputTIFs list of TIFFs to change
+     */
+     public void correctGeoGrid(Vector<String> inputTIFs) {
+        for(int g = 0 ; g < inputTIFs.size(); g++ ) {
+            Dataset ds = gdal.Open(inputTIFs.get(g), 0);
+            double[] transform = ds.GetGeoTransform();
+            double[] gtInfo = getGeoTransformInfo((float) transform[0], (float) transform[1], (float) -transform[3], (float)  -transform[5]) ;
+            ds.SetGeoTransform(gtInfo);
+            ds.FlushCache();
+            ds.delete();
+        }
+    }
+
+
+    /**
+     * Change absolute paths to relative paths from GRANULE dir
+     * and change stepY to -stepY and originY to -originY
+     * @param vrtFilePath path of the VRT file to correct # TODO tmp
+     */
+    public void correctVRT(String vrtFilePath) throws Exception{
+
+        String vrtFilePath_tmp = vrtFilePath.substring(0,vrtFilePath.length() -4) + "_tmp.vrt";
 
         // File reader
-        File file = new File(vrtFilePath);
+        File file = new File(vrtFilePath_tmp);
         FileReader fr = new FileReader(file);
         BufferedReader br = new BufferedReader(fr);
-
         String s = br.readLine();
 
         // File writer
@@ -150,21 +225,25 @@ public class OutputFileManager
         // Read file
         while(s != null)
         {
-            // change the reference  of the path
+            // change the reference  of the path if SourceFilename
             if (s.contains("SourceFilename")) {
-                int origin = s.indexOf("GRANULE");
+                int origin = s.lastIndexOf("GRANULE");
                 s = "      <SourceFilename relativeToVRT=\"0\">./" + s.substring(origin) ;
+            }
+            if (s.contains("GeoTransform")) {
+                String[] parts = s.split(",");
+                float originYf = - Float.parseFloat(parts[0].split(">")[1]);
+                float stepYf =  - Float.parseFloat(parts[5].split("<")[0]);
+                s = "<GeoTransform> " + String.valueOf(originYf) + "," + parts[1] + "," + parts[2] ;
+                s = s + "," + parts[3] + "," + parts[4] + "," + stepYf + " </GeoTransform>";
             }
             bw.write(s);
             bw.newLine();
             s = br.readLine();
-
         }
         bw.flush();
         bw.close();
+
         LOGGER.info("VRT saved in: " + vrtFilePath);
-
     }
-
-
 }

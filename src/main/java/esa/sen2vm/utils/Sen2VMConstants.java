@@ -2,6 +2,10 @@ package esa.sen2vm.utils;
 
 public class Sen2VMConstants {
 
+    public static final int NB_BANDS = 13;
+    public static final int NB_DETS = 12;
+
+
     /**
      * For bandInfo purpose
      */
@@ -14,6 +18,8 @@ public class Sen2VMConstants {
      * DATA directories
      */
     public static final String SAFE_EXTENSION = ".SAFE";
+    public static final String TIFF_EXTENSION = ".TIF";
+    public static final String VRT_EXTENSION = ".SAFE";
     public static final String DATASTRIP = "DATASTRIP";
     public static final String GRANULE = "GRANULE";
     public static final String GEO_DATA_DS = "GEO_DATA";

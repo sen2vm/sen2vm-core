@@ -123,15 +123,23 @@ public class SafeManager {
         return listGranulesToCompute ;
     }
 
+    /**
+     * Compute Bounding Box in sensor grid of a datastrip
+     * TODO test grid
+     * @return bounding box [uly, ulx, size lines, size pixels]
+     */
     public int[] getFullSize(DataStripManager dataStripManager, BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException {
         String[] minmax = dataStripManager.getMinMaxGranule(bandInfo, detectorInfo);
-        String minGranuleName = minmax[0];
 
-        Granule minGranule = getGranuleByName(minGranuleName) ;
+        Granule minGranule = getGranuleByName(minmax[0]) ;
+        Granule maxGranule = getGranuleByName(minmax[1]) ;
+
+        if (minGranule == null || minGranule == null) {
+            Sen2VMException error = new Sen2VMException("Error GRANULE: no first or last granule of the datastrip.");
+			throw error;
+        }
+
         int[] ULpixel = minGranule.getULpixel(bandInfo.getPixelHeight());
-
-        String maxGranuleName = minmax[1];
-        Granule maxGranule = getGranuleByName(maxGranuleName) ;
         int[] BRpixel = maxGranule.getBRpixel(bandInfo.getPixelHeight());
 
         int[] bb = {ULpixel[0], ULpixel[1], BRpixel[0] - ULpixel[0], BRpixel[1] - ULpixel[1]} ;
@@ -139,7 +147,11 @@ public class SafeManager {
 
     }
 
-    public Granule getGranuleByName(String name) {
+    /**
+     * Get granule object of the corresponding granule name
+     * @return granule
+     */
+     public Granule getGranuleByName(String name) {
         Granule res = null ;
         for(int g = 0 ; g < this.listGranules.size() ; g++) {
             if (this.listGranules.get(g).getName().equals(name)) {
