@@ -230,16 +230,14 @@ public class DataStripManager {
     }
 
     /**
-     * Compute min and max date line
+     * Load granules name/position from datastrip XML into positionGranuleByDetector list at detector indice
      */
     private void computePositionGranuleByDetector() {
 
-        positionGranuleByDetector = new Map[12]; // todo
+        positionGranuleByDetector = new Map[Sen2VMConstants.NB_DETS];
 
-        System.out.println("Insert my need");
         List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector> det_list = l1B_datastrip.getImage_Data_Info().getGranules_Information().getDetector_List().getDetector() ;
         for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector det : det_list) {
-            System.out.println("Det " + det.getDetectorId());
             List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule> gr_list = det.getGranule_List().getGranule() ;
             Map<String, Integer> granulePosition = new HashMap<>();
 
@@ -251,7 +249,13 @@ public class DataStripManager {
 
     }
 
-
+    /**
+     * Return min and max granule for a band/detector combinaison
+     * @param bandInfo band info
+     * @param detectorInfo detector info
+     * return {min granule name, max granule name}
+     * @throws Sen2VMException
+     */
     public String[] getMinMaxGranule(BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException {
         Map granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
         Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
