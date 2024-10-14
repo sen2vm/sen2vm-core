@@ -262,9 +262,6 @@ public class Granule {
      * return uly, ulx
      */
     public int[] getULpixel(double resolution) {
-        System.out.println("this origin");
-        System.out.println(this.pixelOrigin);
-
        int[] pixel = null ;
 
         if (this.granulePosition == 1){

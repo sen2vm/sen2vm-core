@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import org.orekit.bodies.GeodeticPoint;
 
 
 
@@ -49,6 +50,7 @@ import esa.sen2vm.utils.DetectorInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 import org.sxgeo.exception.SXGeoException;
+import org.orekit.rugged.linesensor.SensorPixel;
 
 /**
  * Main class
@@ -232,7 +234,7 @@ public class Sen2VM
                     int sizeLine = BBox[2];
                     int sizePixel = BBox[3];
 
-                    /*
+
                     DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffset, step,
                                 startPixel, startLine, sizeLine, sizePixel);
 
@@ -242,10 +244,9 @@ public class Sen2VM
                     LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
 
                     double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDictorLoc);
-                    LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[0][0]+" "+sensorGridForDictorLoc[0][1]);
-
-                    // LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
-                    // showPoints(sensorGrid, directLocGrid);
+                    //LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[0][0]+" "+sensorGridForDictorLoc[0][1]);
+                    //LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
+                    /*/// showPoints(sensorGrid, directLocGrid);
 
                     Vector<String> inputTIFs = new Vector<String>();
                     for(int g = 0 ; g < granulesToCompute.size(); g++ ) {
@@ -262,7 +263,7 @@ public class Sen2VM
                         float subLineOffset = dirGrid.getOffsetGranule(startGranule).floatValue();
 
                         // Save in TIF
-                        String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
+                        String gridFileName = gr.getCorrespondingDirGeoFileName(bandInfo);
                         outputFileManager.createGeoTiff(gridFileName, sizePixel * detectorInfo.getIndex() +subLineOffset, startGranule + subLineOffset, startGranule + subLineOffset + sizeGranule, step, subDirectLocGrid, subLineOffset) ;
 
                         // Add TIF to the future VRT
@@ -277,21 +278,53 @@ public class Sen2VM
 
                     // Correction post build VRT
                     outputFileManager.correctGeoGrid(inputTIFs);
-                    outputFileManager.correctVRT(vrtFileName);
-                    */
+                    outputFileManager.correctVRT(vrtFileName);*/
+
 
                     Float[] bb =  configFile.getInverseLocBound() ;
                     String epsg = configFile.getInverseLocReferential() ;
                     String invOutputDir = configFile.getInverseLocOutputFolder() ;
+                    System.out.println(bb[0]);
+                    System.out.println(bb[1]);
+                    System.out.println(bb[2]);
+                    System.out.println(bb[3]);
+                    System.out.println(epsg);
+                    System.out.println(step);
+                    System.out.println(step * res);
+                    String nameSensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
+                    System.out.println(bandInfo.getPixelHeight());
 
-                    InverseLocGrid invGrid = new InverseLocGrid(15000, 7000, 15000 + step * 3, 7000 - step * 4,
-                    epsg, invOutputDir, step, startPixel, startLine, sizePixel, sizeLine);
-                    double[][] groundGrid = invGrid.get2Dgrid();
-                    System.out.println(Arrays.deepToString(groundGrid));
-                    // double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(0), groundGrid, "EPSG:4326");
+                    int pixel;
+                    float[] diff_x ;
+                    float[] diff_y ;
+                    for (pixel = 0; pixel < 3000; pixel ++) {
+                        LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[pixel][0]+" "+sensorGridForDictorLoc[pixel][1]);
+                        LOGGER.info("direct loc grounds="+directLocGrid[0][0]+" "+directLocGrid[pixel][1]+" "+directLocGrid[pixel][2]);
 
-                    // outputFileManager.createGeoTiff(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
-                    System.out.println(Arrays.deepToString(groundGrid));
+                        float lon = (float) directLocGrid[pixel][0];
+                        float lat = (float) directLocGrid[pixel][1];
+                        float alt = (float) directLocGrid[pixel][2];
+
+                        //InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3],
+                        //epsg, invOutputDir, step * 100, startPixel, startLine, sizePixel, sizeLine);
+                        //double[][] groundGrid = invGrid.get2DgridLatLon();
+                        //System.out.println(Arrays.deepToString(groundGrid));
+
+
+
+                        GeodeticPoint geoPoint = new GeodeticPoint(Math.toRadians(lat), Math.toRadians(lon), 0.0f);
+                        SensorPixel sensorPixel = ruggedManager.inverseLocation(bandInfo.getPixelHeight(), nameSensor, geoPoint);
+                        //double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(0), groundGrid, "EPSG:4326");
+                        //System.out.println(Arrays.deepToString(inverseLocGrid));
+                        LOGGER.info("inverse loc="+sensorPixel.getLineNumber()+" "+sensorPixel.getPixelNumber());
+
+                        // outputFileManager.createGeoTiff(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
+                        //System.out.println(Arrays.deepToString(groundGrid));
+                        diff_y.add(sensorPixel.getLineNumber() - sensorGridForDictorLoc[pixel][0]);
+                        diff_x.add(sensorPixel.getPixelNumber() - sensorGridForDictorLoc[pixel][1]);
+                    }
+
+
                 }
             }
 
