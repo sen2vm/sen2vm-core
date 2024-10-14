@@ -247,6 +247,7 @@ public class Sen2VM
                     // showPoints(sensorGrid, directLocGrid);
 
                     Vector<String> inputTIFs = new Vector<String>();
+                    float pixelOffset = dirGrid.getPixelOffsetGranule().floatValue();
                     for(int g = 0 ; g < granulesToCompute.size(); g++ ) {
                         Granule gr = granulesToCompute.get(g) ;
 
@@ -258,11 +259,12 @@ public class Sen2VM
                         int sizeGranule = gr.getSizeLines(res);
 
                         double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
-                        float subLineOffset = dirGrid.getOffsetGranule(startGranule).floatValue();
+                        float subLineOffset = dirGrid.getLineOffsetGranule(startGranule).floatValue();
 
                         // Save in TIF
                         String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
-                        outputFileManager.createGeoTiff(gridFileName, sizePixel * detectorInfo.getIndex() +subLineOffset, startGranule + subLineOffset, startGranule + subLineOffset + sizeGranule, step, subDirectLocGrid, subLineOffset) ;
+                        outputFileManager.createGeoTiff(gridFileName, sizePixel * detectorInfo.getIndex() + pixelOffset, startGranule + subLineOffset,
+                        startGranule + subLineOffset + sizeGranule, step, subDirectLocGrid, subLineOffset, pixelOffset) ;
 
                         // Add TIF to the future VRT
                         inputTIFs.add(gridFileName) ;
@@ -270,9 +272,9 @@ public class Sen2VM
                     }
 
                     // Create VRT
-                    float lineOffset = dirGrid.getOffsetGranule(0).floatValue();
+                    float lineOffset = dirGrid.getLineOffsetGranule(0).floatValue();
                     String vrtFileName = ds.getCorrespondingVRTFileName(detectorInfo, bandInfo);
-                    outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset) ;
+                    outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset, pixelOffset) ;
 
                     // Correction post build VRT
                     outputFileManager.correctGeoGrid(inputTIFs);

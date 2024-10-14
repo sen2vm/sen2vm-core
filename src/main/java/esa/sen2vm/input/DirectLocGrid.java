@@ -140,7 +140,8 @@ public class DirectLocGrid {
         System.out.print(" -> Grid end: " + String.valueOf(grid_row_end) + " (");
         System.out.print(String.valueOf(this.gridLines.get(grid_row_end)) + ")");
 
-        System.out.println(" // Line Offset : " + String.valueOf(this.gridLines.get(grid_row_start) - startGranule));
+        System.out.print(" // Line Offset: " + String.valueOf(this.gridLines.get(grid_row_start) - startGranule));
+        System.out.println(" Pixel Offset: " + String.valueOf(this.gridPixels.get(0)));
         double[][][] subDirectLocGrid = new double[3][nbLines][nbCols];
 
         for (int l = 0; l < nbLines; l++) {
@@ -158,11 +159,17 @@ public class DirectLocGrid {
      * Compute offset of a granule by its start
      * @return lineOffset
      */
-    public Double getOffsetGranule(int startGranule) {
+    public Double getLineOffsetGranule(int startGranule) {
         int grid_row_start = getRowInGrid(startGranule);
         Double lineOffset = this.gridLines.get(grid_row_start) - startGranule;
         return lineOffset;
     }
 
-
+     /**
+     * Compute offset of a granule by its start
+     * @return lineOffset
+     */
+    public Double getPixelOffsetGranule() {
+        return this.gridPixels.get(getRowInGrid(0));
+    }
 }

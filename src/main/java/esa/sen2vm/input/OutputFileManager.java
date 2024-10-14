@@ -56,7 +56,7 @@ public class OutputFileManager
      * @param srs subLineOffset line offset of the grid (metadata)
      */
      public void createGeoTiff(String fileName, Float startPixel, Float startLine, Float endLine,
-            Float step, double[][][] bandVal, Float lineOffset) {
+            Float step, double[][][] bandVal, Float lineOffset, Float pixelOffset) {
 
         double[][] band1val = bandVal[0];
         double[][] band2val = bandVal[1];
@@ -80,7 +80,7 @@ public class OutputFileManager
         ds.SetMetadataItem("X_BAND", "1") ;
         ds.SetMetadataItem("Y_BAND", "2");
         ds.SetMetadataItem("Z_BAND", "3");
-        ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(lineOffset));
+        ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(pixelOffset));
         ds.SetMetadataItem("PIXEL_STEP", String.valueOf(step));
         ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
         ds.SetMetadataItem("LINE_STEP", String.valueOf(step));
@@ -159,7 +159,8 @@ public class OutputFileManager
      * @param vrtFilePath path of the VRT file to save to create # TODO tmp
      * @param inputTIFs list of TIFFs
      */
-     public void createVRT(String vrtFilePath, Vector<String> inputTIFs,  Float step, Float lineOffset) {
+     public void createVRT(String vrtFilePath, Vector<String> inputTIFs,  Float step,
+                            Float lineOffset, Float pixelOffset) {
 
         // Create file tmp
         String vrtFilePath_tmp = vrtFilePath.substring(0, vrtFilePath.length() -4) + "_tmp.vrt";
@@ -176,7 +177,7 @@ public class OutputFileManager
         ds.SetMetadataItem("X_BAND", "1") ; // Longitude
         ds.SetMetadataItem("Y_BAND", "2"); // Latitude
         // ds.SetMetadataItem("Z_BAND", "3"); // Altitude
-        ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(lineOffset));
+        ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(pixelOffset));
         ds.SetMetadataItem("PIXEL_STEP", String.valueOf(step));
         ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
         ds.SetMetadataItem("LINE_STEP", String.valueOf(step));
@@ -232,10 +233,10 @@ public class OutputFileManager
             }
             if (s.contains("GeoTransform")) {
                 String[] parts = s.split(",");
-                float originYf = - Float.parseFloat(parts[0].split(">")[1]);
-                float stepYf =  - Float.parseFloat(parts[5].split("<")[0]);
-                s = "<GeoTransform> " + String.valueOf(originYf) + "," + parts[1] + "," + parts[2] ;
-                s = s + "," + parts[3] + "," + parts[4] + "," + stepYf + " </GeoTransform>";
+                float originYf = - Float.parseFloat(parts[3]);
+                float stepYf = - Float.parseFloat(parts[5].split("<")[0]);
+                s = "<GeoTransform> " + parts[0] + "," + parts[1] + "," + parts[2] ;
+                s = s + "," + String.valueOf(originYf) + "," + parts[4] + "," + stepYf + " </GeoTransform>";
             }
             bw.write(s);
             bw.newLine();
