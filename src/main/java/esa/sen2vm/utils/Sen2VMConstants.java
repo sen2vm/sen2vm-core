@@ -36,6 +36,12 @@ public class Sen2VMConstants {
     public static final String dbl_extention_big = ".DBL";
 
     /**
+     * For json schema
+     */
+    public static final String JSON_SCHEMA_CONFIG = "schema_config.json";
+    public static final String JSON_SCHEMA_PARAMS = "schema_params.json";
+
+    /**
      * For IERS purpose
      */
     public static final Boolean simpleEOP = true;

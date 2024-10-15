@@ -91,7 +91,6 @@ public class Sen2VM
         try {
             InputStream logProperties = Thread.currentThread().getContextClassLoader().getResourceAsStream("log.properties");
             LogManager.getLogManager().readConfiguration(logProperties);
-//            LogManager.getLogManager().readConfiguration( new FileInputStream("src/main/resources/log.properties") );
 
             // Create a custom FileHandler with date and time in the filename
             String pattern = "/tmp/sen2VM-%s.log";

@@ -1,20 +1,21 @@
 package esa.sen2vm.input;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.logging.Logger;
+import esa.sen2vm.utils.Sen2VMConstants;
 
 /**
  * Parameters class
@@ -24,42 +25,46 @@ public class ParamFile extends InputFileManager
 {
     private static final Logger LOGGER = Logger.getLogger(ParamFile.class.getName());
 
-    private String filepath;
     public JSONArray detectors;
     public JSONArray bands;
 
     /**
      * Constructor
-     * @param jsonFilePath Path to the parameter file to parse
+     * @param paramPath path to the json parameters file
      * @throws Sen2VMException
      */
-    public ParamFile(String jsonFilePath) throws Sen2VMException {
-        this.filepath = jsonFilePath;
-        if(check_schema(this.filepath, "src/main/resources/schema_params.json")) {
-            parse(this.filepath);
+    public ParamFile(String paramPath) throws Sen2VMException {
+
+        InputStream schemaParamStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(Sen2VMConstants.JSON_SCHEMA_PARAMS);
+        if (schemaParamStream == null) {
+           throw new Sen2VMException("Impossible to find the json schema for parameters file: " + Sen2VMConstants.JSON_SCHEMA_PARAMS);
+        }
+
+        if(check_schema(paramPath, schemaParamStream)) {
+            parse(paramPath);
         }
     }
 
     /**
-     * Parse parameter file
-     * @param jsonFilePath Path to the configuration file to parse
+     * Parse json parameters file
+     * @param jsonFilePath path to the json parameters file
+     * @throws Sen2VMException
      */
-    public void parse(String jsonFilePath) {
-        LOGGER.info("Parsing file "+ filepath);
+    public void parse(String jsonFilePath) throws Sen2VMException {
 
+        LOGGER.info("Parsing file " + jsonFilePath);
         try (InputStream fis = new FileInputStream(jsonFilePath)) {
 
             JSONObject jsonObject = new JSONObject(new JSONTokener(fis));
-
+            
             this.detectors = jsonObject.getJSONArray("detectors");
             this.bands = jsonObject.getJSONArray("bands");
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            
+        } catch (JSONException | IOException e) {
+        	throw new Sen2VMException("Problem while reading json parameters file" + jsonFilePath + " : ", e);
         }
     }
+    
 
     /*
      * Get the detectors list

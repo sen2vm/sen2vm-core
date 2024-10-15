@@ -1,18 +1,17 @@
 package esa.sen2vm.input;
 
 import java.io.File;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONException;
-
-import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.utils.Sen2VMConstants;
-
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.Sen2VMConstants;
 
 /**
  * ConfigurationFile class
@@ -22,7 +21,7 @@ public class ConfigurationFile extends InputFileManager
 {
     private static final Logger LOGGER = Logger.getLogger(ConfigurationFile.class.getName());
 
-    private String filepath;
+    private String configPath;
     private String l1bProduct;
     private String gippFolder;
     private boolean gippVersionCheck = true;
@@ -44,26 +43,31 @@ public class ConfigurationFile extends InputFileManager
 
     /**
      * Constructor
-     * @param filepath Path to the configuration file to parse
-     * @param filepath Path to the configuration file to parse
+     * @param paramPath path to the json configuration file
      * @throws Sen2VMException
      */
-    public ConfigurationFile(String filepath) throws Sen2VMException {
-        this.filepath = filepath;
-        if(check_schema(this.filepath, "src/main/resources/schema_config.json")) {
-            parse(this.filepath);
+    public ConfigurationFile(String paramPath) throws Sen2VMException {
+
+        this.configPath = paramPath;
+        InputStream schemaStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(Sen2VMConstants.JSON_SCHEMA_CONFIG);
+        if (schemaStream == null) {
+        	throw new Sen2VMException("Impossible to find the json schema for configuration file: " + Sen2VMConstants.JSON_SCHEMA_CONFIG);
+        }
+        // Check if the json file is correct
+        if(check_schema(this.configPath, schemaStream)) {
+            parse(this.configPath);
         }
     }
 
     /**
-     * Parse configuration file
-     * @param filepath Path to the configuration file to parse
+     * Parse json configuration file
+     * @param jsonFilePath path to the json configuration file
      * @throws Sen2VMException
      */
-    public void parse(String filepath) throws Sen2VMException {
-        LOGGER.info("Parsing file "+ filepath);
+    public void parse(String jsonFilePath) throws Sen2VMException {
 
-        try (InputStream fis = new FileInputStream(filepath)) {
+    	LOGGER.info("Parsing file " + jsonFilePath);
+        try (InputStream fis = new FileInputStream(jsonFilePath)) {
 
             JSONObject jsonObject = new JSONObject(new JSONTokener(fis));
 
@@ -109,10 +113,8 @@ public class ConfigurationFile extends InputFileManager
                 }
             }
 
-        } catch (FileNotFoundException e) {
-            throw new Sen2VMException(e);
-        } catch (IOException e) {
-            throw new Sen2VMException(e);
+        } catch (JSONException | IOException e) {
+        	throw new Sen2VMException("Problem while reading json configuration file" + jsonFilePath + " : ", e);
         }
     }
 
