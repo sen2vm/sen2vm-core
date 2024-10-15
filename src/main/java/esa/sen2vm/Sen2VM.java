@@ -258,7 +258,7 @@ public class Sen2VM
                         int startGranule = gr.getFirstLine(res);
                         int sizeGranule = gr.getSizeLines(res);
 
-                        double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
+                        double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule, configFile.getExportAlt()) ;
                         float subLineOffset = dirGrid.getLineOffsetGranule(startGranule).floatValue();
 
                         // Save in TIF
@@ -274,7 +274,7 @@ public class Sen2VM
                     // Create VRT
                     float lineOffset = dirGrid.getLineOffsetGranule(0).floatValue();
                     String vrtFileName = ds.getCorrespondingVRTFileName(detectorInfo, bandInfo);
-                    outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset, pixelOffset) ;
+                    outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset, pixelOffset, configFile.getExportAlt()) ;
 
                     // Correction post build VRT
                     outputFileManager.correctGeoGrid(inputTIFs);

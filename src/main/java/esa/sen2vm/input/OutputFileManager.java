@@ -44,34 +44,28 @@ public class OutputFileManager
     }
 
 
-
     /**
-     * Save grid in TIFF
+     * Save grid in 3D TIFF  (lon, lat, alt)
      * @param fileName path the file to save the grid in
      * @param startPixel pixel upper left
      * @param startLine line upper left
      * @param endLine line bottom left
      * @param step step of the grid (metadata)
-     * @param bandVal grid to save
+     * @param bandVal 3d ground coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]],[[alt00,alt01,,...], [...]]] in deg, deg, m
      * @param srs subLineOffset line offset of the grid (metadata)
      */
      public void createGeoTiff(String fileName, Float startPixel, Float startLine, Float endLine,
             Float step, double[][][] bandVal, Float lineOffset, Float pixelOffset) {
 
+        int nbBand = bandVal.length ;
         double[][] band1val = bandVal[0];
-        double[][] band2val = bandVal[1];
         int nbPixels = band1val[0].length ;
         int nbLines = band1val.length ;
 
         driver = gdal.GetDriverByName("GTiff");
         driver.Register();
-        Dataset ds;
-        Band band1;
-        Band band2;
-        // Band band3;
 
-        ds = driver.Create(fileName, nbPixels, nbLines, 2, gdalconst.GDT_Float64);
-        // ds = driver.Create(fileName, nbPixels, nbLines, 3, gdalconst.GDT_Float64);
+        Dataset ds = driver.Create(fileName, nbPixels, nbLines, nbBand, gdalconst.GDT_Float64);
 
         GdalGridFileInfo fileInfo = new GdalGridFileInfo();
         fileInfo.setDs(ds);
@@ -79,7 +73,9 @@ public class OutputFileManager
         // Add metadata
         ds.SetMetadataItem("X_BAND", "1") ;
         ds.SetMetadataItem("Y_BAND", "2");
-        ds.SetMetadataItem("Z_BAND", "3");
+        if (nbBand == 3) {
+            ds.SetMetadataItem("Z_BAND", "3");
+        }
         ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(pixelOffset));
         ds.SetMetadataItem("PIXEL_STEP", String.valueOf(step));
         ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
@@ -88,46 +84,34 @@ public class OutputFileManager
         ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "TOP_LEFT_CORNER");
         // ds.SetDescription("Direct Location Grid") ;
 
-        band1 = ds.GetRasterBand(1);
-        fileInfo.setXBand(band1);
-        band1.SetNoDataValue(noDataRasterValue);
-
-        band2 = ds.GetRasterBand(2);
-        fileInfo.setYBand(band2);
-        band2.SetNoDataValue(noDataRasterValue);
-
-        // band3 = ds.GetRasterBand(3);
-        // fileInfo.setYBand(band3);
-        // band3.SetNoDataValue(noDataRasterValue);
+        Vector<Band> bands = new Vector<Band>();
+        for (int b = 0; b < nbBand; b++){
+            Band band = ds.GetRasterBand(b+1);
+            fileInfo.setXBand(band);
+            band.SetNoDataValue(noDataRasterValue);
+            bands.add(band);
+        }
 
         double[] gtInfo = getGeoTransformInfo(startPixel, step, -startLine, -step) ;
         ds.SetGeoTransform(gtInfo);
         ds.SetProjection("");
 
-        for (int i = 0; i < nbLines; i++) {
-            double[] band1_online = new double[nbPixels];
-            double[] band2_online = new double[nbPixels];
-            // double[] band3_online = new double[nbPixels];
-
-            for (int j = 0; j < nbPixels; j++) {
-                band1_online[j] = band1val[i][j];
-                band2_online[j] = band2val[i][j];
-                // band3_online[j] = band3val[i][j];
+        for (int b = 0; b < nbBand; b++){
+            for (int i = 0; i < nbLines; i++) {
+                double[] band_online = new double[nbPixels];
+                for (int j = 0; j < nbPixels; j++) {
+                    band_online[j] = bandVal[b][i][j];
+                }
+                bands.get(b).WriteRaster(0, i, nbPixels, 1, band_online);
             }
-
-            band1.WriteRaster(0, i, nbPixels, 1, band1_online);
-            band2.WriteRaster(0, i, nbPixels, 1, band2_online);
-            // band3.WriteRaster(0, i, nbPixels, 1, band3_online);
+            ds.GetRasterBand(b+1).FlushCache();
         }
 
-        ds.GetRasterBand(1).FlushCache();
-        ds.GetRasterBand(2).FlushCache();
-        // ds.GetRasterBand(3).FlushCache();
         ds.FlushCache();
 
-        band1.delete();
-        band2.delete();
-        // band3.delete();
+        for (int b = 0; b < nbBand; b++){
+            bands.get(b).delete();
+        }
         ds.delete();
 
         LOGGER.info("Tiff saved in: " + fileName);
@@ -160,7 +144,7 @@ public class OutputFileManager
      * @param inputTIFs list of TIFFs
      */
      public void createVRT(String vrtFilePath, Vector<String> inputTIFs,  Float step,
-                            Float lineOffset, Float pixelOffset) {
+                            Float lineOffset, Float pixelOffset, boolean exportAlt) {
 
         // Create file tmp
         String vrtFilePath_tmp = vrtFilePath.substring(0, vrtFilePath.length() -4) + "_tmp.vrt";
@@ -176,7 +160,9 @@ public class OutputFileManager
         // Add metadata
         ds.SetMetadataItem("X_BAND", "1") ; // Longitude
         ds.SetMetadataItem("Y_BAND", "2"); // Latitude
-        // ds.SetMetadataItem("Z_BAND", "3"); // Altitude
+        if (exportAlt) {
+            ds.SetMetadataItem("Z_BAND", "3"); // Altitude
+        }
         ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(pixelOffset));
         ds.SetMetadataItem("PIXEL_STEP", String.valueOf(step));
         ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
