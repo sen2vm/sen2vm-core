@@ -221,7 +221,7 @@ public class Granule {
      * Get geo grid file name for this granule and a specific band
      * return path file
      */
-    public String getCorrespondingDirGeoFileName(BandInfo band) {
+    public String getCorrespondingGeoFileName(BandInfo band) {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         geo_data.mkdir();
 
@@ -229,6 +229,7 @@ public class Granule {
         String grid = image.replace(".jp2", ".tif").replace("_MSI_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + grid).getPath();
     }
+
 
     /*
      * Get bottom right pixel in sensor grid of the granule into a specific res

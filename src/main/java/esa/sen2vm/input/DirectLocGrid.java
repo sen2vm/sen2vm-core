@@ -120,12 +120,13 @@ public class DirectLocGrid {
 
     /**
      * Select sub grid between startGranule and startGranule + sizeGranule
-     * @param directLocGrid full grid 2D [[row0,col0],[row1,col1],...]
+     * @param directLocGrid 2d ground coordinate array as [[lon0,lat0,alt0],[lon1,lat1,alt1],...,[lonn,latn,altn]] in (deg,deg,m)
      * @param startGranule
      * @param sizeGranule
-     * @return subDirectLocGrid 3D [row][col][band]
+     * @return subDirectLocGrid of directLocGrid specific to granule
+     * 3d ground coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]],[[alt00,alt01,,...], [...]]] in deg, deg, m
      */
-    public double[][][] extractPointsDirectLoc(double[][] directLocGrid, int startGranule, int sizeGranule) {
+    public double[][][] extractPointsDirectLoc(double[][] directLocGrid, int startGranule, int sizeGranule, boolean exportAlt) {
         System.out.print("Granule: " + String.valueOf(startGranule) + " -> " + String.valueOf(startGranule + sizeGranule) + "     ");
         Boolean insideGranule = true;
 
@@ -140,14 +141,21 @@ public class DirectLocGrid {
         System.out.print(" -> Grid end: " + String.valueOf(grid_row_end) + " (");
         System.out.print(String.valueOf(this.gridLines.get(grid_row_end)) + ")");
 
-        System.out.println(" // Line Offset : " + String.valueOf(this.gridLines.get(grid_row_start) - startGranule));
-        double[][][] subDirectLocGrid = new double[3][nbLines][nbCols];
+        System.out.print(" // Line Offset: " + String.valueOf(this.gridLines.get(grid_row_start) - startGranule));
+        System.out.println(" Pixel Offset: " + String.valueOf(this.gridPixels.get(0)));
+
+        int nbBands = 3;
+        if (exportAlt == false) {
+            nbBands = 2;
+        }
+
+        double[][][] subDirectLocGrid = new double[nbBands][nbLines][nbCols];
 
         for (int l = 0; l < nbLines; l++) {
             for (int c = 0; c < nbCols; c++) {
-                subDirectLocGrid[0][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][0] ;
-                subDirectLocGrid[1][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][1] ;
-                subDirectLocGrid[2][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][2] ;
+                for (int b = 0; b < nbBands; b++) {
+                    subDirectLocGrid[b][l][c] = directLocGrid[(l + grid_row_start)*nbCols + c][b] ;
+                }
             }
         }
 
@@ -158,11 +166,17 @@ public class DirectLocGrid {
      * Compute offset of a granule by its start
      * @return lineOffset
      */
-    public Double getOffsetGranule(int startGranule) {
+    public Double getLineOffsetGranule(int startGranule) {
         int grid_row_start = getRowInGrid(startGranule);
         Double lineOffset = this.gridLines.get(grid_row_start) - startGranule;
         return lineOffset;
     }
 
-
+     /**
+     * Compute offset of a granule by its start
+     * @return lineOffset
+     */
+    public Double getPixelOffsetGranule() {
+        return this.gridPixels.get(getRowInGrid(0));
+    }
 }

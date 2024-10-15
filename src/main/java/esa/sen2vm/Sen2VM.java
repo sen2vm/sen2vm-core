@@ -234,7 +234,6 @@ public class Sen2VM
                     int sizeLine = BBox[2];
                     int sizePixel = BBox[3];
 
-
                     DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffset, step,
                                 startPixel, startLine, sizeLine, sizePixel);
 
@@ -244,11 +243,13 @@ public class Sen2VM
                     LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
 
                     double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDictorLoc);
-                    //LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[0][0]+" "+sensorGridForDictorLoc[0][1]);
-                    //LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
-                    /*/// showPoints(sensorGrid, directLocGrid);
+                    LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[0][0]+" "+sensorGridForDictorLoc[0][1]);
+
+                    // LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
+                    // showPoints(sensorGrid, directLocGrid);
 
                     Vector<String> inputTIFs = new Vector<String>();
+                    float pixelOffset = dirGrid.getPixelOffsetGranule().floatValue();
                     for(int g = 0 ; g < granulesToCompute.size(); g++ ) {
                         Granule gr = granulesToCompute.get(g) ;
 
@@ -259,12 +260,13 @@ public class Sen2VM
                         int startGranule = gr.getFirstLine(res);
                         int sizeGranule = gr.getSizeLines(res);
 
-                        double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule) ;
-                        float subLineOffset = dirGrid.getOffsetGranule(startGranule).floatValue();
+                        double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule, configFile.getExportAlt()) ;
+                        float subLineOffset = dirGrid.getLineOffsetGranule(startGranule).floatValue();
 
                         // Save in TIF
-                        String gridFileName = gr.getCorrespondingDirGeoFileName(bandInfo);
-                        outputFileManager.createGeoTiff(gridFileName, sizePixel * detectorInfo.getIndex() +subLineOffset, startGranule + subLineOffset, startGranule + subLineOffset + sizeGranule, step, subDirectLocGrid, subLineOffset) ;
+                        String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
+                        outputFileManager.createGeoTiff(gridFileName, sizePixel * detectorInfo.getIndex() + pixelOffset, startGranule + subLineOffset,
+                        startGranule + subLineOffset + sizeGranule, step, subDirectLocGrid, subLineOffset, pixelOffset) ;
 
                         // Add TIF to the future VRT
                         inputTIFs.add(gridFileName) ;
@@ -272,13 +274,13 @@ public class Sen2VM
                     }
 
                     // Create VRT
-                    float lineOffset = dirGrid.getOffsetGranule(0).floatValue();
+                    float lineOffset = dirGrid.getLineOffsetGranule(0).floatValue();
                     String vrtFileName = ds.getCorrespondingVRTFileName(detectorInfo, bandInfo);
-                    outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset) ;
+                    outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset, pixelOffset, configFile.getExportAlt()) ;
 
                     // Correction post build VRT
                     outputFileManager.correctGeoGrid(inputTIFs);
-                    outputFileManager.correctVRT(vrtFileName);*/
+                    outputFileManager.correctVRT(vrtFileName);
 
 
                     Float[] bb =  configFile.getInverseLocBound() ;
@@ -296,11 +298,11 @@ public class Sen2VM
                     System.out.println(bandInfo.getPixelHeight());
 
                     // Test
-                    int pixel = 0;
-                    LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[pixel][0]+" "+sensorGridForDictorLoc[pixel][1]);
-                    LOGGER.info("direct loc grounds="+directLocGrid[pixel][0]+" "+directLocGrid[pixel][1]+" "+directLocGrid[pixel][2]);
-                    double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  directLocGrid, "EPSG:4326");
-                    LOGGER.info("inverse loc ="+inverseLocGrid[pixel][0]+" "+inverseLocGrid[pixel][1]);
+                    // int pixel = 0;
+                    // LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[pixel][0]+" "+sensorGridForDictorLoc[pixel][1]);
+                    // LOGGER.info("direct loc grounds="+directLocGrid[pixel][0]+" "+directLocGrid[pixel][1]+" "+directLocGrid[pixel][2]);
+                    // double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  directLocGrid, "EPSG:4326");
+                    // LOGGER.info("inverse loc ="+inverseLocGrid[pixel][0]+" "+inverseLocGrid[pixel][1]);
 
                     // Start
 
@@ -308,11 +310,15 @@ public class Sen2VM
                     double[][] groundGrid = invGrid.get2DgridLatLon();
                     System.out.println(Arrays.deepToString(groundGrid));
 
-                    double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  directLocGrid, "EPSG:4326");
-                    System.out.println(Arrays.deepToString(groundGrid));
+                    double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
+                    //double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid) ;
+                    //System.out.println(Arrays.deepToString(inverseLocGrid));
 
-                    // System.out.println(Arrays.deepToString(inverseLocGrid));
-                    // outputFileManager.createGeoTiff(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
+                    String invFileName = ds.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, configFile.getInverseLocOutputFolder());
+                    System.out.println(invFileName);
+
+                    //outputFileManager.createGeoTiff(invFileName, 0.0f, 0.0f, 0.0f,
+                    //step * res, grid3D, 0.0f, 0.0f) ;
                     // System.out.println(Arrays.deepToString(groundGrid));
 
                 }

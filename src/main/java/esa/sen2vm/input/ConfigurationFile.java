@@ -38,6 +38,7 @@ public class ConfigurationFile extends InputFileManager
     private float band10m;
     private float band20m;
     private float band60m;
+    private boolean exportAlt = true;
     private float ul_x;
     private float ul_y;
     private float lr_x;
@@ -84,6 +85,8 @@ public class ConfigurationFile extends InputFileManager
             this.band10m = steps.getFloat("10m_bands");
             this.band20m = steps.getFloat("20m_bands");
             this.band60m = steps.getFloat("60m_bands");
+
+            this.exportAlt = jsonObject.getBoolean("export_alt");
 
             JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
             this.ul_x = inverseLoc.getFloat("ul_x");
@@ -221,6 +224,14 @@ public class ConfigurationFile extends InputFileManager
      */
     public Float getStepBand60m() {
        return this.band60m;
+    }
+
+    /*
+     * Get the boolean extract_alt which, if set to false, will deactivate the
+     * saving of the altitude in the geo grid
+     */
+    public Boolean getExportAlt() {
+        return exportAlt;
     }
 
     /*

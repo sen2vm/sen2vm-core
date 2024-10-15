@@ -56,23 +56,25 @@ public class InverseLocGrid {
         System.out.println("Size: (" + String.valueOf(this.sizePixels) + ", " + String.valueOf(this.sizeLines) + ")");
         System.out.println();
 
-        this.gridX = grid_1D(this.lr.getX(), this.lr.getX() - this.ul.getX()) ;
-        this.gridY = grid_1D(this.ul.getY(), this.ul.getY() - this.lr.getY()) ;
+        this.gridX = grid_1D(this.ul.getY(), this.ul.getY() - this.lr.getY()) ;
+        this.gridY = grid_1D(this.lr.getX(), this.lr.getX() - this.ul.getX()) ;
         //LOGGER.info("Grid Pixel: " + this.gridX);
         //LOGGER.info("Grid Line: " + this.gridY);
     }
 
     private ArrayList<Float> grid_1D(Float start, Float size) {
 
+        System.out.print("Start: ");
+        System.out.print(start);
+        System.out.print(", End: ");
+        System.out.println(start + size);
 
         ArrayList<Float> grid = new ArrayList<Float>();
-        int nb = (int) Math.ceil(size / this.step) + 1 ; // TO ASK
+        int nb = (int) Math.ceil(size / this.step) + 1 ;
         for (int i = 0 ; i < nb ; i++) {
             grid.add(start + step * i);
         }
-        System.out.print("End BB");
-        System.out.print(start + size);
-        System.out.print("; End grid ");
+        System.out.print("Real End grid: ");
         System.out.print(grid.get(nb-1));
         System.out.print("; Diff ");
         System.out.println(grid.get(nb-1) - start - size);
@@ -86,27 +88,41 @@ public class InverseLocGrid {
 
         int nbCols = this.gridX.size();
         int nbLines = this.gridY.size();
-
+        System.out.print(nbCols);
+        System.out.print(" ");
+        System.out.println(nbLines);
         double[][] grid = new double[nbCols * nbLines][3] ;
 
         for (int l = 0 ; l < nbLines ; l ++){
             for (int c = 0 ; c < nbCols ; c ++){
                 Coordinates coord = new Coordinates(this.gridY.get(l), this.gridX.get(c), this.epsg);
                 coord.transform();
-                System.out.print(this.gridY.get(l));
-                System.out.print(" ");
-                System.out.println(this.gridX.get(l));
-
                 grid[l*nbCols + c][0] = coord.getLongitude();
                 grid[l*nbCols + c][1] = coord.getLatitude();
                 grid[l*nbCols + c][2] = 0.0;
             }
         }
-        System.out.println(nbCols);
-        System.out.println(nbLines);
-        System.out.println("Fin grid");
-
         return grid;
     }
 
+    /*public double[][][] get3Dgrid(double[][] gridList) {
+        // @param pixels double[][] 2d pixel coordinate array as [[row0,col0],[row1,col1],...,[rown,coln]]
+
+        int nbCols = this.gridX.size();
+        int nbLines = this.gridY.size();
+        System.out.print(nbCols);
+        System.out.print(" ");
+        System.out.println(nbLines);
+        int nbBands = 2;
+        double[][] grid = new double[nbBands][nbLines][nbCols];;
+
+        for (int l = 0 ; l < nbLines ; l ++){
+            for (int c = 0 ; c < nbCols ; c ++){
+                for (int b = 0; b < nbBands; b++) {
+                    grid[b][l][c] = gridList[(l + grid_row_start)*nbCols + c][b];
+                }
+            }
+        }
+        return grid;
+    }*/
 }

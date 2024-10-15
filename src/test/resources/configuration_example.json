@@ -13,13 +13,14 @@
     "20m_bands": 90,
     "60m_bands": 270
   },
+  "export_alt": true,
   "inverse_location_additional_info": {
 	"ul_x": 15000,
 	"ul_y": 7000,
 	"lr_x": 15700,
 	"lr_y": 6500,
 	"referential": "EPSG:32628",
-	"output_folder": "PATH_TO_OUTPUT_FOLDER_FOR_INVERSE_LOCATION_GRIDS"
+	"output_folder": "output_inv"
   }
 }
 
