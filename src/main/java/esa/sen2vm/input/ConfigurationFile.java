@@ -38,7 +38,7 @@ public class ConfigurationFile extends InputFileManager
     private float band10m;
     private float band20m;
     private float band60m;
-    private boolean exportAlt = true;
+    private boolean exportAlt = false;
     private float ul_x;
     private float ul_y;
     private float lr_x;

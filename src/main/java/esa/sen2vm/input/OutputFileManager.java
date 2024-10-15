@@ -92,7 +92,7 @@ public class OutputFileManager
             bands.add(band);
         }
 
-        double[] gtInfo = getGeoTransformInfo(startPixel, step, -startLine, -step) ;
+        double[] gtInfo = getGeoTransformInfo(startPixel, step, -startLine, -step) ; // BIDOUILLE
         ds.SetGeoTransform(gtInfo);
         ds.SetProjection("");
 
