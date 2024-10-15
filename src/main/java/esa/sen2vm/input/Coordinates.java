@@ -43,7 +43,6 @@ public class Coordinates {
 
         SpatialReference targetSRS = new SpatialReference();
         targetSRS.ImportFromEPSG(4326);
-
         CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
 		double[] res = transformer.TransformPoint(x, y, z);
 		this.longitude = res[1];

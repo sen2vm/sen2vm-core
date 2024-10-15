@@ -87,24 +87,24 @@ public class InverseLocGrid {
         int nbCols = this.gridX.size();
         int nbLines = this.gridY.size();
 
-        double[][] grid = new double[1 * 1][3] ;
+        double[][] grid = new double[nbCols * nbLines][3] ;
 
-        for (int l = 0 ; l < 1 ; l ++){
-            for (int c = 0 ; c < 1 ; c ++){
+        for (int l = 0 ; l < nbLines ; l ++){
+            for (int c = 0 ; c < nbCols ; c ++){
                 Coordinates coord = new Coordinates(this.gridY.get(l), this.gridX.get(c), this.epsg);
                 coord.transform();
+                System.out.print(this.gridY.get(l));
+                System.out.print(" ");
+                System.out.println(this.gridX.get(l));
+
                 grid[l*nbCols + c][0] = coord.getLongitude();
                 grid[l*nbCols + c][1] = coord.getLatitude();
                 grid[l*nbCols + c][2] = 0.0;
-
             }
         }
         System.out.println(nbCols);
         System.out.println(nbLines);
         System.out.println("Fin grid");
-
-
-
 
         return grid;
     }

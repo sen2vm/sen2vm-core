@@ -291,39 +291,29 @@ public class Sen2VM
                     System.out.println(epsg);
                     System.out.println(step);
                     System.out.println(step * res);
+
                     String nameSensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
                     System.out.println(bandInfo.getPixelHeight());
 
-                    int pixel;
-                    float[] diff_x ;
-                    float[] diff_y ;
-                    for (pixel = 0; pixel < 3000; pixel ++) {
-                        LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[pixel][0]+" "+sensorGridForDictorLoc[pixel][1]);
-                        LOGGER.info("direct loc grounds="+directLocGrid[0][0]+" "+directLocGrid[pixel][1]+" "+directLocGrid[pixel][2]);
+                    // Test
+                    int pixel = 0;
+                    LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[pixel][0]+" "+sensorGridForDictorLoc[pixel][1]);
+                    LOGGER.info("direct loc grounds="+directLocGrid[pixel][0]+" "+directLocGrid[pixel][1]+" "+directLocGrid[pixel][2]);
+                    double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  directLocGrid, "EPSG:4326");
+                    LOGGER.info("inverse loc ="+inverseLocGrid[pixel][0]+" "+inverseLocGrid[pixel][1]);
 
-                        float lon = (float) directLocGrid[pixel][0];
-                        float lat = (float) directLocGrid[pixel][1];
-                        float alt = (float) directLocGrid[pixel][2];
+                    // Start
 
-                        //InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3],
-                        //epsg, invOutputDir, step * 100, startPixel, startLine, sizePixel, sizeLine);
-                        //double[][] groundGrid = invGrid.get2DgridLatLon();
-                        //System.out.println(Arrays.deepToString(groundGrid));
+                    InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], epsg, invOutputDir, step * 50, startPixel, startLine, sizePixel, sizeLine);
+                    double[][] groundGrid = invGrid.get2DgridLatLon();
+                    System.out.println(Arrays.deepToString(groundGrid));
 
+                    double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  directLocGrid, "EPSG:4326");
+                    System.out.println(Arrays.deepToString(groundGrid));
 
-
-                        GeodeticPoint geoPoint = new GeodeticPoint(Math.toRadians(lat), Math.toRadians(lon), 0.0f);
-                        SensorPixel sensorPixel = ruggedManager.inverseLocation(bandInfo.getPixelHeight(), nameSensor, geoPoint);
-                        //double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(0), groundGrid, "EPSG:4326");
-                        //System.out.println(Arrays.deepToString(inverseLocGrid));
-                        LOGGER.info("inverse loc="+sensorPixel.getLineNumber()+" "+sensorPixel.getPixelNumber());
-
-                        // outputFileManager.createGeoTiff(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
-                        //System.out.println(Arrays.deepToString(groundGrid));
-                        diff_y.add(sensorPixel.getLineNumber() - sensorGridForDictorLoc[pixel][0]);
-                        diff_x.add(sensorPixel.getPixelNumber() - sensorGridForDictorLoc[pixel][1]);
-                    }
-
+                    // System.out.println(Arrays.deepToString(inverseLocGrid));
+                    // outputFileManager.createGeoTiff(ds.getCorrespondingVRTFileName(detectorInfo, bandInfo), inputTIFs) ;
+                    // System.out.println(Arrays.deepToString(groundGrid));
 
                 }
             }

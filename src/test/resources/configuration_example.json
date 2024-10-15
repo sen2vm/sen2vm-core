@@ -18,7 +18,7 @@
 	"ul_y": 7000,
 	"lr_x": 15700,
 	"lr_y": 6500,
-	"referential": "EPSG:4326",
+	"referential": "EPSG:32628",
 	"output_folder": "PATH_TO_OUTPUT_FOLDER_FOR_INVERSE_LOCATION_GRIDS"
   }
 }
