@@ -130,7 +130,8 @@ public class Sen2VM
             LOGGER.info("bands = "+bands);
 
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
+            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getOrekitData(),
+                                                                     configFile.getIers(), configFile.getBooleanRefining());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());

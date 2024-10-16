@@ -159,26 +159,33 @@ public class DataStripManager {
     private List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1B;
 
     /**
-     * Constructor from SAD XML file
+     * Constructor from SAD XML file and necessary data files
      * @param dsFilePath path to SAD XML file
-     * @param iersDirectoryPath path to the IERS directory
-     * @param activateAvailableRefining if true use refining parameters present in the datastrip, else will ignore available refining
+     * @param orekitDataPath path to Orekit data directory
+     * @param iersFilePath path to the IERS file
+     * @param activateAvailableRefining if true use refining parameters present in the datastrip,
+     *        else will ignore available refining
      * @throws Sen2VMException
      */
-    public DataStripManager(String dsFilePath, String iersDirectoryPath, Boolean activateAvailableRefining) throws Sen2VMException {
+    public DataStripManager(String dsFilePath, String orekitDataPath, String iersFilePath,
+                            Boolean activateAvailableRefining) throws Sen2VMException {
+
         this.dsFile = new File(dsFilePath);
         gps = TimeScalesFactory.getGPS();
-        loadFile(dsFilePath, iersDirectoryPath, activateAvailableRefining);
+        loadFile(dsFilePath, orekitDataPath, iersFilePath, activateAvailableRefining);
     }
 
     /**
-     * Load datastrip file
+     * Load SAD file and necessary data
      * @param dsFilePath path to SAD XML file
-     * @param iersDirectoryPath path to the IERS directory
-     * @param activateAvailableRefining if true use refining parameters present in the datastrip, else will ignore available refining
+     * @param orekitDataPath path to Orekit data directory
+     * @param iersFilePath path to the IERS file
+     * @param activateAvailableRefining if true use refining parameters present in the datastrip,
+     *        else will ignore available refining
      * @throws Sen2VMException
      */
-    protected void loadFile(String dsFilePath, String iersDirectoryPath, Boolean activateAvailableRefining) throws Sen2VMException {
+    protected void loadFile(String dsFilePath, String orekitDataPath, String iersFilePath,
+                            Boolean activateAvailableRefining) throws Sen2VMException {
         try {
             // Load SAD xml file
             JAXBContext jaxbContext = JAXBContext.newInstance(Level1B_DataStrip.class.getPackage().getName());
@@ -192,7 +199,7 @@ public class DataStripManager {
 
             auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
 
-            initOrekitRessources(iersDirectoryPath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
+            initOrekitRessources(orekitDataPath,iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
 
             // Test if we need to take refining data into account according to the flag
             if (activateAvailableRefining) {
@@ -212,12 +219,12 @@ public class DataStripManager {
                 }
             }
 
-            // Get quaternions and positions/velocities list from xml file
+            // Get quaternions and positions/velocities list from XML file
             computeSatelliteQList();
             computeSatellitePVList(activateAvailableRefining);
             computeMinMaxLinePerSensor();
 
-            // Instanciate dataSensingInfos that will be use for SimpleLocEngine
+            // Instanciate dataSensingInfos that will be used for SimpleLocEngine
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
 
         } catch (JAXBException e) {
@@ -230,16 +237,23 @@ public class DataStripManager {
     }
 
     /**
-     * Load IERS file
      * @param iersDirectoryPath path to the IERS directory
      * @throws Sen2VMException
      */
-    public void initOrekitRessources(String iersFilePath, A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo) throws Sen2VMException {
+    /**
+     * Load orekit data and IERS file
+     * @param orekitDataPath path to orekit data directory
+     * @param iersFilePath path to IERS file (must be updated regularly)
+     * @param dataStripTimeInfo datastrip time
+     * @throws Sen2VMException
+     */
+    public void initOrekitRessources(String orekitDataPath, String iersFilePath,
+                A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo) throws Sen2VMException {
 		try {
-		    // set up default Orekit data
-			File orekitDataDir = new File(System.getProperty("user.dir") + "/" + Sen2VMConstants.OREKIT_DATA_DIR);
+		    // Set up default Orekit data
+			File orekitDataDir = new File(orekitDataPath);
 			if (orekitDataDir == null || (!orekitDataDir.exists())) {
-			    throw new Sen2VMException("Orekit data not found");
+			    throw new Sen2VMException("Orekit data dir not found" + orekitDataPath);
 			}
 			DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
 

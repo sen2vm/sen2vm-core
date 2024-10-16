@@ -28,6 +28,7 @@ public class ConfigurationFile extends InputFileManager
     private String dem;
     private String geoid;
     private String iers = "";
+    private String orekitData;
     private String pod;
     private String operation;
     private boolean refining = false;
@@ -43,12 +44,12 @@ public class ConfigurationFile extends InputFileManager
 
     /**
      * Constructor
-     * @param paramPath path to the json configuration file
+     * @param configPath path to the json configuration file
      * @throws Sen2VMException
      */
-    public ConfigurationFile(String paramPath) throws Sen2VMException {
+    public ConfigurationFile(String configPath) throws Sen2VMException {
 
-        this.configPath = paramPath;
+        this.configPath = configPath;
         InputStream schemaStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(Sen2VMConstants.JSON_SCHEMA_CONFIG);
         if (schemaStream == null) {
         	throw new Sen2VMException("Impossible to find the json schema for configuration file: " + Sen2VMConstants.JSON_SCHEMA_CONFIG);
@@ -75,6 +76,7 @@ public class ConfigurationFile extends InputFileManager
             this.gippFolder = checkPath(jsonObject.getString("gipp_folder"));
             this.dem = checkPath(jsonObject.getString("dem"));
             this.geoid = checkPath(jsonObject.getString("geoid"));
+            this.orekitData = checkPath(jsonObject.getString("orekit_data"));
             this.pod = jsonObject.getString("pod");
             this.operation = jsonObject.getString("operation");
 
@@ -94,6 +96,8 @@ public class ConfigurationFile extends InputFileManager
             if (jsonObject.has("deactivate_available_refining")) {
                 this.refining = ! jsonObject.getBoolean("deactivate_available_refining");
             }
+
+            // Check the type of location: direct or inverse
             if (this.operation.equals("inverse")) {
                 if (!jsonObject.has("inverse_location_additional_info")) {
                     throw new Sen2VMException("Error inverse_location_additional_info parameter initialization is required when using inverse operation");
@@ -205,6 +209,13 @@ public class ConfigurationFile extends InputFileManager
     }
 
     /*
+     * Get the Orekit data directory
+     */
+    public String getOrekitData() {
+       return orekitData;
+    }
+
+   /*
      * Get the POD folder
      */
     public String getPod() {
