@@ -317,8 +317,7 @@ public class Sen2VM
                     String invFileName = ds.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, configFile.getInverseLocOutputFolder());
                     System.out.println(invFileName);
 
-                    //outputFileManager.createGeoTiff(invFileName, 0.0f, 0.0f, 0.0f,
-                    //step * res, grid3D, 0.0f, 0.0f) ;
+                    //outputFileManager.createGeoTiff(invFileName, 0.0f, 0.0f, 0.0f, step * res, grid3D, epsg, 0.0f, 0.0f) ;
                     // System.out.println(Arrays.deepToString(groundGrid));
 
                 }

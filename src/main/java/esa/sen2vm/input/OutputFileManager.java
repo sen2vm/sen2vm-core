@@ -52,10 +52,11 @@ public class OutputFileManager
      * @param endLine line bottom left
      * @param step step of the grid (metadata)
      * @param bandVal 3d ground coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]],[[alt00,alt01,,...], [...]]] in deg, deg, m
+     * @param src epsg
      * @param srs subLineOffset line offset of the grid (metadata)
      */
      public void createGeoTiff(String fileName, Float startPixel, Float startLine, Float endLine,
-            Float step, double[][][] bandVal, Float lineOffset, Float pixelOffset) {
+            Float step, double[][][] bandVal, String epsg, Float lineOffset, Float pixelOffset) {
 
         int nbBand = bandVal.length ;
         double[][] band1val = bandVal[0];
