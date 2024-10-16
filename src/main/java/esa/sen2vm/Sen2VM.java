@@ -219,11 +219,13 @@ public class Sen2VM
             for (BandInfo bandInfo: bands) {
                 LOGGER.info("### BAND " + bandInfo.getName() );
                 float res = (float) bandInfo.getPixelHeight() ;
-                Float step = configFile.getStepFromBandInfo(bandInfo) / res;
+                Float step = configFile.getStepFromBandInfo(bandInfo) / res ;
+                String epsg = configFile.getReferential() ;
 
                 LOGGER.info("res d: " + String.valueOf(configFile.getStepFromBandInfo(bandInfo)));
                 LOGGER.info("res band: " + String.valueOf(res));
                 LOGGER.info("step: " + String.valueOf(step));
+                LOGGER.info("epsg: " + epsg);
 
                 for (DetectorInfo detectorInfo: detectors) {
                     LOGGER.info("### DET " + detectorInfo.getName() );
@@ -243,8 +245,7 @@ public class Sen2VM
                     LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
 
                     double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDictorLoc);
-                    LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[0][0]+" "+sensorGridForDictorLoc[0][1]);
-
+                    // LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[0][0]+" "+sensorGridForDictorLoc[0][1]);
                     // LOGGER.info("grounds="+directLocGrid[0][0]+" "+directLocGrid[0][1]+" "+directLocGrid[0][2]);
                     // showPoints(sensorGrid, directLocGrid);
 
@@ -258,6 +259,7 @@ public class Sen2VM
                         // Granule gr = sm.getGranuleByName(maxGranuleName) ;
 
                         int startGranule = gr.getFirstLine(res);
+
                         int sizeGranule = gr.getSizeLines(res);
 
                         double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule, configFile.getExportAlt()) ;
@@ -270,7 +272,6 @@ public class Sen2VM
 
                         // Add TIF to the future VRT
                         inputTIFs.add(gridFileName) ;
-                        System.out.println();
                     }
 
                     // Create VRT

@@ -90,11 +90,10 @@ public class Granule {
      public Granule(File path) throws Sen2VMException {
         this.path = path;
         this.name = path.getName() ;
-        System.out.print("Granule " + this.name);
 
         String[] name_array = this.name.split("_");
         this.detector = name_array[name_array.length-2];
-        System.out.println(" (" + detector + ")");
+        LOGGER.info("Granule " + this.name + " (" + detector + ")");
 
         this.images = new File[13];
         this.grids = new File[13];
@@ -137,12 +136,11 @@ public class Granule {
      private void loadMTDinformations() throws Sen2VMException {
         GranuleManager granuleManager = new GranuleManager(this.path_mtd.toString());
         pixelOrigin = granuleManager.getPixelOrigin();
-        granulePosition = granuleManager.getGranulePosition();
+        granulePosition = granuleManager.getGranulePosition() - this.pixelOrigin ;
         sizeRes10 = granuleManager.getSizeRes10();
         sizeRes20 = granuleManager.getSizeRes20();
         sizeRes60 = granuleManager.getSizeRes60();
     }
-
 
 
 
@@ -165,7 +163,7 @@ public class Granule {
      */
      private void loadGrids(File geo_data) {
         File[] list_img = geo_data.listFiles();
-        System.out.println(" --> Number of grids already existing: " + String.valueOf(list_img.length));
+        LOGGER.info(" --> Number of grids already existing: " + String.valueOf(list_img.length));
         for (int i = 0; i < list_img.length; i++) {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
             String bandName = name[name.length-1];
@@ -193,29 +191,6 @@ public class Granule {
         return this.grids[indexBand];
     }
 
-    /*
-     * Get geo grid file name for this granule and a specific band
-     * return path file
-     */
-    public Map<String, Object> infoForGridDirectLocation(String detector, String band) {
-        Map<String, Object> info = new HashMap<>();
-        info.put("pixelOrigin", this.pixelOrigin);
-        info.put("granulePosition", this.granulePosition);
-        int indexBand = BandInfo.valueOf(band).ordinal();
-        if (BandInfo.values()[indexBand].getPixelHeight() == Sen2VMConstants.RESOLUTION_10M) {
-            info.put("granuleDimensions_nrows", this.sizeRes10[0]);
-            info.put("granuleDimensions_ncols", this.sizeRes10[1]);
-        } else if (BandInfo.values()[indexBand].getPixelHeight() == Sen2VMConstants.RESOLUTION_20M) {
-            info.put("granuleDimensions_nrows", this.sizeRes20[0]);
-            info.put("granuleDimensions_ncols", this.sizeRes20[1]);
-        } else {
-            info.put("granuleDimensions_nrows", this.sizeRes60[0]);
-            info.put("granuleDimensions_ncols", this.sizeRes60[1]);
-        }
-
-        return info;
-    }
-
 
     /*
      * Get geo grid file name for this granule and a specific band
@@ -230,31 +205,13 @@ public class Granule {
         return new File(geo_data.getPath() + File.separator + grid).getPath();
     }
 
-
     /*
      * Get bottom right pixel in sensor grid of the granule into a specific res
      * return bry, brx
      */
     public int[] getBRpixel(double resolution) {
         int[] pixel = null ;
-        if (this.granulePosition == 1){
-            if ((int) resolution == Sen2VMConstants.RESOLUTION_10M) {
-                pixel = new int[]{ this.granulePosition + this.sizeRes10[0], this.sizeRes10[1]};
-            } else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M) {
-                    pixel = new int[]{ this.granulePosition + this.sizeRes20[0], this.sizeRes20[1]};
-            } else {
-                pixel = new int[]{ this.granulePosition + this.sizeRes60[0], this.sizeRes60[1]};
-
-            }
-        } else {
-            if ((int) resolution == Sen2VMConstants.RESOLUTION_10M) {
-                pixel = new int[]{ this.granulePosition + this.sizeRes10[0], this.sizeRes10[1]};
-            } else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M) {
-                pixel = new int[]{ this.granulePosition/2 + this.sizeRes20[0], this.sizeRes20[1]};
-            } else {
-                pixel = new int[]{ this.granulePosition/6+ this.sizeRes60[0], this.sizeRes60[1]};
-            }
-        }
+        pixel = new int[]{getFirstLine(resolution) + getSizeLines(resolution), getSizePixels(resolution)};
         return pixel ;
     }
 
@@ -263,41 +220,24 @@ public class Granule {
      * return uly, ulx
      */
     public int[] getULpixel(double resolution) {
-       int[] pixel = null ;
 
-        if (this.granulePosition == 1){
-            pixel = new int[]{this.granulePosition - this.pixelOrigin, 0};
-        } else {
-            if ((int) resolution == Sen2VMConstants.RESOLUTION_10M) {
-                pixel = new int[]{this.granulePosition, 0};
-            } else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M) {
-                pixel = new int[]{this.granulePosition / 2, 0};
-            } else {
-                pixel = new int[]{this.granulePosition/ 6, 0};
-            }
-        }
+        int[] pixel = new int[]{getFirstLine(resolution), 0};
         return pixel ;
     }
 
     public int getFirstLine(double resolution) {
-        int pixel = 0 ;
-        if (this.granulePosition == this.pixelOrigin){
+        int pixel ;
+
+        if ((int) resolution == Sen2VMConstants.RESOLUTION_10M) {
             pixel = this.granulePosition;
+        } else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M) {
+            pixel = this.granulePosition / 2;
         } else {
-            if ((int) resolution == Sen2VMConstants.RESOLUTION_10M) {
-                pixel = this.granulePosition;
-            } else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M) {
-                pixel = this.granulePosition / 2;
-            } else {
-                pixel = this.granulePosition / 6;
-            }
+            pixel = this.granulePosition / 6;
         }
         return pixel ;
     }
 
-    public int getFirstPixel() {
-        return this.pixelOrigin;
-    }
 
     public int getSizePixels(double resolution) {
          int pixel ;
