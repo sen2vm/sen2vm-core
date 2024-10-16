@@ -48,13 +48,13 @@ public class DirectLocGrid {
         this.gridPixels = grid_1D(this.pixelOrigin, this.sizePixels, this.pixelOrigin, this.step);
         this.gridLines = grid_1D(this.lineOrigin, this.sizeLines, this.pixelOrigin, this.step);
 
-        // LOGGER.info("# Grid information");
-        // LOGGER.info("ConvOffset: (" + String.valueOf(this.georefConventionOffset) + ", " + String.valueOf(this.georefConventionOffset) + ") ; ");
-        // LOGGER.info("Step: (" + String.valueOf(this.step) + ", " + String.valueOf(this.step) + ") ; ");
-        // LOGGER.info("Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ") ; ");
-        // LOGGER.info("Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")");
-        // LOGGER.info("Grid Pixel: " + this.gridPixels);
-        // LOGGER.info("Grid Line: " + this.gridLines);
+        LOGGER.info("# Grid information");
+        LOGGER.info("ConvOffset: (" + String.valueOf(this.georefConventionOffset) + ", " + String.valueOf(this.georefConventionOffset) + ") ; ");
+        LOGGER.info("Step: (" + String.valueOf(this.step) + ", " + String.valueOf(this.step) + ") ; ");
+        LOGGER.info("Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ") ; ");
+        LOGGER.info("Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")");
+        LOGGER.info("Grid Pixel: " + this.gridPixels);
+        LOGGER.info("Grid Line: " + this.gridLines);
     }
 
     /**
@@ -127,7 +127,7 @@ public class DirectLocGrid {
      * 3d ground coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]],[[alt00,alt01,,...], [...]]] in deg, deg, m
      */
     public double[][][] extractPointsDirectLoc(double[][] directLocGrid, int startGranule, int sizeGranule, boolean exportAlt) {
-        System.out.print("Granule: " + String.valueOf(startGranule) + " -> " + String.valueOf(startGranule + sizeGranule) + "     ");
+        LOGGER.info("Granule: " + String.valueOf(startGranule) + " -> " + String.valueOf(startGranule + sizeGranule) + "     ");
         Boolean insideGranule = true;
 
         int grid_row_start = getRowInGrid(startGranule);
@@ -136,13 +136,14 @@ public class DirectLocGrid {
         int nbLines = grid_row_end - grid_row_start + 1 ;
         int nbCols = this.gridPixels.size();
 
-        System.out.print("Grid start: " + String.valueOf(grid_row_start) + " (");
-        System.out.print(String.valueOf(this.gridLines.get(grid_row_start)) + ")");
-        System.out.print(" -> Grid end: " + String.valueOf(grid_row_end) + " (");
-        System.out.print(String.valueOf(this.gridLines.get(grid_row_end)) + ")");
+        String log = "Grid start: " + String.valueOf(grid_row_start) + " (" ;
+        log = log + String.valueOf(this.gridLines.get(grid_row_start)) + ")";
+        log = log + " -> Grid end: " + String.valueOf(grid_row_end) + " (";
+        log = log + String.valueOf(this.gridLines.get(grid_row_end)) + ")";
+        log = log + " // Line Offset: " + String.valueOf(this.gridLines.get(grid_row_start) - startGranule) ;
+        log = log + " Pixel Offset: " + String.valueOf(this.gridPixels.get(0)) ;
+        LOGGER.info(log);
 
-        System.out.print(" // Line Offset: " + String.valueOf(this.gridLines.get(grid_row_start) - startGranule));
-        System.out.println(" Pixel Offset: " + String.valueOf(this.gridPixels.get(0)));
 
         int nbBand = 3;
         if (exportAlt == false) {
