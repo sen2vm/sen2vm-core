@@ -235,6 +235,21 @@ public class ConfigurationFile extends InputFileManager
     }
 
     /*
+     * Get referencial of the data
+     */
+    public String getReferential() {
+        return referential;
+    }
+
+    /*
+     * Get operation
+     */
+    public String getOperation() {
+        return operation;
+    }
+
+
+    /*
      * Get Float step from a given band info
      */
     public Float getStepFromBandInfo(BandInfo bandInfo) {

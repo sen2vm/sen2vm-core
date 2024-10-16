@@ -218,7 +218,7 @@ public class Sen2VM
                 LOGGER.info("### BAND " + bandInfo.getName() );
                 float res = (float) bandInfo.getPixelHeight() ;
                 Float step = configFile.getStepFromBandInfo(bandInfo) / res ;
-                Float epsg = configFile.getReferential() ;
+                String epsg = configFile.getReferential() ;
 
                 LOGGER.info("res d: " + String.valueOf(configFile.getStepFromBandInfo(bandInfo)));
                 LOGGER.info("res band: " + String.valueOf(res));
