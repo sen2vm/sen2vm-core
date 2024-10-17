@@ -222,7 +222,7 @@ public class OutputFileManager
                 String[] parts = s.split(",");
                 float originYf = - Float.parseFloat(parts[3]);
                 float stepYf = - Float.parseFloat(parts[5].split("<")[0]);
-                s = "<GeoTransform> " + parts[0] + "," + parts[1] + "," + parts[2] ;
+                s = parts[0] + "," + parts[1] + "," + parts[2] ;
                 s = s + "," + String.valueOf(originYf) + "," + parts[4] + "," + stepYf + " </GeoTransform>";
             }
             bw.write(s);

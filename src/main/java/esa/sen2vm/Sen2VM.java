@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import org.orekit.bodies.GeodeticPoint;
 
 
 
@@ -50,7 +49,6 @@ import esa.sen2vm.utils.DetectorInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 import org.sxgeo.exception.SXGeoException;
-import org.orekit.rugged.linesensor.SensorPixel;
 
 /**
  * Main class
