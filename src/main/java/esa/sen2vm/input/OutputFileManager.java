@@ -54,7 +54,7 @@ public class OutputFileManager
      * @param bandVal 3d ground coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]],[[alt00,alt01,,...], [...]]] in deg, deg, m
      * @param srs subLineOffset line offset of the grid (metadata)
      */
-     public void createGeoTiff(String fileName, Float startPixel, Float startLine, Float endLine,
+     public void createGeoTiff(String fileName, Float startPixel, Float startLine,
             Float step, double[][][] bandVal, Float lineOffset, Float pixelOffset) {
 
         int nbBand = bandVal.length ;
@@ -221,7 +221,7 @@ public class OutputFileManager
                 String[] parts = s.split(",");
                 float originYf = - Float.parseFloat(parts[3]);
                 float stepYf = - Float.parseFloat(parts[5].split("<")[0]);
-                s = "<GeoTransform> " + parts[0] + "," + parts[1] + "," + parts[2] ;
+                s = parts[0] + "," + parts[1] + "," + parts[2] ;
                 s = s + "," + String.valueOf(originYf) + "," + parts[4] + "," + stepYf + " </GeoTransform>";
             }
             bw.write(s);

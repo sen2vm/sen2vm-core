@@ -53,8 +53,8 @@ public class DirectLocGrid {
         LOGGER.info("Step: (" + String.valueOf(this.step) + ", " + String.valueOf(this.step) + ") ; ");
         LOGGER.info("Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ") ; ");
         LOGGER.info("Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")");
-        LOGGER.info("Grid Pixel: " + this.gridPixels);
-        LOGGER.info("Grid Line: " + this.gridLines);
+        //LOGGER.info("Grid Pixel: " + this.gridPixels);
+        //LOGGER.info("Grid Line: " + this.gridLines);
     }
 
     /**

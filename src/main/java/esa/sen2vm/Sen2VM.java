@@ -265,8 +265,8 @@ public class Sen2VM
 
                         // Save in TIF
                         String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
-                        outputFileManager.createGeoTiff(gridFileName, sizePixel * detectorInfo.getIndex() + pixelOffset, startGranule + subLineOffset,
-                        startGranule + subLineOffset + sizeGranule, step, subDirectLocGrid, subLineOffset, pixelOffset) ;
+                        outputFileManager.createGeoTiff(gridFileName, pixelOffset, startGranule + subLineOffset,
+                        step, subDirectLocGrid, subLineOffset, pixelOffset) ;
 
                         // Add TIF to the future VRT
                         inputTIFs.add(gridFileName) ;
