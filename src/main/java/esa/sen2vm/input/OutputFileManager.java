@@ -55,8 +55,8 @@ public class OutputFileManager
      * @param src epsg
      * @param srs subLineOffset line offset of the grid (metadata)
      */
-     public void createGeoTiff(String fileName, Float startPixel, Float startLine, Float endLine,
-            Float step, double[][][] bandVal, String epsg, Float lineOffset, Float pixelOffset) {
+     public void createGeoTiff(String fileName, Float startPixel, Float startLine,
+            Float stepX, Float stepY, double[][][] bandVal, String epsg, String epsgData, Float lineOffset, Float pixelOffset) {
 
         int nbBand = bandVal.length ;
         double[][] band1val = bandVal[0];
@@ -78,10 +78,10 @@ public class OutputFileManager
             ds.SetMetadataItem("Z_BAND", "3");
         }
         ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(pixelOffset));
-        ds.SetMetadataItem("PIXEL_STEP", String.valueOf(step));
+        ds.SetMetadataItem("PIXEL_STEP", String.valueOf(stepX));
         ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
-        ds.SetMetadataItem("LINE_STEP", String.valueOf(step));
-        ds.SetMetadataItem("SRS", "EPSG:4326");
+        ds.SetMetadataItem("LINE_STEP", String.valueOf(stepY));
+        ds.SetMetadataItem("SRS", epsgData);
         ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "TOP_LEFT_CORNER");
         // ds.SetDescription("Direct Location Grid") ;
 
@@ -93,9 +93,9 @@ public class OutputFileManager
             bands.add(band);
         }
 
-        double[] gtInfo = getGeoTransformInfo(startPixel, step, -startLine, -step) ; // BIDOUILLE
+        double[] gtInfo = getGeoTransformInfo(startPixel, stepX, startLine, stepY) ;
         ds.SetGeoTransform(gtInfo);
-        ds.SetProjection("");
+        ds.SetProjection(epsg);
 
         for (int b = 0; b < nbBand; b++){
             for (int i = 0; i < nbLines; i++) {

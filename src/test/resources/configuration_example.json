@@ -15,10 +15,10 @@
   },
   "export_alt": true,
   "inverse_location_additional_info": {
-	"ul_x": 15000,
-	"ul_y": 7000,
-	"lr_x": 15700,
-	"lr_y": 6500,
+    "ul_y" : 245500.00,
+    "ul_x" : 3657000.00,
+    "lr_y": 260500.000,
+    "lr_x": 3645900.000,
 	"referential": "EPSG:32628",
 	"output_folder": "output_inv"
   }

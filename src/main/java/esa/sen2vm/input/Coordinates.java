@@ -15,7 +15,7 @@ public class Coordinates {
     private Double longitude;
     private Double altitude;
 
-    public Coordinates(Float y, Float x, int epsg) {
+    public Coordinates(Float x, Float y, int epsg) {
         this.x = x;
         this.y = y;
         this.z = 0f;
@@ -40,7 +40,6 @@ public class Coordinates {
     }
 
     public void transform() {
-
         SpatialReference targetSRS = new SpatialReference();
         targetSRS.ImportFromEPSG(4326);
         CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
@@ -56,7 +55,6 @@ public class Coordinates {
         df.setMinimumFractionDigits(14);
         return "(" + df.format(this.latitude) + ", " + df.format(this.longitude) + ", " + df.format(this.altitude) + ")";
     }
-
 
     public String toString() {
         DecimalFormat df = new DecimalFormat();

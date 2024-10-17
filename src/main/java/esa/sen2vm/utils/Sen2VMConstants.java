@@ -5,6 +5,12 @@ public class Sen2VMConstants {
     public static final int NB_BANDS = 13;
     public static final int NB_DETS = 12;
 
+    /**
+     * For operation purpose
+     */
+    public static final String DIRECT = "DIRECT";
+    public static final String INVERSE = "INVERSE";
+
 
     /**
      * For bandInfo purpose

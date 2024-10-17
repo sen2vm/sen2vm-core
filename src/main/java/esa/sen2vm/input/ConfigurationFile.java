@@ -245,7 +245,7 @@ public class ConfigurationFile extends InputFileManager
      * Get operation
      */
     public String getOperation() {
-        return operation;
+        return operation.toUpperCase();
     }
 
 
