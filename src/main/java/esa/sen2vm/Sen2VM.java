@@ -262,8 +262,10 @@ public class Sen2VM
 
                             // Save in TIF
                             String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
-                            //outputFileManager.createGeoTiff(gridFileName, sizePixel * detectorInfo.getIndex() + pixelOffset, -startGranule + subLineOffset,
-                            //step, -step, subDirectLocGrid, "", subLineOffset, pixelOffset) ;
+
+                            // Save with originY = - originY and stepY = -stepY for VRT construction
+                            outputFileManager.createGeoTiff(gridFileName, pixelOffset, -(startGranule + subLineOffset),
+                            step, -step, subDirectLocGrid, "", "EPSG:4326", subLineOffset, pixelOffset) ;
 
                             // Add TIF to the future VRT
                             inputTIFs.add(gridFileName) ;
