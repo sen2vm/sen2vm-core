@@ -66,8 +66,8 @@ public class OutputFileManager
         driver = gdal.GetDriverByName("GTiff");
         driver.Register();
 
-        Dataset ds = driver.Create(fileName, nbPixels, nbLines, nbBand, gdalconst.GDT_Float64);
-
+        String[] options = {"COMPRESS=LZW", "PREDICTOR=2"};
+        Dataset ds = driver.Create(fileName, nbPixels, nbLines, nbBand, gdalconst.GDT_Float64, options);
         GdalGridFileInfo fileInfo = new GdalGridFileInfo();
         fileInfo.setDs(ds);
 

@@ -220,7 +220,7 @@ public class Sen2VM
                 Float step = configFile.getStepFromBandInfo(bandInfo) / res ;
                 String epsg = configFile.getReferential() ;
 
-                LOGGER.info("res d: " + String.valueOf(configFile.getStepFromBandInfo(bandInfo)));
+                LOGGER.info("res grid: " + String.valueOf(configFile.getStepFromBandInfo(bandInfo)));
                 LOGGER.info("res band: " + String.valueOf(res));
                 LOGGER.info("step: " + String.valueOf(step));
                 LOGGER.info("epsg: " + epsg);
@@ -284,29 +284,18 @@ public class Sen2VM
                         String invOutputDir = configFile.getInverseLocOutputFolder() ;
                         String nameSensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
 
-                        // Test
-                        // int pixel = 0;
-                        // LOGGER.info("first pixels to direct loc="+sensorGridForDictorLoc[pixel][0]+" "+sensorGridForDictorLoc[pixel][1]);
-                        // LOGGER.info("direct loc grounds="+directLocGrid[pixel][0]+" "+directLocGrid[pixel][1]+" "+directLocGrid[pixel][2]);
-                        // double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  directLocGrid, "EPSG:4326");
-                        // LOGGER.info("inverse loc ="+inverseLocGrid[pixel][0]+" "+inverseLocGrid[pixel][1]);
-
                         // Start
-                        step = 1000.0f;
+                        step = step * 100 ; // TODO
 
                         InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], epsg, step);
                         double[][] groundGrid = invGrid.get2DgridLatLon();
-                        System.out.println(Arrays.deepToString(groundGrid));
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
                         double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid) ;
-                        System.out.println(Arrays.deepToString(inverseLocGrid));
 
                         String invFileName = ds.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, configFile.getInverseLocOutputFolder());
-                        System.out.println(invFileName);
-
                         outputFileManager.createGeoTiff(invFileName, bb[0], bb[1], invGrid.getStepX(), invGrid.getStepY(), grid3D, epsg, "", 0.0f, 0.0f) ;
-                        // System.out.println(Arrays.deepToString(groundGrid));
+
                     } else {
                         LOGGER.info("Operation " + configFile.getOperation() + " does not exist.");
                     }

@@ -48,6 +48,7 @@ public class InverseLocGrid {
         this.lr.transform();
         stepY = step;
         stepX = step;
+
         if (ul_y > lr_y) {
             stepY = -step;
         }
@@ -55,16 +56,16 @@ public class InverseLocGrid {
             stepX = -step;
         }
 
-        String log = "# Grid information \n";
-        log = log + "Step: (" + String.valueOf(this.stepX) + ", " + String.valueOf(this.stepY) + ") ; ";
+        LOGGER.info("# Grid information");
+        String log = "Step: (" + String.valueOf(this.stepX) + ", " + String.valueOf(this.stepY) + ") ; ";
         log = log + "UL: (" + String.valueOf(this.ul.getX()) + ", " + String.valueOf(this.ul.getY()) + ") ";
         log = log + "(" + String.valueOf(this.ul.getLongitude()) + ", " + String.valueOf(this.ul.getLatitude()) + ") ; ";
         log = log + "LR: (" + String.valueOf(this.lr.getX()) + ", " + String.valueOf(this.lr.getY()) + ") ";
         log = log + "(" + String.valueOf(this.ul.getLongitude()) + ", " + String.valueOf(this.ul.getLatitude()) + ")";
         LOGGER.info(log);
 
-        this.gridY = grid_1D(this.ul.getY(), this.lr.getY() - this.ul.getY(), stepY) ;
-        this.gridX = grid_1D(this.ul.getX(), this.lr.getX() - this.ul.getX(), stepX) ;
+        this.gridY = grid_1D(ul_y, lr_y - ul_y, stepY) ;
+        this.gridX = grid_1D(ul_x, lr_x - ul_x, stepX) ;
         // LOGGER.info("Grid Pixel: " + this.gridX);
         // LOGGER.info("Grid Line: " + this.gridY);
     }
@@ -77,9 +78,8 @@ public class InverseLocGrid {
      * @return list 1D
      */
     private ArrayList<Float> grid_1D(Float start, Float size, Float signedStep) {
-
         ArrayList<Float> grid = new ArrayList<Float>();
-        int nb = (int) Math.ceil(size / signedStep) + 1 ;
+        int nb = (int) Math.ceil(Math.abs(size / signedStep)) + 1 ;
         for (int i = 0 ; i < nb ; i++) {
             grid.add(start + signedStep * i);
         }
@@ -100,7 +100,7 @@ public class InverseLocGrid {
 
         for (int l = 0 ; l < nbLines ; l ++){
             for (int c = 0 ; c < nbCols ; c ++){
-                Coordinates coord = new Coordinates(this.gridX.get(l), this.gridX.get(c), this.epsg);
+                Coordinates coord = new Coordinates(this.gridY.get(l), this.gridX.get(c), this.epsg);
                 coord.transform();
                 grid[l*nbCols + c][0] = coord.getLongitude();
                 grid[l*nbCols + c][1] = coord.getLatitude();
@@ -131,6 +131,7 @@ public class InverseLocGrid {
         }
         return grid;
     }
+
 
     public Float getStepX() {
         return this.stepX;
