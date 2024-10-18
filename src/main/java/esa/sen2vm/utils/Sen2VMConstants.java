@@ -81,5 +81,4 @@ public class Sen2VMConstants {
     public static final double BAND_PIXEL_SIZE = RESOLUTION_10M_DOUBLE;
     public static final double MARGIN = GRANULE_NB_LINE_60_M * RESOLUTION_10M_DOUBLE / BAND_PIXEL_SIZE;
 
-    public static final String OREKIT_DATA_DIR = "src/main/resources/orekit-data";
 }
