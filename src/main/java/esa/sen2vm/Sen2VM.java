@@ -87,22 +87,9 @@ public class Sen2VM
             return;
         }
 
-        // Set sen2VM logger
         try {
             InputStream logProperties = Thread.currentThread().getContextClassLoader().getResourceAsStream("log.properties");
             LogManager.getLogManager().readConfiguration(logProperties);
-
-            // Create a custom FileHandler with date and time in the filename
-            String pattern = "/tmp/sen2VM-%s.log";
-            String dateTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String fileName = String.format(pattern, dateTime);
-
-            FileHandler fileHandler = new FileHandler(fileName, true);
-            fileHandler.setLevel(Level.SEVERE);
-            fileHandler.setFormatter(new SimpleFormatter());
-
-            // Add the custom FileHandler to the root logger
-            Logger.getLogger("").addHandler(fileHandler);
 
             // Run core
             String configFilepath = cmd.getOptionValue("config");
