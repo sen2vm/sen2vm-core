@@ -1,4 +1,4 @@
-package esa.sen2vm.input;
+package esa.sen2vm.input.datastrip;
 
 import org.apache.commons.cli.*;
 import java.util.ArrayList;
@@ -66,6 +66,7 @@ public class Datastrip {
         File[] list_img = directory.listFiles();
         for (int i = 0; i < list_img.length; i++) {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
+            LOGGER.info(list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf("."))); // TODO: replace by a DEBUG log
             String bandName = name[name.length-1];
             int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
             String detectorName = name[name.length-2].substring(1);

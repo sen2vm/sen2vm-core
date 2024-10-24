@@ -18,8 +18,6 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-
-
 import org.orekit.rugged.linesensor.LineDatation;
 
 import org.sxgeo.engine.SimpleLocEngine;
@@ -32,23 +30,24 @@ import org.sxgeo.input.dem.DemFileManager;
 import org.sxgeo.input.dem.SrtmFileManager;
 import org.sxgeo.input.dem.GeoidManager;
 import org.sxgeo.rugged.RuggedManager;
+import org.sxgeo.exception.SXGeoException;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.ConfigurationFile;
 import esa.sen2vm.input.ParamFile;
 import esa.sen2vm.input.datastrip.DataStripManager;
+import esa.sen2vm.input.datastrip.Datastrip;
 import esa.sen2vm.input.granule.GranuleManager;
+import esa.sen2vm.input.granule.Granule;
 import esa.sen2vm.input.gipp.GIPPManager;
 import esa.sen2vm.input.SafeManager;
-import esa.sen2vm.input.Granule;
-import esa.sen2vm.input.Datastrip;
-import esa.sen2vm.input.OutputFileManager;
-import esa.sen2vm.input.DirectLocGrid;
+import esa.sen2vm.output.OutputFileManager;
 import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.DirectLocGrid;
+import esa.sen2vm.utils.InverseLocGrid;
 import esa.sen2vm.utils.Sen2VMConstants;
 
-import org.sxgeo.exception.SXGeoException;
 
 /**
  * Main class
@@ -134,8 +133,8 @@ public class Sen2VM
                     bands = paramsFile.getBandsList();
                 }
             }
-            LOGGER.info("detectors = "+detectors);
-            LOGGER.info("bands = "+bands);
+            LOGGER.info("Detectors list: " + detectors);
+            LOGGER.info("Bands list: " + bands);
 
             // Read datastrip
             DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
@@ -212,27 +211,35 @@ public class Sen2VM
             Float georefConventionOffset = 0.5f;
 
             OutputFileManager outputFileManager = new OutputFileManager();
-            LOGGER.info("bands = " + bands);
 
+            String epsg = configFile.getReferential();
+            if (configFile.getOperation().equals(Sen2VMConstants.INVERSE)) {
+              LOGGER.info("EGSG read from configuration file (for inverse location): " + epsg);
+            }
+
+            LOGGER.info("");
+            LOGGER.info("Starting grids generation");
             for (BandInfo bandInfo: bands) {
-                LOGGER.info("### BAND " + bandInfo.getName() );
-                float res = (float) bandInfo.getPixelHeight() ;
-                Float step = configFile.getStepFromBandInfo(bandInfo) / res ;
-                String epsg = configFile.getReferential() ;
+                LOGGER.info("");
+                LOGGER.info("");
+                LOGGER.info("###############");
+                LOGGER.info("### BAND " + bandInfo.getName() + " ###");
+                LOGGER.info("###############");
+                float res = (float) bandInfo.getPixelHeight();
+                float step = configFile.getStepFromBandInfo(bandInfo);
 
-                LOGGER.info("res grid: " + String.valueOf(configFile.getStepFromBandInfo(bandInfo)));
-                LOGGER.info("res band: " + String.valueOf(res));
-                LOGGER.info("step: " + String.valueOf(step));
-                LOGGER.info("epsg: " + epsg);
+                LOGGER.info("Grid resolution: " + String.valueOf(configFile.getStepFromBandInfo(bandInfo)));
+                LOGGER.info("Band resolution: " + String.valueOf(res));
 
                 for (DetectorInfo detectorInfo: detectors) {
-                    LOGGER.info("### DET " + detectorInfo.getName() );
+                    LOGGER.info("");
+                    LOGGER.info("### DET " + detectorInfo.getName() + "(BAND " + bandInfo.getName() + ") ###");
 
                     if (configFile.getOperation().equals(Sen2VMConstants.DIRECT)) {
 
                         int[] BBox = sm.getFullSize(dataStripManager, bandInfo, detectorInfo);
-                        int startLine = BBox[0] ;
-                        int startPixel = BBox[1] ;
+                        int startLine = BBox[0];
+                        int startPixel = BBox[1];
                         int sizeLine = BBox[2];
                         int sizePixel = BBox[3];
 

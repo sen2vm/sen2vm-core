@@ -1,4 +1,4 @@
-package esa.sen2vm.input;
+package esa.sen2vm.output;
 
 import java.util.ArrayList;
 

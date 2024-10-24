@@ -1,4 +1,4 @@
-package esa.sen2vm.input;
+package esa.sen2vm.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

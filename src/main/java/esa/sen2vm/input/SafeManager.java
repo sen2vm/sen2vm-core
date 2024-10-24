@@ -15,6 +15,8 @@ import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
 import esa.sen2vm.input.datastrip.DataStripManager;
+import esa.sen2vm.input.datastrip.Datastrip;
+import esa.sen2vm.input.granule.Granule;
 
 public class SafeManager {
 

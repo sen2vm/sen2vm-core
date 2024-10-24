@@ -1,4 +1,4 @@
-package esa.sen2vm.input;
+package esa.sen2vm.output;
 
 
 import java.util.ArrayList;
@@ -58,10 +58,10 @@ public class OutputFileManager
      public void createGeoTiff(String fileName, Float startPixel, Float startLine,
             Float stepX, Float stepY, double[][][] bandVal, String epsg, String epsgData, Float lineOffset, Float pixelOffset) {
 
-        int nbBand = bandVal.length ;
+        int nbBand = bandVal.length;
         double[][] band1val = bandVal[0];
-        int nbPixels = band1val[0].length ;
-        int nbLines = band1val.length ;
+        int nbPixels = band1val[0].length;
+        int nbLines = band1val.length;
 
         driver = gdal.GetDriverByName("GTiff");
         driver.Register();
@@ -72,7 +72,7 @@ public class OutputFileManager
         fileInfo.setDs(ds);
 
         // Add metadata
-        ds.SetMetadataItem("X_BAND", "1") ;
+        ds.SetMetadataItem("X_BAND", "1");
         ds.SetMetadataItem("Y_BAND", "2");
         if (nbBand == 3) {
             ds.SetMetadataItem("Z_BAND", "3");
@@ -83,21 +83,21 @@ public class OutputFileManager
         ds.SetMetadataItem("LINE_STEP", String.valueOf(stepY));
         ds.SetMetadataItem("SRS", epsgData);
         ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "TOP_LEFT_CORNER");
-        // ds.SetDescription("Direct Location Grid") ;
+        // ds.SetDescription("Direct Location Grid");
 
         Vector<Band> bands = new Vector<Band>();
-        for (int b = 0; b < nbBand; b++){
+        for (int b = 0; b < nbBand; b++) {
             Band band = ds.GetRasterBand(b+1);
             fileInfo.setXBand(band);
             band.SetNoDataValue(noDataRasterValue);
             bands.add(band);
         }
 
-        double[] gtInfo = getGeoTransformInfo(startPixel, stepX, startLine, stepY) ;
+        double[] gtInfo = getGeoTransformInfo(startPixel, stepX, startLine, stepY);
         ds.SetGeoTransform(gtInfo);
         ds.SetProjection(epsg);
 
-        for (int b = 0; b < nbBand; b++){
+        for (int b = 0; b < nbBand; b++) {
             for (int i = 0; i < nbLines; i++) {
                 double[] band_online = new double[nbPixels];
                 for (int j = 0; j < nbPixels; j++) {
@@ -110,12 +110,12 @@ public class OutputFileManager
 
         ds.FlushCache();
 
-        for (int b = 0; b < nbBand; b++){
+        for (int b = 0; b < nbBand; b++) {
             bands.get(b).delete();
         }
         ds.delete();
 
-        LOGGER.info("Tiff saved in: " + fileName);
+        LOGGER.info("Granule grid saved in: " + fileName);
     }
 
 
@@ -182,7 +182,7 @@ public class OutputFileManager
         for(int g = 0 ; g < inputTIFs.size(); g++ ) {
             Dataset ds = gdal.Open(inputTIFs.get(g), 0);
             double[] transform = ds.GetGeoTransform();
-            double[] gtInfo = getGeoTransformInfo((float) transform[0], (float) transform[1], (float) -transform[3], (float)  -transform[5]) ;
+            double[] gtInfo = getGeoTransformInfo((float) transform[0], (float) transform[1], (float) -transform[3], (float)  -transform[5]);
             ds.SetGeoTransform(gtInfo);
             ds.FlushCache();
             ds.delete();
@@ -201,8 +201,7 @@ public class OutputFileManager
 
         // File reader
         File file = new File(vrtFilePath_tmp);
-        FileReader fr = new FileReader(file);
-        BufferedReader br = new BufferedReader(fr);
+        BufferedReader br = new BufferedReader(new FileReader(file));
         String s = br.readLine();
 
         // File writer
@@ -216,13 +215,13 @@ public class OutputFileManager
             // change the reference  of the path if SourceFilename
             if (s.contains("SourceFilename")) {
                 int origin = s.lastIndexOf("GRANULE");
-                s = "      <SourceFilename relativeToVRT=\"0\">./" + s.substring(origin) ;
+                s = "      <SourceFilename relativeToVRT=\"1\">../../../" + s.substring(origin);
             }
             if (s.contains("GeoTransform")) {
                 String[] parts = s.split(",");
                 float originYf = - Float.parseFloat(parts[3]);
                 float stepYf = - Float.parseFloat(parts[5].split("<")[0]);
-                s = parts[0] + "," + parts[1] + "," + parts[2] ;
+                s = parts[0] + "," + parts[1] + "," + parts[2];
                 s = s + "," + String.valueOf(originYf) + "," + parts[4] + "," + stepYf + " </GeoTransform>";
             }
             bw.write(s);
@@ -231,6 +230,8 @@ public class OutputFileManager
         }
         bw.flush();
         bw.close();
+        br.close();
+        file.delete();
 
         LOGGER.info("VRT saved in: " + vrtFilePath);
     }

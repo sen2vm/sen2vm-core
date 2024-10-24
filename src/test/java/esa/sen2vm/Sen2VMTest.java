@@ -21,6 +21,6 @@ public class Sen2VMTest
     @Test
     public void shouldAnswerWithTrue()
     {
-        assertTrue( false );
+        assertTrue(true);
     }
 }

@@ -1,4 +1,4 @@
-package esa.sen2vm.input;
+package esa.sen2vm.input.granule;
 
 import org.apache.commons.cli.*;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.Arrays;
 
-import esa.sen2vm.input.granule.GranuleManager;
+import esa.sen2vm.input.SafeManager;
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
