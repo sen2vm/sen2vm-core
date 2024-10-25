@@ -32,6 +32,7 @@ import org.sxgeo.rugged.RuggedManager;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.ConfigurationFile;
+import esa.sen2vm.input.OptionManager;
 import esa.sen2vm.input.ParamFile;
 import esa.sen2vm.input.datastrip.DataStripManager;
 import esa.sen2vm.input.gipp.GIPPManager;
@@ -63,58 +64,42 @@ public class Sen2VM
      */
     public static void main( String[] args ) throws Sen2VMException
     {
-        Options options = new Options();
 
-        Option configOption = new Option("c", "config", true, "Mandatory. Path to the configuration file (in JSON format) regrouping all inputs");
-        configOption.setRequired(true);
-        options.addOption(configOption);
-
-        Option paramOption = new Option("p", "param", true, "Optional. Path to parameter file (in JSON format) regrouping all parallelization specificities. All processed if not provided");
-        paramOption.setRequired(false);
-        options.addOption(paramOption);
-
-        CommandLineParser parser = new DefaultParser();
-        HelpFormatter formatter = new HelpFormatter();
-        CommandLine cmd;
+        // Read the command line arguments
+        // ===============================
+        CommandLine commandLine = OptionManager.readCommandLineArguments(args);
 
         try {
-            cmd = parser.parse(options, args);
-        } catch (ParseException e) {
-            System.out.println(e.getMessage());
-            formatter.printHelp("Sen2VM", options);
-
-            System.exit(1);
-            return;
-        }
-
-        try {
+        	// Get the logger configuration
             InputStream logProperties = Thread.currentThread().getContextClassLoader().getResourceAsStream("log.properties");
             LogManager.getLogManager().readConfiguration(logProperties);
 
-            // Run core
-            String configFilepath = cmd.getOptionValue("config");
-            String sensorManagerFile = cmd.getOptionValue("param");
+            // Get the configuration and parameter files
+            String configFilepath = commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT);
+            String sensorManagerFile = commandLine.getOptionValue(OptionManager.OPT_PARAM_SHORT);
 
+            // Run core
             LOGGER.info("Start Sen2VM");
 
             // Read configuration file
             ConfigurationFile configFile = new ConfigurationFile(configFilepath);
 
-            // Read parameter file
+            // Read parameter file (optionnal)
             ParamFile paramsFile = null;
             List<DetectorInfo> detectors = DetectorInfo.getAllDetectorInfo();
             List<BandInfo> bands = BandInfo.getAllBandInfo();
             if (sensorManagerFile != null) {
-                paramsFile = new ParamFile(sensorManagerFile);
-                if(paramsFile.getDetectorsList().size() > 0) {
-                    detectors = paramsFile.getDetectorsList();
-                }
-                if(paramsFile.getBandsList().size() > 0) {
-                    bands = paramsFile.getBandsList();
-                }
+            	paramsFile = new ParamFile(sensorManagerFile);
+            	if(paramsFile.getDetectorsList().size() > 0) {
+            		detectors = paramsFile.getDetectorsList();
+            	}
+            	if(paramsFile.getBandsList().size() > 0) {
+            		bands = paramsFile.getBandsList();
+            	}
             }
-            LOGGER.info("detectors = "+detectors);
-            LOGGER.info("bands = "+bands);
+            LOGGER.info("detectors = " + detectors);
+            LOGGER.info("bands = " + bands);
+
 
             // Read datastrip
             DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getOrekitData(),
@@ -123,22 +108,24 @@ public class Sen2VM
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
 
+            
+            
             // Initialize SimpleLocEngine
-
+            // ==========================
             // Init demManager
+            // ---------------
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
+            
             SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
-            if(!demFileManager.findRasterFile()) {
+            if (!demFileManager.findRasterFile()) {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
             GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
-            DemManager demManager = new DemManager(
-                demFileManager,
-                geoidManager,
-                isOverlappingTiles);
+            DemManager demManager = new DemManager(demFileManager, geoidManager, isOverlappingTiles);
 
-            // Build sensor list
-
+            
+            // Build sensors list
+            // ------------------
             // Save sensors for each focal plane
             List<Sensor> sensorList = new ArrayList<Sensor>();
             for (DetectorInfo detectorInfo: detectors) {
@@ -162,8 +149,10 @@ public class Sen2VM
                     sensorList.add(sensor);
                 }
             }
+            
 
             // Init rugged instance
+            // --------------------
             RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
                 demManager,
                 dataStripManager.getDataSensingInfos(),
@@ -177,14 +166,20 @@ public class Sen2VM
             ruggedManager.setAberrationOfLightCorrection(false);
 
             // Init simpleLocEngine
+            // --------------------
             SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
                 dataStripManager.getDataSensingInfos(),
                 ruggedManager,
                 demManager
             );
 
+            // Compute direct loc
+            // ------------------
             double[][] pixels = {{0., 0.}};
             double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
+            
+            // Print result
+            // ------------
             showPoints(pixels, grounds);
 
             LOGGER.info("End Sen2VM");
