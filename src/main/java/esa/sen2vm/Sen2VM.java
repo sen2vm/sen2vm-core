@@ -8,6 +8,8 @@ import java.lang.Float;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Vector;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -28,18 +30,25 @@ import org.sxgeo.input.dem.DemFileManager;
 import org.sxgeo.input.dem.SrtmFileManager;
 import org.sxgeo.input.dem.GeoidManager;
 import org.sxgeo.rugged.RuggedManager;
+import org.sxgeo.exception.SXGeoException;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.ConfigurationFile;
 import esa.sen2vm.input.SnapDemFileManager;
 import esa.sen2vm.input.ParamFile;
 import esa.sen2vm.input.datastrip.DataStripManager;
+import esa.sen2vm.input.datastrip.Datastrip;
+import esa.sen2vm.input.granule.GranuleManager;
+import esa.sen2vm.input.granule.Granule;
 import esa.sen2vm.input.gipp.GIPPManager;
+import esa.sen2vm.input.SafeManager;
+import esa.sen2vm.output.OutputFileManager;
 import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.DirectLocGrid;
+import esa.sen2vm.utils.InverseLocGrid;
 import esa.sen2vm.utils.Sen2VMConstants;
 
-import org.sxgeo.exception.SXGeoException;
 
 /**
  * Main class
@@ -125,8 +134,8 @@ public class Sen2VM
                     bands = paramsFile.getBandsList();
                 }
             }
-            LOGGER.info("detectors = "+detectors);
-            LOGGER.info("bands = "+bands);
+            LOGGER.info("Detectors list: " + detectors);
+            LOGGER.info("Bands list: " + bands);
 
             // Read datastrip
             DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
@@ -153,7 +162,7 @@ public class Sen2VM
             // Build sensor list
 
             // Save sensors for each focal plane
-            List<Sensor> sensorList = new ArrayList<Sensor>();
+            HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
             for (DetectorInfo detectorInfo: detectors) {
                 for (BandInfo bandInfo: bands) {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
@@ -172,7 +181,7 @@ public class Sen2VM
                         msiToFocalplane,
                         pilotingToMsi
                     );
-                    sensorList.add(sensor);
+                    sensorList.put(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(), sensor);
                 }
             }
 
@@ -182,7 +191,7 @@ public class Sen2VM
                 dataStripManager.getDataSensingInfos(),
                 Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
                 Sen2VMConstants.RESOLUTION_10M_DOUBLE,
-                sensorList,
+                new ArrayList(sensorList.values()),
                 Sen2VMConstants.MARGIN,
                 dataStripManager.getRefiningInfo()
             );
@@ -196,16 +205,119 @@ public class Sen2VM
                 demManager
             );
 
-            double[][] pixels = {{0., 0.}};
-            double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
-            showPoints(pixels, grounds);
+            // Safe Manager
+            SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
+            Datastrip ds = sm.getDatastrip() ;
+            //ds.checkNoVRT(detectors, bands) ;
 
-            LOGGER.info("End Sen2VM");
+            // GIPP
+            Float georefConventionOffset = 0.5f;
+
+            OutputFileManager outputFileManager = new OutputFileManager();
+
+            String epsg = configFile.getReferential();
+            if (configFile.getOperation().equals(Sen2VMConstants.INVERSE)) {
+              LOGGER.info("EGSG read from configuration file (for inverse location): " + epsg);
+            }
+
+            LOGGER.info("");
+            LOGGER.info("Starting grids generation");
+            for (BandInfo bandInfo: bands) {
+                LOGGER.info("");
+                LOGGER.info("");
+                LOGGER.info("###############");
+                LOGGER.info("### BAND " + bandInfo.getName() + " ###");
+                LOGGER.info("###############");
+                float res = (float) bandInfo.getPixelHeight();
+                float step = configFile.getStepFromBandInfo(bandInfo);
+
+                LOGGER.info("Grid resolution: " + String.valueOf(configFile.getStepFromBandInfo(bandInfo)));
+                LOGGER.info("Band resolution: " + String.valueOf(res));
+
+                for (DetectorInfo detectorInfo: detectors) {
+                    LOGGER.info("");
+                    LOGGER.info("### DET " + detectorInfo.getName() + "(BAND " + bandInfo.getName() + ") ###");
+
+                    if (configFile.getOperation().equals(Sen2VMConstants.DIRECT)) {
+
+                        int[] BBox = sm.getFullSize(dataStripManager, bandInfo, detectorInfo);
+                        int startLine = BBox[0];
+                        int startPixel = BBox[1];
+                        int sizeLine = BBox[2];
+                        int sizePixel = BBox[3];
+
+                        // Load Granule Info
+                        ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detectorInfo, bandInfo);
+                        LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
+
+                        // Get Full Sensor Grid
+                        DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffset, step,
+                                    startPixel, startLine, sizeLine, sizePixel);
+                        double[][] sensorGridForDictorLoc = dirGrid.get2Dgrid(step/2, step/2);
+
+                        // Direct Loc
+                        double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDictorLoc);
+
+                        Vector<String> inputTIFs = new Vector<String>();
+                        float pixelOffset = dirGrid.getPixelOffsetGranule().floatValue();
+                        for(int g = 0 ; g < granulesToCompute.size(); g++ ) {
+                            Granule gr = granulesToCompute.get(g) ;
+                            int startGranule = gr.getFirstLine(res);
+                            int sizeGranule = gr.getSizeLines(res);
+
+                            double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule, configFile.getExportAlt()) ;
+                            float subLineOffset = dirGrid.getLineOffsetGranule(startGranule).floatValue();
+
+                            // Save in TIF
+                            String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
+
+                            // Save with originY = - originY and stepY = -stepY for VRT construction
+                            outputFileManager.createGeoTiff(gridFileName, pixelOffset, -(startGranule + subLineOffset),
+                            step, -step, subDirectLocGrid, "", "EPSG:4326", subLineOffset, pixelOffset) ;
+
+                            // Add TIF to the future VRT
+                            inputTIFs.add(gridFileName) ;
+                        }
+
+                        // Create VRT
+                        float lineOffset = dirGrid.getLineOffsetGranule(0).floatValue();
+                        String vrtFileName = ds.getCorrespondingVRTFileName(detectorInfo, bandInfo);
+                        outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset, pixelOffset, configFile.getExportAlt()) ;
+
+                        // Correction post build VRT
+                        outputFileManager.correctGeoGrid(inputTIFs);
+                        outputFileManager.correctVRT(vrtFileName);
+
+                    } else if (configFile.getOperation().equals(Sen2VMConstants.INVERSE)) {
+
+                        Float[] bb =  configFile.getInverseLocBound() ;
+                        String invOutputDir = configFile.getInverseLocOutputFolder() ;
+                        String nameSensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
+
+                        // Start
+                        step = step * 100 ; // TODO
+
+                        InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], epsg, step);
+                        double[][] groundGrid = invGrid.get2DgridLatLon();
+
+                        double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
+                        double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid) ;
+
+                        String invFileName = ds.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, configFile.getInverseLocOutputFolder());
+                        outputFileManager.createGeoTiff(invFileName, bb[0], bb[1], invGrid.getStepX(), invGrid.getStepY(), grid3D, epsg, "", 0.0f, 0.0f) ;
+
+                    } else {
+                        LOGGER.info("Operation " + configFile.getOperation() + " does not exist.");
+                    }
+                }
+            }
 
         } catch ( IOException exception ) {
             throw new Sen2VMException(exception);
         } catch ( SXGeoException exception ) {
             throw new Sen2VMException(exception);
+        }  catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

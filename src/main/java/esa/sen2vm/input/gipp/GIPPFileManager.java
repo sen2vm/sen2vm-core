@@ -87,6 +87,7 @@ public class GIPPFileManager {
             if (matchedFiles != null) {
                 for (File file: matchedFiles) {
                     String filepathWithoutExtension = getFilepathWithoutExtension(file);
+                    System.out.println(filepathWithoutExtension);
                     String extension = getFileExtension(file);
 
                     // Check for duplicate file names with different extensions
@@ -99,6 +100,8 @@ public class GIPPFileManager {
                     } else {
                         Set<String> extensions = new HashSet<>();
                         extensions.add(extension);
+
+
                         fileMap.put(filepathWithoutExtension, extensions);
                     }
                 }
