@@ -34,7 +34,7 @@ import org.sxgeo.exception.SXGeoException;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.ConfigurationFile;
-import esa.sen2vm.input.SnapDemFileManager;
+import esa.sen2vm.input.GenericDemFileManager;
 import esa.sen2vm.input.ParamFile;
 import esa.sen2vm.input.datastrip.DataStripManager;
 import esa.sen2vm.input.datastrip.Datastrip;
@@ -148,8 +148,8 @@ public class Sen2VM
             // Init demManager
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
             SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
-//            SnapDemFileManager snapDemFileManager = new SnapDemFileManager(configFile.getDem());
-//            snapDemFileManager.buildMap(configFile.getDem());
+//            GenericDemFileManager demFileManager = new GenericDemFileManager(configFile.getDem());
+//            demFileManager.buildMap(configFile.getDem());
             if(!demFileManager.findRasterFile()) {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
@@ -236,7 +236,7 @@ public class Sen2VM
 
                 for (DetectorInfo detectorInfo: detectors) {
                     LOGGER.info("");
-                    LOGGER.info("### DET " + detectorInfo.getName() + "(BAND " + bandInfo.getName() + ") ###");
+                    LOGGER.info("### DET " + detectorInfo.getName() + " (BAND " + bandInfo.getName() + ") ###");
 
                     if (configFile.getOperation().equals(Sen2VMConstants.DIRECT)) {
 

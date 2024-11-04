@@ -22,7 +22,7 @@ import org.sxgeo.properties.SXGeoResourceBundle;
 
 import esa.sen2vm.exception.Sen2VMException;
 
-public class SnapDemFileManager extends DemFileManager {
+public class GenericDemFileManager extends DemFileManager {
 
     // Map dem filepath with a string that represents longitude/latitude
     // Example: with a SRTM tile on Madeira island located at longitude -16 and latitude 30
@@ -33,7 +33,7 @@ public class SnapDemFileManager extends DemFileManager {
     /**
      * {@inheritDoc}
      */
-    public SnapDemFileManager(String demRootDir) {
+    public GenericDemFileManager(String demRootDir) {
         super(demRootDir);
     }
 
