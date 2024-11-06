@@ -3,52 +3,74 @@ package esa.sen2vm.enums;
 import java.util.ArrayList;
 import java.util.List;
 
+import esa.sen2vm.utils.Sen2VMConstants;
 
 /**
  * Information on band
- * @author Guylaine Prat
  */
 public enum BandInfo {
-    BAND_1("1"),
-    BAND_2("2"),
-    BAND_3("3"),
-    BAND_4("4"),
-    BAND_5("5"),
-    BAND_6("6"),
-    BAND_7("7"),
-    BAND_8("8"),
-    BAND_8A("8A"),
-    BAND_9("9"),
-    BAND_10("10"),
-    BAND_11("11"),
-    BAND_12("12");
+    BAND_1("1", 0, Sen2VMConstants.RESOLUTION_60M),
+    BAND_2("2", 1, Sen2VMConstants.RESOLUTION_10M),
+    BAND_3("3", 2, Sen2VMConstants.RESOLUTION_10M),
+    BAND_4("4", 3, Sen2VMConstants.RESOLUTION_10M),
+    BAND_5("5", 4, Sen2VMConstants.RESOLUTION_20M),
+    BAND_6("6", 5, Sen2VMConstants.RESOLUTION_20M),
+    BAND_7("7", 6, Sen2VMConstants.RESOLUTION_20M),
+    BAND_8("8", 7, Sen2VMConstants.RESOLUTION_10M),
+    BAND_8A("8A", 8, Sen2VMConstants.RESOLUTION_20M),
+    BAND_9("9", 9, Sen2VMConstants.RESOLUTION_60M),
+    BAND_10("10", 10, Sen2VMConstants.RESOLUTION_60M),
+    BAND_11("11", 11, Sen2VMConstants.RESOLUTION_20M),
+    BAND_12("12", 12, Sen2VMConstants.RESOLUTION_20M);
 
     /**
      * Band name
      */
-    private String name = null;
+    protected String name = null;
 
     /**
      * Band index
      */
-    private int index = 0;
+    protected int index = 0;
 
+    /**
+     * Band pixel height
+     */
+    protected double pixelHeight = 0;
 
     /**
      * Private constructor
-     * @param name band name
+     * @param name band name, e.g. "1", "8", "8A", ... "12"
+     * @param index a numerical identifier to index all band (from 0 to 12)
+     * @param pixelHeight band pixel size in meter)
      */
-    private BandInfo(String name) {
+    private BandInfo(String name, int index, double pixelHeight) {
         this.name = name;
+        this.index = index;
+        this.pixelHeight = pixelHeight;
     }
 
     /**
-     * Get BandInfo from band name with B (value from "B01",.., "B08", "B8A", ..., "B12") 
-     * @param bandName band name
+     * Get BandInfo from band name
+     * @param bandName band name in the shape of a string, e.g."1", "8", "8A", "12"
+     * @return the band having the given name. Null if not found
+     */
+    public static BandInfo getBandInfoFromName(String bandName) {
+        for (BandInfo band: BandInfo.values()) {
+            if (band.name.equals(bandName)) {
+                return band;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get BandInfo from band name
+     * @param bandName band name in the shape of a string, e.g."B01", "B08", "B8A", "B12"
      * @return the band having the given name. Null if not found
      */
     public static BandInfo getBandInfoFromNameWithB(String bandName) {
-        for (BandInfo band : BandInfo.values()) {
+        for (BandInfo band: BandInfo.values()) {
             String name = "B" + band.getName2Digit();
             if (name.equals(bandName)) {
                 return band;
@@ -65,8 +87,7 @@ public enum BandInfo {
     public static BandInfo getBandInfoFromIndex(int bandIndex) {
         int nbBand = BandInfo.values().length;
         if (bandIndex < 0 || bandIndex >= nbBand) {
-//           LOGGER.error("Invalid band index " + bandIndex + ". Available range from 0 to " + nbBand);
-           return null;
+            return null;
         }
         return BandInfo.values()[bandIndex];
     }
@@ -86,7 +107,14 @@ public enum BandInfo {
     }
 
     /**
-     * @return the name
+     * @return the band name with following format: "B01", "B08", "B8A", "B10"...
+     */
+    public String getNameWithB() {
+        return "B" + getName2Digit();
+    }
+
+    /**
+     * @return the band name with following format: "01", "08", "8A", "10"...
      */
     public String getName2Digit() {
         if (name.length() == 1) {
@@ -96,12 +124,38 @@ public enum BandInfo {
     }
 
     /**
+     * @return the pixel height
+     */
+    public double getPixelHeight() {
+        return pixelHeight;
+    }
+
+    /**
+     * Return VNIR or SWIR depending on the band
+     * @return VNIR or SWIR depending on the band
+     */
+    public String getSpaMod() {
+        String returned = "VNIR";
+        switch (this) {
+        case BAND_10:
+        case BAND_11:
+        case BAND_12:
+            returned = "SWIR";
+            break;
+
+        default:
+            break;
+        }
+        return returned;
+    }
+
+    /**
      * Get a List of all BandInfo
      * @return
      */
     public static List<BandInfo> getAllBandInfo() {
         List<BandInfo> bandInfoList = new ArrayList<>();
-        for (BandInfo bandInfo : BandInfo.values()) {
+        for (BandInfo bandInfo: BandInfo.values()) {
             bandInfoList.add(bandInfo);
         }
         return bandInfoList;

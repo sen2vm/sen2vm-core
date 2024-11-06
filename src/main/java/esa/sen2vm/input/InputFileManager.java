@@ -13,11 +13,10 @@ import esa.sen2vm.exception.Sen2VMException;
 public class InputFileManager
 {
     /**
-     * Check that filepath respect a certain json schema
-     *
-     * @param filepath path to the input json file to check
-     * @param schemaStream input stream containing the json schema to respect (not null at this stage)
-     * @return true if the input file contains the required fields given by the json schema
+     * Check that file path respect a certain JSON schema
+     * @param filepath path to the input JSON file to check
+     * @param schemaStream input stream containing the JSON schema to respect (not null at this stage)
+     * @return true if the input file contains the required fields given by the JSON schema
      *         and false if it doesn't
      * @throws Sen2VMException
      */
@@ -35,6 +34,7 @@ public class InputFileManager
 
             correct_schema = true;
         } catch (Exception e) {
+        	// TODO give an explicit message for operation for instance (only direct or inverse possible)
             throw new Sen2VMException("Validation schema has failed for: " + filepath, e);
         }
         return correct_schema;

@@ -16,19 +16,17 @@ import generated.GS2_SPACECRAFT_MODEL_PARAMETERS.DATA.FOCAL_PLANE_TO_DETECTOR.FO
 import generated.GS2_SPACECRAFT_MODEL_PARAMETERS.DATA.MSI_TO_FOCAL_PLANE;
 
 import _int.esa.gs2.sy._1_0.misc.A_ROTATION_AROUND_THREE_AXIS_AND_SCALE;
+import esa.sen2vm.enums.BandInfo;
+import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.utils.BandInfo;
-import esa.sen2vm.utils.DetectorInfo;
 
 /**
  * Class used to manage SPAMOD GIPP data
  */
 public class SpaModManager {
 
-    /*
-     * Get sen2VM logger
-     */
     private static final Logger LOGGER = Logger.getLogger(GIPPManager.class.getName());
+    
     protected SpaceCraftModelTransformation pilotingToMsiTransformation = null;
     protected HashMap<String, SpaceCraftModelTransformation> msiToFocalPlaneTransformation = new HashMap<String, SpaceCraftModelTransformation>();
     protected HashMap<String, HashMap<DetectorInfo, SpaceCraftModelTransformation>> focalPlaneToDetectorTransformation = new HashMap<String, HashMap<DetectorInfo, SpaceCraftModelTransformation>> ();

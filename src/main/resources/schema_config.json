@@ -11,7 +11,7 @@
         },
         "gipp_version_check": {
             "type": "boolean",
-             "description": "(optionnal)"
+             "description": "(optional) Check of GIPP version"
         },
         "dem": {
             "type": "string",
@@ -21,13 +21,9 @@
             "type": "string",
             "description": "Path to GEOID folder"
         },
-        "orekit_data": {
-            "type": "string",
-            "description": "Path to Orekit data folder"
-        },
         "iers": {
             "type": "string",
-            "description": "Path to IERS file (optionnal)"
+            "description": "(optional) Path to IERS file"
         },
         "pod": {
             "type": "string",
@@ -39,9 +35,13 @@
             "enum": ["direct", "inverse"]
         },
         "deactivate_available_refining": {
-            "type": "boolean",
-            "description": "(optionnal)"
-        },
+             "type": "boolean",
+             "description": "(optional) Deactivate the refining"
+         },
+        "export_alt": {
+              "type": "boolean",
+              "description": "(optional) Export altitude in direct location grid"
+          },
         "steps": {
             "type": "object",
             "properties": {

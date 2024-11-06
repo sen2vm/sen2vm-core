@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.Map;
-import java.util.Set;
+import java.util.logging.Logger;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -34,40 +34,32 @@ import org.orekit.utils.IERSConventions;
 import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.TimeStampedAngularCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
+import org.sxgeo.exception.SXGeoException;
 import org.sxgeo.input.datamodels.DataSensingInfos;
 import org.sxgeo.input.datamodels.RefiningInfo;
 import org.sxgeo.input.datamodels.sensor.Sensor;
-import org.sxgeo.exception.SXGeoException;
 
 import esa.sen2vm.Sen2VM;
+import esa.sen2vm.enums.BandInfo;
+import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.utils.BandInfo;
-import esa.sen2vm.utils.DetectorInfo;
-import esa.sen2vm.utils.Utils;
+import esa.sen2vm.utils.IERSutils;
 import esa.sen2vm.utils.Sen2VMConstants;
-
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_AUXILIARY_DATA_INFO_DSL1B;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN.UT1_UTC;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN.GPS_TIME_TAI;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST.GIPP_FILENAME;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_ATTITUDE_DATA_INV.Corrected_Attitudes.Values;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_AUXILIARY_DATA_INFO_DSL1B;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_EPHEMERIS_DATA_INV.GPS_Points_List.GPS_Point;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL0;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL1A;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL1B;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_ACQUISITION_CONFIGURATION.TDI_Configuration_List.TDI_CONFIGURATION;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GENERAL_INFO_DS;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_QUICKLOOK_DESCRIPTOR;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST.GIPP_FILENAME;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_SENSOR_CONFIGURATION;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_SENSOR_CONFIGURATION.Time_Stamp;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_TIME_STAMP;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_TIME_STAMP.Band_Time_Stamp.Detector;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_DOUBLE_WITH_ARCSEC_UNIT_ATTR;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_DOUBLE_WITH_S_UNIT_ATTR;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.AN_UNCERTAINTIES_XYZ_TYPE;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_DOUBLE_WITH_ARCSEC_UNIT_ATTR;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_POLYNOMIAL_MODEL;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_ROTATION_TRANSLATION_HOMOTHETY_UNCERTAINTIES_TYPE_LOWER_CASE;
 import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_datastrip_metadata.Level1B_DataStrip;
@@ -161,30 +153,28 @@ public class DataStripManager {
     /**
      * Constructor from SAD XML file and necessary data files
      * @param dsFilePath path to SAD XML file
-     * @param orekitDataPath path to Orekit data directory
      * @param iersFilePath path to the IERS file
      * @param activateAvailableRefining if true use refining parameters present in the datastrip,
      *        else will ignore available refining
      * @throws Sen2VMException
      */
-    public DataStripManager(String dsFilePath, String orekitDataPath, String iersFilePath,
+    public DataStripManager(String dsFilePath, String iersFilePath,
                             Boolean activateAvailableRefining) throws Sen2VMException {
 
         this.dsFile = new File(dsFilePath);
         gps = TimeScalesFactory.getGPS();
-        loadFile(dsFilePath, orekitDataPath, iersFilePath, activateAvailableRefining);
+        loadFile(dsFilePath, iersFilePath, activateAvailableRefining);
     }
 
     /**
      * Load SAD file and necessary data
      * @param dsFilePath path to SAD XML file
-     * @param orekitDataPath path to Orekit data directory
      * @param iersFilePath path to the IERS file
      * @param activateAvailableRefining if true use refining parameters present in the datastrip,
      *        else will ignore available refining
      * @throws Sen2VMException
      */
-    protected void loadFile(String dsFilePath, String orekitDataPath, String iersFilePath,
+    protected void loadFile(String dsFilePath, String iersFilePath,
                             Boolean activateAvailableRefining) throws Sen2VMException {
         try {
             // Load SAD xml file
@@ -199,7 +189,7 @@ public class DataStripManager {
 
             auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
 
-            initOrekitRessources(orekitDataPath,iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
+            initOrekitRessources(Sen2VMConstants.OREKIT_DATA_DIR,iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
 
             // Test if we need to take refining data into account according to the flag
             if (activateAvailableRefining) {
@@ -224,7 +214,7 @@ public class DataStripManager {
             computeSatellitePVList(activateAvailableRefining);
             computeMinMaxLinePerSensor();
 
-            // Instanciate dataSensingInfos that will be used for SimpleLocEngine
+            // Instantiate dataSensingInfos that will be used for SimpleLocEngine
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
 
         } catch (JAXBException e) {
@@ -236,10 +226,6 @@ public class DataStripManager {
         }
     }
 
-    /**
-     * @param iersDirectoryPath path to the IERS directory
-     * @throws Sen2VMException
-     */
     /**
      * Load orekit data and IERS file
      * @param orekitDataPath path to orekit data directory
@@ -269,8 +255,8 @@ public class DataStripManager {
                 int year = datastripStartDateUTC.getComponents(TimeScalesFactory.getUTC()).getDate().getYear();
                 System.out.println("year = "+year);
 
-                Utils.setLoaders(IERSConventions.IERS_2010,
-                                 Utils.buildEOPList(IERSConventions.IERS_2010,
+                IERSutils.setLoaders(IERSConventions.IERS_2010,
+                                 IERSutils.buildEOPList(
                                  getBestFitITRFVersion(year),
                                  datastripStartDateUTC,
                                  ut1tutc.getValue(),
