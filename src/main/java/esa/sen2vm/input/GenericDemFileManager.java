@@ -20,9 +20,20 @@ import org.sxgeo.input.dem.DemFileManager;
 import org.sxgeo.exception.SXGeoException;
 import org.sxgeo.properties.SXGeoResourceBundle;
 
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 import esa.sen2vm.exception.Sen2VMException;
 
 public class GenericDemFileManager extends DemFileManager {
+
+    /**
+     * Get sen2VM logger
+     */
+    private static final Logger LOGGER = Logger.getLogger(GenericDemFileManager.class.getName());
 
     // Map dem filepath with a string that represents longitude/latitude
     // Example: with a SRTM tile on Madeira island located at longitude -16 and latitude 30
@@ -52,7 +63,7 @@ public class GenericDemFileManager extends DemFileManager {
                     String filePath = currentFile.getAbsolutePath();
                     String lonlat = getLonLatFromFile(filePath);
                     if (lonlat != null) {
-                        demFilePathMap.put(getLonLatFromFile(filePath), filePath);
+                        demFilePathMap.put(lonlat, filePath);
                     }
                 }
             }
@@ -67,7 +78,7 @@ public class GenericDemFileManager extends DemFileManager {
      * {@inheritDoc}
      */
     @Override
-    protected boolean findRasterFile(String directory) throws SXGeoException {
+    public boolean findRasterFile(String directory) throws SXGeoException {
         try {
             Path dir = FileSystems.getDefault().getPath(directory);
             DirectoryStream<Path> stream = Files.newDirectoryStream(dir);
@@ -100,42 +111,14 @@ public class GenericDemFileManager extends DemFileManager {
      * {@inheritDoc}
      */
     @Override
-    protected String getRasterFilePath(double latitude, double longitude) {
+    public String getRasterFilePath(double latitude, double longitude) {
         double latFloor = FastMath.floor(FastMath.toDegrees(latitude));
         double lonFloor = FastMath.floor(FastMath.toDegrees(longitude));
-        int lat = (int) latFloor;
-        int lon = (int) lonFloor;
 
-        // IPFSPR-800 : when close to the anti-meridian,
-        // the input longitude is not necessarily within [-180, 180[
-        if (lon >= 180) {
-        	lon -= 360;
-        } else if (lon < -180) {
-        	lon += 360;
-        }
-
-        String str = "";
-        String demDir = null;
-        // Compute file path name :
-        if (lon < 0) {
-            str += "w";
-        } else {
-            str += "e";
-        }
-        str += String.format("%03d", FastMath.abs(lon));
-        demDir = str;
-        if (lat < 0) {
-            str = "s";
-        } else {
-            str = "n";
-        }
-        String filePath = demRootDir + File.separator + demDir + File.separator + str + String.format("%02d", FastMath.abs(lat)) + ".dt1";
-
-        File f = new File(filePath);
-
-        if (!f.exists())
-        {
-		filePath = demRootDir + File.separator + demDir + File.separator + str + String.format("%02d", FastMath.abs(lat)) + ".dt2";
+        String lonlat = (int) lonFloor + "/" + (int) latFloor;
+        String filePath = this.demFilePathMap.get(lonlat);
+        if (filePath == null) {
+	        filePath = "";
         }
         return filePath;
     }
@@ -144,7 +127,7 @@ public class GenericDemFileManager extends DemFileManager {
      * Get footprint information from file
      */
     public String getLonLatFromFile(String filePath) {
-        System.out.println("Read file: "+filePath);
+        //System.out.println("Read file: " + filePath);
         gdal.AllRegister();
 
         Dataset dataset = gdal.Open(filePath, gdalconstConstants.GA_ReadOnly);
@@ -166,16 +149,15 @@ public class GenericDemFileManager extends DemFileManager {
         double maxX = minX + imageWidth * pixelWidth;
         double minY = maxY + imageHeight * pixelHeight;
 
-        System.out.printf("Emprise du fichier :\n");
-        System.out.printf("Min Longitude (X): %f\n", minX);
+        /*System.out.printf("Min Longitude (X): %f - ", minX);
         System.out.printf("Max Longitude (X): %f\n", maxX);
-        System.out.printf("Min Latitude (Y): %f\n", minY);
-        System.out.printf("Max Latitude (Y): %f\n", maxY);
+        System.out.printf("Min Latitude (Y): %f - ", minY);
+        System.out.printf("Max Latitude (Y): %f\n", maxY);*/
 
         dataset.delete();
 
-        String lonlat = (int) minX + "/" + (int) minY;
-        System.out.println("lonlat: "+lonlat);
+        String lonlat = Math.round(minX) + "/" + Math.round(minY);
+        //System.out.println("lonlat: " + lonlat);
 
         return lonlat;
     }
