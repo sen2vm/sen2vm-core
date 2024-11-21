@@ -64,6 +64,11 @@
             <optional>false</optional>
         </dependency>
         <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
 			<groupId>org.hipparchus</groupId>
 			<artifactId>hipparchus-core</artifactId>
 			<version>${sxgeo.hipparchus.version}</version>
@@ -128,6 +133,7 @@
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_spacecraft_model_parameters.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_viewing_directions.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/Datastrip/S2_PDI_Level-1B_Datastrip_Metadata.xsd</source>
+                        <source>${basedir}/src/main/resources/xsd/Datastrip/S2_PDI_Level-1B_Granule_Metadata.xsd</source>
                     </sources>
                     <xjbSources>
                         <xjbSource>${basedir}/src/main/resources/binding/jaxb-bindings.xjb</xjbSource>

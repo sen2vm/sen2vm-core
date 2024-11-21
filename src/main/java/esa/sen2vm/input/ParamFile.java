@@ -22,11 +22,25 @@ import java.util.logging.Logger;
  */
 public class ParamFile extends InputFileManager
 {
+    /**
+     * Get sen2VM logger
+     */
     private static final Logger LOGGER = Logger.getLogger(ParamFile.class.getName());
 
+    /**
+     * File path of param file
+     */
     private String filepath;
+
+    /**
+     * JSONArray of the detectors
+     */
     public JSONArray detectors;
-    public JSONArray bands;
+
+    /**
+     * JSONArray of the bands
+     */
+     public JSONArray bands;
 
     /**
      * Constructor

@@ -2,6 +2,7 @@ package esa.sen2vm.input.datastrip;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -80,7 +81,7 @@ public class DataStripManager {
     /**
      * Get sen2VM logger
      */
-    private static final Logger LOGGER = Logger.getLogger(Sen2VM.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DataStripManager.class.getName());
 
     /**
      * File path of datastrip file
@@ -112,9 +113,15 @@ public class DataStripManager {
     protected List<TimeStampedPVCoordinates> satellitePVList = null;
 
     /**
+     * List of granule positon by Detector in Datatrip (10m)
+     */
+    protected static Map[] positionGranuleByDetector ;
+
+    /**
      * Min granule line found in Datastrip (10m)
      */
     protected Map<String, Double> minLinePerSensor = null;
+
     /**
      * Max granule line found in Datastrip (10m)
      */
@@ -215,7 +222,7 @@ public class DataStripManager {
             // Get quaternions and positions/velocities list from xml file
             computeSatelliteQList();
             computeSatellitePVList(activateAvailableRefining);
-            computeMinMaxLinePerSensor();
+            computePositionGranuleByDetector();
 
             // Instanciate dataSensingInfos that will be use for SimpleLocEngine
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
@@ -228,6 +235,42 @@ public class DataStripManager {
             throw new Sen2VMException(e);
         }
     }
+
+    /**
+     * Load granules name/position from datastrip XML into positionGranuleByDetector list at detector indice
+     */
+    private void computePositionGranuleByDetector() {
+
+        positionGranuleByDetector = new Map[Sen2VMConstants.NB_DETS];
+
+        List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector> det_list = l1B_datastrip.getImage_Data_Info().getGranules_Information().getDetector_List().getDetector() ;
+        for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector det : det_list) {
+            List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule> gr_list = det.getGranule_List().getGranule() ;
+            Map<String, Integer> granulePosition = new HashMap<>();
+
+            for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule gr : gr_list) {
+                granulePosition.put(gr.getGranuleId(), gr.getPOSITION());
+            }
+            positionGranuleByDetector[Integer.valueOf(det.getDetectorId()) - 1] = granulePosition;
+        }
+
+    }
+
+    /**
+     * Return min and max granule for a band/detector combinaison
+     * @param bandInfo band info
+     * @param detectorInfo detector info
+     * return {min granule name, max granule name}
+     * @throws Sen2VMException
+     */
+    public String[] getMinMaxGranule(BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException {
+        Map granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
+        Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+        Map.Entry<String, Integer> max = Collections.max(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+        String[] minmax = { min.getKey(), max.getKey() } ;
+        return minmax ;
+    }
+
 
     /**
      * Load IERS file
@@ -634,21 +677,6 @@ public class DataStripManager {
         // Polynomial model of refining corrections are computed with that the time centered on this value;
         // i.e. this time is 0 for the polynoms
         return new AbsoluteDate(datastripStartDateUTC, halfDatastripDuration);
-    }
-
-    /**
-     * Compute min and max date line
-     */
-    private void computeMinMaxLinePerSensor() {
-        minLinePerSensor = new HashMap<String, Double>();
-        maxLinePerSensor = new HashMap<String, Double>();
-//        for (DetectorInfo detectorInfo: DetectorInfo.getAllDetectorInfo()) {
-//            for (BandInfo bandInfo: BandInfo.getAllBandInfo()) {
-//                String sensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
-//                minLinePerSensor.put(sensor, 1.0);
-//                maxLinePerSensor.put(sensor, 1.0);
-//            }
-//        }
     }
 
     /*

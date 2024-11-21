@@ -99,6 +99,8 @@ public class GIPPFileManager {
                     } else {
                         Set<String> extensions = new HashSet<>();
                         extensions.add(extension);
+
+
                         fileMap.put(filepathWithoutExtension, extensions);
                     }
                 }
