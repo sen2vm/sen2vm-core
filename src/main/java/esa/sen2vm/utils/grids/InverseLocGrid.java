@@ -1,4 +1,5 @@
-package esa.sen2vm.utils;
+package esa.sen2vm.utils.grids;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

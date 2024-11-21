@@ -1,4 +1,4 @@
-package esa.sen2vm.utils;
+package esa.sen2vm.utils.grids;
 
 import org.gdal.gdal.gdal;
 import org.gdal.osr.CoordinateTransformation;

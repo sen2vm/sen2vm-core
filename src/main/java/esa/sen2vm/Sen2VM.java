@@ -1,6 +1,8 @@
 package esa.sen2vm;
 
 import org.apache.commons.cli.*;
+import org.hipparchus.util.FastMath;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,8 +47,8 @@ import esa.sen2vm.input.SafeManager;
 import esa.sen2vm.output.OutputFileManager;
 import esa.sen2vm.utils.BandInfo;
 import esa.sen2vm.utils.DetectorInfo;
-import esa.sen2vm.utils.DirectLocGrid;
-import esa.sen2vm.utils.InverseLocGrid;
+import esa.sen2vm.utils.grids.DirectLocGrid;
+import esa.sen2vm.utils.grids.InverseLocGrid;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 
@@ -73,7 +75,6 @@ public class Sen2VM
     public static void main( String[] args ) throws Sen2VMException
     {
         Options options = new Options();
-
         Option configOption = new Option("c", "config", true, "Mandatory. Path to the configuration file (in JSON format) regrouping all inputs");
         configOption.setRequired(true);
         options.addOption(configOption);
@@ -85,6 +86,8 @@ public class Sen2VM
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd;
+
+
 
         try {
             cmd = parser.parse(options, args);
@@ -147,12 +150,9 @@ public class Sen2VM
 
             // Init demManager
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
-            SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
-//            GenericDemFileManager demFileManager = new GenericDemFileManager(configFile.getDem());
-//            demFileManager.buildMap(configFile.getDem());
-            if(!demFileManager.findRasterFile()) {
-                throw new Sen2VMException("Error when checking for DEM file");
-            }
+            GenericDemFileManager demFileManager = new GenericDemFileManager(configFile.getDem());
+            demFileManager.buildMap(configFile.getDem());
+
             GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
                 demFileManager,
@@ -181,7 +181,7 @@ public class Sen2VM
                         msiToFocalplane,
                         pilotingToMsi
                     );
-                    sensorList.put(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(), sensor);
+                    sensorList.put(sensor.getName(), sensor);
                 }
             }
 
@@ -205,13 +205,20 @@ public class Sen2VM
                 demManager
             );
 
+
+
+            double[][] pixels_ = {{0., 0.}};
+            double[][] grounds_ = simpleLocEngine.computeDirectLoc(sensorList.get("B01/D01"), pixels_);
+            LOGGER.info("pixels = "+pixels_[0][0]+" "+pixels_[0][1]+" grounds = "+grounds_[0][0]+" "+grounds_[0][1]+" "+grounds_[0][2]);
+
             // Safe Manager
             SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
             Datastrip ds = sm.getDatastrip() ;
             //ds.checkNoVRT(detectors, bands) ;
 
             // GIPP
-            Float georefConventionOffset = 0.5f;
+            Float georefConventionOffsetPixel = 0.5f;
+            Float georefConventionOffsetLine = 0.5f;
 
             OutputFileManager outputFileManager = new OutputFileManager();
 
@@ -219,6 +226,8 @@ public class Sen2VM
             if (configFile.getOperation().equals(Sen2VMConstants.INVERSE)) {
               LOGGER.info("EGSG read from configuration file (for inverse location): " + epsg);
             }
+
+
 
             LOGGER.info("");
             LOGGER.info("Starting grids generation");
@@ -233,10 +242,14 @@ public class Sen2VM
 
                 LOGGER.info("Grid resolution: " + String.valueOf(configFile.getStepFromBandInfo(bandInfo)));
                 LOGGER.info("Band resolution: " + String.valueOf(res));
+                System.out.println("det,band,lon,lat,alt");
+
+
+
 
                 for (DetectorInfo detectorInfo: detectors) {
-                    LOGGER.info("");
-                    LOGGER.info("### DET " + detectorInfo.getName() + " (BAND " + bandInfo.getName() + ") ###");
+                    //LOGGER.info("");
+                    //LOGGER.info("### DET " + detectorInfo.getName() + " (BAND " + bandInfo.getName() + ") ###");
 
                     if (configFile.getOperation().equals(Sen2VMConstants.DIRECT)) {
 
@@ -248,17 +261,29 @@ public class Sen2VM
 
                         // Load Granule Info
                         ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detectorInfo, bandInfo);
-                        LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
+                        // LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
 
                         // Get Full Sensor Grid
-                        DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffset, step,
-                                    startPixel, startLine, sizeLine, sizePixel);
+                        DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffsetLine, georefConventionOffsetPixel,
+                            step, startPixel, startLine, sizeLine, sizePixel);
+
                         double[][] sensorGridForDictorLoc = dirGrid.get2Dgrid(step/2, step/2);
 
                         // Direct Loc
                         double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDictorLoc);
 
-                        Vector<String> inputTIFs = new Vector<String>();
+                        double[][] pixels_test = {{0., 0.}};
+                        double[][] grounds_test = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), pixels_test);
+                        LOGGER.info("DET"+ detectorInfo.getName() + ") pixels = "+pixels_test[0][0]+" "+pixels_test[0][1]+" grounds = "+grounds_test[0][0]+" "+grounds_test[0][1]+" "+grounds_test[0][2]);
+                        System.out.print(detectorInfo.getName() + ",");
+                        System.out.print(bandInfo.getName() + ",");
+                        System.out.print(grounds_test[0][0]);
+                        System.out.print(",");
+                        System.out.print(grounds_test[0][1]);
+                        System.out.print(",");
+                        System.out.println(grounds_test[0][2]);
+
+                        /*Vector<String> inputTIFs = new Vector<String>();
                         float pixelOffset = dirGrid.getPixelOffsetGranule().floatValue();
                         for(int g = 0 ; g < granulesToCompute.size(); g++ ) {
                             Granule gr = granulesToCompute.get(g) ;
@@ -272,7 +297,12 @@ public class Sen2VM
                             String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
 
                             // Save with originY = - originY and stepY = -stepY for VRT construction
-                            outputFileManager.createGeoTiff(gridFileName, pixelOffset, -(startGranule + subLineOffset),
+                            System.out.println("//");
+                            System.out.println(pixelOffset + step / 2);
+                            System.out.println(-(startGranule + subLineOffset + step / 2));
+                            System.out.println("//");
+
+                            outputFileManager.createGeoTiff(gridFileName, pixelOffset + step / 2, -(startGranule + subLineOffset + step / 2) ,
                             step, -step, subDirectLocGrid, "", "EPSG:4326", subLineOffset, pixelOffset) ;
 
                             // Add TIF to the future VRT
@@ -286,7 +316,8 @@ public class Sen2VM
 
                         // Correction post build VRT
                         outputFileManager.correctGeoGrid(inputTIFs);
-                        outputFileManager.correctVRT(vrtFileName);
+                        outputFileManager.correctVRT(vrtFileName);*/
+
 
                     } else if (configFile.getOperation().equals(Sen2VMConstants.INVERSE)) {
 
@@ -311,6 +342,7 @@ public class Sen2VM
                     }
                 }
             }
+
 
         } catch ( IOException exception ) {
             throw new Sen2VMException(exception);

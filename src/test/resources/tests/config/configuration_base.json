@@ -9,9 +9,9 @@
   "operation": "direct",
   "deactivate_available_refining": false,
   "steps": {
-    "10m_bands": 4.5,
-    "20m_bands": 4.5,
-    "60m_bands": 4.5
+    "10m_bands": 600,
+    "20m_bands": 300,
+    "60m_bands": 100
   },
   "export_alt": false,
   "inverse_location_additional_info": {

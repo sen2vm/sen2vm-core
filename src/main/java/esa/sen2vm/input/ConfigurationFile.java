@@ -77,7 +77,12 @@ public class ConfigurationFile extends InputFileManager
             this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
             this.dem = checkPath(jsonObject.getString("dem"));
             this.geoid = checkPath(jsonObject.getString("geoid"));
-            this.iers = jsonObject.getString("iers");
+            if (jsonObject.has("iers")) {
+                this.iers = jsonObject.getString("iers");
+            } else {
+                this.iers = "";
+            }
+
             this.pod = jsonObject.getString("pod");
             this.operation = jsonObject.getString("operation");
             this.refining = jsonObject.getBoolean("deactivate_available_refining");
@@ -140,7 +145,7 @@ public class ConfigurationFile extends InputFileManager
      }
 
     /*
-     * Search the datastrip metadata file path inside product folder
+     * Search the datastrip metadata file path insifde product folder
      * @throws Sen2VMException
      */
     public String getDatastripFilePath() throws Sen2VMException {
@@ -210,7 +215,14 @@ public class ConfigurationFile extends InputFileManager
      * @throws Sen2VMException
      */
     public String getIers() throws Sen2VMException {
-       return checkPath(iers);
+        if (iers != "") {
+            File file = new File(iers);
+            if (!file.exists()) {
+                throw new Sen2VMException("Path " + iers + " does not exist");
+            }
+        }
+        return iers;
+
     }
 
     /*

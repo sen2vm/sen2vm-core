@@ -162,4 +162,12 @@ public class SafeManager {
         }
         return res ;
     }
+
+    /**
+     * Get granules
+     * @return granules
+     */
+     public ArrayList<Granule> getGranules() {
+        return this.listGranules ;
+    }
 }

@@ -166,9 +166,12 @@ public class Granule {
         LOGGER.info(" --> Number of grids already existing: " + String.valueOf(list_img.length));
         for (int i = 0; i < list_img.length; i++) {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
-            String bandName = name[name.length-1];
-            int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
-            this.images[indexBand] = list_img[i] ;
+            String bandName = name[name.length-1] ; //.substring(0, 3) ; // todo
+            if (bandName.length() == 3) {
+                int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
+                LOGGER.info(list_img[i].getName());
+                this.grids[indexBand] = list_img[i] ;
+            }
         }
     }
 
@@ -191,6 +194,13 @@ public class Granule {
         return this.grids[indexBand];
     }
 
+    /*
+     * Get geo grids
+     * return List path file
+     */
+     public File[] getGrids() {
+        return this.grids;
+    }
 
     /*
      * Get geo grid file name for this granule and a specific band

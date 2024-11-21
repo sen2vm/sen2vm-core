@@ -67,6 +67,7 @@ public class OutputFileManager
         driver.Register();
 
         // String[] options = {"COMPRESS=LZW", "PREDICTOR=2"};
+
         Dataset ds = driver.Create(fileName, nbPixels, nbLines, nbBand, gdalconst.GDT_Float64);
         GdalGridFileInfo fileInfo = new GdalGridFileInfo();
         fileInfo.setDs(ds);
@@ -94,6 +95,10 @@ public class OutputFileManager
         }
 
         double[] gtInfo = getGeoTransformInfo(startPixel, stepX, startLine, stepY);
+        System.out.println(startPixel);
+        System.out.println(startLine);
+        System.out.println(stepX);
+        System.out.println(stepY);
         ds.SetGeoTransform(gtInfo);
         ds.SetProjection(epsg);
 

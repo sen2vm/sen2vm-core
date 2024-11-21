@@ -1,4 +1,4 @@
-package esa.sen2vm.utils;
+package esa.sen2vm.utils.grids;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +15,9 @@ public class DirectLocGrid {
     // Get sen2VM logger
     private static final Logger LOGGER = Logger.getLogger(DirectLocGrid.class.getName());
 
-    protected Float georefConventionOffset ;
+    protected Float georefConventionOffsetPixel ;
+    protected Float georefConventionOffsetLine ;
     protected Float step ;
-
     protected int pixelOrigin ;
     protected int lineOrigin ;
     protected int sizeLines ;
@@ -35,24 +35,27 @@ public class DirectLocGrid {
      * @param sizeLines
      * @param sizePixels
      */
-    public DirectLocGrid(Float georefConventionOffset, Float step,
+    public DirectLocGrid(Float georefConventionOffsetLine, Float georefConventionOffsetPixel,
+                         Float step,
                          int lineOrigin, int pixelOrigin,
                          int sizeLines, int sizePixels) {
-        this.georefConventionOffset = georefConventionOffset;
+        this.georefConventionOffsetPixel = georefConventionOffsetPixel;
+        this.georefConventionOffsetLine = georefConventionOffsetLine;
         this.step = step;
         this.pixelOrigin = pixelOrigin;
         this.lineOrigin = lineOrigin;
         this.sizePixels = sizePixels;
         this.sizeLines = sizeLines;
 
-        this.gridPixels = grid_1D(this.pixelOrigin, this.sizePixels, this.pixelOrigin, this.step);
-        this.gridLines = grid_1D(this.lineOrigin, this.sizeLines, this.pixelOrigin, this.step);
+        this.gridPixels = grid_1D(this.pixelOrigin, this.sizePixels, this.pixelOrigin, this.step, this.georefConventionOffsetPixel);
+        this.gridLines = grid_1D(this.lineOrigin, this.sizeLines, this.pixelOrigin, this.step, this.georefConventionOffsetLine);
 
-        LOGGER.info("# Grid information");
-        LOGGER.info("ConvOffset: (" + String.valueOf(this.georefConventionOffset) + ", " + String.valueOf(this.georefConventionOffset) + ") ; ");
-        LOGGER.info("Step: (" + String.valueOf(this.step) + ", " + String.valueOf(this.step) + ") ; ");
-        LOGGER.info("Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ") ; ");
-        LOGGER.info("Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")");
+        String info = "ConvOffset: (" + String.valueOf(this.georefConventionOffsetLine) + ", " + String.valueOf(this.georefConventionOffsetPixel) + ");";
+        info = info + " Step: (" + String.valueOf(this.step) + ", " + String.valueOf(this.step) + ");";
+        info = info + " Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ");";
+        info = info + " Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")";
+        //LOGGER.info("# Grid information # " + info);
+
         //LOGGER.info("Grid Pixel: " + this.gridPixels);
         //LOGGER.info("Grid Line: " + this.gridLines);
     }
@@ -88,12 +91,12 @@ public class DirectLocGrid {
      * @param step of the grid
      * @return list 1D
      */
-    private ArrayList<Double> grid_1D(int start, int size, int pixelOrigin, float step) {
+    private ArrayList<Double> grid_1D(int start, int size, int pixelOrigin, float step, float offset) {
         Boolean insideGranule = true;
         ArrayList<Double> grid = new ArrayList<Double>();
         int i_grid = 0;
 
-        double value = start + georefConventionOffset + (i_grid -  pixelOrigin) * step - step / 2;
+        double value = start + offset + (i_grid -  pixelOrigin) * step - step / 2;
         grid.add(value);
 
         while (insideGranule) {

@@ -1,19 +1,19 @@
 {
-  "l1b_product": "/Sen2vm/sen2vm-core/src/test/resources/TDS1_SmallIsland/L1B",
-  "gipp_folder": "/Sen2vm/sen2vm-core/src/test/resources/TDS1_SmallIsland/inputs/GIPP/",
+  "l1b_product": "/Sen2vm/asgard/L1B",
+  "gipp_folder": "/Sen2vm/asgard/ASGARD_DATA/S2MSIdataset/S2MSI_TDS1/GIPP/",
   "gipp_version_check": true,
-  "dem": "/Sen2vm/sen2vm-core/tests/resources/DEM_SRTM",
-  "geoid": "/Sen2vm/sen2vm-core/tests/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx",
-  "iers": "/Sen2vm/sen2vm-core/src/test/resources/TDS1_SmallIsland/inputs/IERS/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000.txt",
+  "dem": "/Sen2vm/asgard/DEM_natif/legacy/DEM_SRTM90",
+  "geoid": "/Sen2vm/asgard/DEM_natif/legacy/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx",
+  "iers": "/Sen2vm/asgard/ASGARD_DATA/S2MSIdataset/S2MSI_TDS1/IERS/IERS.TXT",
   "pod": "PATH_TO_POD_file/folder?",
   "operation": "direct",
   "deactivate_available_refining": false,
   "steps": {
-    "10m_bands": 45,
-    "20m_bands": 90,
-    "60m_bands": 270
+    "10m_bands": 4.5,
+    "20m_bands": 4.5,
+    "60m_bands": 4.5
   },
-  "export_alt": false,
+  "export_alt": true,
   "inverse_location_additional_info": {
     "ul_y" : 245500.00,
     "ul_x" : 3657000.00,
@@ -23,6 +23,3 @@
 	"output_folder": "output_inv"
   }
 }
-
-
-
