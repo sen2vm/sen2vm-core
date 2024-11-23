@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.utils.Sen2VMConstants;
+
 /**
  * ConfigurationFile class
  *
@@ -28,13 +32,14 @@ public class ConfigurationFile extends InputFileManager
     private boolean gippVersionCheck = true;
     private String dem;
     private String geoid;
-    private String iers = "";
+    private String iers;
     private String pod;
     private String operation;
-    private boolean refining = false;
+    private boolean refining;
     private float band10m;
     private float band20m;
     private float band60m;
+    private boolean exportAlt = false;
     private float ul_x;
     private float ul_y;
     private float lr_x;
@@ -69,15 +74,25 @@ public class ConfigurationFile extends InputFileManager
 
             this.l1bProduct = checkPath(jsonObject.getString("l1b_product"));
             this.gippFolder = checkPath(jsonObject.getString("gipp_folder"));
+            this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
             this.dem = checkPath(jsonObject.getString("dem"));
             this.geoid = checkPath(jsonObject.getString("geoid"));
+            if (jsonObject.has("iers")) {
+                this.iers = jsonObject.getString("iers");
+            } else {
+                this.iers = "";
+            }
+
             this.pod = jsonObject.getString("pod");
             this.operation = jsonObject.getString("operation");
+            this.refining = jsonObject.getBoolean("deactivate_available_refining");
 
             JSONObject steps = jsonObject.getJSONObject("steps");
             this.band10m = steps.getFloat("10m_bands");
             this.band20m = steps.getFloat("20m_bands");
             this.band60m = steps.getFloat("60m_bands");
+
+            this.exportAlt = jsonObject.getBoolean("export_alt");
 
             // Optional parameters
             if (jsonObject.has("gipp_version_check")) {
@@ -130,7 +145,7 @@ public class ConfigurationFile extends InputFileManager
      }
 
     /*
-     * Search the datastrip metadata file path inside product folder
+     * Search the datastrip metadata file path insifde product folder
      * @throws Sen2VMException
      */
     public String getDatastripFilePath() throws Sen2VMException {
@@ -196,17 +211,26 @@ public class ConfigurationFile extends InputFileManager
     }
 
     /*
-     * Get the IERS bulletin file
+     * Get the IERS folder
+     * @throws Sen2VMException
      */
-    public String getIers() {
-       return iers;
+    public String getIers() throws Sen2VMException {
+        if (iers != "") {
+            File file = new File(iers);
+            if (!file.exists()) {
+                throw new Sen2VMException("Path " + iers + " does not exist");
+            }
+        }
+        return iers;
+
     }
 
     /*
      * Get the POD folder
+     * @throws Sen2VMException
      */
-    public String getPod() {
-       return pod;
+    public String getPod() throws Sen2VMException {
+       return checkPath(pod);
     }
 
     /*
@@ -214,6 +238,91 @@ public class ConfigurationFile extends InputFileManager
      */
     public Boolean getBooleanRefining() {
        return refining;
+    }
+
+     /*
+     * Get the step of 10m band
+     */
+    public Float getStepBand10m() {
+       return this.band10m;
+    }
+
+    /*
+     * Get the step of 20m band
+     */
+    public Float getStepBand20m() {
+       return this.band20m;
+    }
+
+    /*
+     * Get Float step of 60m band
+     */
+    public Float getStepBand60m() {
+       return this.band60m;
+    }
+
+    /*
+     * Get the boolean extract_alt which, if set to false, will deactivate the
+     * saving of the altitude in the geo grid
+     */
+    public Boolean getExportAlt() {
+        return exportAlt;
+    }
+
+    /*
+     * Get referencial of the data
+     */
+    public String getReferential() {
+        return referential;
+    }
+
+    /*
+     * Get operation
+     */
+    public String getOperation() {
+        return operation.toUpperCase();
+    }
+
+
+    /*
+     * Get Float step from a given band info
+     */
+    public Float getStepFromBandInfo(BandInfo bandInfo) {
+        Float step ;
+        switch((int) bandInfo.getPixelHeight()){
+            case Sen2VMConstants.RESOLUTION_10M:
+                step = this.getStepBand10m() ;
+                break;
+            case Sen2VMConstants.RESOLUTION_20M:
+                step = this.getStepBand20m() ;
+                break;
+            default:
+                step = this.getStepBand60m() ;
+                break;
+        }
+        return step ;
+    }
+
+    /*
+     * Get
+     */
+    public Float[] getInverseLocBound() {
+        Float[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
+        return bb;
+    }
+
+    /*
+     * Get
+     */
+    public String getInverseLocReferential() {
+        return this.referential;
+    }
+
+    /*
+     * Get
+     */
+    public String getInverseLocOutputFolder() {
+        return this.outputFolder;
     }
 }
 

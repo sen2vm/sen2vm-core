@@ -4,6 +4,16 @@ import org.hipparchus.util.MathUtils;
 
 public class Sen2VMConstants {
 
+    public static final int NB_BANDS = 13;
+    public static final int NB_DETS = 12;
+
+    /**
+     * For operation purpose
+     */
+    public static final String DIRECT = "DIRECT";
+    public static final String INVERSE = "INVERSE";
+
+
     /**
      * For bandInfo purpose
      */
@@ -11,6 +21,19 @@ public class Sen2VMConstants {
     public static final double RESOLUTION_10M_DOUBLE = 10.0;
     public static final int RESOLUTION_20M = 20;
     public static final int RESOLUTION_60M = 60;
+
+    /**
+     * DATA directories
+     */
+    public static final String SAFE_EXTENSION = ".SAFE";
+    public static final String TIFF_EXTENSION = ".TIF";
+    public static final String VRT_EXTENSION = ".SAFE";
+    public static final String DATASTRIP = "DATASTRIP";
+    public static final String GRANULE = "GRANULE";
+    public static final String GEO_DATA_DS = "GEO_DATA";
+    public static final String GEO_DATA_GR = "GEO_DATA";
+    public static final String QI_DATA = "QI_DATA";
+    public static final String IMG_DATA = "IMG_DATA";
 
     /**
      * For GIPP purpose
@@ -61,6 +84,13 @@ public class Sen2VMConstants {
     /**
      * Rugged Manager initialisation
      */
+    // Pixel size for band (in meters)
+    public static final double PIXEL_HEIGHT_10 = 10.0;
+    // Pixel size for band (in meters)
+    public static final double PIXEL_HEIGHT_20 = 20.0;
+    // Pixel size for band (in meters)
+    public static final double PIXEL_HEIGHT_60 = 60.0;
+
     // Granule line (for a 10m resolution band)
     public static final double GRANULE_NB_LINE_10_M = 2304.0;
     // Granule line (for a 60m resolution band) ??
