@@ -61,7 +61,7 @@ public class ParamFile extends InputFileManager
             this.bands = jsonObject.getJSONArray("bands");
             
         } catch (JSONException | IOException e) {
-        	throw new Sen2VMException("Problem while reading JSON parameters file" + jsonFilePath + " : ", e);
+            throw new Sen2VMException("Problem while reading JSON parameters file" + jsonFilePath + " : ", e);
         }
     }
 

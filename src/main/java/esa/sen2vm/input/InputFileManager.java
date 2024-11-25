@@ -21,7 +21,7 @@ public class InputFileManager
      * @throws Sen2VMException
      */
     public boolean check_schema(String filepath, InputStream schemaStream) throws Sen2VMException {
-    	
+        
         boolean correct_schema = false;
         try (InputStream jsonStream = new FileInputStream(filepath)) {
 
@@ -34,7 +34,7 @@ public class InputFileManager
 
             correct_schema = true;
         } catch (Exception e) {
-        	// TODO give an explicit message for operation for instance (only direct or inverse possible)
+            // TODO give an explicit message for operation for instance (only direct or inverse possible)
             throw new Sen2VMException("Validation schema has failed for: " + filepath, e);
         }
         return correct_schema;

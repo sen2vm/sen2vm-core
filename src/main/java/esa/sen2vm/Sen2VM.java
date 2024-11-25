@@ -66,13 +66,16 @@ public class Sen2VM
      */
     public static void main( String[] args ) throws Sen2VMException {
 
-    	// Get the logger configuration
+        // Get the logger configuration
         InputStream logProperties = Thread.currentThread().getContextClassLoader().getResourceAsStream("log.properties");
-        try {
-			LogManager.getLogManager().readConfiguration(logProperties);
-		} catch (SecurityException | IOException e) {
+        try
+        {
+            LogManager.getLogManager().readConfiguration(logProperties);
+        }
+        catch (SecurityException | IOException e)
+        {
             throw new Sen2VMException(e);
-		}
+        }
 
         // Run core
         LOGGER.info("Start Sen2VM");
@@ -84,10 +87,10 @@ public class Sen2VM
         try {
 
             // Init all detectors and bands by default
-        	List<DetectorInfo> detectors = DetectorInfo.getAllDetectorInfo();
-        	List<BandInfo> bands = BandInfo.getAllBandInfo();
+            List<DetectorInfo> detectors = DetectorInfo.getAllDetectorInfo();
+            List<BandInfo> bands = BandInfo.getAllBandInfo();
 
-        	String operation;
+            String operation;
             String l1bPath;
             String iersPath = "";
             String gippPath;
@@ -104,30 +107,34 @@ public class Sen2VM
 
 
             // Check if configuration file and (optional) parameter file are present
-            if (OptionManager.areFiles()) {
-            	
-            	// Get the configuration and parameter files
-            	String configFilepath = commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT);
-            	String sensorManagerFile = commandLine.getOptionValue(OptionManager.OPT_PARAM_SHORT);
+            if (OptionManager.areFiles())
+            {
+                
+                // Get the configuration and parameter files
+                String configFilepath = commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT);
+                String sensorManagerFile = commandLine.getOptionValue(OptionManager.OPT_PARAM_SHORT);
 
-            	// Read configuration file
-            	ConfigurationFile configFile = new ConfigurationFile(configFilepath);
+                // Read configuration file
+                ConfigurationFile configFile = new ConfigurationFile(configFilepath);
 
-            	// Read parameter file (optional)
-            	ParamFile paramsFile = null;
-            	if (sensorManagerFile != null) {
-            		paramsFile = new ParamFile(sensorManagerFile);
-            		if (paramsFile.getDetectorsList().size() > 0) {
-            			detectors = paramsFile.getDetectorsList();
-            		}
-            		if (paramsFile.getBandsList().size() > 0) {
-            			bands = paramsFile.getBandsList();
-            		}
-            	}
-            	
-            	// Read arguments from files (the operations were checked through JSON)
-            	operation = configFile.getOperation();
-            	
+                // Read parameter file (optional)
+                ParamFile paramsFile = null;
+                if (sensorManagerFile != null)
+                {
+                    paramsFile = new ParamFile(sensorManagerFile);
+                    if (paramsFile.getDetectorsList().size() > 0)
+                    {
+                        detectors = paramsFile.getDetectorsList();
+                    }
+                    if (paramsFile.getBandsList().size() > 0)
+                    {
+                        bands = paramsFile.getBandsList();
+                    }
+                }
+                
+                // Read arguments from files (the operations were checked through JSON)
+                operation = configFile.getOperation();
+                
                 l1bPath = configFile.getDatastripFilePath();
                 iersPath = configFile.getIers();
                 gippPath = configFile.getGippFolder();
@@ -144,21 +151,25 @@ public class Sen2VM
                 
 
                 // For inverse location
-                if (configFile.getOperation().equals(Sen2VMConstants.INVERSE)) {
-                	// at this stage the inverse loc options exist
-                	epsg = configFile.getInverseLocReferential();
-                	inverseLocBB =  configFile.getInverseLocBound();
-                	invlocOutputPath = PathUtils.checkPath(configFile.getInverseLocOutputFolder());
+                if (configFile.getOperation().equals(Sen2VMConstants.INVERSE))
+                {
+                    // at this stage the inverse loc options exist
+                    epsg = configFile.getInverseLocReferential();
+                    inverseLocBB =  configFile.getInverseLocBound();
+                    invlocOutputPath = PathUtils.checkPath(configFile.getInverseLocOutputFolder());
                 }
 
-            } else { // not areFiles
-            	
-            	// Read arguments from command line options
-            	operation = commandLine.getOptionValue(OptionManager.OPT_OPERATION_SHORT).toUpperCase();
+            }
+            else
+            { // not areFiles
+            
+                // Read arguments from command line options
+                operation = commandLine.getOptionValue(OptionManager.OPT_OPERATION_SHORT).toUpperCase();
 
-            	if ( !operation.equals(Sen2VMConstants.DIRECT) && !operation.equals(Sen2VMConstants.INVERSE)) {
-                	LOGGER.severe("Operation " + operation + " is not allowed. Only direct or inverse are possible.");
-                	System.exit(1);
+                if ( !operation.equals(Sen2VMConstants.DIRECT) && !operation.equals(Sen2VMConstants.INVERSE))
+                {
+                    LOGGER.severe("Operation " + operation + " is not allowed. Only direct or inverse are possible.");
+                    System.exit(1);
                 }
 
                 l1bPath = PathUtils.getDatastripFilePath(commandLine.getOptionValue(OptionManager.OPT_L1B_SHORT));
@@ -174,44 +185,56 @@ public class Sen2VM
 
                 // Optional parameters
                  
-                if (commandLine.hasOption(OptionManager.OPT_IERS_SHORT)) {
-                	iersPath = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_IERS_SHORT));
+                if (commandLine.hasOption(OptionManager.OPT_IERS_SHORT))
+                {
+                    iersPath = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_IERS_SHORT));
                 }
                 
-                if (commandLine.hasOption(OptionManager.OPT_POD_SHORT)) {
-                	podPath = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_POD_SHORT));
+                if (commandLine.hasOption(OptionManager.OPT_POD_SHORT))
+                {
+                    podPath = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_POD_SHORT));
                 }
                 
                 // By default we want the check of GIPP version. The option deactivate the check
-                if (commandLine.hasOption(OptionManager.OPT_NOT_GIPP_CHECK_SHORT)) {
-                	gipp_version_check  = ! Sen2VMConstants.GIPP_CHECK;
-                } else { // We let the check
-                	gipp_version_check = Sen2VMConstants.GIPP_CHECK;
+                if (commandLine.hasOption(OptionManager.OPT_DEACTIVATE_GIPP_CHECK_SHORT))
+                {
+                    gipp_version_check  = ! Sen2VMConstants.GIPP_CHECK;
+                }
+                else
+                { // We let the check
+                    gipp_version_check = Sen2VMConstants.GIPP_CHECK;
                 }
 
                 // By default we want the refining. The option deactivate the refining
-                if (commandLine.hasOption(OptionManager.OPT_NOT_REFINING_SHORT)) {
-                	deactivate_refining = ! Sen2VMConstants.DEACTIVATE_REFINING;
-                } else { // We let the refining
-                	deactivate_refining = Sen2VMConstants.DEACTIVATE_REFINING;
+                if (commandLine.hasOption(OptionManager.OPT_IGNORE_REFINING_SHORT))
+                {
+                    deactivate_refining = ! Sen2VMConstants.DEACTIVATE_REFINING;
+                }
+                else
+                { // We let the refining
+                    deactivate_refining = Sen2VMConstants.DEACTIVATE_REFINING;
                 }
                 
                 // By default we don't want to export the altitude in the direct loc grid. The option export the altitude
-                if (commandLine.hasOption(OptionManager.OPT_EXPORT_ALT_SHORT)) {
-                	export_alt = ! Sen2VMConstants.EXPORT_ALT;
-                } else { // We don't export the altitude
-                	export_alt = Sen2VMConstants.EXPORT_ALT;
+                if (commandLine.hasOption(OptionManager.OPT_EXPORT_ALT_SHORT))
+                {
+                    export_alt = ! Sen2VMConstants.EXPORT_ALT;
+                }
+                else
+                { // We don't export the altitude
+                    export_alt = Sen2VMConstants.EXPORT_ALT;
                 }
 
                 // For inverse location
-                if (operation.equals(Sen2VMConstants.INVERSE)) {
-                	// at this stage the inverse loc options exist
-                	epsg = commandLine.getOptionValue(OptionManager.OPT_REFERENTIAL_SHORT);
-                	inverseLocBB[0] =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_ULX_SHORT));
-                	inverseLocBB[1] =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_ULY_SHORT));
-                	inverseLocBB[2] =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
-                	inverseLocBB[3] =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
-                	invlocOutputPath = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_OUTPUT_FOLDER_SHORT));
+                if (operation.equals(Sen2VMConstants.INVERSE))
+                {
+                    // at this stage the inverse loc options exist
+                    epsg = commandLine.getOptionValue(OptionManager.OPT_REFERENTIAL_SHORT);
+                    inverseLocBB[0] =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_ULX_SHORT));
+                    inverseLocBB[1] =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_ULY_SHORT));
+                    inverseLocBB[2] =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
+                    inverseLocBB[3] =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
+                    invlocOutputPath = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_OUTPUT_FOLDER_SHORT));
                 }
                 
             } // end areFiles
@@ -223,7 +246,7 @@ public class Sen2VM
  
             
             // Read datastrip
-             DataStripManager dataStripManager = new DataStripManager(l1bPath, iersPath, deactivate_refining);
+            DataStripManager dataStripManager = new DataStripManager(l1bPath, iersPath, deactivate_refining);
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(gippPath, bands, dataStripManager, gipp_version_check);
@@ -236,7 +259,8 @@ public class Sen2VM
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
             
             SrtmFileManager demFileManager = new SrtmFileManager(demPath);
-            if (!demFileManager.findRasterFile()) {
+            if (!demFileManager.findRasterFile())
+            {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
             GeoidManager geoidManager = new GeoidManager(geoidPath, isOverlappingTiles);
@@ -247,8 +271,10 @@ public class Sen2VM
             // ------------------
             // Save sensors for each focal plane
             List<Sensor> sensorList = new ArrayList<Sensor>();
-            for (DetectorInfo detectorInfo: detectors) {
-                for (BandInfo bandInfo: bands) {
+            for (DetectorInfo detectorInfo: detectors)
+            {
+                for (BandInfo bandInfo: bands)
+                {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
                     LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
@@ -285,8 +311,9 @@ public class Sen2VM
             ruggedManager.setAberrationOfLightCorrection(false);
 
             // at this stage only the direct and inverse loc are allowed
-            if (operation.equals(Sen2VMConstants.DIRECT)) { // direct location
-            	
+            if (operation.equals(Sen2VMConstants.DIRECT))
+            { // direct location
+                
                 // Init simpleLocEngine
                 // --------------------
                 SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
@@ -295,26 +322,29 @@ public class Sen2VM
                     demManager
                 );
 
-            	// Compute direct loc
-            	// ------------------
-            	double[][] pixels = {{0., 0.}};
-            	double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
+                // Compute direct loc
+                // ------------------
+                double[][] pixels = {{0., 0.}};
+                double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get(0), pixels);
 
-            	// Print result
-            	// ------------
-            	showPoints(pixels, grounds);
-            	
-            } else if (operation.equals(Sen2VMConstants.INVERSE)) { // inverse location
-            	
+                // Print result
+                // ------------
+                showPoints(pixels, grounds);
+                
+            }
+            else if (operation.equals(Sen2VMConstants.INVERSE))
+            { // inverse location
+                
                 LOGGER.info("Operation " + operation + " NOT yet implemented.");
                 
             } // test direct/inverse
-            	
+                
 
             LOGGER.info("End Sen2VM");
-
-        } catch ( SXGeoException exception ) {
+        }
+        catch ( SXGeoException exception )
+        {
             throw new Sen2VMException(exception);
-		}
+        }
     }
 }

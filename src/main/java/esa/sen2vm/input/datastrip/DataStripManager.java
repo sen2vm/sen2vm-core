@@ -235,22 +235,22 @@ public class DataStripManager {
      */
     public void initOrekitRessources(String orekitDataPath, String iersFilePath,
                 A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo) throws Sen2VMException {
-		try {
-		    // Set up default Orekit data
-			File orekitDataDir = new File(orekitDataPath);
-			if (orekitDataDir == null || (!orekitDataDir.exists())) {
-			    throw new Sen2VMException("Orekit data dir not found" + orekitDataPath);
-			}
-			DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
+        try {
+            // Set up default Orekit data
+            File orekitDataDir = new File(orekitDataPath);
+            if (orekitDataDir == null || (!orekitDataDir.exists())) {
+                throw new Sen2VMException("Orekit data dir not found" + orekitDataPath);
+            }
+            DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
 
             // Read IERS information from metadata
-		    if (iersFilePath.equals("")) {
-		        AN_IERS_BULLETIN iersBulletin = auxiliaryDataInfo.getIERS_Bulletin();
-		        AN_IERS_BULLETIN.UT1_UTC ut1tutc = iersBulletin.getUT1_UTC();
-		        A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleUAngle = iersBulletin.getPOLE_U_ANGLE();
-		        A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleVAngle = iersBulletin.getPOLE_V_ANGLE();
+            if (iersFilePath.equals("")) {
+                AN_IERS_BULLETIN iersBulletin = auxiliaryDataInfo.getIERS_Bulletin();
+                AN_IERS_BULLETIN.UT1_UTC ut1tutc = iersBulletin.getUT1_UTC();
+                A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleUAngle = iersBulletin.getPOLE_U_ANGLE();
+                A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleVAngle = iersBulletin.getPOLE_V_ANGLE();
 
-		        XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
+                XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
                 AbsoluteDate datastripStartDateUTC = new AbsoluteDate(datastripStartDateGregorian.toString(), TimeScalesFactory.getUTC());
                 int year = datastripStartDateUTC.getComponents(TimeScalesFactory.getUTC()).getDate().getYear();
                 System.out.println("year = "+year);
@@ -274,10 +274,10 @@ public class DataStripManager {
                 // we fix the EOP continuity threshold to one year instead of the normal gap ...
                 FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
             }
-		} catch (Exception e) {
-			throw new Sen2VMException("Something went wrong during initialization of IERS and orekit ressources ", e);
-		}
-	}
+        } catch (Exception e) {
+            throw new Sen2VMException("Something went wrong during initialization of IERS and orekit ressources ", e);
+        }
+    }
 
     /**
      * Get last supported ITRF version, the best fitted version for input year
@@ -298,12 +298,12 @@ public class DataStripManager {
         return closestYear;
     }
 
-	/**
-	 * Fill
-	 * @param dataStripTimeInfo
-	 * @param refinedCorrectionsListL1
-	 */
-	private void readRefinedCorrections(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo, List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1) throws OrekitException, Sen2VMException {
+    /**
+     * Fill
+     * @param dataStripTimeInfo
+     * @param refinedCorrectionsListL1
+     */
+    private void readRefinedCorrections(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo, List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1) throws OrekitException, Sen2VMException {
 
         // refining corrections are computed related to compute acquisition center time
         AbsoluteDate acquisitionCenterTime = computeAcquisitionCenter(dataStripTimeInfo);

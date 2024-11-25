@@ -5,11 +5,11 @@ package esa.sen2vm.utils;
  */
 public class Sen2VMConstants {
 
-	/**
-	 * For operation purpose
-	 */
-	public static final String DIRECT = "DIRECT";
-	public static final String INVERSE = "INVERSE";
+    /**
+     * For operation purpose
+     */
+    public static final String DIRECT = "DIRECT";
+    public static final String INVERSE = "INVERSE";
     
     /**
      * To check the GIPP version (by default the GIPP version is checked)

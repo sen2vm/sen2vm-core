@@ -5,19 +5,21 @@ import java.util.logging.Logger;
 
 import esa.sen2vm.exception.Sen2VMException;
 
-public class PathUtils {
+public class PathUtils
+{
+    private static final Logger LOGGER = Logger.getLogger(PathUtils.class.getName());
 
-	private static final Logger LOGGER = Logger.getLogger(PathUtils.class.getName());
-
-	/**
-	 * Check that the path exist
+    /**
+     * Check that the path exist
      * @param path the path we want to check if it does exist
      * @return the path
      * @throws Sen2VMException
      */
-    public static String checkPath(String path) throws Sen2VMException {
+    public static String checkPath(String path) throws Sen2VMException
+    {
         File file = new File(path);
-        if (!file.exists()) {
+        if (!file.exists())
+        {
             throw new Sen2VMException("Path " + file + " does not exist");
         }
         return path;
@@ -30,7 +32,7 @@ public class PathUtils {
      * @throws Sen2VMException
      */
     public static String getDatastripFilePath(String l1bProduct) throws Sen2VMException {
-    	
+        
         File datastripFolder = new File(l1bProduct + "/" + Sen2VMConstants.DATASTRIP_MAIN_FOLDER);
         if (!datastripFolder.exists()) {
             throw new Sen2VMException("Datastrip folder " + datastripFolder + " does not exist");

@@ -54,7 +54,7 @@ public class ConfigurationFile extends InputFileManager
         InputStream schemaStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(Sen2VMConstants.JSON_SCHEMA_CONFIG);
         
         if (schemaStream == null) {
-        	throw new Sen2VMException("Impossible to find the JSON schema for configuration file: " + Sen2VMConstants.JSON_SCHEMA_CONFIG);
+            throw new Sen2VMException("Impossible to find the JSON schema for configuration file: " + Sen2VMConstants.JSON_SCHEMA_CONFIG);
         }
         // Check if the JSON file is correct
         if(check_schema(this.configPath, schemaStream)) {
@@ -69,8 +69,8 @@ public class ConfigurationFile extends InputFileManager
      */
     public void parse(String jsonFilePath) throws Sen2VMException {
 
-    	LOGGER.info("Parsing file " + jsonFilePath);
-    	
+        LOGGER.info("Parsing file " + jsonFilePath);
+        
         try (InputStream fis = new FileInputStream(jsonFilePath)) {
 
             JSONObject jsonObject = new JSONObject(new JSONTokener(fis));
@@ -122,7 +122,7 @@ public class ConfigurationFile extends InputFileManager
             }
 
         } catch (JSONException | IOException e) {
-        	throw new Sen2VMException("Problem while reading JSON configuration file" + jsonFilePath + " : ", e);
+            throw new Sen2VMException("Problem while reading JSON configuration file" + jsonFilePath + " : ", e);
         }
     }
 
@@ -133,7 +133,7 @@ public class ConfigurationFile extends InputFileManager
      */
     public String getDatastripFilePath() throws Sen2VMException {
     
-    	return PathUtils.getDatastripFilePath(l1bProduct);
+        return PathUtils.getDatastripFilePath(l1bProduct);
     }
 
     /**

@@ -7,7 +7,7 @@ public class Sen2VMException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-	public Sen2VMException() {
+    public Sen2VMException() {
         super();
     }
 
