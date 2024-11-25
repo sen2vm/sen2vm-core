@@ -259,17 +259,27 @@ public class Sen2VM
                         ArrayList<Granule> granulesToCompute = sm.getGranulesToCompute(detectorInfo, bandInfo);
                         LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
 
+                        System.out.println();
+
                         // Get Full Sensor Grid
                         DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffsetLine, georefConventionOffsetPixel,
                             step, startPixel, startLine, sizeLine, sizePixel);
 
-                        double[][] sensorGridForDictorLoc = dirGrid.get2Dgrid(step/2, step/2);
+                        double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2, step/2);
 
                         // Direct Loc
-                        double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDictorLoc);
+                        double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
+
+                        System.out.print("[DEBUG] First value to direct loc : " + String.valueOf(sensorGridForDirectLoc[0][0]) + " " + String.valueOf(sensorGridForDirectLoc[0][1]) + " => ");
+                        System.out.println(String.valueOf(directLocGrid[0][0]) + " " + String.valueOf(directLocGrid[0][1]));
+
+                        System.out.print("[DEBUG] Second value to direct loc : " + String.valueOf(sensorGridForDirectLoc[1][0]) + " " + String.valueOf(sensorGridForDirectLoc[1][1]) + " => ");
+                        System.out.println(String.valueOf(directLocGrid[1][0]) + " " + String.valueOf(directLocGrid[0][1]));
 
                         Vector<String> inputTIFs = new Vector<String>();
                         float pixelOffset = dirGrid.getPixelOffsetGranule().floatValue();
+                        System.out.println();
+
                         for(int g = 0 ; g < granulesToCompute.size(); g++ ) {
                             Granule gr = granulesToCompute.get(g) ;
                             int startGranule = gr.getFirstLine(res);
@@ -282,7 +292,7 @@ public class Sen2VM
                             String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
 
                             // Save with originY = - originY and stepY = -stepY for VRT construction
-                            outputFileManager.createGeoTiff(gridFileName, pixelOffset + step / 2, -(startGranule + subLineOffset + step / 2) ,
+                            outputFileManager.createGeoTiff(gridFileName, pixelOffset, -(startGranule + subLineOffset) ,
                             step, -step, subDirectLocGrid, "", "EPSG:4326", subLineOffset, pixelOffset) ;
 
                             // Add TIF to the future VRT

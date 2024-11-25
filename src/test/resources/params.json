@@ -1,5 +1,5 @@
 {
-  "detectors": ["01", "10"],
+  "detectors": ["01"],
   "bands": ["B01"]
 }
 
