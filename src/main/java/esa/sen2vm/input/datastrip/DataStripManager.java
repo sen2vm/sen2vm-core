@@ -115,7 +115,7 @@ public class DataStripManager {
     /**
      * List of granule positon by Detector in Datatrip (10m)
      */
-    protected static Map[] positionGranuleByDetector ;
+    protected static Map[] positionGranuleByDetector;
 
     /**
      * Min granule line found in Datastrip (10m)
@@ -243,9 +243,9 @@ public class DataStripManager {
 
         positionGranuleByDetector = new Map[Sen2VMConstants.NB_DETS];
 
-        List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector> det_list = l1B_datastrip.getImage_Data_Info().getGranules_Information().getDetector_List().getDetector() ;
+        List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector> det_list = l1B_datastrip.getImage_Data_Info().getGranules_Information().getDetector_List().getDetector();
         for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector det : det_list) {
-            List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule> gr_list = det.getGranule_List().getGranule() ;
+            List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule> gr_list = det.getGranule_List().getGranule();
             Map<String, Integer> granulePosition = new HashMap<>();
 
             for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule gr : gr_list) {
@@ -267,8 +267,8 @@ public class DataStripManager {
         Map granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
         Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
         Map.Entry<String, Integer> max = Collections.max(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
-        String[] minmax = { min.getKey(), max.getKey() } ;
-        return minmax ;
+        String[] minmax = { min.getKey(), max.getKey() };
+        return minmax;
     }
 
 

@@ -288,23 +288,23 @@ public class ConfigurationFile extends InputFileManager
      * Get Float step from a given band info
      */
     public Float getStepFromBandInfo(BandInfo bandInfo) {
-        Float step ;
+        Float step;
         switch((int) bandInfo.getPixelHeight()){
             case Sen2VMConstants.RESOLUTION_10M:
-                step = this.getStepBand10m() ;
+                step = this.getStepBand10m();
                 break;
             case Sen2VMConstants.RESOLUTION_20M:
-                step = this.getStepBand20m() ;
+                step = this.getStepBand20m();
                 break;
             default:
-                step = this.getStepBand60m() ;
+                step = this.getStepBand60m();
                 break;
         }
-        return step ;
+        return step;
     }
 
     /*
-     * Get
+     * Get InverseLoc Bounding Box
      */
     public Float[] getInverseLocBound() {
         Float[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
@@ -312,14 +312,14 @@ public class ConfigurationFile extends InputFileManager
     }
 
     /*
-     * Get
+     * Get InverseLoc Output Referential
      */
     public String getInverseLocReferential() {
         return this.referential;
     }
 
     /*
-     * Get
+     * Get InverseLoc Output Folder
      */
     public String getInverseLocOutputFolder() {
         return this.outputFolder;
