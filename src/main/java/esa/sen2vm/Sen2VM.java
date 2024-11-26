@@ -329,25 +329,6 @@ public class Sen2VM
                 }
             }
 
-
-            /*double[][] pixels = {{0., 0.}};
-            double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get("B01/D01"), pixels);
-            showPoints(pixels, grounds);
-
-            LineSensor lineSensor = ruggedManager.getLineSensor("B01/D01");
-            System.out.println(lineSensor.getDate(0.0).toString(TimeScalesFactory.getGPS()));
-            System.out.println(lineSensor.getDate(0.5).toString(TimeScalesFactory.getGPS()));
-            System.out.println(lineSensor.getDate(1.0).toString(TimeScalesFactory.getGPS()));
-            System.out.println(lineSensor.getDate(1.5).toString(TimeScalesFactory.getGPS()));
-            // [DEBUG] First value to direct loc : 1.0 0.0 => -18.919175317847085 33.79427774463745
-            //   2020-08-16T12:02:45.812731
-            //   2020-08-16T12:02:45.808033379134
-            //   2020-08-16T12:02:45.817428620866
-            //   2020-08-16T12:02:45.822126241732
-
-            // debut ligne quand (l = 0.5)*/
-
-
         } catch ( IOException exception ) {
             throw new Sen2VMException(exception);
         } catch ( SXGeoException exception ) {

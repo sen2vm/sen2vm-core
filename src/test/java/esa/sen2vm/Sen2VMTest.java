@@ -71,6 +71,8 @@ import org.sxgeo.input.dem.SrtmFileManager;
 import org.sxgeo.input.dem.GeoidManager;
 import org.sxgeo.rugged.RuggedManager;
 import org.sxgeo.exception.SXGeoException;
+import org.orekit.time.TimeScalesFactory;
+import org.orekit.rugged.linesensor.LineSensor;
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -98,21 +100,16 @@ public class Sen2VMTest
         }
     }
 
-
-
-
-
     @Test
     public void geoLocD01B01firstPixel()
     {
         String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1.json";
         String paramTmp = "src/test/resources/params_all.json";
-        String outputRef = "src/test/resources/tests/6km_ref";
         String[] detectors = new String[]{"01"};
         String[] bands = new String[]{"B01"};
         int[] testsStep = new int[]{3000, 6000};
 
-        String granulePath = "src/test/resources/tests/output/test/GRANULE/S2A_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_N05.00/GEO_DATA/S2A_OPER_GEO_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_B01.tif";
+        String granulePath = "src/test/resources/tests/6km_ref/GRANULE/S2A_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_N05.00/GEO_DATA/S2A_OPER_GEO_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_B01.tif";
 
         for (int step : testsStep) {
             try {
@@ -123,7 +120,7 @@ public class Sen2VMTest
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
 
-                Dataset granule = gdal.Open(granulePath, 0);
+                Dataset granule = gdal.Open(outputDir + "/GRANULE/S2A_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_N05.00/GEO_DATA/S2A_OPER_GEO_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_B01.tif", 0);
                 Band b1 = granule.GetRasterBand(1);
                 Band b2 = granule.GetRasterBand(2);
                 Band b3 = granule.GetRasterBand(3);
@@ -139,13 +136,16 @@ public class Sen2VMTest
                     geoGrid[2] = data1[0];
                 }
 
-                double[][] grounds = geoLocD01B01(configTmp, "01", "B01", 0.5, 0.5) ;
-                System.out.println("pixels 0.5,0.5 in sensor = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
+                double[][] grounds = geoLocD01B01(configTmp, "01", "B01", 1.0f, 0.0f);
+                System.out.println("pixels 1.0, 0.0 in sensor = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
                 System.out.println(" first pixels in geogrid = "+geoGrid[0]+" "+geoGrid[1]+" "+geoGrid[2]);
 
                 assertEquals(grounds[0][0], geoGrid[0]);
+                assertEquals(grounds[0][0], -18.919175317847085);
                 assertEquals(grounds[0][1], geoGrid[1]);
+                assertEquals(grounds[0][1], 33.79427774463745);
                 assertEquals(grounds[0][2], geoGrid[2]);
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (Sen2VMException e) {
@@ -156,11 +156,110 @@ public class Sen2VMTest
         }
     }
 
+    @Test
+    public void geoTimeFirstLine()
+    {
+        String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1.json";
+        String paramTmp = "src/test/resources/params_all.json";
+        int step = 6000;
+
+        try {
+            String outputDir = Utils.createTestDir("testdirect_first_line_" + Integer.toString(step));
+            String config = Utils.config(configTmp, outputDir, step, "direct", false);
+            String param = Utils.changeParams(paramTmp, new String[]{"01"}, new String[]{"B01"}, outputDir);
+
+            ConfigurationFile configFile = new ConfigurationFile(config);
+            List<DetectorInfo> detectors = new ArrayList<DetectorInfo>();
+            detectors.add(DetectorInfo.getDetectorInfoFromName("01"));
+            List<BandInfo> bands = new ArrayList<BandInfo>();
+            bands.add(BandInfo.getBandInfoFromNameWithB("B01"));
+            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
+            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
+
+            // Build sensor list
+            // Save sensors for each focal plane
+            HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
+            for (DetectorInfo detectorInfo: detectors) {
+                for (BandInfo bandInfo: bands) {
+                    SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
+                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
+                    SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
+                    SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
+                    SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
+
+                    // Save sensor information
+                    Sensor sensor = new Sensor(
+                        bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
+                        viewing,
+                        lineDatation,
+                        bandInfo.getPixelHeight(),
+                        focalplaneToSensor,
+                        msiToFocalplane,
+                        pilotingToMsi
+                    );
+                    System.out.println(sensor.getName());
+                    sensorList.put(sensor.getName(), sensor);
+                }
+            }
+
+            // Init demManager
+            Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
+            SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
+
+            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
+            DemManager demManager = new DemManager(
+                demFileManager,
+                geoidManager,
+                isOverlappingTiles);
+
+            // Init rugged instance
+            RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
+                demManager,
+                dataStripManager.getDataSensingInfos(),
+                Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
+                Sen2VMConstants.RESOLUTION_10M_DOUBLE,
+                new ArrayList(sensorList.values()),
+                Sen2VMConstants.MARGIN,
+                dataStripManager.getRefiningInfo()
+            );
+            ruggedManager.setLightTimeCorrection(false);
+            ruggedManager.setAberrationOfLightCorrection(false);
+
+            // Init simpleLocEngine
+            SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
+                dataStripManager.getDataSensingInfos(),
+                ruggedManager,
+                demManager
+            );
+
+
+            double[][] pixels = {{0., 0.}};
+            double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get("B01/D01"), pixels);
+
+            LineSensor lineSensor = ruggedManager.getLineSensor("B01/D01");
+            String date = lineSensor.getDate(0.5).toString(TimeScalesFactory.getGPS());
+            System.out.println("date line 0.5:" + date);
+
+            assertEquals(date, "2020-08-16T12:02:45.812731");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch ( SXGeoException e ) {
+            e.printStackTrace();
+        }  catch (Sen2VMException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void geoLocD01B01loc00()
     {
         try {
             String config = "src/test/resources/tests/input/TDS1/configuration_TDS1.json";
-            double[][] grounds = geoLocD01B01(config, "01", "B01", 0.0, 0.0) ;
+            double[][] grounds = geoLocD01B01(config, "01", "B01", 0.0, 0.0);
             System.out.println("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
             assertEquals(grounds[0][0], -18.91902416721812);
             assertEquals(grounds[0][1], 33.79483143151923);
@@ -171,7 +270,7 @@ public class Sen2VMTest
 
     }
 
-    public double[][] geoLocD01B01(String config, String det, String band, double pixel, double line) throws Sen2VMException
+    public double[][] geoLocD01B01(String config, String det, String band, double line, double pixel) throws Sen2VMException
     {
         double[][] grounds = {{0., 0.}};
         try {
@@ -251,7 +350,7 @@ public class Sen2VMTest
                 demManager
             );
 
-            double[][] pixels = {{pixel, line}};
+            double[][] pixels = {{line, pixel}};
             grounds = simpleLocEngine.computeDirectLoc(sensorList.get("B01/D01"), pixels);
 
         } catch ( SXGeoException e ) {
@@ -264,7 +363,7 @@ public class Sen2VMTest
 
     }
 
-        public static HashMap<String, Sensor> getSensorHashMap(List<DetectorInfo> detectors, List<BandInfo> bands,
+     public static HashMap<String, Sensor> getSensorHashMap(List<DetectorInfo> detectors, List<BandInfo> bands,
          DataStripManager dataStripManager, GIPPManager gippManager) throws Sen2VMException {
 
         // Save sensors for each focal plane
@@ -294,7 +393,7 @@ public class Sen2VMTest
         return sensorList;
     }
 
-
+    @Test
     public void step()
     {
         String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1.json";
@@ -322,6 +421,7 @@ public class Sen2VMTest
         }
     }
 
+    @Test
     public void geoLoc()
     {
         String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1.json";
@@ -346,6 +446,7 @@ public class Sen2VMTest
         }
     }
 
+    @Test
     public void geoRefining()
     {
         String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1.json";
@@ -372,6 +473,7 @@ public class Sen2VMTest
         }
     }
 
+    @Test
     public void iersHandling()
     {
         String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1.json";
@@ -396,8 +498,7 @@ public class Sen2VMTest
         }
     }
 
-
-
+    @Test
     public void parallelisationRobustness()
     {
         String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1.json";
