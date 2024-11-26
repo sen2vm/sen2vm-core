@@ -109,7 +109,6 @@ public class Sen2VM
             // Check if configuration file and (optional) parameter file are present
             if (OptionManager.areFiles())
             {
-                
                 // Get the configuration and parameter files
                 String configFilepath = commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT);
                 String sensorManagerFile = commandLine.getOptionValue(OptionManager.OPT_PARAM_SHORT);
@@ -187,6 +186,7 @@ public class Sen2VM
                  
                 if (commandLine.hasOption(OptionManager.OPT_IERS_SHORT))
                 {
+                    LOGGER.info("Reading IERS file at: " + commandLine.getOptionValue(OptionManager.OPT_IERS_SHORT));
                     iersPath = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_IERS_SHORT));
                 }
                 
@@ -198,21 +198,21 @@ public class Sen2VM
                 // By default we want the check of GIPP version. The option deactivate the check
                 if (commandLine.hasOption(OptionManager.OPT_DEACTIVATE_GIPP_CHECK_SHORT))
                 {
-                    gipp_version_check  = ! Sen2VMConstants.GIPP_CHECK;
+                    gipp_version_check  = false;
                 }
                 else
                 { // We let the check
-                    gipp_version_check = Sen2VMConstants.GIPP_CHECK;
+                    gipp_version_check = true;
                 }
 
                 // By default we want the refining. The option deactivate the refining
                 if (commandLine.hasOption(OptionManager.OPT_IGNORE_REFINING_SHORT))
                 {
-                    deactivate_refining = ! Sen2VMConstants.DEACTIVATE_REFINING;
+                    deactivate_refining = true;
                 }
                 else
                 { // We let the refining
-                    deactivate_refining = Sen2VMConstants.DEACTIVATE_REFINING;
+                    deactivate_refining = false;
                 }
                 
                 // By default we don't want to export the altitude in the direct loc grid. The option export the altitude
@@ -243,10 +243,11 @@ public class Sen2VM
             LOGGER.info("10m " + stepsValues[0] + " 20m " + stepsValues[1] + " 60m " + stepsValues[2]);
             LOGGER.info("detectors = " + detectors);
             LOGGER.info("bands = " + bands);
- 
-            
+
+            LOGGER.info("gipp_version_check = " + gipp_version_check);
+
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(l1bPath, iersPath, deactivate_refining);
+            DataStripManager dataStripManager = new DataStripManager(l1bPath, iersPath, !deactivate_refining);
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(gippPath, bands, dataStripManager, gipp_version_check);

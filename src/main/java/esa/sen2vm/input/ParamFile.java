@@ -32,15 +32,17 @@ public class ParamFile extends InputFileManager
      * @param paramPath path to the JSON parameters file
      * @throws Sen2VMException
      */
-    public ParamFile(String paramPath) throws Sen2VMException {
-
+    public ParamFile(String paramPath) throws Sen2VMException
+    {
         InputStream schemaParamStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(Sen2VMConstants.JSON_SCHEMA_PARAMS);
         
-        if (schemaParamStream == null) {
+        if (schemaParamStream == null)
+        {
            throw new Sen2VMException("Impossible to find the JSON schema for parameters file: " + Sen2VMConstants.JSON_SCHEMA_PARAMS);
         }
 
-        if(check_schema(paramPath, schemaParamStream)) {
+        if(check_schema(paramPath, schemaParamStream))
+        {
             parse(paramPath);
         }
     }
@@ -50,17 +52,19 @@ public class ParamFile extends InputFileManager
      * @param jsonFilePath path to the JSON parameters file
      * @throws Sen2VMException
      */
-    public void parse(String jsonFilePath) throws Sen2VMException {
-
+    public void parse(String jsonFilePath) throws Sen2VMException
+    {
         LOGGER.info("Parsing file " + jsonFilePath);
-        try (InputStream fis = new FileInputStream(jsonFilePath)) {
-
+        try (InputStream fis = new FileInputStream(jsonFilePath))
+        {
             JSONObject jsonObject = new JSONObject(new JSONTokener(fis));
             
             this.detectors = jsonObject.getJSONArray("detectors");
             this.bands = jsonObject.getJSONArray("bands");
             
-        } catch (JSONException | IOException e) {
+        }
+        catch (JSONException | IOException e)
+        {
             throw new Sen2VMException("Problem while reading JSON parameters file" + jsonFilePath + " : ", e);
         }
     }
@@ -69,9 +73,11 @@ public class ParamFile extends InputFileManager
      * Get the detectors list
      * @return the detectors list
      */
-    public List<DetectorInfo> getDetectorsList() {
+    public List<DetectorInfo> getDetectorsList()
+    {
        List<DetectorInfo> detectorsList = new ArrayList<DetectorInfo>();
-       for(int i=0; i < detectors.length(); i++) {
+       for(int i=0; i < detectors.length(); i++)
+       {
           detectorsList.add(DetectorInfo.getDetectorInfoFromName(detectors.getString(i)));
        }
        return detectorsList;
@@ -81,9 +87,11 @@ public class ParamFile extends InputFileManager
      * Get the bands list
      * @return the bands list
      */
-    public List<BandInfo> getBandsList() {
+    public List<BandInfo> getBandsList()
+    {
        List<BandInfo> bandsList = new ArrayList<BandInfo>();
-       for(int i=0; i<bands.length(); i++) {
+       for(int i=0; i<bands.length(); i++)
+       {
           bandsList.add(BandInfo.getBandInfoFromNameWithB(bands.getString(i)));
        }
        return bandsList;

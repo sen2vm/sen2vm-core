@@ -3,11 +3,13 @@ package esa.sen2vm.exception;
 /**
  * Sen2VMException
  */
-public class Sen2VMException extends Exception {
+public class Sen2VMException extends Exception
+{
 
     private static final long serialVersionUID = 1L;
 
-    public Sen2VMException() {
+    public Sen2VMException()
+    {
         super();
     }
 
@@ -15,7 +17,8 @@ public class Sen2VMException extends Exception {
      * Constructor with exception cause
      * @param e exception cause
      */
-    public Sen2VMException(Exception e) {
+    public Sen2VMException(Exception e)
+    {
         super(e.getLocalizedMessage(), e);
     }
 
@@ -23,7 +26,8 @@ public class Sen2VMException extends Exception {
      * Constructor with message
      * @param msg the error message
      */
-    public Sen2VMException(String msg) {
+    public Sen2VMException(String msg)
+    {
         super(msg);
     }
 
@@ -32,7 +36,8 @@ public class Sen2VMException extends Exception {
      * @param msg the error message
      * @param e exception cause
      */
-    public Sen2VMException(String msg, Exception e) {
+    public Sen2VMException(String msg, Exception e)
+    {
         super(msg, e);
     }
 }

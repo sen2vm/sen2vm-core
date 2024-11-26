@@ -19,8 +19,8 @@ import org.orekit.utils.IERSConventions;
  * Class to manage IERS information
  */
 
-public class IERSutils {
-
+public class IERSutils
+{
     /**
      * Build the EOP list
      * @param itrfType ITRF version
@@ -31,14 +31,16 @@ public class IERSutils {
      * @return list of EOP
      */
     public static List<EOPEntry> buildEOPList(ITRFVersion itrfType,
-                                              AbsoluteDate absDate, double dt, double x, double y) {
+                                              AbsoluteDate absDate, double dt, double x, double y)
+    {
         
         TimeScale utc = DataContext.getDefault().getTimeScales().getUTC();
         double jd = absDate.getComponents(utc).offsetFrom(DateTimeComponents.JULIAN_EPOCH) / Constants.JULIAN_DAY;
         double mjd = jd - Sen2VMConstants.JD_TO_MJD;
 
         final List<EOPEntry> list = new ArrayList<EOPEntry>();
-        for (int i = -Sen2VMConstants.EOP_MARGIN; i <= Sen2VMConstants.EOP_MARGIN; i++) {
+        for (int i = -Sen2VMConstants.EOP_MARGIN; i <= Sen2VMConstants.EOP_MARGIN; i++)
+        {
             double mjd_inc = mjd + i;
             list.add(new EOPEntry((int) mjd_inc, dt, Sen2VMConstants.lod,
                                   org.orekit.utils.Constants.ARC_SECONDS_TO_RADIANS * x,
@@ -50,11 +52,13 @@ public class IERSutils {
         return list;
     }
 
-    public static void setLoaders(IERSConventions conventions, List<EOPEntry> eop) {
-
-        FramesFactory.addEOPHistoryLoader(conventions, new EOPHistoryLoader() {
+    public static void setLoaders(IERSConventions conventions, List<EOPEntry> eop)
+    {
+        FramesFactory.addEOPHistoryLoader(conventions, new EOPHistoryLoader()
+        {
             public void fillHistory(IERSConventions.NutationCorrectionConverter converter,
-                                    SortedSet<EOPEntry> history) {
+                                    SortedSet<EOPEntry> history)
+            {
                 history.addAll(eop);
             }
         });

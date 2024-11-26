@@ -3,8 +3,8 @@ package esa.sen2vm.utils;
 /**
  * Constants
  */
-public class Sen2VMConstants {
-
+public class Sen2VMConstants
+{
     /**
      * For operation purpose
      */
@@ -104,5 +104,4 @@ public class Sen2VMConstants {
     // Compute margin according to the band pixel size
     public static final double BAND_PIXEL_SIZE = RESOLUTION_10M_DOUBLE;
     public static final double MARGIN = GRANULE_NB_LINE_60_M * RESOLUTION_10M_DOUBLE / BAND_PIXEL_SIZE;
-
 }

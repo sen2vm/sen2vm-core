@@ -36,7 +36,7 @@
         },
         "deactivate_available_refining": {
              "type": "boolean",
-             "description": "(optional) Deactivate the refining"
+             "description": "(optional) Deactivate the refining, if available in the Datastrip Metadata. Default = false, i.e. the refining is kept. true => refining parameters are ignored"
          },
         "export_alt": {
               "type": "boolean",

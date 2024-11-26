@@ -31,17 +31,20 @@ public class PathUtils
      * @return the datastrio file path
      * @throws Sen2VMException
      */
-    public static String getDatastripFilePath(String l1bProduct) throws Sen2VMException {
-        
+    public static String getDatastripFilePath(String l1bProduct) throws Sen2VMException
+    {
         File datastripFolder = new File(l1bProduct + "/" + Sen2VMConstants.DATASTRIP_MAIN_FOLDER);
-        if (!datastripFolder.exists()) {
+        if (!datastripFolder.exists())
+        {
             throw new Sen2VMException("Datastrip folder " + datastripFolder + " does not exist");
         }
 
         File[] directories = datastripFolder.listFiles();
         String datastripFilePath = null;
-        for (File dir: directories) {
-            if (!dir.isDirectory()) {
+        for (File dir: directories)
+        {
+            if (!dir.isDirectory())
+            {
                 continue;
             }
             String filename = dir.getName().replaceAll("_N.*", "").replace(Sen2VMConstants.DATASTRIP_MSI_TAG, Sen2VMConstants.DATASTRIP_METADATA_TAG);
@@ -49,11 +52,13 @@ public class PathUtils
         }
 
         File datastripFile = new File(datastripFilePath);
-        if (datastripFile.exists()) {
+        if (datastripFile.exists())
+        {
             LOGGER.info("Find the following datastrip metadata file: " + datastripFilePath);
             return datastripFilePath;
         }
-        else {
+        else
+        {
             throw new Sen2VMException("No datastrip metadata file found inside folder: " + datastripFolder);
         }
     }
