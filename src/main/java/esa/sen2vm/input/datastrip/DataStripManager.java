@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.Map;
-import java.util.Set;
+import java.util.logging.Logger;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -34,40 +34,32 @@ import org.orekit.utils.IERSConventions;
 import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.TimeStampedAngularCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
+import org.sxgeo.exception.SXGeoException;
 import org.sxgeo.input.datamodels.DataSensingInfos;
 import org.sxgeo.input.datamodels.RefiningInfo;
 import org.sxgeo.input.datamodels.sensor.Sensor;
-import org.sxgeo.exception.SXGeoException;
 
 import esa.sen2vm.Sen2VM;
+import esa.sen2vm.enums.BandInfo;
+import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.utils.BandInfo;
-import esa.sen2vm.utils.DetectorInfo;
-import esa.sen2vm.utils.Utils;
+import esa.sen2vm.utils.IERSutils;
 import esa.sen2vm.utils.Sen2VMConstants;
-
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_AUXILIARY_DATA_INFO_DSL1B;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN.UT1_UTC;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN.GPS_TIME_TAI;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST.GIPP_FILENAME;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_ATTITUDE_DATA_INV.Corrected_Attitudes.Values;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_AUXILIARY_DATA_INFO_DSL1B;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_EPHEMERIS_DATA_INV.GPS_Points_List.GPS_Point;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL0;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL1A;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL1B;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_ACQUISITION_CONFIGURATION.TDI_Configuration_List.TDI_CONFIGURATION;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GENERAL_INFO_DS;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_QUICKLOOK_DESCRIPTOR;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST.GIPP_FILENAME;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_SENSOR_CONFIGURATION;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_SENSOR_CONFIGURATION.Time_Stamp;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_TIME_STAMP;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_TIME_STAMP.Band_Time_Stamp.Detector;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_DOUBLE_WITH_ARCSEC_UNIT_ATTR;
-import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_DOUBLE_WITH_S_UNIT_ATTR;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.AN_UNCERTAINTIES_XYZ_TYPE;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_DOUBLE_WITH_ARCSEC_UNIT_ATTR;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_POLYNOMIAL_MODEL;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_ROTATION_TRANSLATION_HOMOTHETY_UNCERTAINTIES_TYPE_LOWER_CASE;
 import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_datastrip_metadata.Level1B_DataStrip;
@@ -76,7 +68,8 @@ import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_datastrip_metadata.
  * Manager for SAD file
  */
 
-public class DataStripManager {
+public class DataStripManager
+{
     /**
      * Get sen2VM logger
      */
@@ -159,27 +152,34 @@ public class DataStripManager {
     private List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1B;
 
     /**
-     * Constructor from SAD XML file
+     * Constructor from SAD XML file and necessary data files
      * @param dsFilePath path to SAD XML file
-     * @param iersDirectoryPath path to the IERS directory
-     * @param activateAvailableRefining if true use refining parameters present in the datastrip, else will ignore available refining
+     * @param iersFilePath path to the IERS file
+     * @param activateAvailableRefining if true use refining parameters present in the datastrip,
+     *        else will ignore available refining
      * @throws Sen2VMException
      */
-    public DataStripManager(String dsFilePath, String iersDirectoryPath, Boolean activateAvailableRefining) throws Sen2VMException {
+    public DataStripManager(String dsFilePath, String iersFilePath,
+                            Boolean activateAvailableRefining) throws Sen2VMException
+    {
         this.dsFile = new File(dsFilePath);
         gps = TimeScalesFactory.getGPS();
-        loadFile(dsFilePath, iersDirectoryPath, activateAvailableRefining);
+        loadFile(dsFilePath, iersFilePath, activateAvailableRefining);
     }
 
     /**
-     * Load datastrip file
+     * Load SAD file and necessary data
      * @param dsFilePath path to SAD XML file
-     * @param iersDirectoryPath path to the IERS directory
-     * @param activateAvailableRefining if true use refining parameters present in the datastrip, else will ignore available refining
+     * @param iersFilePath path to the IERS file
+     * @param activateAvailableRefining if true use refining parameters present in the datastrip,
+     *        else will ignore available refining
      * @throws Sen2VMException
      */
-    protected void loadFile(String dsFilePath, String iersDirectoryPath, Boolean activateAvailableRefining) throws Sen2VMException {
-        try {
+    protected void loadFile(String dsFilePath, String iersFilePath,
+                            Boolean activateAvailableRefining) throws Sen2VMException
+    {
+        try
+        {
             // Load SAD xml file
             JAXBContext jaxbContext = JAXBContext.newInstance(Level1B_DataStrip.class.getPackage().getName());
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -192,14 +192,16 @@ public class DataStripManager {
 
             auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
 
-            initOrekitRessources(iersDirectoryPath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
+            initOrekitRessources(Sen2VMConstants.OREKIT_DATA_DIR,iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
 
             // Test if we need to take refining data into account according to the flag
-            if (activateAvailableRefining) {
+            if (activateAvailableRefining)
+            {
                 if (l1B_datastrip.getImage_Data_Info().getGeometric_Info().getImage_Refining() != null)
                 {
                     String refinedType = l1B_datastrip.getImage_Data_Info().getGeometric_Info().getImage_Refining().getFlag();
-                    if (refinedType.equalsIgnoreCase("REFINED")) {
+                    if (refinedType.equalsIgnoreCase("REFINED"))
+                    {
                         // get the list of corrections
                         refinedCorrectionsListL1B = l1B_datastrip.getImage_Data_Info().getGeometric_Info().getRefined_Corrections_List().getRefined_Corrections();
 
@@ -212,12 +214,12 @@ public class DataStripManager {
                 }
             }
 
-            // Get quaternions and positions/velocities list from xml file
+            // Get quaternions and positions/velocities list from XML file
             computeSatelliteQList();
             computeSatellitePVList(activateAvailableRefining);
             computeMinMaxLinePerSensor();
 
-            // Instanciate dataSensingInfos that will be use for SimpleLocEngine
+            // Instantiate dataSensingInfos that will be used for SimpleLocEngine
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
 
         } catch (JAXBException e) {
@@ -230,33 +232,41 @@ public class DataStripManager {
     }
 
     /**
-     * Load IERS file
-     * @param iersDirectoryPath path to the IERS directory
+     * Load orekit data and IERS file
+     * @param orekitDataPath path to orekit data directory
+     * @param iersFilePath path to IERS file (must be updated regularly)
+     * @param dataStripTimeInfo datastrip time
      * @throws Sen2VMException
      */
-    public void initOrekitRessources(String iersFilePath, A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo) throws Sen2VMException {
-		try {
-		    // set up default Orekit data
-			File orekitDataDir = new File(System.getProperty("user.dir") + "/" + Sen2VMConstants.OREKIT_DATA_DIR);
-			if (orekitDataDir == null || (!orekitDataDir.exists())) {
-			    throw new Sen2VMException("Orekit data not found");
-			}
-			DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
+    public void initOrekitRessources(String orekitDataPath, String iersFilePath,
+                A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo) throws Sen2VMException
+    {
+        try
+        {
+            // Set up default Orekit data
+            File orekitDataDir = new File(orekitDataPath);
+            if (orekitDataDir == null || (!orekitDataDir.exists()))
+            {
+                throw new Sen2VMException("Orekit data dir not found" + orekitDataPath);
+            }
+            DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
 
             // Read IERS information from metadata
-		    if (iersFilePath.equals("")) {
-		        AN_IERS_BULLETIN iersBulletin = auxiliaryDataInfo.getIERS_Bulletin();
-		        AN_IERS_BULLETIN.UT1_UTC ut1tutc = iersBulletin.getUT1_UTC();
-		        A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleUAngle = iersBulletin.getPOLE_U_ANGLE();
-		        A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleVAngle = iersBulletin.getPOLE_V_ANGLE();
+            if (iersFilePath.equals(""))
+            {
+                LOGGER.info("Reading IERS from Metadata");
+                AN_IERS_BULLETIN iersBulletin = auxiliaryDataInfo.getIERS_Bulletin();
+                AN_IERS_BULLETIN.UT1_UTC ut1tutc = iersBulletin.getUT1_UTC();
+                A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleUAngle = iersBulletin.getPOLE_U_ANGLE();
+                A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleVAngle = iersBulletin.getPOLE_V_ANGLE();
 
-		        XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
+                XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
                 AbsoluteDate datastripStartDateUTC = new AbsoluteDate(datastripStartDateGregorian.toString(), TimeScalesFactory.getUTC());
                 int year = datastripStartDateUTC.getComponents(TimeScalesFactory.getUTC()).getDate().getYear();
                 System.out.println("year = "+year);
 
-                Utils.setLoaders(IERSConventions.IERS_2010,
-                                 Utils.buildEOPList(IERSConventions.IERS_2010,
+                IERSutils.setLoaders(IERSConventions.IERS_2010,
+                                 IERSutils.buildEOPList(
                                  getBestFitITRFVersion(year),
                                  datastripStartDateUTC,
                                  ut1tutc.getValue(),
@@ -264,7 +274,8 @@ public class DataStripManager {
                                  poleVAngle.getValue()));
             }
             // Or get IERS bulletin file and instantiate FramesFactory with it
-            else {
+            else
+            {
                 File iersFile = new File(iersFilePath);
                 FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
 
@@ -274,22 +285,28 @@ public class DataStripManager {
                 // we fix the EOP continuity threshold to one year instead of the normal gap ...
                 FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
             }
-		} catch (Exception e) {
-			throw new Sen2VMException("Something went wrong during initialization of IERS and orekit ressources ", e);
-		}
-	}
+        }
+        catch (Exception e)
+        {
+            throw new Sen2VMException("Something went wrong during initialization of IERS and orekit ressources ", e);
+        }
+    }
 
     /**
      * Get last supported ITRF version, the best fitted version for input year
      */
-    public ITRFVersion getBestFitITRFVersion(int targetYear) {
+    public ITRFVersion getBestFitITRFVersion(int targetYear)
+    {
         ITRFVersion closestYear = ITRFVersion.ITRF_1988;
         int minDifference = Integer.MAX_VALUE;
-        for (final ITRFVersion iv : ITRFVersion.values()) {
+        for (final ITRFVersion iv : ITRFVersion.values())
+        {
             int currentYear = iv.getYear();
-            if (currentYear <= targetYear) {
+            if (currentYear <= targetYear)
+            {
                 int difference = targetYear - currentYear;
-                if (difference < minDifference) {
+                if (difference < minDifference)
+                {
                     closestYear = iv;
                     minDifference = difference;
                 }
@@ -298,17 +315,18 @@ public class DataStripManager {
         return closestYear;
     }
 
-	/**
-	 * Fill
-	 * @param dataStripTimeInfo
-	 * @param refinedCorrectionsListL1
-	 */
-	private void readRefinedCorrections(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo, List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1) throws OrekitException, Sen2VMException {
-
+    /**
+     * Fill
+     * @param dataStripTimeInfo
+     * @param refinedCorrectionsListL1
+     */
+    private void readRefinedCorrections(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo, List<A_REFINED_CORRECTIONS> refinedCorrectionsListL1) throws OrekitException, Sen2VMException
+    {
         // refining corrections are computed related to compute acquisition center time
         AbsoluteDate acquisitionCenterTime = computeAcquisitionCenter(dataStripTimeInfo);
 
-        if (refinedCorrectionsListL1 == null) {
+        if (refinedCorrectionsListL1 == null)
+        {
             throw new Sen2VMException("refinedCorrectionsListL1 is null");
         }
 
@@ -332,8 +350,8 @@ public class DataStripManager {
         HashMap<Sensor, PolynomialFunction> msiToFocalPlaneRotationZ = new HashMap<Sensor, PolynomialFunction>();
         HashMap<Sensor, PolynomialFunction> msiToFocalPlaneHomothety = new HashMap<Sensor, PolynomialFunction>();
 
-        for (https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS refinedCorrections: refinedCorrectionsListL1){
-
+        for (https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS refinedCorrections: refinedCorrectionsListL1)
+        {
             // Spacecraft position
             AN_UNCERTAINTIES_XYZ_TYPE spacecraftPositionUncertainties =  refinedCorrections.getSpacecraft_Position();
             // Spacecraft/Piloting to MSI transformation
@@ -341,7 +359,8 @@ public class DataStripManager {
             // MSI to Focal plane transformation
             List<A_REFINED_CORRECTIONS.Focal_Plane_State> focalPlaneStateUncertaintiesList = refinedCorrections.getFocal_Plane_State();
 
-            if (spacecraftPositionUncertainties != null) {
+            if (spacecraftPositionUncertainties != null)
+            {
                 // Spacecraft position (expressed in meters) in the local spacecraft reference frame (EVG Euclidium state)
                 // Init of the polynomial functions for each correction
                 ephemerisXpolynom = spacecraftPositionUncertainties.getX();
@@ -350,7 +369,8 @@ public class DataStripManager {
             }
 
             // Spacecraft/Piloting to MSI transformation
-            if (msiStateUncertainties != null) {
+            if (msiStateUncertainties != null)
+            {
                 // Init of the polynomial functions for each correction
                 AN_UNCERTAINTIES_XYZ_TYPE spaceCraftToMSIRotation = msiStateUncertainties.getRotation();
                 // rotation parts
@@ -366,9 +386,12 @@ public class DataStripManager {
             }
 
             // MSI to Focal plane transformation
-            if (focalPlaneStateUncertaintiesList != null) {
-                for (https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS.Focal_Plane_State focalPlaneStateUncertainties : focalPlaneStateUncertaintiesList) {
-                    if (focalPlaneStateUncertainties != null) {
+            if (focalPlaneStateUncertaintiesList != null)
+            {
+                for (https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_REFINED_CORRECTIONS.Focal_Plane_State focalPlaneStateUncertainties : focalPlaneStateUncertaintiesList)
+                {
+                    if (focalPlaneStateUncertainties != null)
+                    {
                         String focalPlaneName = focalPlaneStateUncertainties.getFocalPlaneId().value();
                         Sensor sensor = new Sensor(focalPlaneName, null, null, 0.0, null, null, null);
 
@@ -376,7 +399,8 @@ public class DataStripManager {
                         AN_UNCERTAINTIES_XYZ_TYPE msiToFocalPlaneRotationXYZ = focalPlaneStateUncertainties.getRotation();
 
                         // Check if the node exist (different from null)
-                        if (msiToFocalPlaneRotationXYZ != null) {
+                        if (msiToFocalPlaneRotationXYZ != null)
+                        {
                             msiToFocalPlaneRotationX.put(sensor, createAnglePolynomialFunction(msiToFocalPlaneRotationXYZ.getX(),refiningFocalPlaneStateAngleSigns[0]));
                             msiToFocalPlaneRotationY.put(sensor, createAnglePolynomialFunction(msiToFocalPlaneRotationXYZ.getY(),refiningFocalPlaneStateAngleSigns[1]));
                             msiToFocalPlaneRotationZ.put(sensor, createAnglePolynomialFunction(msiToFocalPlaneRotationXYZ.getZ(),refiningFocalPlaneStateAngleSigns[2]));
@@ -385,10 +409,12 @@ public class DataStripManager {
                         // homothety part
                         AN_UNCERTAINTIES_XYZ_TYPE msiToFocalPlaneHomothetyXYZ = focalPlaneStateUncertainties.getHomothety();
 
-                        if (msiToFocalPlaneHomothetyXYZ != null) {
+                        if (msiToFocalPlaneHomothetyXYZ != null)
+                        {
                             // Only Z axis homothety
                             PolynomialFunction msiToFocalPlaneHomothetyZ = createPolynomialFunction(focalPlaneStateUncertainties.getHomothety().getZ());
-                            if (msiToFocalPlaneHomothetyZ != null) {
+                            if (msiToFocalPlaneHomothetyZ != null)
+                            {
                                 msiToFocalPlaneHomothety.put(sensor, msiToFocalPlaneHomothetyZ);
                             }
                         }
@@ -415,7 +441,8 @@ public class DataStripManager {
      * Fill satelliteQList using values from SAD XML file
      * @throws Sen2VMException
      */
-    protected void computeSatelliteQList() throws Sen2VMException {
+    protected void computeSatelliteQList() throws Sen2VMException
+    {
         satelliteQList = new ArrayList<TimeStampedAngularCoordinates>();
 
         // This HashSet is used only to check a duplicate date in the quaternions
@@ -423,9 +450,11 @@ public class DataStripManager {
 
         // Loop over Corrected Attitudes value list
         List<Values> correctedAttitudeValueList = l1B_datastrip.getSatellite_Ancillary_Data_Info().getAttitudes().getCorrected_Attitudes().getValues();
-        for (Values values : correctedAttitudeValueList) {
+        for (Values values : correctedAttitudeValueList)
+        {
             XMLGregorianCalendar gpsTime = values.getGPS_TIME();
-            if (gpsTime == null) {
+            if (gpsTime == null)
+            {
                 throw new Sen2VMException(Sen2VMConstants.ERROR_QUATERNION_NULL_GPS);
             }
             // Extract Quaternion values from XML
@@ -439,10 +468,13 @@ public class DataStripManager {
             Rotation rotation = new Rotation(q0, q1, q2, q3, true);
             TimeStampedAngularCoordinates pair = new TimeStampedAngularCoordinates(attitudeDate, rotation, Vector3D.ZERO, Vector3D.ZERO);
 
-            if (dateSet.contains(attitudeDate)) {
+            if (dateSet.contains(attitudeDate))
+            {
                 // duplicate data for the current ephemeris date => we aldeady add this quaternion => we just ignore it
                 LOGGER.warning("Duplicate quaternion with date : " + values.getGPS_TIME().toString());
-            } else {
+            }
+            else
+            {
                 dateSet.add(attitudeDate);
                 satelliteQList.add(pair);
             }
@@ -453,8 +485,10 @@ public class DataStripManager {
      * Fill satellitePVList using values from SAD XML file
      * @throws Sen2VMException
      */
-    protected void computeSatellitePVList(Boolean activateAvailableRefining) throws Sen2VMException {
-        try {
+    protected void computeSatellitePVList(Boolean activateAvailableRefining) throws Sen2VMException
+    {
+        try
+        {
             // Init of used frames
             Frame eme2000 = FramesFactory.getEME2000();
             Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, Sen2VMConstants.simpleEOP);
@@ -464,9 +498,11 @@ public class DataStripManager {
 
             // Loop over ephemeris value list
             List<GPS_Point> ephemerisGpsPointList = l1B_datastrip.getSatellite_Ancillary_Data_Info().getEphemeris().getGPS_Points_List().getGPS_Point();
-            for (GPS_Point ephemeris : ephemerisGpsPointList) {
+            for (GPS_Point ephemeris : ephemerisGpsPointList)
+            {
                 XMLGregorianCalendar gpsTime = ephemeris.getGPS_TIME();
-                if (gpsTime == null) {
+                if (gpsTime == null)
+                {
                     continue;
                 }
                 // extract PV from XML objects
@@ -495,17 +531,22 @@ public class DataStripManager {
                 // Convert PV from ITRF to EME2000
                 TimeStampedPVCoordinates pair = new TimeStampedPVCoordinates(ephemerisDate, pvEME2000.getPosition(), pvEME2000.getVelocity(), Vector3D.ZERO);
 
-                if (dateSet.contains(ephemerisDate)) {
+                if (dateSet.contains(ephemerisDate))
+                {
                     // duplicate data for the current ephemeris date => we aldeady add this pv coordinate => we just ignore it
                     System.out.println("Duplicate PV !" + ephemeris.getGPS_TIME().toString());
-                } else {
+                }
+                else
+                {
                     // Compute refining corrections before updating satellite PVlist
-                    if (activateAvailableRefining) {
+                    if (activateAvailableRefining)
+                    {
                         // Test if the polynoms and the acquisition center time  are not null before applying them
                         if (refiningInfo.getEphemerisXpolyFunc() != null &&
                             refiningInfo.getEphemerisYpolyFunc() != null &&
                             refiningInfo.getEphemerisZpolyFunc() != null &&
-                            refiningInfo.getAcquisitionCenterTime() != null) {
+                            refiningInfo.getAcquisitionCenterTime() != null)
+                        {
 
                             // Simple way to compute the transformation from EME2000 to LOF,
                             // as we need only to perform the transform for the current point
@@ -531,7 +572,9 @@ public class DataStripManager {
                     satellitePVList.add(pair);
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new Sen2VMException(e);
         }
     }
@@ -541,8 +584,8 @@ public class DataStripManager {
      * @param pv position-velocity of the spacecraft in inertial frame EME2000
      * @return transform from the frame where position-velocity are defined to local orbital frame
      */
-    protected Transform transformFromEME2000toLOF(final AbsoluteDate date, final PVCoordinates pvEME2000) {
-
+    protected Transform transformFromEME2000toLOF(final AbsoluteDate date, final PVCoordinates pvEME2000)
+    {
         // compute the translation part of the transform
         final Transform translation = new Transform(date, pvEME2000.negate());
 
@@ -559,7 +602,6 @@ public class DataStripManager {
                              new Vector3D(1.0 / p.getNormSq(), rotationFromEME2000toLOF.applyTo(momentum)));
 
         return new Transform(date, translation, rotation);
-
     }
 
     /** Create a polynomial function for refined corrections
@@ -567,11 +609,11 @@ public class DataStripManager {
      * @param XMLpolynomialModel
      * @return
      */
-    private PolynomialFunction createPolynomialFunction(A_POLYNOMIAL_MODEL XMLpolynomialModel) {
-
+    private PolynomialFunction createPolynomialFunction(A_POLYNOMIAL_MODEL XMLpolynomialModel)
+    {
         PolynomialFunction polyFunction = null;
-        if (XMLpolynomialModel != null){
-
+        if (XMLpolynomialModel != null)
+        {
            // coef will be non null
             int coefSize = XMLpolynomialModel.getCOEFFICIENTS().size();
             Double coef[] = new Double[coefSize];
@@ -581,16 +623,16 @@ public class DataStripManager {
 
             // convert the Double[] to double[] for PolynomialFunction creation
             double[] coefPoly = new double[coefSize];
-            for (int i = 0; i < coefSize; i++) {
+            for (int i = 0; i < coefSize; i++)
+            {
                 coefPoly[i] = coef[i].doubleValue();
-             }
+            }
 
             // create the associated polynomial function (any degree is possible !!!)
             polyFunction = new PolynomialFunction(coefPoly);
 
         }
         return polyFunction;
-
     }
 
     /** Create a polynomial function for angle refined corrections
@@ -599,19 +641,20 @@ public class DataStripManager {
      * @param angleSign
      * @return PolynomialFunction
      */
-    private PolynomialFunction createAnglePolynomialFunction(A_POLYNOMIAL_MODEL XMLpolynomialModel, int angleSign) {
-
+    private PolynomialFunction createAnglePolynomialFunction(A_POLYNOMIAL_MODEL XMLpolynomialModel, int angleSign)
+    {
         PolynomialFunction polyFunction = null;
 
-        if (XMLpolynomialModel != null){
+        if (XMLpolynomialModel != null)
+        {
             polyFunction = createPolynomialFunction(XMLpolynomialModel);
-            if (angleSign == -1){
+            if (angleSign == -1)
+            {
                 // at this stage polyFunction is not null
                 return polyFunction.negate();
             }
         }
         return polyFunction;
-
     }
 
     /** Compute the acquisition time center (acquisition mean's time)
@@ -619,8 +662,8 @@ public class DataStripManager {
      * @param dataStripTimeInfo
      * @throws OrekitException
      */
-    private AbsoluteDate computeAcquisitionCenter(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo) throws OrekitException {
-
+    private AbsoluteDate computeAcquisitionCenter(A_GENERAL_INFO_DS.Datastrip_Time_Info dataStripTimeInfo) throws OrekitException
+    {
         // get the datastrip acquisition start and stop
         XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
         XMLGregorianCalendar datastripStopDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_STOP();
@@ -639,7 +682,8 @@ public class DataStripManager {
     /**
      * Compute min and max date line
      */
-    private void computeMinMaxLinePerSensor() {
+    private void computeMinMaxLinePerSensor()
+    {
         minLinePerSensor = new HashMap<String, Double>();
         maxLinePerSensor = new HashMap<String, Double>();
 //        for (DetectorInfo detectorInfo: DetectorInfo.getAllDetectorInfo()) {
@@ -654,7 +698,8 @@ public class DataStripManager {
     /*
      * Get DataSensingInfos
      */
-    public DataSensingInfos getDataSensingInfos() {
+    public DataSensingInfos getDataSensingInfos()
+    {
        return dataSensingInfos;
     }
 
@@ -663,12 +708,16 @@ public class DataStripManager {
      * @param bandInfo the band we must find the corresponding tdi configuration for
      * @return tdi configuration for the given band
      */
-    public String getTdiConfVal(BandInfo bandInfo) {
+    public String getTdiConfVal(BandInfo bandInfo)
+    {
         String tdiConfVal = null;
-        if (sensorConfiguration != null) {
+        if (sensorConfiguration != null)
+        {
             List<TDI_CONFIGURATION> tdiConfList = sensorConfiguration.getAcquisition_Configuration().getTDI_Configuration_List().getTDI_CONFIGURATION();
-            for (TDI_CONFIGURATION tdiConf : tdiConfList) {
-                if (tdiConf.getBandId() == Integer.parseInt(bandInfo.getName())) {
+            for (TDI_CONFIGURATION tdiConf : tdiConfList)
+            {
+                if (tdiConf.getBandId() == Integer.parseInt(bandInfo.getName()))
+                {
                     // we found the band = get TDI_CONFIGURATION value
                     tdiConfVal = tdiConf.getValue().value();
                 }
@@ -683,26 +732,35 @@ public class DataStripManager {
      * @param gippVersion is the version of the input GIPP
      * @throws Sen2VMException
      */
-    public void checkGIPPVersion(String gippFilepath, String gippVersion) throws Sen2VMException {
+    public void checkGIPPVersion(String gippFilepath, String gippVersion) throws Sen2VMException
+    {
         boolean compatibleVersion = false;
         String expectedVersion = null;
-        if (gippVersion != null) {
+        if (gippVersion != null)
+        {
             List<A_GIPP_LIST.GIPP_FILENAME> gippList = auxiliaryDataInfo.getGIPP_List().getGIPP_FILENAME();
-            for (GIPP_FILENAME gipp_filename : gippList) {
-                if (gippFilepath.contains(gipp_filename.getValue())) {
+            for (GIPP_FILENAME gipp_filename : gippList)
+            {
+                if (gippFilepath.contains(gipp_filename.getValue()))
+                {
                     expectedVersion = gipp_filename.getVersion();
-                    if (gippVersion.equals(gipp_filename.getVersion())) {
+                    if (gippVersion.equals(gipp_filename.getVersion()))
+                    {
                         compatibleVersion = true;
                     }
                 }
             }
-        } else {
+        }
+        else
+        {
             throw new Sen2VMException("GIPP version could not be find for " + gippFilepath);
         }
 
-        if (!compatibleVersion) {
+        if (!compatibleVersion)
+        {
             String errorMessage = gippFilepath + " with version " + gippVersion + " is not supported by current datastrip " + dsFile + ".";
-            if (expectedVersion != null) {
+            if (expectedVersion != null)
+            {
                 throw new Sen2VMException(errorMessage + " Expected version is " + expectedVersion + ".");
             }
             throw new Sen2VMException(errorMessage);
@@ -715,7 +773,8 @@ public class DataStripManager {
      * @param detectorIndex the detector index
      * @return
      */
-    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo) {
+    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo)
+    {
         AbsoluteDate referenceDate = null;
         double referenceLineDouble = 1d;
         AbsoluteDate defaultReferenceDate = null;
@@ -724,33 +783,44 @@ public class DataStripManager {
         // We get the value of a half line period for the given band resolution
         double linePeriod = getNewPositionFromResolution(getLinePeriod(), Sen2VMConstants.RESOLUTION_10M_DOUBLE, bandInfo.getPixelHeight());
         double halfLinePeriod = linePeriod / 2;
-        if (sensorConfiguration != null) {
+        if (sensorConfiguration != null)
+        {
             Time_Stamp timeStampElement = sensorConfiguration.getTime_Stamp();
             List<A_TIME_STAMP.Band_Time_Stamp> bandList = timeStampElement.getBand_Time_Stamp();
-            if (bandList != null) {
-                for (A_TIME_STAMP.Band_Time_Stamp bandTimeStamp : bandList) {
+            if (bandList != null)
+            {
+                for (A_TIME_STAMP.Band_Time_Stamp bandTimeStamp : bandList)
+                {
                     int bandId = Integer.parseInt(bandTimeStamp.getBandId());
-                    if (bandId == bandInfo.getIndex()) {
+                    if (bandId == bandInfo.getIndex())
+                    {
                         List<Detector> detectorList = bandTimeStamp.getDetector();
-                        if (detectorList != null) {
-                            for (Detector detector : detectorList) {
+                        if (detectorList != null)
+                        {
+                            for (Detector detector : detectorList)
+                            {
                                 String detectorName = detector.getDetectorId();
-                                if (detectorName.equals(detectorInfo.getName())) {
+                                if (detectorName.equals(detectorInfo.getName()))
+                                {
                                     found = true;
                                     int refLineInt = detector.getREFERENCE_LINE();
-                                    if (refLineInt != 0 && refLineInt != 1) {
+                                    if (refLineInt != 0 && refLineInt != 1)
+                                    {
                                         referenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.RESOLUTION_10M_DOUBLE, bandInfo.getPixelHeight());
                                     }
                                     XMLGregorianCalendar referenceDateXML = detector.getGPS_TIME();
                                     referenceDate = new AbsoluteDate(referenceDateXML.toString(), gps);
                                     // We shift the date of a half line period to be in the middle of the line
                                     referenceDate = referenceDate.shiftedBy(halfLinePeriod / 1000d);
-                                } else {
+                                }
+                                else
+                                {
                                     // If bypass is activated, we will use the last value found for missing detector
                                     int refLineInt = detector.getREFERENCE_LINE();
-                                    if (refLineInt != 0 && refLineInt != 1) {
+                                    if (refLineInt != 0 && refLineInt != 1)
+                                    {
                                         defaultReferenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.RESOLUTION_10M_DOUBLE,
-                                                bandInfo.getPixelHeight());
+                                        bandInfo.getPixelHeight());
                                     }
                                     XMLGregorianCalendar referenceDateXML = detector.getGPS_TIME();
                                     defaultReferenceDate = new AbsoluteDate(referenceDateXML.toString(), gps);
@@ -766,9 +836,12 @@ public class DataStripManager {
 
         // 1000d / ( linePeriod * bandPixelHeight / 10)
         LineDatation lineDatation = null;
-        if (found && referenceDate != null) {
+        if (found && referenceDate != null)
+        {
             lineDatation = new LinearLineDatation(referenceDate, referenceLineDouble, 1000d / linePeriod);
-        } else {
+        }
+        else
+        {
             lineDatation = new LinearLineDatation(defaultReferenceDate, defaultReferenceLineDouble,
                     1000d / linePeriod);
         }
@@ -783,7 +856,8 @@ public class DataStripManager {
      * @param wantedSize wanted size
      * @return
      */
-    public double getNewPositionFromSize(double position, double pixelSize, double wantedSize) {
+    public double getNewPositionFromSize(double position, double pixelSize, double wantedSize)
+    {
         double returned = position * pixelSize / wantedSize;
         return returned;
     }
@@ -795,7 +869,8 @@ public class DataStripManager {
      * @param wantedResolution wanted resolution
      * @return
      */
-    protected double getNewPositionFromResolution(double position, double currentResolution, double wantedResolution) {
+    protected double getNewPositionFromResolution(double position, double currentResolution, double wantedResolution)
+    {
         double returned = position / currentResolution * wantedResolution;
         return returned;
     }
@@ -804,9 +879,11 @@ public class DataStripManager {
      * Get line period from Data strip (in ms)
      * @return line period from Data strip (in ms)
      */
-    public double getLinePeriod() {
+    public double getLinePeriod()
+    {
         double linePeriod = 0d;
-        if (sensorConfiguration != null) {
+        if (sensorConfiguration != null)
+        {
             Time_Stamp timeStampElement = sensorConfiguration.getTime_Stamp();
             linePeriod = timeStampElement.getLINE_PERIOD().getValue();
         }
@@ -816,7 +893,8 @@ public class DataStripManager {
     /**
      * @return the RefiningInfo
      */
-    public RefiningInfo getRefiningInfo() {
+    public RefiningInfo getRefiningInfo()
+    {
         return refiningInfo;
     }
 }

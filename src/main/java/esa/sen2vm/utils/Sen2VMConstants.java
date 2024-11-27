@@ -1,9 +1,31 @@
 package esa.sen2vm.utils;
 
-import org.hipparchus.util.MathUtils;
-
-public class Sen2VMConstants {
-
+/**
+ * Constants
+ */
+public class Sen2VMConstants
+{
+    /**
+     * For operation purpose
+     */
+    public static final String DIRECT = "DIRECT";
+    public static final String INVERSE = "INVERSE";
+    
+    /**
+     * To check the GIPP version (by default the GIPP version is checked)
+     */
+    public static final boolean GIPP_CHECK = true;
+    
+    /**
+     * To deactivate the refining (by default the refining is set)
+     */
+    public static final boolean DEACTIVATE_REFINING = false;
+    
+    /**
+     * To export altitude in direct location grid (by default the export is done)
+     */
+    public static final boolean EXPORT_ALT = false;
+    
     /**
      * For bandInfo purpose
      */
@@ -36,6 +58,12 @@ public class Sen2VMConstants {
     public static final String dbl_extention_big = ".DBL";
 
     /**
+     * Filename of JSON schemas
+     */
+    public static final String JSON_SCHEMA_CONFIG = "schema_config.json";
+    public static final String JSON_SCHEMA_PARAMS = "schema_params.json";
+
+    /**
      * For IERS purpose
      */
     public static final Boolean simpleEOP = true;
@@ -45,13 +73,10 @@ public class Sen2VMConstants {
     public static final double dx = 0.0;
     public static final double dy = 0.0;
     public static final int EOP_MARGIN = 5;
-    // Conversion factor from arc seconds to radians: 2*PI/(360*60*60)
-    public static final double ARC_SECONDS_TO_RADIANS = MathUtils.TWO_PI / 1296000;
-    // Offset between julian day epoch and modified julian day epoch
+    // Offset between JULIAN day epoch and modified JULIAN day epoch
     public static final double JD_TO_MJD = 2400000.5;
     // Duration of a mean solar day: 86400.0 s
-    public static final double JULIAN_DAY = 86400.0;
-
+    public static final double JULIAN_DAY = org.orekit.utils.Constants.JULIAN_DAY;
 
     /**
      * Error management
@@ -59,11 +84,16 @@ public class Sen2VMConstants {
     public static final String ERROR_QUATERNION_NULL_GPS = "error.quaternion.null.gps";
 
     /**
-     * Rugged Manager initialisation
+     * Rugged Manager initialization
      */
+    // Orekit data path
+    public static final String OREKIT_DATA_DIR = "orekit-data";
+    
+    
+    
     // Granule line (for a 10m resolution band)
     public static final double GRANULE_NB_LINE_10_M = 2304.0;
-    // Granule line (for a 60m resolution band) ??
+    // TODO ?? Granule line (for a 60m resolution band) 
     public static final double GRANULE_NB_LINE_60_M = 384.0;
 
     // The interval is split in 1/4 parts.
@@ -74,6 +104,4 @@ public class Sen2VMConstants {
     // Compute margin according to the band pixel size
     public static final double BAND_PIXEL_SIZE = RESOLUTION_10M_DOUBLE;
     public static final double MARGIN = GRANULE_NB_LINE_60_M * RESOLUTION_10M_DOUBLE / BAND_PIXEL_SIZE;
-
-    public static final String OREKIT_DATA_DIR = "src/main/resources/orekit-data";
 }

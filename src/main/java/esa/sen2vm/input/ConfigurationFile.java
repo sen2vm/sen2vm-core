@@ -1,40 +1,41 @@
 package esa.sen2vm.input;
 
-import java.io.File;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONException;
-
-import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.utils.Sen2VMConstants;
-
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import esa.sen2vm.enums.BandInfo;
+import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.utils.PathUtils;
+import esa.sen2vm.utils.Sen2VMConstants;
+
 /**
- * ConfigurationFile class
+ * Read the configuration file
  *
  */
 public class ConfigurationFile extends InputFileManager
 {
     private static final Logger LOGGER = Logger.getLogger(ConfigurationFile.class.getName());
 
-    private String filepath;
+    private String configPath;
     private String l1bProduct;
     private String gippFolder;
-    private boolean gippVersionCheck = true;
+    private boolean gippVersionCheck = Sen2VMConstants.GIPP_CHECK;
     private String dem;
     private String geoid;
     private String iers = "";
     private String pod;
     private String operation;
-    private boolean refining = false;
+    private boolean deactivateRefining = Sen2VMConstants.DEACTIVATE_REFINING;
     private float band10m;
     private float band20m;
     private float band60m;
+    private boolean exportAlt = Sen2VMConstants.EXPORT_ALT;
     private float ul_x;
     private float ul_y;
     private float lr_x;
@@ -44,33 +45,42 @@ public class ConfigurationFile extends InputFileManager
 
     /**
      * Constructor
-     * @param filepath Path to the configuration file to parse
-     * @param filepath Path to the configuration file to parse
+     * @param configPath path to the JSON configuration file
      * @throws Sen2VMException
      */
-    public ConfigurationFile(String filepath) throws Sen2VMException {
-        this.filepath = filepath;
-        if(check_schema(this.filepath, "src/main/resources/schema_config.json")) {
-            parse(this.filepath);
+    public ConfigurationFile(String configPath) throws Sen2VMException
+    {
+        this.configPath = configPath;
+        InputStream schemaStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(Sen2VMConstants.JSON_SCHEMA_CONFIG);
+        
+        if (schemaStream == null)
+        {
+            throw new Sen2VMException("Impossible to find the JSON schema for configuration file: " + Sen2VMConstants.JSON_SCHEMA_CONFIG);
+        }
+        // Check if the JSON file is correct
+        if(check_schema(this.configPath, schemaStream))
+        {
+            parse(this.configPath);
         }
     }
 
     /**
-     * Parse configuration file
-     * @param filepath Path to the configuration file to parse
+     * Parse JSON configuration file
+     * @param jsonFilePath path to the JSON configuration file
      * @throws Sen2VMException
      */
-    public void parse(String filepath) throws Sen2VMException {
-        LOGGER.info("Parsing file "+ filepath);
-
-        try (InputStream fis = new FileInputStream(filepath)) {
-
+    public void parse(String jsonFilePath) throws Sen2VMException
+    {
+        LOGGER.info("Parsing file " + jsonFilePath);
+        
+        try (InputStream fis = new FileInputStream(jsonFilePath))
+        {
             JSONObject jsonObject = new JSONObject(new JSONTokener(fis));
 
-            this.l1bProduct = checkPath(jsonObject.getString("l1b_product"));
-            this.gippFolder = checkPath(jsonObject.getString("gipp_folder"));
-            this.dem = checkPath(jsonObject.getString("dem"));
-            this.geoid = checkPath(jsonObject.getString("geoid"));
+            this.l1bProduct = PathUtils.checkPath(jsonObject.getString("l1b_product"));
+            this.gippFolder = PathUtils.checkPath(jsonObject.getString("gipp_folder"));
+            this.dem = PathUtils.checkPath(jsonObject.getString("dem"));
+            this.geoid = PathUtils.checkPath(jsonObject.getString("geoid"));
             this.pod = jsonObject.getString("pod");
             this.operation = jsonObject.getString("operation");
 
@@ -79,23 +89,35 @@ public class ConfigurationFile extends InputFileManager
             this.band20m = steps.getFloat("20m_bands");
             this.band60m = steps.getFloat("60m_bands");
 
+            this.exportAlt = jsonObject.getBoolean("export_alt");
+            
             // Optional parameters
-            if (jsonObject.has("gipp_version_check")) {
+            if (jsonObject.has("gipp_version_check"))
+            {
                 this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
             }
-            if (jsonObject.has("iers")) {
+            if (jsonObject.has("iers"))
+            {
                 this.iers = jsonObject.getString("iers");
-                checkPath(this.iers);
+                LOGGER.info("Reading IERS file at: " + this.iers);
+                PathUtils.checkPath(this.iers);
             }
-            if (jsonObject.has("deactivate_available_refining")) {
-                this.refining = ! jsonObject.getBoolean("deactivate_available_refining");
+            if (jsonObject.has("deactivate_available_refining"))
+            {
+                this.deactivateRefining = jsonObject.getBoolean("deactivate_available_refining");
             }
-            if (this.operation.equals("inverse")) {
-                if (!jsonObject.has("inverse_location_additional_info")) {
+
+            // Check the type of location: direct or inverse
+            if (this.operation.equals("inverse"))
+            {
+                if (!jsonObject.has("inverse_location_additional_info"))
+                {
                     throw new Sen2VMException("Error inverse_location_additional_info parameter initialization is required when using inverse operation");
                 }
-                else {
-                   try {
+                else
+                {
+                   try
+                   {
                        JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
                        this.ul_x = inverseLoc.getFloat("ul_x");
                        this.ul_y = inverseLoc.getFloat("ul_y");
@@ -103,117 +125,198 @@ public class ConfigurationFile extends InputFileManager
                        this.lr_y = inverseLoc.getFloat("lr_y");
                        this.referential = inverseLoc.getString("referential");
                        this.outputFolder = inverseLoc.getString("output_folder");
-                   } catch(JSONException e) {
+                   }
+                   catch(JSONException e)
+                   {
                        throw new Sen2VMException("Error when initializing inverse_location_additional_info", e);
                    }
                 }
             }
-
-        } catch (FileNotFoundException e) {
-            throw new Sen2VMException(e);
-        } catch (IOException e) {
-            throw new Sen2VMException(e);
+        }
+        catch (JSONException | IOException e)
+        {
+            throw new Sen2VMException("Problem while reading JSON configuration file" + jsonFilePath + " : ", e);
         }
     }
 
-    /*
-     * Check that the input path exist, if not
-     * @param filepath the path we want to check if it does exist
+    /**
+     * Get the datastrip file path
+     * @return the datastrip file path
      * @throws Sen2VMException
      */
-     public String checkPath(String filepath) throws Sen2VMException {
-        File file = new File(filepath);
-        if (!file.exists()) {
-            throw new Sen2VMException("Path " + file + " does not exist");
-        }
-        return filepath;
-     }
-
-    /*
-     * Search the datastrip metadata file path inside product folder
-     * @throws Sen2VMException
-     */
-    public String getDatastripFilePath() throws Sen2VMException {
-        File datastripFolder = new File(l1bProduct + "/" + Sen2VMConstants.DATASTRIP_MAIN_FOLDER);
-        if (!datastripFolder.exists()) {
-            throw new Sen2VMException("Datastrip folder " + datastripFolder + " does not exist");
-        }
-
-        File[] directories = datastripFolder.listFiles();
-        String datastripFilePath = null;
-        for (File dir: directories) {
-            if (!dir.isDirectory()) {
-                continue;
-            }
-            String filename = dir.getName().replaceAll("_N.*", "").replace(Sen2VMConstants.DATASTRIP_MSI_TAG, Sen2VMConstants.DATASTRIP_METADATA_TAG);
-            datastripFilePath = dir + "/" + filename + Sen2VMConstants.xml_extention_small;
-        }
-
-        File datastripFile = new File(datastripFilePath);
-        if (datastripFile.exists()) {
-            LOGGER.info("Find the following datastrip metadata file: " + datastripFilePath);
-            return datastripFilePath;
-        }
-        else {
-            throw new Sen2VMException("No datastrip metadata file found inside folder: " + datastripFolder);
-        }
+    public String getDatastripFilePath() throws Sen2VMException
+    {
+        return PathUtils.getDatastripFilePath(l1bProduct);
     }
 
-    /*
-     * Get the product folder
+    /**
+     * Get the operation
+     * @return the operation (direct, inverse)
      */
-    public String getL1bProduct() {
+    public String getOperation()
+    {
+        return operation.toUpperCase();
+    }
+
+    /**
+     * Get the L1B product folder
+     * @return the L1B product folder
+     */
+    public String getL1bProduct()
+    {
        return l1bProduct;
     }
 
-    /*
-     * Get the gipp folder
+    /**
+     * Get the GIPP folder
+     * @return the GIPP folder
      */
-    public String getGippFolder() {
+    public String getGippFolder()
+    {
         return gippFolder;
     }
 
-    /*
-     * Get the boolean gippVersionCheck which, if set to false, will deactivate the
+    /**
+     * Get the boolean which, if set to false, will deactivate the
      * version check made on each GIPP to ensure compatibility
+     * @return deactivate the GIPP version check if false (true by default) 
      */
-    public Boolean getGippVersionCheck() {
+    public Boolean getGippVersionCheck()
+    {
         return gippVersionCheck;
     }
 
-    /*
+    /**
      * Get the DEM folder
+     * @return the DEM folder
      */
-    public String getDem() {
+    public String getDem()
+    {
        return dem;
     }
 
-    /*
+    /**
      * Get the geoid folder
+     * @return the geoid folder
      */
-    public String getGeoid() {
+    public String getGeoid()
+    {
        return geoid;
     }
 
-    /*
+    /**
      * Get the IERS bulletin file
+     * @return the IERS bulletin file
      */
-    public String getIers() {
+    public String getIers()
+    {
        return iers;
     }
 
-    /*
+    /**
      * Get the POD folder
+     * @return the POD folder
      */
-    public String getPod() {
+    public String getPod()
+    {
        return pod;
     }
 
-    /*
-     * Get the boolean that tell if we want to deactivate the available refining or not
+    /**
+     * Get the boolean that tell if we want to deactivate the refining or not
+     * @return deactivate refining if true (false by default)
      */
-    public Boolean getBooleanRefining() {
-       return refining;
+    public Boolean getDeactivateRefining()
+    {
+       return deactivateRefining;
+    }
+    
+    /**
+     * Get the boolean which, if set to false, will deactivate the
+     * saving of the altitude in the direct location grid
+     * @return deactivate the saving of altitude if true (false by default)
+     */
+    public Boolean getExportAlt()
+    {
+        return exportAlt;
+    }
+    
+    /**
+     * Get the step of 10m band
+     * @return the step for 10m band (pixels)
+     */
+    public Float getStepBand10m()
+    {
+       return this.band10m;
+    }
+
+    /**
+     * Get the step of 20m band
+     * @return the step for 20m band (pixels)
+     */
+    public Float getStepBand20m()
+    {
+       return this.band20m;
+    }
+
+    /**
+     * Get the step of 60m band
+     * @return the step for 60m band (pixels)
+     */
+    public Float getStepBand60m()
+    {
+       return this.band60m;
+    }
+    
+    /**
+     * Get the step for a given band
+     * @param bandInfo
+     * @return the step for a given band (pixels)
+     */
+    public Float getStepFromBandInfo(BandInfo bandInfo)
+    {
+        Float step ;
+        switch((int) bandInfo.getPixelHeight())
+        {
+            case Sen2VMConstants.RESOLUTION_10M:
+                step = this.getStepBand10m();
+                break;
+            case Sen2VMConstants.RESOLUTION_20M:
+                step = this.getStepBand20m();
+                break;
+            default:
+                step = this.getStepBand60m();
+                break;
+        }
+        return step;
+    }
+    
+    /**
+     * Get the inverse location bounds
+     * @return ulx, uly, lrx, lry (in referential unit)
+     */
+    public Float[] getInverseLocBound()
+    {
+        Float[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
+        return bb;
+    }
+
+    /** 
+     * Get the inverse location referential
+     * @return the inverse location referential
+     */
+    public String getInverseLocReferential()
+    {
+        return this.referential;
+    }
+
+    /**
+     * Get the inverse location output folder
+     * @return the inverse location output folder
+     */
+    public String getInverseLocOutputFolder()
+    {
+        return this.outputFolder;
     }
 }
 

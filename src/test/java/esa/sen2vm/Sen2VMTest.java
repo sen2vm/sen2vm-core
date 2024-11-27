@@ -27,7 +27,7 @@ public class Sen2VMTest
         try {
             // Read configuration file
             ConfigurationFile configFile = new ConfigurationFile("src/test/resources/configuration_example.json");
-            System.out.println("Datastrip file path: " + configFile.getDatastripFilePath() + "\nIERS bulletin path: "+ configFile.getIers() + "\nboolean refining: " + configFile.getBooleanRefining());
+            System.out.println("Datastrip file path: " + configFile.getDatastripFilePath() + "\nIERS bulletin path: "+ configFile.getIers() + "\nboolean refining: " + configFile.getDeactivateRefining());
         }
         catch (Sen2VMException e) {
             e.printStackTrace();

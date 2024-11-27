@@ -8,6 +8,7 @@
   "pod": "PATH_TO_POD_file/folder?",
   "operation": "direct",
   "deactivate_available_refining": false,
+  "export_alt": false,
   "steps": {
     "10m_bands": 45,
     "20m_bands": 90,
