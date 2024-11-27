@@ -8,7 +8,8 @@ import org.gdal.gdal.Dataset;
 /**
  * Store info when writing a raster using gdal
  */
-public class GdalGridFileInfo {
+public class GdalGridFileInfo
+{
     /**
      * x band
      */
@@ -30,77 +31,90 @@ public class GdalGridFileInfo {
     /**
      * Constructor
      */
-    public GdalGridFileInfo() {
+    public GdalGridFileInfo()
+    {
     }
 
     /**
      * @return the xBand
      */
-    public Band getXBand() {
+    public Band getXBand()
+    {
         return xBand;
     }
 
     /**
      * @return the yBand
      */
-    public Band getYBand() {
+    public Band getYBand()
+    {
         return yBand;
     }
 
     /**
      * @return the yBand
      */
-    public Band getZBand() {
+    public Band getZBand()
+    {
         return zBand;
     }
 
     /**
      * @return the ds
      */
-    public Dataset getDs() {
+    public Dataset getDs()
+    {
         return ds;
     }
 
     /**
      * @param xBand the xBand to set
      */
-    public void setXBand(Band xBand) {
+    public void setXBand(Band xBand)
+    {
         this.xBand = xBand;
     }
 
     /**
      * @param yBand the yBand to set
      */
-    public void setYBand(Band yBand) {
+    public void setYBand(Band yBand)
+    {
         this.yBand = yBand;
     }
 
     /**
      * @param yBand the yBand to set
      */
-    public void setZBand(Band zBand) {
+    public void setZBand(Band zBand)
+    {
         this.zBand = zBand;
     }
 
     /**
      * @param ds the ds to set
      */
-    public void setDs(Dataset ds) {
+    public void setDs(Dataset ds)
+    {
         this.ds = ds;
     }
 
     /**
      * @return the bandList
      */
-    public ArrayList<Band> getBandList() {
+    public ArrayList<Band> getBandList()
+    {
         ArrayList<Band> bandList = new ArrayList<>();
-        if (xBand != null) {
+        if (xBand != null)
+        {
             bandList.add(xBand);
         }
-        if (yBand != null) {
+        if (yBand != null)
+        {
             bandList.add(yBand);
         }
-        if (zBand != null) {
+        if (zBand != null)
+        {
             bandList.add(zBand);
         }
         return bandList;

@@ -4,18 +4,16 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.logging.Logger;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
+import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.Sen2VMConstants;
-
-import java.util.Set;
 
 /**
  * Manager for gipp files

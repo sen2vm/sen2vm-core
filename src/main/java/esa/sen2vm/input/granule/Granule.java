@@ -1,28 +1,16 @@
 package esa.sen2vm.input.granule;
 
-import org.apache.commons.cli.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Vector;
+
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import java.util.Arrays;
 
 import esa.sen2vm.input.SafeManager;
 import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.utils.BandInfo;
-import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
 
-public class Granule {
-
+public class Granule
+{
     /**
      * Get sen2VM logger
      */
@@ -56,7 +44,7 @@ public class Granule {
      /**
      * List of the 13 geo grid (by bands index, if exists)
      */
-     private File[] grids;
+    private File[] grids;
 
      /**
      * Pixel Origin of the granule (from granule metadata)
@@ -87,7 +75,8 @@ public class Granule {
      * Constructor
      * @param path path to granule directory
      */
-     public Granule(File path) throws Sen2VMException {
+    public Granule(File path) throws Sen2VMException
+    {
         this.path = path;
         this.name = path.getName();
 
@@ -99,16 +88,23 @@ public class Granule {
         this.grids = new File[13];
 
         File[] listOfFiles = this.path.listFiles();
-        if(listOfFiles != null) {
-            for (int p = 0; p < listOfFiles.length; p++) {
-                if (listOfFiles[p].isDirectory() ) {
-                    if (listOfFiles[p].getName().equals(Sen2VMConstants.IMG_DATA)) {
+        if(listOfFiles != null)
+        {
+            for (int p = 0; p < listOfFiles.length; p++)
+            {
+                if (listOfFiles[p].isDirectory())
+                {
+                    if (listOfFiles[p].getName().equals(Sen2VMConstants.IMG_DATA))
+                    {
                         loadImages(listOfFiles[p]);
                     }
-                    if (listOfFiles[p].getName().equals(Sen2VMConstants.GEO_DATA_GR)) {
+                    if (listOfFiles[p].getName().equals(Sen2VMConstants.GEO_DATA_GR))
+                    {
                         loadGrids(listOfFiles[p]);
                     }
-                } else if (listOfFiles[p].isFile()) {
+                }
+                else if (listOfFiles[p].isFile())
+                {
                     this.path_mtd = listOfFiles[p];
                     loadMTDinformations();
                 }
@@ -119,21 +115,24 @@ public class Granule {
     /**
      * Get Granule Name
      */
-    public String getName() {
+    public String getName()
+    {
         return this.name;
     }
 
     /**
      * Get Detector Name
      */
-    public String getDetector() {
+    public String getDetector()
+    {
         return this.detector;
     }
 
     /**
      * Load info of the granule MTD
      */
-     private void loadMTDinformations() throws Sen2VMException {
+    private void loadMTDinformations() throws Sen2VMException
+    {
         GranuleManager granuleManager = new GranuleManager(this.path_mtd.toString());
         pixelOrigin = granuleManager.getPixelOrigin();
         granulePosition = granuleManager.getGranulePosition() - this.pixelOrigin;
@@ -147,9 +146,11 @@ public class Granule {
     /**
      * Load granule image by band in this.images[band]
      */
-     private void loadImages(File img_data) {
+    private void loadImages(File img_data)
+    {
         File[] list_img = img_data.listFiles();
-        for (int i = 0; i < list_img.length; i++) {
+        for (int i = 0; i < list_img.length; i++)
+        {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
             String bandName = name[name.length-1];
             int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
@@ -161,14 +162,17 @@ public class Granule {
      * Get image in images array by index of a specific band
      * return path file
      */
-     private void loadGrids(File geo_data) {
+    private void loadGrids(File geo_data)
+    {
         File[] list_img = geo_data.listFiles();
         LOGGER.info(" --> Number of grids already existing: " + String.valueOf(list_img.length));
-        for (int i = 0; i < list_img.length; i++) {
+        for (int i = 0; i < list_img.length; i++)
+        {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
             String bandName = name[name.length-1]; //.substring(0, 3) todo
 
-            if (bandName.length() == 3) {
+            if (bandName.length() == 3)
+            {
                 int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
                 LOGGER.info(list_img[i].getName());
                 this.grids[indexBand] = list_img[i];
@@ -180,7 +184,8 @@ public class Granule {
      * Get image in images array by index of a specific band
      * return path file
      */
-     public File getImage(BandInfo band) {
+    public File getImage(BandInfo band)
+    {
         String bandName = band.getName();
         int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
         return this.images[indexBand];
@@ -190,7 +195,8 @@ public class Granule {
      * Get geo grid in geo grids array by index of a specific band
      * return path file
      */
-     public File getGrid(String band) {
+    public File getGrid(String band)
+    {
         int indexBand = BandInfo.valueOf(band).ordinal();
         return this.grids[indexBand];
     }
@@ -199,7 +205,8 @@ public class Granule {
      * Get geo grids
      * return List path file
      */
-     public File[] getGrids() {
+    public File[] getGrids()
+    {
         return this.grids;
     }
 
@@ -207,7 +214,8 @@ public class Granule {
      * Get geo grid file name for this granule and a specific band
      * return path file
      */
-    public String getCorrespondingGeoFileName(BandInfo band) {
+    public String getCorrespondingGeoFileName(BandInfo band)
+    {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         geo_data.mkdir();
 
@@ -220,7 +228,8 @@ public class Granule {
      * Get bottom right pixel in sensor grid of the granule into a specific res
      * return bry, brx
      */
-    public int[] getBRpixel(double resolution) {
+    public int[] getBRpixel(double resolution)
+    {
         int[] pixel = null;
         pixel = new int[]{getFirstLine(resolution) + getSizeLines(resolution), getSizePixels(resolution)};
         return pixel;
@@ -230,8 +239,8 @@ public class Granule {
      * Get upper left coordinates in sensor grid of the granule in a specific res
      * return uly, ulx
      */
-    public int[] getULpixel(double resolution) {
-
+    public int[] getULpixel(double resolution)
+    {
         int[] pixel = new int[]{getFirstLine(resolution), 0};
         return pixel;
     }
@@ -240,14 +249,20 @@ public class Granule {
      * Get upper left line in sensor grid of the granule in a specific res
      * return uly
      */
-    public int getFirstLine(double resolution) {
+    public int getFirstLine(double resolution)
+    {
         int pixel;
 
-        if ((int) resolution == Sen2VMConstants.RESOLUTION_10M) {
+        if ((int) resolution == Sen2VMConstants.RESOLUTION_10M)
+        {
             pixel = this.granulePosition;
-        } else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M) {
+        }
+        else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M)
+        {
             pixel = this.granulePosition / 2;
-        } else {
+        }
+        else
+        {
             pixel = this.granulePosition / 6;
         }
         return pixel;
@@ -257,13 +272,19 @@ public class Granule {
      * Get pixels number in sensor grid of the granule in a specific res
      * return sizex
      */
-    public int getSizePixels(double resolution) {
-         int sizex;
-         if ((int) resolution == Sen2VMConstants.RESOLUTION_10M) {
+    public int getSizePixels(double resolution)
+    {
+        int sizex;
+        if ((int) resolution == Sen2VMConstants.RESOLUTION_10M)
+        {
             sizex = this.sizeRes10[1];
-         } else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M) {
+        }
+        else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M)
+        {
             sizex = this.sizeRes20[1];
-         } else {
+        }
+        else
+        {
             sizex = this.sizeRes60[1];
         }
         return sizex;
@@ -273,13 +294,19 @@ public class Granule {
      * Get lines number in sensor grid of the granule in a specific res
      * return sizey
      */
-     public int getSizeLines(double resolution) {
-         int sizey;
-         if ((int) resolution == Sen2VMConstants.RESOLUTION_10M) {
+    public int getSizeLines(double resolution)
+    {
+        int sizey;
+        if ((int) resolution == Sen2VMConstants.RESOLUTION_10M)
+        {
             sizey = this.sizeRes10[0];
-         } else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M) {
+        }
+        else if ((int) resolution == Sen2VMConstants.RESOLUTION_20M)
+        {
             sizey = this.sizeRes20[0];
-         } else {
+        }
+        else
+        {
             sizey = this.sizeRes60[0];
         }
         return sizey;

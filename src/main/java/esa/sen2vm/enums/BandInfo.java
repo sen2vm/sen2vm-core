@@ -1,12 +1,15 @@
-package esa.sen2vm.utils;
+package esa.sen2vm.enums;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import esa.sen2vm.utils.Sen2VMConstants;
+
 /**
  * Information on band
  */
-public enum BandInfo {
+public enum BandInfo
+{
     BAND_1("1", 0, Sen2VMConstants.RESOLUTION_60M),
     BAND_2("2", 1, Sen2VMConstants.RESOLUTION_10M),
     BAND_3("3", 2, Sen2VMConstants.RESOLUTION_10M),
@@ -42,7 +45,8 @@ public enum BandInfo {
      * @param index a numerical identifier to index all band (from 0 to 12)
      * @param pixelHeight band pixel size in meter)
      */
-    private BandInfo(String name, int index, double pixelHeight) {
+    private BandInfo(String name, int index, double pixelHeight)
+    {
         this.name = name;
         this.index = index;
         this.pixelHeight = pixelHeight;
@@ -53,9 +57,12 @@ public enum BandInfo {
      * @param bandName band name in the shape of a string, e.g."1", "8", "8A", "12"
      * @return the band having the given name. Null if not found
      */
-    public static BandInfo getBandInfoFromName(String bandName) {
-        for (BandInfo band: BandInfo.values()) {
-            if (band.name.equals(bandName)) {
+    public static BandInfo getBandInfoFromName(String bandName)
+    {
+        for (BandInfo band: BandInfo.values())
+        {
+            if (band.name.equals(bandName))
+            {
                 return band;
             }
         }
@@ -67,10 +74,13 @@ public enum BandInfo {
      * @param bandName band name in the shape of a string, e.g."B01", "B08", "B8A", "B12"
      * @return the band having the given name. Null if not found
      */
-    public static BandInfo getBandInfoFromNameWithB(String bandName) {
-        for (BandInfo band: BandInfo.values()) {
+    public static BandInfo getBandInfoFromNameWithB(String bandName)
+    {
+        for (BandInfo band: BandInfo.values())
+        {
             String name = "B" + band.getName2Digit();
-            if (name.equals(bandName)) {
+            if (name.equals(bandName))
+            {
                 return band;
             }
         }
@@ -82,9 +92,11 @@ public enum BandInfo {
      * @param bandIndex band index (from 0 to 12)
      * @return the band having the given index (from 0 to 12). Null if not found
      */
-    public static BandInfo getBandInfoFromIndex(int bandIndex) {
+    public static BandInfo getBandInfoFromIndex(int bandIndex)
+    {
         int nbBand = BandInfo.values().length;
-        if (bandIndex < 0 || bandIndex >= nbBand) {
+        if (bandIndex < 0 || bandIndex >= nbBand)
+        {
             return null;
         }
         return BandInfo.values()[bandIndex];
@@ -93,29 +105,34 @@ public enum BandInfo {
     /**
      * @return the index
      */
-    public int getIndex() {
+    public int getIndex()
+    {
         return index;
     }
 
     /**
      * @return the name
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
     /**
      * @return the band name with following format: "B01", "B08", "B8A", "B10"...
      */
-    public String getNameWithB() {
+    public String getNameWithB()
+    {
         return "B" + getName2Digit();
     }
 
     /**
      * @return the band name with following format: "01", "08", "8A", "10"...
      */
-    public String getName2Digit() {
-        if (name.length() == 1) {
+    public String getName2Digit()
+    {
+        if (name.length() == 1)
+        {
             return "0" + name;
         }
         return name;
@@ -124,7 +141,8 @@ public enum BandInfo {
     /**
      * @return the pixel height
      */
-    public double getPixelHeight() {
+    public double getPixelHeight()
+    {
         return pixelHeight;
     }
 
@@ -132,17 +150,19 @@ public enum BandInfo {
      * Return VNIR or SWIR depending on the band
      * @return VNIR or SWIR depending on the band
      */
-    public String getSpaMod() {
+    public String getSpaMod()
+    {
         String returned = "VNIR";
-        switch (this) {
-        case BAND_10:
-        case BAND_11:
-        case BAND_12:
-            returned = "SWIR";
-            break;
+        switch (this)
+        {
+            case BAND_10:
+            case BAND_11:
+            case BAND_12:
+                returned = "SWIR";
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
         return returned;
     }
@@ -151,9 +171,11 @@ public enum BandInfo {
      * Get a List of all BandInfo
      * @return
      */
-    public static List<BandInfo> getAllBandInfo() {
+    public static List<BandInfo> getAllBandInfo()
+    {
         List<BandInfo> bandInfoList = new ArrayList<>();
-        for (BandInfo bandInfo: BandInfo.values()) {
+        for (BandInfo bandInfo: BandInfo.values())
+        {
             bandInfoList.add(bandInfo);
         }
         return bandInfoList;

@@ -55,8 +55,8 @@ import org.gdal.gdalconst.gdalconst;
 import org.gdal.osr.SpatialReference;
 import org.gdal.gdal.BuildVRTOptions;
 
-import esa.sen2vm.utils.DetectorInfo;
-import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.enums.DetectorInfo;
+import esa.sen2vm.enums.BandInfo;
 
 import org.orekit.rugged.linesensor.LineDatation;
 
@@ -90,12 +90,14 @@ public class Sen2VMTest
     @Test
     public void readConfigurationFile()
     {
-        try {
+        try
+        {
             // Read configuration file
             ConfigurationFile configFile = new ConfigurationFile("src/test/resources/TDS1_madeire/configuration_TDS1_madeire.json");
-            System.out.println("Datastrip file path: " + configFile.getDem() + "\nIERS bulletin path: "+ configFile.getIers() + "\nboolean refining: " + configFile.getBooleanRefining());
+            System.out.println("Datastrip file path: " + configFile.getDatastripFilePath() + "\nIERS bulletin path: "+ configFile.getIers() + "\nboolean refining: " + configFile.getDeactivateRefining());
         }
-        catch (Sen2VMException e) {
+        catch (Sen2VMException e)
+        {
             e.printStackTrace();
         }
     }
@@ -173,7 +175,7 @@ public class Sen2VMTest
             detectors.add(DetectorInfo.getDetectorInfoFromName("01"));
             List<BandInfo> bands = new ArrayList<BandInfo>();
             bands.add(BandInfo.getBandInfoFromNameWithB("B01"));
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
+            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
 
             // Build sensor list
@@ -285,7 +287,7 @@ public class Sen2VMTest
             bands.add(BandInfo.getBandInfoFromNameWithB(band));
 
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
+            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());

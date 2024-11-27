@@ -1,17 +1,11 @@
 package esa.sen2vm.utils.grids;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
-public class InverseLocGrid {
 
+public class InverseLocGrid
+{
     // Get sen2VM logger
     private static final Logger LOGGER = Logger.getLogger(InverseLocGrid.class.getName());
 
@@ -40,7 +34,8 @@ public class InverseLocGrid {
      * @param step in epsg referencial
      */
     public InverseLocGrid(Float ul_x, Float ul_y, Float lr_x, Float lr_y,
-                         String epsg, Float step) {
+                         String epsg, Float step)
+    {
 
         this.epsg = Integer.valueOf(epsg.substring(5));
         this.ul = new Coordinates(ul_y, ul_x, this.epsg);
@@ -50,10 +45,12 @@ public class InverseLocGrid {
         stepY = step;
         stepX = step;
 
-        if (ul_y > lr_y) {
+        if (ul_y > lr_y)
+        {
             stepY = -step;
         }
-        if (ul_x > lr_x) {
+        if (ul_x > lr_x)
+        {
             stepX = -step;
         }
 
@@ -78,10 +75,12 @@ public class InverseLocGrid {
      * @param size of the grid
      * @return list 1D
      */
-    private ArrayList<Float> grid_1D(Float start, Float size, Float signedStep) {
+    private ArrayList<Float> grid_1D(Float start, Float size, Float signedStep)
+    {
         ArrayList<Float> grid = new ArrayList<Float>();
         int nb = (int) Math.ceil(Math.abs(size / signedStep)) + 1;
-        for (int i = 0; i < nb; i++) {
+        for (int i = 0; i < nb; i++)
+        {
             grid.add(start + signedStep * i);
         }
         LOGGER.info("1D : " + String.valueOf(start) + " -> " + String.valueOf(grid.get(nb-1)) +
@@ -93,14 +92,16 @@ public class InverseLocGrid {
      * Create 2D grid from gridX and gridY with altitude = 0 # TODO
      * @return grid [[lon0, lat0, alt0], [lon1, lat1, alt1], ..]
      */
-    public double[][] get2DgridLatLon() {
-
+    public double[][] get2DgridLatLon()
+    {
         int nbCols = this.gridX.size();
         int nbLines = this.gridY.size();
         double[][] grid = new double[nbCols * nbLines][3];
 
-        for (int l = 0; l < nbLines; l ++){
-            for (int c = 0; c < nbCols; c ++){
+        for (int l = 0; l < nbLines; l ++)
+        {
+            for (int c = 0; c < nbCols; c ++)
+            {
                 Coordinates coord = new Coordinates(this.gridY.get(l), this.gridX.get(c), this.epsg);
                 coord.transform();
                 grid[l*nbCols + c][0] = coord.getLongitude();
@@ -116,16 +117,19 @@ public class InverseLocGrid {
      * @return grid [[[row00, row01..], [row10, row11..] ..],[[col00, col01...], [col10, col11...], ...]
      */
 
-     public double[][][] get3Dgrid(double[][] gridList) {
-
+     public double[][][] get3Dgrid(double[][] gridList)
+     {
         int nbCols = this.gridX.size();
         int nbLines = this.gridY.size();
         int nbBands = 2;
         double[][][] grid = new double[nbBands][nbLines][nbCols];;
 
-        for (int l = 0; l < nbLines; l ++){
-            for (int c = 0; c < nbCols; c ++){
-                for (int b = 0; b < nbBands; b++) {
+        for (int l = 0; l < nbLines; l ++)
+        {
+            for (int c = 0; c < nbCols; c ++)
+            {
+                for (int b = 0; b < nbBands; b++)
+                {
                     grid[b][l][c] = gridList[l*nbCols + c][b];
                 }
             }
@@ -134,12 +138,14 @@ public class InverseLocGrid {
     }
 
 
-    public Float getStepX() {
+    public Float getStepX()
+    {
         return this.stepX;
     }
 
 
-    public Float getStepY() {
+    public Float getStepY()
+    {
         return this.stepY;
     }
 }

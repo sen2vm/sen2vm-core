@@ -1,28 +1,14 @@
 package esa.sen2vm.input.datastrip;
 
-import org.apache.commons.cli.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Vector;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
+import java.util.logging.Logger;
 
-import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.utils.BandInfo;
-import esa.sen2vm.utils.DetectorInfo;
+import esa.sen2vm.enums.BandInfo;
+import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
 
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
-public class Datastrip {
-
+public class Datastrip
+{
     // Get sen2VM logger
     private static final Logger LOGGER = Logger.getLogger(Datastrip.class.getName());
 
@@ -39,7 +25,8 @@ public class Datastrip {
      * Constructor
      * @param filepath Path of the datastrip directory
      */
-    public Datastrip(File path) {
+    public Datastrip(File path)
+    {
         this.path = path;
         this.name = path.getName();
         LOGGER.info("Datastrip " + this.name);
@@ -47,11 +34,16 @@ public class Datastrip {
         this.vrts = new File[Sen2VMConstants.NB_DETS][Sen2VMConstants.NB_BANDS];
 
         File[] listOfFiles = this.path.listFiles();
-        if(listOfFiles != null) {
-            for (int p = 0; p < listOfFiles.length; p++) {
-                if (listOfFiles[p].getName().equals(Sen2VMConstants.GEO_DATA_DS)) {
+        if(listOfFiles != null)
+        {
+            for (int p = 0; p < listOfFiles.length; p++)
+            {
+                if (listOfFiles[p].getName().equals(Sen2VMConstants.GEO_DATA_DS))
+                {
                     loadVRTs(listOfFiles[p]);
-                } else if (listOfFiles[p].isFile()) {
+                }
+                else if (listOfFiles[p].isFile())
+                {
                     this.path_mtd = listOfFiles[p];
                 }
             }
@@ -62,9 +54,11 @@ public class Datastrip {
      * Load all VRT in vrts list by dectector/band indices in directory
      * @param directory
      */
-    private void loadVRTs(File directory) {
+    private void loadVRTs(File directory)
+    {
         File[] list_img = directory.listFiles();
-        for (int i = 0; i < list_img.length; i++) {
+        for (int i = 0; i < list_img.length; i++)
+        {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
             LOGGER.info(list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf("."))); // TODO: replace by a DEBUG log
             String bandName = name[name.length-1];
@@ -78,7 +72,8 @@ public class Datastrip {
     /*
      * Get the name
      */
-    public String getName() {
+    public String getName()
+    {
         return this.name;
     }
 
@@ -87,7 +82,8 @@ public class Datastrip {
      * @param detector
      * @param band
      */
-    public String getCorrespondingVRTFileName(DetectorInfo detector, BandInfo band) {
+    public String getCorrespondingVRTFileName(DetectorInfo detector, BandInfo band)
+    {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         geo_data.mkdir();
 
@@ -102,7 +98,8 @@ public class Datastrip {
      * @param detector
      * @param band
      */
-    public String getCorrespondingInverseLocGrid(DetectorInfo detector, BandInfo band, String outputDir) {
+    public String getCorrespondingInverseLocGrid(DetectorInfo detector, BandInfo band, String outputDir)
+    {
         File geo_data = new File(outputDir);
         geo_data.mkdir();
 
@@ -111,5 +108,4 @@ public class Datastrip {
         return new File(geo_data.getPath() + File.separator + vrt).getPath();
 
     }
-
 }

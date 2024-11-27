@@ -56,8 +56,8 @@ import org.gdal.gdalconst.gdalconst;
 import org.gdal.osr.SpatialReference;
 import org.gdal.gdal.BuildVRTOptions;
 
-import esa.sen2vm.utils.DetectorInfo;
-import esa.sen2vm.utils.BandInfo;
+import esa.sen2vm.enums.DetectorInfo;
+import esa.sen2vm.enums.BandInfo;
 
 import org.orekit.rugged.linesensor.LineDatation;
 
@@ -131,17 +131,19 @@ public class Utils {
 
     }
 
-    public static String createTestDir(String nameTest) throws IOException {
+    public static String createTestDir(String nameTest) throws IOException
+    {
         String inputRef = "src/test/resources/tests/input/TDS1/L1B_min";
         String outputRef = "src/test/resources/tests/output/" + nameTest;
         copyFolder(new File(inputRef), new File(outputRef), true);
         return outputRef;
     }
 
-    public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException {
+    public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
+    {
 
         ConfigurationFile configFile = new ConfigurationFile(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
+        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
         ArrayList<Granule> granules = sm.getGranules();
@@ -165,10 +167,10 @@ public class Utils {
     }
 
 
-    public static void verifyDirectLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException {
-
+    public static void verifyDirectLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
+    {
         ConfigurationFile configFile = new ConfigurationFile(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), configFile.getBooleanRefining());
+        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
         ArrayList<Granule> granules = sm.getGranules();
@@ -246,25 +248,30 @@ public class Utils {
 
     }
 
-
-    public static void copyFolder(File src, File dest, boolean copy) throws IOException{
-        if(src.isDirectory()){
-            if(!dest.exists()){
+    public static void copyFolder(File src, File dest, boolean copy) throws IOException
+    {
+        if(src.isDirectory())
+        {
+            if(!dest.exists())
+            {
                 dest.mkdir();
             }
 
             String files[] = src.list();
 
-            for (String file : files) {
+            for (String file : files)
+            {
                 File srcFile = new File(src, file);
                 File destFile = new File(dest, file);
 
                 copyFolder(srcFile,destFile, copy);
             }
 
-        } else {
-
-            if (copy) {
+        }
+        else
+        {
+            if (copy)
+            {
                 InputStream in = new FileInputStream(src);
                 OutputStream out = new FileOutputStream(dest);
 
@@ -277,13 +284,14 @@ public class Utils {
 
                 in.close();
                 out.close();
-            } else {
+            }
+            else
+            {
                 Path records = src.toPath();
                 Path recordsLink = dest.toPath();
 
             }
         }
     }
-
 
 }

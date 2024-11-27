@@ -10,7 +10,8 @@
             "description": "Path to GIPP folder"
         },
         "gipp_version_check": {
-            "type": "boolean"
+            "type": "boolean",
+             "description": "(optional) Check of GIPP version"
         },
         "dem": {
             "type": "string",
@@ -22,7 +23,7 @@
         },
         "iers": {
             "type": "string",
-            "description": "Path to IERS file"
+            "description": "(optional) Path to IERS file"
         },
         "pod": {
             "type": "string",
@@ -34,8 +35,13 @@
             "enum": ["direct", "inverse"]
         },
         "deactivate_available_refining": {
-            "type": "boolean"
-        },
+             "type": "boolean",
+             "description": "(optional) Deactivate the refining, if available in the Datastrip Metadata. Default = false, i.e. the refining is kept. true => refining parameters are ignored"
+         },
+        "export_alt": {
+              "type": "boolean",
+              "description": "(optional) Export altitude in direct location grid"
+          },
         "steps": {
             "type": "object",
             "properties": {
