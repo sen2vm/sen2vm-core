@@ -49,20 +49,38 @@ public class Params extends InputFileManager
     public Params(CommandLine commandLine) throws Sen2VMException
     {
         // Read detectors
-        Stream<String> detectorsList = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_DETECTORS_LIST_SHORT));
-
-        for (String detector: detectorsList.toArray(String[]::new))
+        this.detectors = new ArrayList<DetectorInfo>();
+        if (commandLine.hasOption(OptionManager.OPT_DETECTORS_LIST_SHORT))
         {
-            this.detectors.add(DetectorInfo.getDetectorInfoFromName(detector));
+            String[] detectorsList = commandLine.getOptionValues(OptionManager.OPT_DETECTORS_LIST_SHORT);
+
+            if (detectorsList.length > 12)
+            {
+                LOGGER.severe("Maximum number of detectors is 12 (" + detectorsList.length + ")");
+                throw new Sen2VMException("Maximum number of detectors is 12 (" + detectorsList.length + ")");
+            } 
+            for (String detector: detectorsList)
+            {
+                this.detectors.add(DetectorInfo.getDetectorInfoFromName(detector));
+            }
         }
 
         // Read bands
-        Stream<String> bandsList = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_DETECTORS_LIST_SHORT));
+        this.bands = new ArrayList<BandInfo>();
+        if (commandLine.hasOption(OptionManager.OPT_BANDS_LIST_SHORT))
+        { 
+            String[] bandsList = commandLine.getOptionValues(OptionManager.OPT_BANDS_LIST_SHORT);
 
-        for (String band: bandsList.toArray(String[]::new))
-        {
-            this.bands.add(BandInfo.getBandInfoFromNameWithB(band));
-        }
+            if (bandsList.length > 13)
+            {
+                LOGGER.severe("Maximum number of detectors is 13 (" + bandsList.length + ")");
+                throw new Sen2VMException("Maximum number of detectors is 13 (" + bandsList.length + ")");
+            } 
+            for (String band: bandsList)
+            {
+                this.bands.add(BandInfo.getBandInfoFromNameWithB(band));
+            }
+        } 
     } 
 
     /**

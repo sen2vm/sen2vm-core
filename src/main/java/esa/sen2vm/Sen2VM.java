@@ -103,18 +103,23 @@ public class Sen2VM
             // Check wheter the initialisation shall be done from file or from command line arguments
             if (OptionManager.areFiles())
             {
-                // Get the configuration and parameter files
+                // Get the configuration file
                 String configFilepath = commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT);
-                String sensorParamsFile = commandLine.getOptionValue(OptionManager.OPT_PARAM_SHORT);
-
                 // Read configuration file
                 config = new Configuration(configFilepath);
-
-                // Read parameter file (optional)
-                if (sensorParamsFile != null)
+                
+                // Verify if the parameter file is available in command line
+                if (commandLine.hasOption(OptionManager.OPT_PARAM_SHORT))
                 {
-                    params = new Params(sensorParamsFile);
-                }
+                    // Get the parameters file
+                    String sensorParamsFile = commandLine.getOptionValue(OptionManager.OPT_PARAM_SHORT);
+
+                    // Read parameter file (optional)
+                    if (sensorParamsFile != null)
+                    {
+                        params = new Params(sensorParamsFile);
+                    }
+                } 
             }
             else
             { // not areFiles
@@ -127,14 +132,25 @@ public class Sen2VM
             } // end areFiles
 
             //Read the parameters to process
-            if (params.getDetectorsList().size() > 0)
+            if (params != null && params.getDetectorsList().size() > 0)
             {
                 detectors = params.getDetectorsList();
             }
-            if (params.getBandsList().size() > 0)
+            else
+            {
+                // Information missing, by default we prosse all
+                detectors = DetectorInfo.getAllDetectorInfo();
+            }
+            
+            if (params != null && params.getBandsList().size() > 0)
             {
                 bands = params.getBandsList();
             }
+            else
+            {
+                // Information missing, by default we prosse all
+                bands = BandInfo.getAllBandInfo();
+            } 
 
             LOGGER.info("Detectors list: " + detectors);
             LOGGER.info("Bands list: " + bands);
