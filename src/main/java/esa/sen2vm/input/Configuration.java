@@ -62,7 +62,7 @@ public class Configuration extends InputFileManager
             System.exit(1);
         }
 
-        this.l1bProduct = PathUtils.getDatastripFilePath(commandLine.getOptionValue(OptionManager.OPT_L1B_SHORT));
+        this.l1bProduct = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_L1B_SHORT));
         
         this.gippFolder = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_GIPP_SHORT));
 
