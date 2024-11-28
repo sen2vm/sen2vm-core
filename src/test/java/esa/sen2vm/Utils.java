@@ -38,7 +38,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.input.ConfigurationFile;
+import esa.sen2vm.input.Configuration;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 import esa.sen2vm.input.datastrip.DataStripManager;
@@ -142,7 +142,7 @@ public class Utils {
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {
 
-        ConfigurationFile configFile = new ConfigurationFile(configFilepath);
+        Configuration configFile = new Configuration(configFilepath);
         DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
@@ -169,7 +169,7 @@ public class Utils {
 
     public static void verifyDirectLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
     {
-        ConfigurationFile configFile = new ConfigurationFile(configFilepath);
+        Configuration configFile = new Configuration(configFilepath);
         DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 

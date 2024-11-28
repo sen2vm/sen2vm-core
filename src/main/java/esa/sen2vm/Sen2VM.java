@@ -31,10 +31,10 @@ import org.sxgeo.exception.SXGeoException;
 import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.input.ConfigurationFile;
+import esa.sen2vm.input.Configuration;
 //import esa.sen2vm.input.GenericDemFileManager;
 import esa.sen2vm.input.OptionManager;
-import esa.sen2vm.input.ParamFile;
+import esa.sen2vm.input.Params;
 import esa.sen2vm.input.datastrip.DataStripManager;
 import esa.sen2vm.input.datastrip.Datastrip;
 import esa.sen2vm.input.granule.Granule;
@@ -95,7 +95,8 @@ public class Sen2VM
             List<DetectorInfo> detectors = DetectorInfo.getAllDetectorInfo();
             List<BandInfo> bands = BandInfo.getAllBandInfo();
 
-            ConfigurationFile config;
+            Configuration config;
+            Params params = null;
             
             // Initialize the configuration and the parameters
             // ------------------
@@ -107,32 +108,32 @@ public class Sen2VM
                 String sensorParamsFile = commandLine.getOptionValue(OptionManager.OPT_PARAM_SHORT);
 
                 // Read configuration file
-                config = new ConfigurationFile(configFilepath);
+                config = new Configuration(configFilepath);
 
                 // Read parameter file (optional)
-                ParamFile paramsFile = null;
                 if (sensorParamsFile != null)
                 {
-                    paramsFile = new ParamFile(sensorParamsFile);
-                    if (paramsFile.getDetectorsList().size() > 0)
-                    {
-                        detectors = paramsFile.getDetectorsList();
-                    }
-                    if (paramsFile.getBandsList().size() > 0)
-                    {
-                        bands = paramsFile.getBandsList();
-                    }
+                    params = new Params(sensorParamsFile);
                 }
             }
             else
             { // not areFiles
                 // Initialise the configuration with the command line
-                config = new ConfigurationFile(commandLine);
+                config = new Configuration(commandLine);
                 
                 // Initialise the parameters with the command line
-                //TODO
+                params = new Params(commandLine);
 
             } // end areFiles
+
+            if (params.getDetectorsList().size() > 0)
+            {
+                detectors = params.getDetectorsList();
+            }
+            if (params.getBandsList().size() > 0)
+            {
+                bands = params.getBandsList();
+            }
 
             LOGGER.info("Detectors list: " + detectors);
             LOGGER.info("Bands list: " + bands);

@@ -37,7 +37,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import esa.sen2vm.exception.Sen2VMException;
-import esa.sen2vm.input.ConfigurationFile;
+import esa.sen2vm.input.Configuration;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 import esa.sen2vm.input.datastrip.DataStripManager;
@@ -93,7 +93,7 @@ public class Sen2VMTest
         try
         {
             // Read configuration file
-            ConfigurationFile configFile = new ConfigurationFile("src/test/resources/TDS1_madeire/configuration_TDS1_madeire.json");
+            Configuration configFile = new Configuration("src/test/resources/TDS1_madeire/configuration_TDS1_madeire.json");
             System.out.println("Datastrip file path: " + configFile.getDatastripFilePath() + "\nIERS bulletin path: "+ configFile.getIers() + "\nboolean refining: " + configFile.getDeactivateRefining());
         }
         catch (Sen2VMException e)
@@ -170,7 +170,7 @@ public class Sen2VMTest
             String config = Utils.config(configTmp, outputDir, step, "direct", false);
             String param = Utils.changeParams(paramTmp, new String[]{"01"}, new String[]{"B01"}, outputDir);
 
-            ConfigurationFile configFile = new ConfigurationFile(config);
+            Configuration configFile = new Configuration(config);
             List<DetectorInfo> detectors = new ArrayList<DetectorInfo>();
             detectors.add(DetectorInfo.getDetectorInfoFromName("01"));
             List<BandInfo> bands = new ArrayList<BandInfo>();
@@ -278,7 +278,7 @@ public class Sen2VMTest
         try {
 
             // Read configuration file
-            ConfigurationFile configFile = new ConfigurationFile(config);
+            Configuration configFile = new Configuration(config);
 
             List<DetectorInfo> detectors = new ArrayList<DetectorInfo>();
             detectors.add(DetectorInfo.getDetectorInfoFromName(det));

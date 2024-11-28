@@ -17,8 +17,11 @@ import esa.sen2vm.utils.Sen2VMConstants;
  * Definition of all command line arguments 
  * @author Guylaine Prat
  */
-public class OptionManager {
-
+public class OptionManager
+{
+    /*******************************
+     * Options using files 
+     *******************************/
     /**
      * Option for the configuration file
      */
@@ -31,6 +34,9 @@ public class OptionManager {
     public static final String OPT_PARAM_LONG = "param";
     public static final String OPT_PARAM_SHORT = "p";
 
+    /*******************************
+     * Options for the configuration 
+     *******************************/
     /**
      * Option for the operation (direct, inverse)
      */
@@ -112,6 +118,22 @@ public class OptionManager {
     public static final String OPT_OUTPUT_FOLDER_LONG = "output_folder";
     public static final String OPT_OUTPUT_FOLDER_SHORT = "o";
 
+    /*******************************
+     * Options for the params 
+     *******************************/
+    /**
+     * Option to process only some detectors 
+     * (optional; no argument = all detectors are processed)
+     */
+    public static final String OPT_DETECTORS_LIST_LONG = "detectors";
+    public static final String OPT_DETECTORS_LIST_SHORT = "d";
+
+    /**
+     * Option to process only some detectors 
+     * (optional; no argument = all detectors are processed)
+     */
+    public static final String OPT_BANDS_LIST_LONG = "bands";
+    public static final String OPT_BANDS_LIST_SHORT = "b";
 
     // If configuration file and (optional) parameter file are present: true
     private static boolean areFiles;
@@ -256,7 +278,19 @@ public class OptionManager {
             
             Option outputFolderOption = new Option(OPT_OUTPUT_FOLDER_SHORT, OPT_OUTPUT_FOLDER_LONG, true, "(Mandatory for inverse loc) output folder");
             outputFolderOption.setRequired(false);
-              
+     
+            // params arguments
+            // ------------------
+            Option detectors = new Option(OPT_STEP_SHORT, OPT_STEP_LONG, true, "List of detectors to process separated by spaces, example: 01 05 06 10 11");
+            detectors.setType(Float.class);
+            detectors.setArgs(12);
+            detectors.setRequired(false);
+
+            Option bands = new Option(OPT_STEP_SHORT, OPT_STEP_LONG, true, "List of bands to process separated by spaces, example: B01 B08 B8A B10 B11");
+            bands.setType(Float.class);
+            bands.setArgs(13);
+            bands.setRequired(false);
+
             // Add the compulsory arguments
             optionsNoFile.addOption(operationOption);
             optionsNoFile.addOption(l1bOption);
@@ -277,6 +311,10 @@ public class OptionManager {
             optionsNoFile.addOption(lryOption);
             optionsNoFile.addOption(referentialOption);
             optionsNoFile.addOption(outputFolderOption);
+
+            // Add the params arguments
+            optionsNoFile.addOption(detectors);
+            optionsNoFile.addOption(bands);
 
             try
             {
