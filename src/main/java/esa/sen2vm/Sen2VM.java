@@ -126,6 +126,7 @@ public class Sen2VM
 
             } // end areFiles
 
+            //Read the parameters to process
             if (params.getDetectorsList().size() > 0)
             {
                 detectors = params.getDetectorsList();

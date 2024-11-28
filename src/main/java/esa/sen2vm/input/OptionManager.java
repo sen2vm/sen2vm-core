@@ -281,12 +281,12 @@ public class OptionManager
      
             // params arguments
             // ------------------
-            Option detectors = new Option(OPT_STEP_SHORT, OPT_STEP_LONG, true, "List of detectors to process separated by spaces, example: 01 05 06 10 11");
+            Option detectors = new Option(OPT_DETECTORS_LIST_SHORT, OPT_DETECTORS_LIST_LONG, true, "List of detectors to process separated by spaces, example: 01 05 06 10 11");
             detectors.setType(Float.class);
             detectors.setArgs(12);
             detectors.setRequired(false);
 
-            Option bands = new Option(OPT_STEP_SHORT, OPT_STEP_LONG, true, "List of bands to process separated by spaces, example: B01 B08 B8A B10 B11");
+            Option bands = new Option(OPT_BANDS_LIST_SHORT, OPT_BANDS_LIST_LONG, true, "List of bands to process separated by spaces, example: B01 B08 B8A B10 B11");
             bands.setType(Float.class);
             bands.setArgs(13);
             bands.setRequired(false);
