@@ -102,7 +102,7 @@ public class Sen2VMConstants
     /**
      * Rugged Manager initialization
      */
-    public static final String OREKIT_DATA_DIR = "src/main/resources/orekit-data";
+    public static final String OREKIT_DATA_DIR = "resources/orekit-data";
 
     
     // Granule line (for a 10m resolution band)
