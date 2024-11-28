@@ -198,8 +198,7 @@ public class DataStripManager
             sensorConfiguration = l1B_datastrip.getImage_Data_Info().getSensor_Configuration();
 
             auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
-
-            initOrekitRessources(Sen2VMConstants.OREKIT_DATA_DIR,iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
+            initOrekitRessources(Sen2VMConstants.OREKIT_DATA_DIR, iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
 
             // Test if we need to take refining data into account according to the flag
             if (activateAvailableRefining)
@@ -290,12 +289,14 @@ public class DataStripManager
         try
         {
             // Set up default Orekit data
+            System.out.println(orekitDataPath);
             File orekitDataDir = new File(orekitDataPath);
             if (orekitDataDir == null || (!orekitDataDir.exists()))
             {
                 throw new Sen2VMException("Orekit data dir not found" + orekitDataPath);
             }
             DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
+            System.out.println(iersFilePath);
 
             // Read IERS information from metadata
             if (iersFilePath.equals(""))

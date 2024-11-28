@@ -102,8 +102,8 @@ public class Sen2VMConstants
     /**
      * Rugged Manager initialization
      */
-    // Orekit data path
-    public static final String OREKIT_DATA_DIR = "orekit-data";
+    public static final String OREKIT_DATA_DIR = "src/main/resources/orekit-data";
+
     
     // Granule line (for a 10m resolution band)
     public static final double GRANULE_NB_LINE_10_M = 2304.0;
@@ -118,4 +118,6 @@ public class Sen2VMConstants
     // Compute margin according to the band pixel size
     public static final double BAND_PIXEL_SIZE = RESOLUTION_10M_DOUBLE;
     public static final double MARGIN = GRANULE_NB_LINE_60_M * RESOLUTION_10M_DOUBLE / BAND_PIXEL_SIZE;
+
+
 }

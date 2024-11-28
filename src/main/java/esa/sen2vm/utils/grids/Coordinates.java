@@ -14,6 +14,13 @@ public class Coordinates
     private Double longitude;
     private Double altitude;
 
+    /**
+     * Constructor
+     * @param x in epsg referencial
+     * @param y in epsg referencial
+     * @param epsg referencial
+     * @throws Sen2VMException
+     */
     public Coordinates(Float x, Float y, int epsg)
     {
         this.x = x;
@@ -23,26 +30,45 @@ public class Coordinates
         this.sourceSRS.ImportFromEPSG(epsg);
     }
 
+    /**
+     * Get x
+     * @return x in epsg referencial
+     */
     public Float getX()
     {
         return this.x;
     }
 
+    /**
+     * Get y
+     * @return y in epsg referencial
+     */
     public Float getY()
     {
         return this.y;
     }
 
+    /**
+     * Get latitude
+     * @return latitude in WGS84
+     */
     public Double getLatitude()
     {
         return this.latitude;
     }
 
+    /**
+     * Get longitude
+     * @return longitude in WGS84
+     */
     public Double getLongitude()
     {
         return this.longitude;
     }
 
+    /**
+     * Transfrom (x, y, z) in epsg referencial to WGS84
+     */
     public void transform()
     {
         SpatialReference targetSRS = new SpatialReference();
@@ -52,21 +78,5 @@ public class Coordinates
 		this.longitude = res[1];
 		this.latitude = res[0];
 		this.altitude = res[2];
-    }
-
-    public String geodetictoString()
-    {
-        DecimalFormat df = new DecimalFormat();
-        df.setMaximumFractionDigits(17);
-        df.setMinimumFractionDigits(14);
-        return "(" + df.format(this.latitude) + ", " + df.format(this.longitude) + ", " + df.format(this.altitude) + ")";
-    }
-
-    public String toString()
-    {
-        DecimalFormat df = new DecimalFormat();
-        df.setMaximumFractionDigits(17);
-        df.setMinimumFractionDigits(14);
-        return "(" + df.format(this.x) + ", " + df.format(this.y) + ", " + df.format(this.z) + ")";
     }
 }
