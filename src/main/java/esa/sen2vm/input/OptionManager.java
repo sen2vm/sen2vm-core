@@ -218,22 +218,22 @@ public class OptionManager
             // Compulsory arguments
             // --------------------
             Option operationOption = new Option(OPT_OPERATION_SHORT, OPT_OPERATION_LONG, true, 
-                                               "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Type of operation available between direct or inverse operation [\"direct\", \"inverse\"]");
+                                               "!!! MANDATORY !!!: Type of operation available between direct or inverse operation [\"direct\", \"inverse\"]");
             operationOption.setRequired(true);            
 
-            Option l1bOption = new Option(OPT_L1B_SHORT, OPT_L1B_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Path to L1B product folder");
+            Option l1bOption = new Option(OPT_L1B_SHORT, OPT_L1B_LONG, true, "!!! MANDATORY !!!: Path to L1B product folder");
             l1bOption.setRequired(true);
 
-            Option gippOption = new Option(OPT_GIPP_SHORT, OPT_GIPP_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Path to GIPP folder");
+            Option gippOption = new Option(OPT_GIPP_SHORT, OPT_GIPP_LONG, true, "!!! MANDATORY !!!: Path to GIPP folder");
             gippOption.setRequired(true);
 
-            Option demOption = new Option(OPT_DEM_SHORT, OPT_DEM_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Path to DEM folder");
+            Option demOption = new Option(OPT_DEM_SHORT, OPT_DEM_LONG, true, "!!! MANDATORY !!!: Path to DEM folder");
             demOption.setRequired(true);
 
-            Option geoidOption = new Option(OPT_GEOID_SHORT, OPT_GEOID_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Path to GEOID file");
+            Option geoidOption = new Option(OPT_GEOID_SHORT, OPT_GEOID_LONG, true, "!!! MANDATORY !!!: Path to GEOID file");
             geoidOption.setRequired(true);
            
-            Option steps = new Option(OPT_STEP_SHORT, OPT_STEP_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Steps (pixels) for bands 10, 20 and 60m \n"
+            Option steps = new Option(OPT_STEP_SHORT, OPT_STEP_LONG, true, "!!! MANDATORY !!!: Steps (pixels) for bands 10, 20 and 60m \n"
                                         + "(separated with whitespace, respect the order)");
             steps.setType(Float.class); // TODO  does not seem to work: read as array of String 
             steps.setArgs(3);
@@ -259,7 +259,7 @@ public class OptionManager
 
             Option exportAltOption = new Option(OPT_EXPORT_ALT_SHORT, OPT_EXPORT_ALT_LONG, false, 
                                                "(optional) Export altitude in direct location grid;\n"
-                                                  + "if present= \"true\" => Refining is deactivated, if not= \"false\" => refining is kept.");
+                                                  + "if present= \"true\", if not= \"false\".");
             exportAltOption.setRequired(false);
 
             // For inverse location: the following options are compulsory
@@ -281,12 +281,12 @@ public class OptionManager
      
             // params arguments
             // ------------------
-            Option detectors = new Option(OPT_DETECTORS_LIST_SHORT, OPT_DETECTORS_LIST_LONG, true, "List of detectors to process separated by spaces, example: 01 05 06 10 11");
+            Option detectors = new Option(OPT_DETECTORS_LIST_SHORT, OPT_DETECTORS_LIST_LONG, true, "(optional) List of detectors to process separated by spaces, example: 01 05 06 10 11");
             detectors.setType(Float.class);
             detectors.setArgs(Option.UNLIMITED_VALUES);
             detectors.setRequired(false);
 
-            Option bands = new Option(OPT_BANDS_LIST_SHORT, OPT_BANDS_LIST_LONG, true, "List of bands to process separated by spaces, example: B01 B08 B8A B10 B11");
+            Option bands = new Option(OPT_BANDS_LIST_SHORT, OPT_BANDS_LIST_LONG, true, "(optional) List of bands to process separated by spaces, example: B01 B08 B8A B10 B11");
             bands.setType(Float.class);
             bands.setArgs(Option.UNLIMITED_VALUES);
             bands.setRequired(false);
