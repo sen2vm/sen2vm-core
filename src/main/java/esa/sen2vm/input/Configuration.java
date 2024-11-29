@@ -30,7 +30,7 @@ public class Configuration extends InputFileManager
     private boolean gippVersionCheck = Sen2VMConstants.GIPP_CHECK;
     private String dem;
     private String geoid;
-    private String iers;
+    private String iers = "";
     private String pod;
     private String operation;
     private boolean deactivateRefining = Sen2VMConstants.DEACTIVATE_REFINING;

@@ -100,7 +100,7 @@ public class Sen2VM
             
             // Initialize the configuration and the parameters
             // ------------------
-            // Check wheter the initialisation shall be done from file or from command line arguments
+            // Check whether the initialization shall be done from file or from command line arguments
             if (OptionManager.areFiles())
             {
                 // Get the configuration file
@@ -123,10 +123,10 @@ public class Sen2VM
             }
             else
             { // not areFiles
-                // Initialise the configuration with the command line
+                // Initialize the configuration with the command line
                 config = new Configuration(commandLine);
                 
-                // Initialise the parameters with the command line
+                // Initialize the parameters with the command line
                 params = new Params(commandLine);
 
             } // end areFiles
