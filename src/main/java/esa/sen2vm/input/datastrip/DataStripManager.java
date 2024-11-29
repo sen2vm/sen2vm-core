@@ -289,14 +289,12 @@ public class DataStripManager
         try
         {
             // Set up default Orekit data
-            System.out.println(orekitDataPath);
             File orekitDataDir = new File(orekitDataPath);
             if (orekitDataDir == null || (!orekitDataDir.exists()))
             {
                 throw new Sen2VMException("Orekit data dir not found" + orekitDataPath);
             }
             DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
-            System.out.println(iersFilePath);
 
             // Read IERS information from metadata
             if (iersFilePath.equals(""))
