@@ -294,7 +294,7 @@ public class Sen2VM
                         double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
 
                         LOGGER.info("[DEBUG] First value to direct loc : " + String.valueOf(sensorGridForDirectLoc[0][0]) + " " + String.valueOf(sensorGridForDirectLoc[0][1]));
-                        LOGGER.info("[DEBUG] First value after direct loc : " + String.valueOf(directLocGrid[0][0]) + " " + String.valueOf(directLocGrid[0][1]));
+                        LOGGER.info("[DEBUG] First value after direct loc : " + String.valueOf(directLocGrid[0][0]) + " " + String.valueOf(directLocGrid[0][1]) +" " + String.valueOf(directLocGrid[0][2]));
 
                         Vector<String> inputTIFs = new Vector<String>();
                         float pixelOffset = dirGrid.getPixelOffsetGranule().floatValue();

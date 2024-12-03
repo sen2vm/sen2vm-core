@@ -19,7 +19,7 @@
         <jaxb.plugin.version>2.5.0</jaxb.plugin.version>
         <!-- cots version -->
         <gdal.version>3.6.2</gdal.version>
-        <sxgeo.version>0.1.13</sxgeo.version>
+        <sxgeo.version>0.2.0</sxgeo.version>
 		<sxgeo.orekit.version>11.3.2</sxgeo.orekit.version>
 		<sxgeo.rugged.version>4.0.1</sxgeo.rugged.version>
 		<sxgeo.hipparchus.version>2.3</sxgeo.hipparchus.version>

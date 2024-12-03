@@ -96,7 +96,7 @@ public class InverseLocGrid
     {
         int nbCols = this.gridX.size();
         int nbLines = this.gridY.size();
-        double[][] grid = new double[nbCols * nbLines][3];
+        double[][] grid = new double[nbCols * nbLines][2];
 
         for (int l = 0; l < nbLines; l ++)
         {
@@ -106,7 +106,6 @@ public class InverseLocGrid
                 coord.transform();
                 grid[l*nbCols + c][0] = coord.getLongitude();
                 grid[l*nbCols + c][1] = coord.getLatitude();
-                grid[l*nbCols + c][2] = 0.0;
             }
         }
         return grid;
