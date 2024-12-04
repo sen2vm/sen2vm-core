@@ -9,23 +9,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.HashMap;
-//import java.util.logging.Logger;
+import java.util.logging.Logger;
 
 import org.gdal.gdal.gdal;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdalconst.gdalconstConstants;
 
-import org.sxgeo.input.dem.DemFileManager;
+import org.sxgeo.input.dem.SrtmFileManager;
 import org.sxgeo.exception.SXGeoException;
 
 import esa.sen2vm.exception.Sen2VMException;
 
-public class GenericDemFileManager extends DemFileManager
+//Extend SrtmFileManager and not DemManager, as an check on the type of instanciation is made if isInstance of SrtmFileManager
+public class GenericDemFileManager extends SrtmFileManager
 {
     /**
      * Get sen2VM logger
      */
-    //private static final Logger LOGGER = Logger.getLogger(GenericDemFileManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GenericDemFileManager.class.getName());
 
     // Map dem filepath with a string that represents longitude/latitude
     // Example: with a SRTM tile on Madeira island located at longitude -16 and latitude 30
@@ -133,6 +134,7 @@ public class GenericDemFileManager extends DemFileManager
         {
 	        filePath = "";
         }
+        LOGGER.fine(filePath);
         return filePath;
     }
 
@@ -146,7 +148,8 @@ public class GenericDemFileManager extends DemFileManager
         Dataset dataset = gdal.Open(filePath, gdalconstConstants.GA_ReadOnly);
         if (dataset == null)
         {
-            System.err.println("Error when reading  : " + gdal.GetLastErrorMsg());
+            LOGGER.severe("Error when reading  : " + gdal.GetLastErrorMsg());
+            //System.err.println("Error when reading  : " + gdal.GetLastErrorMsg());
             return null;
         }
 

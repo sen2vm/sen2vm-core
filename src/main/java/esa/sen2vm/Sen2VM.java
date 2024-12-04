@@ -22,8 +22,6 @@ import org.sxgeo.input.datamodels.sensor.Sensor;
 import org.sxgeo.input.datamodels.sensor.SensorViewingDirection;
 import org.sxgeo.input.datamodels.sensor.SpaceCraftModelTransformation;
 import org.sxgeo.input.dem.DemManager;
-//import org.sxgeo.input.dem.DemFileManager;
-import org.sxgeo.input.dem.SrtmFileManager;
 import org.sxgeo.input.dem.GeoidManager;
 import org.sxgeo.rugged.RuggedManager;
 import org.sxgeo.exception.SXGeoException;
@@ -32,7 +30,7 @@ import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.Configuration;
-//import esa.sen2vm.input.GenericDemFileManager;
+import esa.sen2vm.input.GenericDemFileManager;
 import esa.sen2vm.input.OptionManager;
 import esa.sen2vm.input.Params;
 import esa.sen2vm.input.datastrip.DataStripManager;
@@ -168,14 +166,17 @@ public class Sen2VM
             // ---------------
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
             
-            SrtmFileManager demFileManager = new SrtmFileManager(config.getDem());
+            //Using SXGEO FileManager
+            /*SrtmFileManager demFileManager = new SrtmFileManager(config.getDem());
             if (!demFileManager.findRasterFile())
             {
                 throw new Sen2VMException("Error when checking for DEM file");
-            }
+            }*/
 
-            // GenericDemFileManager demFileManager_mine = new GenericDemFileManager(configFile.getDem());
-            // demFileManager_mine.buildMap(configFile.getDem());
+            //Using Sen2VM FileManager
+            GenericDemFileManager demFileManager = new GenericDemFileManager(config.getDem());
+            demFileManager.buildMap(config.getDem()); 
+            
             GeoidManager geoidManager = new GeoidManager(config.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
                 demFileManager,
