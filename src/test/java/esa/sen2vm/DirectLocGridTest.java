@@ -46,6 +46,7 @@ import esa.sen2vm.input.granule.GranuleManager;
 import esa.sen2vm.input.granule.Granule;
 import esa.sen2vm.input.gipp.GIPPManager;
 import esa.sen2vm.input.SafeManager;
+import esa.sen2vm.utils.grids.DirectLocGrid;
 
 import org.gdal.gdal.Band;
 import org.gdal.gdal.Dataset;
@@ -77,34 +78,45 @@ import org.orekit.rugged.linesensor.LineSensor;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-
 /**
- * Unit test for Sen2VM.
+ * Unit test for DirectLocGridTest.
  */
-
-public class Sen2VMTest
+public class DirectLocGridTest
 {
+
     /**
      * Functional test
      */
-    // // @Test
+    @Test
     public void readConfigurationFile()
     {
-        try
-        {
-            // Read configuration file
-            Configuration configFile = new Configuration("src/test/resources/TDS1_madeire/configuration_TDS1_madeire.json");
-            System.out.println("Datastrip file path: " + configFile.getDatastripFilePath() + "\nIERS bulletin path: "+ configFile.getIers() + "\nboolean refining: " + configFile.getDeactivateRefining());
-        }
-        catch (Sen2VMException e)
-        {
-            e.printStackTrace();
-        }
+        float step = 4.5f ;
+        int startLine = 0 ;
+        int startPixel = 0 ;
+        int sizeLine = 2304 ;
+        int sizePixel = 425 ;
+
+        DirectLocGrid dirGrid = new DirectLocGrid(0.5f, 0.5f,
+                        step, startPixel, startLine, sizeLine, sizePixel);
+        assertEquals(dirGrid.getPixelOffsetGranule(), -1.75);
+        assertEquals(dirGrid.getLineOffsetGranule(0), -1.75);
+        assertEquals(dirGrid.getLineOffsetGranule(200), -3.75);
+        assertEquals(dirGrid.getLineOffsetGranule(210), -0.25);
+
+        ArrayList<Double> pixels = dirGrid.getGridPixels();
+        assertEquals(pixels.size(), 95);
+        assertEquals(pixels.get(0), -1.75);
+        assertEquals(pixels.get(1), pixels.get(0) + step);
+        assertEquals(pixels.get(dirGrid.getGridPixels().size() - 1), 421.25);
+
+        ArrayList<Double> lines = dirGrid.getGridLines();
+        assertEquals(lines.size(), 513);
+        assertEquals(lines.get(0), -1.75);
+        assertEquals(lines.get(1), lines.get(0) + step);
+        assertEquals(lines.get(dirGrid.getGridLines().size() - 1), 2302.25);
+
+
     }
-
-
-
-
 
 
 }

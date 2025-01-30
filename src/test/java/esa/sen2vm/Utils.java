@@ -99,6 +99,9 @@ public class Utils {
         steps.put("20m_bands", (int) step / 20);
         steps.put("60m_bands", (int) step / 60);
 
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("output_folder", l1b_product);
+
         String outputConfig = l1b_product + "/configuration.json";
         FileWriter writer = new FileWriter(outputConfig); //overwrites the content of file
         writer.write(objJson.toString());
@@ -121,6 +124,9 @@ public class Utils {
         objJson.put("l1b_product", l1b_product);
         objJson.remove("iers");
 
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("output_folder", l1b_product);
+
         String outputConfig = l1b_product + "/configuration.json";
         System.out.println(outputConfig);
         FileWriter writer = new FileWriter(outputConfig, false);
@@ -131,15 +137,127 @@ public class Utils {
 
     }
 
-    public static String createTestDir(String nameTest) throws IOException
+
+    public static String configInverseBB(String filePath,
+                                        double ul_y, double ul_x,
+                                        double lr_y, double lr_x,
+                                        String referential, String l1b_product) throws FileNotFoundException,
+                                         IOException, ParseException {
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(filePath));
+
+        JSONObject objJson = (JSONObject) obj;
+        objJson.put("l1b_product", l1b_product);
+
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("ul_y", ul_y);
+        inverse.put("ul_x", ul_x);
+        inverse.put("lr_y", lr_y);
+        inverse.put("lr_x", lr_x);
+        inverse.put("referential", referential);
+        inverse.put("output_folder", l1b_product);
+
+        String outputConfig = l1b_product + "/configuration.json";
+        System.out.println(outputConfig);
+        FileWriter writer = new FileWriter(outputConfig, false);
+        writer.write(obj.toString());
+        writer.close();
+
+        return outputConfig;
+
+    }
+
+    public static String changeDem(String filePath, String demPath, String l1b_product) throws FileNotFoundException,
+            IOException, ParseException {
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(filePath));
+
+        JSONObject objJson = (JSONObject) obj;
+        objJson.put("l1b_product", l1b_product);
+        objJson.put("dem", demPath);
+
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("output_folder", l1b_product);
+
+        String outputConfig = l1b_product + "/configuration.json";
+        System.out.println(outputConfig);
+        FileWriter writer = new FileWriter(outputConfig, false);
+        writer.write(obj.toString());
+        writer.close();
+
+        return outputConfig;
+
+    }
+
+    public static String configCheckGipp(String filePath, String gippPath, boolean checkGipp, String l1b_product) throws FileNotFoundException,
+            IOException, ParseException {
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(filePath));
+
+        JSONObject objJson = (JSONObject) obj;
+        objJson.put("gipp_folder", gippPath);
+        objJson.put("gipp_version_check", checkGipp);
+        objJson.put("l1b_product", l1b_product);
+
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("output_folder", l1b_product);
+
+        String outputConfig = l1b_product + "/configuration.json";
+        System.out.println(outputConfig);
+        FileWriter writer = new FileWriter(outputConfig, false);
+        writer.write(obj.toString());
+        writer.close();
+
+        return outputConfig;
+
+    }
+
+    public static String createTestDir(String nameTest, String type) throws IOException
     {
-        String inputRef = "src/test/resources/tests/input/TDS1/L1B_min";
-        String outputRef = "src/test/resources/tests/output/" + nameTest;
-        copyFolder(new File(inputRef), new File(outputRef), true);
-        return outputRef;
+        if (type.equals("direct")) {
+            String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
+            String outputDir = "src/test/resources/tests/output/" + nameTest;
+            copyFolder(new File(inputRef), new File(outputDir), true);
+            return outputDir;
+        } else {
+            String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
+            String outputDir = "src/test/resources/tests/output/" + nameTest;
+            copyFolder(new File(inputRef), new File(outputDir), true);
+            return outputDir;
+        }
     }
 
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
+    {
+
+        Configuration configFile = new Configuration(configFilepath);
+        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+        SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
+
+        ArrayList<Granule> granules = sm.getGranules();
+
+        for(int g = 0; g < granules.size(); g++) {
+            File[] grids = granules.get(g).getGrids();
+
+            int b = 0;
+            for (File grid : grids) {
+                if (grid != null) {
+                    double res = BandInfo.getBandInfoFromIndex(b).getPixelHeight();
+                    Dataset ds = gdal.Open(grid.getPath());
+                    double[] transform = ds.GetGeoTransform();
+                    assertEquals(transform[1] * res, step);
+                    assertEquals(transform[5] * res, step);
+                    ds.delete();
+                }
+                b = b + 1;
+            }
+        }
+    }
+
+    public static void verifyStepInverseLoc(String configFilepath, int step) throws Sen2VMException
     {
 
         Configuration configFile = new Configuration(configFilepath);
@@ -192,6 +310,32 @@ public class Utils {
         }
      }
 
+    public static void verifyInverseLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
+    {
+        System.out.println("START verif");
+        Configuration configFile = new Configuration(configFilepath);
+        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+        SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
+        File[][] outputGrids = sm.getInverseGrids(configFile.getInverseLocOutputFolder());
+        File[][] refGrids = sm.getInverseGrids(outputRef);
+
+        for(int d = 0; d < Sen2VMConstants.NB_DETS; d++)
+        {
+            for(int b = 0; b < Sen2VMConstants.NB_BANDS; b++)
+            {
+                if (outputGrids[d][b] != null) {
+                    File outputGrid = outputGrids[d][b] ;
+                    File refGrid = refGrids[d][b] ;
+                    if (outputGrid != null) {
+                        System.out.println(outputGrid + "ok");
+                        System.out.println(refGrid + "ok");
+                        assertEquals(imagesEqual(outputGrid.toString(), refGrid.toString()), true);
+                    }
+                }
+            }
+        }
+     }
+
 
 
     public static boolean imagesEqual(String img1Path, String img2Path) throws IOException{
@@ -200,6 +344,7 @@ public class Utils {
         if (ds1.GetRasterCount() == ds2.GetRasterCount() && ds1.getRasterXSize() == ds2.getRasterXSize() && ds1.getRasterYSize() == ds2.getRasterYSize()) {
             Band b1 = ds1.GetRasterBand(1);
             Band b2 = ds2.GetRasterBand(1);
+
             for(int i = 0; i < ds1.getRasterYSize(); i++)
             {
                 double[] data1 = new double[ds1.getRasterXSize()];
@@ -207,7 +352,12 @@ public class Utils {
                 double[] data2 = new double[ds2.getRasterXSize()];
                 b2.ReadRaster(0, i, ds2.getRasterXSize(), 1, data2);
                 for(int d = 0; d < ds1.getRasterXSize(); d++) {
-                    if (data1[d] != data2[d]) {
+                    if (!(Double.isNaN(data1[d]) == Double.isNaN(data2[d])))
+                    {
+                        return false;
+                    }
+                    if (!(Double.isNaN(data1[d]))  && data1[d] != data2[d])
+                    {
                         return false;
                     }
                 }
