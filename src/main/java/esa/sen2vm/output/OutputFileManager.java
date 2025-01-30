@@ -145,7 +145,7 @@ public class OutputFileManager
                             Float lineOffset, Float pixelOffset, boolean exportAlt)
     {
         // Create file tmp
-        String vrtFilePath_tmp = vrtFilePath.substring(0, vrtFilePath.length() -4) + "_tmp.vrt";
+        String vrtFilePath_tmp = vrtFilePath.substring(0, vrtFilePath.length() -4) + "_tmp" + VRT_EXTENSION;
 
         // Option code here
         final Vector<String> buildVRTOptions = new Vector<String>();
@@ -195,7 +195,7 @@ public class OutputFileManager
      */
     public void correctVRT(String vrtFilePath) throws Exception
     {
-        String vrtFilePath_tmp = vrtFilePath.substring(0,vrtFilePath.length() -4) + "_tmp.vrt";
+        String vrtFilePath_tmp = vrtFilePath.substring(0,vrtFilePath.length() -4) + "_tmp" + VRT_EXTENSION;
 
         // File reader
         File file = new File(vrtFilePath_tmp);

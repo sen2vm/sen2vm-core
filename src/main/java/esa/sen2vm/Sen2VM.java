@@ -255,6 +255,7 @@ public class Sen2VM
             LOGGER.info("Starting grids generation");
             for (BandInfo bandInfo: bands) 
             {
+
                 LOGGER.info("");
                 LOGGER.info("");
                 LOGGER.info("###############");
@@ -336,10 +337,7 @@ public class Sen2VM
                     {
                         Float[] bb =  config.getInverseLocBound();
 
-                        // Start
-                        step = step * 100; // TODO
-
-                        InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), step);
+                        InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), step * res);
                         double[][] groundGrid = invGrid.get2DgridLatLon();
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
@@ -347,7 +345,6 @@ public class Sen2VM
 
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());
                         outputFileManager.createGeoTiff(invFileName, bb[0], bb[1], invGrid.getStepX(), invGrid.getStepY(), grid3D, config.getInverseLocReferential(), "", 0.0f, 0.0f);
-
                     }
                     else
                     {

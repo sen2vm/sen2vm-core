@@ -42,7 +42,8 @@ public class Sen2VMConstants
      */
     public static final String SAFE_EXTENSION = ".SAFE";
     public static final String TIFF_EXTENSION = ".TIF";
-    public static final String VRT_EXTENSION = ".SAFE";
+    public static final String JP2_EXTENSION = ".jp2";
+    public static final String VRT_EXTENSION = ".vrt";
     public static final String DATASTRIP = "DATASTRIP";
     public static final String GRANULE = "GRANULE";
     public static final String GEO_DATA_DS = "GEO_DATA";
@@ -102,7 +103,7 @@ public class Sen2VMConstants
     /**
      * Rugged Manager initialization
      */
-    public static final String OREKIT_DATA_DIR = "resources/orekit-data";
+    public static final String OREKIT_DATA_DIR = "src/main/resources/orekit-data";
 
     
     // Granule line (for a 10m resolution band)

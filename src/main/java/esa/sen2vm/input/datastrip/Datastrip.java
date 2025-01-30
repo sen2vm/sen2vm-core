@@ -77,6 +77,14 @@ public class Datastrip
         return this.name;
     }
 
+    /*
+     * Get the name
+     */
+    public File[][] getVRT()
+    {
+        return this.vrts;
+    }
+
     /**
      * Get name of the future vrt from a detector and a band in {Datastrip}/GEO_DATA (create it if none)
      * @param detector
@@ -87,7 +95,7 @@ public class Datastrip
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         geo_data.mkdir();
 
-        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + ".vrt";
+        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + Sen2VMConstants.VRT_EXTENSION ;
         String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + vrt).getPath();
 
@@ -103,9 +111,11 @@ public class Datastrip
         File geo_data = new File(outputDir);
         geo_data.mkdir();
 
-        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + ".tif";
-        String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_INV_");
-        return new File(geo_data.getPath() + File.separator + vrt).getPath();
+        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + Sen2VMConstants.TIFF_EXTENSION;
+        String name = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_INV_");
+        return new File(geo_data.getPath() + File.separator + name).getPath();
 
     }
+
+
 }

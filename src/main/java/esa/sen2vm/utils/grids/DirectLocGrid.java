@@ -193,4 +193,22 @@ public class DirectLocGrid
     {
         return this.gridPixels.get(getRowInGrid(0));
     }
+
+    /**
+     * Get grid Pixels
+     * @return gridPixels
+     */
+    public ArrayList<Double> getGridPixels()
+    {
+        return this.gridPixels;
+    }
+
+    /**
+     * Get grid lines
+     * @return gridLines
+     */
+    public ArrayList<Double> getGridLines()
+    {
+        return this.gridLines;
+    }
 }

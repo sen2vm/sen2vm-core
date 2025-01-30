@@ -220,7 +220,7 @@ public class Granule
         geo_data.mkdir();
 
         String image = this.images[band.getIndex()].getName();
-        String grid = image.replace(".jp2", ".tif").replace("_MSI_", "_GEO_");
+        String grid = image.replace(JP2_EXTENSION, TIFF_EXTENSION).replace("_MSI_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + grid).getPath();
     }
 

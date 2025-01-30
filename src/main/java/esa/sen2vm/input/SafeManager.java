@@ -175,4 +175,36 @@ public class SafeManager
      {
         return this.listGranules;
     }
+
+    /**
+     * Get all inverse grid from an output directory
+     * @return grids[det][band]
+     */
+     public File[][] getInverseGrids(String outputDirPath)
+    {
+        File outputDir = new File(outputDirPath);
+        File[][] inverseGrids = new File[Sen2VMConstants.NB_DETS][Sen2VMConstants.NB_BANDS];
+        File[] listOfFiles = outputDir.listFiles();
+        if(listOfFiles != null)
+        {
+            for (int i = 0; i < listOfFiles.length; i++)
+            {
+                if (listOfFiles[i].getName().contains(".")) {
+                    String extension = listOfFiles[i].getName().substring(listOfFiles[i].getName().lastIndexOf("."), listOfFiles[i].getName().length());
+                    if (listOfFiles[i].isFile() && extension.equals(Sen2VMConstants.TIFF_EXTENSION)) {
+                        String[] name = listOfFiles[i].getName().substring(0, listOfFiles[i].getName().lastIndexOf(".")).split("_");
+
+                        String bandName = name[name.length-1];
+                        int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
+
+                        String detectorName = name[name.length-2].substring(1,3);
+                        int indexDetector = DetectorInfo.getDetectorInfoFromName(detectorName).getIndex();
+                        inverseGrids[indexDetector][indexBand] = listOfFiles[i];
+                    }
+                }
+
+            }
+        }
+        return inverseGrids;
+    }
 }
