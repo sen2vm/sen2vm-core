@@ -1,6 +1,11 @@
 package esa.sen2vm.utils.grids;
 
 import java.util.ArrayList;
+
+import org.gdal.osr.CoordinateTransformation;
+import org.gdal.osr.SpatialReference;
+import java.text.DecimalFormat;
+
 import java.util.logging.Logger;
 
 
@@ -85,6 +90,7 @@ public class InverseLocGrid
         }
         LOGGER.info("1D : " + String.valueOf(start) + " -> " + String.valueOf(grid.get(nb-1)) +
             " (> " +  String.valueOf(start + size) + ")");
+
         return grid;
     }
 
@@ -98,19 +104,20 @@ public class InverseLocGrid
         int nbLines = this.gridY.size();
         double[][] grid = new double[nbCols * nbLines][2];
 
+        // Init source/target SpatialReference and transformation
+        SpatialReference sourceSRS = new SpatialReference();
+        sourceSRS.ImportFromEPSG(this.epsg);
+        SpatialReference targetSRS = new SpatialReference();
+        targetSRS.ImportFromEPSG(4326);
+        CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
+
         for (int l = 0; l < nbLines; l ++)
         {
             for (int c = 0; c < nbCols; c ++)
             {
-                // System.out.println("l" + String.valueOf(this.gridY.get(l)) + " " + String.valueOf(this.gridX.get(c)));
-
-                Coordinates coord = new Coordinates(this.gridY.get(l), this.gridX.get(c), this.epsg);
-                coord.transform();
-
-                grid[l*nbCols + c][0] = coord.getLongitude() ;
-                grid[l*nbCols + c][1] = coord.getLatitude();
-                // System.out.println(this.epsg + " " + String.valueOf(coord.getLongitude()) + " " + String.valueOf(coord.getLatitude()));
-
+                double[] res = transformer.TransformPoint(this.gridX.get(c), this.gridY.get(l));
+                grid[l*nbCols + c][0] = res[1];
+                grid[l*nbCols + c][1] = res[0];
             }
         }
         return grid;
