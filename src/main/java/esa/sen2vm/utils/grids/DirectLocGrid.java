@@ -73,8 +73,10 @@ public class DirectLocGrid
         {
             for (int c = 0; c < nbCols; c ++)
             {
+
                 grid[l*nbCols + c][0] = this.gridLines.get(l) + lineOffest;
                 grid[l*nbCols + c][1] = this.gridPixels.get(c) + pixelOffest;
+
             }
         }
 
@@ -95,7 +97,8 @@ public class DirectLocGrid
         ArrayList<Double> grid = new ArrayList<Double>();
         int i_grid = 0;
 
-        double value = start + offset + (i_grid -  pixelOrigin) * step - step / 2;
+        double value = offset + (i_grid -  pixelOrigin) * step - step / 2;
+
         grid.add(value);
 
         while (insideGranule)
@@ -111,6 +114,7 @@ public class DirectLocGrid
                 i_grid ++;
             }
         }
+
         return grid;
     }
 
@@ -150,7 +154,6 @@ public class DirectLocGrid
         log = log + " // Line Offset: " + String.valueOf(this.gridLines.get(grid_row_start) - startGranule);
         log = log + " Pixel Offset: " + String.valueOf(this.gridPixels.get(0));
         LOGGER.info(log);
-
 
         int nbBands = 3;
         if (exportAlt == false)

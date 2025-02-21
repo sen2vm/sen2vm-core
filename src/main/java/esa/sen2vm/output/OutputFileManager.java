@@ -11,6 +11,7 @@ import org.gdal.gdal.Driver;
 import org.gdal.gdal.gdal;
 import org.gdal.gdalconst.gdalconst;
 import org.gdal.gdal.BuildVRTOptions;
+import esa.sen2vm.utils.Sen2VMConstants;
 
 import java.util.logging.Logger;
 
@@ -45,7 +46,7 @@ public class OutputFileManager
      * @param srs subLineOffset line offset of the grid (metadata)
      */
      public void createGeoTiff(String fileName, Float startPixel, Float startLine,
-            Float stepX, Float stepY, double[][][] bandVal, String epsg, String epsgData, Float lineOffset, Float pixelOffset)
+            Float stepX, Float stepY, double[][][] bandVal, String epsg, String epsgData, Float lineOffset, Float pixelOffset, Boolean metadata)
     {
 
         int nbBand = bandVal.length;
@@ -62,20 +63,23 @@ public class OutputFileManager
         GdalGridFileInfo fileInfo = new GdalGridFileInfo();
         fileInfo.setDs(ds);
 
-        // Add metadata
-        ds.SetMetadataItem("X_BAND", "1");
-        ds.SetMetadataItem("Y_BAND", "2");
-        if (nbBand == 3)
+        if (metadata)
         {
-            ds.SetMetadataItem("Z_BAND", "3");
+            // Add metadata
+            ds.SetMetadataItem("X_BAND", "1");
+            ds.SetMetadataItem("Y_BAND", "2");
+            if (nbBand == 3)
+            {
+                ds.SetMetadataItem("Z_BAND", "3");
+            }
+            ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(pixelOffset));
+            ds.SetMetadataItem("PIXEL_STEP", String.valueOf(stepX));
+            ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
+            ds.SetMetadataItem("LINE_STEP", String.valueOf(stepY));
+            ds.SetMetadataItem("SRS", epsgData);
+            ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "TOP_LEFT_CORNER");
+            // ds.SetDescription("Direct Location Grid");
         }
-        ds.SetMetadataItem("PIXEL_OFFSET", String.valueOf(pixelOffset));
-        ds.SetMetadataItem("PIXEL_STEP", String.valueOf(stepX));
-        ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
-        ds.SetMetadataItem("LINE_STEP", String.valueOf(stepY));
-        ds.SetMetadataItem("SRS", epsgData);
-        ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "TOP_LEFT_CORNER");
-        // ds.SetDescription("Direct Location Grid");
 
         Vector<Band> bands = new Vector<Band>();
         for (int b = 0; b < nbBand; b++)
@@ -145,7 +149,7 @@ public class OutputFileManager
                             Float lineOffset, Float pixelOffset, boolean exportAlt)
     {
         // Create file tmp
-        String vrtFilePath_tmp = vrtFilePath.substring(0, vrtFilePath.length() -4) + "_tmp" + VRT_EXTENSION;
+        String vrtFilePath_tmp = vrtFilePath.substring(0, vrtFilePath.length() -4) + "_tmp" + Sen2VMConstants.VRT_EXTENSION;
 
         // Option code here
         final Vector<String> buildVRTOptions = new Vector<String>();
@@ -195,7 +199,7 @@ public class OutputFileManager
      */
     public void correctVRT(String vrtFilePath) throws Exception
     {
-        String vrtFilePath_tmp = vrtFilePath.substring(0,vrtFilePath.length() -4) + "_tmp" + VRT_EXTENSION;
+        String vrtFilePath_tmp = vrtFilePath.substring(0,vrtFilePath.length() -4) + "_tmp" + Sen2VMConstants.VRT_EXTENSION;
 
         // File reader
         File file = new File(vrtFilePath_tmp);

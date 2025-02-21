@@ -101,6 +101,7 @@ public class Granule
                     if (listOfFiles[p].getName().equals(Sen2VMConstants.GEO_DATA_GR))
                     {
                         loadGrids(listOfFiles[p]);
+
                     }
                 }
                 else if (listOfFiles[p].isFile())
@@ -118,6 +119,23 @@ public class Granule
     public String getName()
     {
         return this.name;
+    }
+
+    /**
+     * Get Granule path
+     */
+    public String getPath()
+    {
+        return this.path.toString();
+    }
+
+
+    /**
+     * Get Granule MTD path
+     */
+    public String getPathMTD()
+    {
+        return this.path_mtd.toString();
     }
 
     /**
@@ -216,11 +234,12 @@ public class Granule
      */
     public String getCorrespondingGeoFileName(BandInfo band)
     {
+        System.out.println(this.path + File.separator + "GEO_DATA");
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         geo_data.mkdir();
 
         String image = this.images[band.getIndex()].getName();
-        String grid = image.replace(JP2_EXTENSION, TIFF_EXTENSION).replace("_MSI_", "_GEO_");
+        String grid = image.replace(Sen2VMConstants.JP2_EXTENSION, Sen2VMConstants.TIFF_EXTENSION).replace("_MSI_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + grid).getPath();
     }
 

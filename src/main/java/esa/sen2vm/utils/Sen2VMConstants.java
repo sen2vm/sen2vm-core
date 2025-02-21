@@ -41,7 +41,7 @@ public class Sen2VMConstants
      * DATA directories
      */
     public static final String SAFE_EXTENSION = ".SAFE";
-    public static final String TIFF_EXTENSION = ".TIF";
+    public static final String TIFF_EXTENSION = ".tif";
     public static final String JP2_EXTENSION = ".jp2";
     public static final String VRT_EXTENSION = ".vrt";
     public static final String DATASTRIP = "DATASTRIP";

@@ -21,7 +21,7 @@ public class Coordinates
      * @param epsg referencial
      * @throws Sen2VMException
      */
-    public Coordinates(Float x, Float y, int epsg)
+    public Coordinates(Float y, Float x, int epsg)
     {
         this.x = x;
         this.y = y;

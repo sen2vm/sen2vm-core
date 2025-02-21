@@ -102,10 +102,15 @@ public class InverseLocGrid
         {
             for (int c = 0; c < nbCols; c ++)
             {
+                // System.out.println("l" + String.valueOf(this.gridY.get(l)) + " " + String.valueOf(this.gridX.get(c)));
+
                 Coordinates coord = new Coordinates(this.gridY.get(l), this.gridX.get(c), this.epsg);
                 coord.transform();
-                grid[l*nbCols + c][0] = coord.getLongitude();
+
+                grid[l*nbCols + c][0] = coord.getLongitude() ;
                 grid[l*nbCols + c][1] = coord.getLatitude();
+                // System.out.println(this.epsg + " " + String.valueOf(coord.getLongitude()) + " " + String.valueOf(coord.getLatitude()));
+
             }
         }
         return grid;
@@ -116,21 +121,18 @@ public class InverseLocGrid
      * @return grid [[[row00, row01..], [row10, row11..] ..],[[col00, col01...], [col10, col11...], ...]
      */
 
-     public double[][][] get3Dgrid(double[][] gridList)
+     public double[][][] get3Dgrid(double[][] gridList, Float pixelOffest, Float lineOffest)
      {
         int nbCols = this.gridX.size();
         int nbLines = this.gridY.size();
-        int nbBands = 2;
-        double[][][] grid = new double[nbBands][nbLines][nbCols];;
+        double[][][] grid = new double[2][nbLines][nbCols];;
 
         for (int l = 0; l < nbLines; l ++)
         {
             for (int c = 0; c < nbCols; c ++)
             {
-                for (int b = 0; b < nbBands; b++)
-                {
-                    grid[b][l][c] = gridList[l*nbCols + c][b];
-                }
+                grid[0][l][c] = gridList[l*nbCols + c][0] + lineOffest;
+                grid[1][l][c] = gridList[l*nbCols + c][1] + pixelOffest;
             }
         }
         return grid;
