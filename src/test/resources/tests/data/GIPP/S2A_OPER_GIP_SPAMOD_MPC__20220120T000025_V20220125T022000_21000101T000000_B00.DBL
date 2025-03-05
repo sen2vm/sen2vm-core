@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XML file generated manually - initialised with null values--><GS2_SPACECRAFT_MODEL_PARAMETERS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="T:\SENTINEL-2\04-SEGMENT_SOL\02-Spec-SSI-S2\03-GS\03-Schemas_Image_S2\GS2_GIPP\gs2_spacecraft_model_parameters.xsd">
+   <HEADER>
+      <SATELLITE>S2A</SATELLITE>
+      <SCHEME_VERSION>String</SCHEME_VERSION>
+      <PRODUCTION_DATE>2022-01-20T00:00:25.0Z</PRODUCTION_DATE>
+      <PROVIDER>String</PROVIDER>
+      <CONSUMER>GPP-Light</CONSUMER>
+   </HEADER>
+   <SPECIFIC_HEADER>
+      <TYPE>S2A_SPACECRAFT_MODEL_FILE</TYPE>
+      <APPLICABILITY_DATE>2022-01-25T02:20:00.0Z</APPLICABILITY_DATE>
+      <APPLICABILITY_END_DATE>2100-01-01T00:00:00.0Z</APPLICABILITY_END_DATE>
+      <VERSION_NUMBER>0025</VERSION_NUMBER>
+      <PARAMETER_ID>String</PARAMETER_ID>
+   </SPECIFIC_HEADER>
+   <DATA>
+   <GSE>
+		<OFFSET_IMU unit="s">-0.1</OFFSET_IMU>
+		<OFFSET_STR unit="s">0.0</OFFSET_STR>
+		<STR1_ATT_QUATERNION>
+			<VECTOR>0.9649293289 -0.0428795593 0.0114486872</VECTOR>
+			<SCALAR>-0.2587308663</SCALAR>
+		</STR1_ATT_QUATERNION>
+		<STR2_ATT_QUATERNION>
+			<VECTOR>0.7098441088 -0.3307171527 0.2614272643</VECTOR>
+			<SCALAR>-0.5642723559</SCALAR>
+		</STR2_ATT_QUATERNION>
+		<STR3_ATT_QUATERNION>
+			<VECTOR>-0.2682245940 0.7347688165 0.5858512872</VECTOR>
+			<SCALAR>-0.2120109025</SCALAR>
+		</STR3_ATT_QUATERNION>
+		<STR_INNOV_THD>0.01 0.01 0.01</STR_INNOV_THD>
+   </GSE>
+      <LOCATION_ACCURACY>
+         <ABSOLUTE_LOCATION unit="m">20</ABSOLUTE_LOCATION>
+         <PLANIMETRIC_STABILITY unit="m">3</PLANIMETRIC_STABILITY>
+         <DOP_QUALITY>
+            <VALUES>0.0 1.0 2.0 5.0 10.0 20.0</VALUES>
+            <QUALITY_INDICATOR>Ideal Excellent Good Moderate Fair Poor</QUALITY_INDICATOR>
+         </DOP_QUALITY>
+      </LOCATION_ACCURACY>
+      <PILOTING_TO_MSI_FRAME>
+         <R1 axis="X" unit="mrad">-0.0292</R1>
+         <R2 axis="Y" unit="mrad">-0.9626</R2>
+         <R3 axis="Z" unit="mrad">-0.0224</R3>
+         <SCALE_FACTOR>1</SCALE_FACTOR>
+         <COMBINATION_ORDER>ROTATION_THEN_SCALE</COMBINATION_ORDER>
+      </PILOTING_TO_MSI_FRAME>
+      <MSI_TO_FOCAL_PLANE>
+         <MSI_TO_VNIR>
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+            <SCALE_FACTOR>1</SCALE_FACTOR>
+            <COMBINATION_ORDER>SCALE_THEN_ROTATION</COMBINATION_ORDER>
+         </MSI_TO_VNIR>
+         <MSI_TO_SWIR>
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+            <SCALE_FACTOR>1</SCALE_FACTOR>
+            <COMBINATION_ORDER>SCALE_THEN_ROTATION</COMBINATION_ORDER>
+         </MSI_TO_SWIR>
+      </MSI_TO_FOCAL_PLANE>
+      <FOCAL_PLANE_TO_DETECTOR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="01">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="02">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="03">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="04">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="05">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="06">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="07">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="08">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="09">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="10">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="11">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_VNIR detector_id="12">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_VNIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="01">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="02">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="03">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="04">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="05">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="06">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="07">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="08">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="09">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="10">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="11">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+         <FOCAL_PLANE_TO_DETECTOR_SWIR detector_id="12">
+            <R1 axis="X" unit="mrad">0.0</R1>
+            <R2 axis="Y" unit="mrad">0.0</R2>
+            <R3 axis="Z" unit="mrad">0.0</R3>
+         </FOCAL_PLANE_TO_DETECTOR_SWIR>
+      </FOCAL_PLANE_TO_DETECTOR>
+   </DATA>
+</GS2_SPACECRAFT_MODEL_PARAMETERS>

@@ -1,0 +1,25 @@
+{
+  "l1b_product": "/Sen2vm/test/resources/tests/input/TDS1/L1B_all/",
+
+  "gipp_folder": "/Sen2vm/test/resources/tests/input/TDS1/inputs/GIPP/",
+  "gipp_version_check": true,
+  "dem": "/Sen2vm/sen2vm-core/src/test/resources/DEM",
+  "geoid": "/Sen2vm/sen2vm-core/src/test/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx",
+  "iers": "/Sen2vm/sen2vm-core/src/test/resources/tests/input/TDS1/inputs/IERS/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000_MTD.txt",
+  "pod": "PATH_TO_POD_file/folder?",
+  "operation": "inverse",
+  "overwrite_existing_grids": false,
+  "deactivate_available_refining": false,
+  "steps": {
+    "10m_bands": 600,
+    "20m_bands": 300,
+    "60m_bands": 100
+  },
+  "export_alt": true,
+  "inverse_location_additional_info":
+ {"ul_x": 199980.0, "ul_y": 3700020.0, "lr_x": 309780.0, "lr_y": 3590220.0,
+   "referential": "EPSG:32628", "output_folder": "tmp"}
+}
+
+
+
