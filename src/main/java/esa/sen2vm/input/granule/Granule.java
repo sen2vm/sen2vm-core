@@ -183,7 +183,7 @@ public class Granule
     private void loadGrids(File geo_data)
     {
         File[] list_img = geo_data.listFiles();
-        LOGGER.info(" --> Number of grids already existing: " + String.valueOf(list_img.length));
+        int nbGranule = 0;
         for (int i = 0; i < list_img.length; i++)
         {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
@@ -192,10 +192,12 @@ public class Granule
             if (bandName.length() == 3)
             {
                 int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
-                LOGGER.info(list_img[i].getName());
+                // LOGGER.debug(list_img[i].getName());
                 this.grids[indexBand] = list_img[i];
+                nbGranule++;
             }
         }
+        LOGGER.info(" --> Number of grids already existing: " + String.valueOf(nbGranule));
     }
 
      /*

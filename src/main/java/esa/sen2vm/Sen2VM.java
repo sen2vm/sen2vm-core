@@ -159,7 +159,6 @@ public class Sen2VM
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
 
-            
             // Initialize SimpleLocEngine
             // ==========================
             // Init demManager
@@ -175,15 +174,14 @@ public class Sen2VM
 
             //Using Sen2VM FileManager
             GenericDemFileManager demFileManager = new GenericDemFileManager(config.getDem());
-            demFileManager.buildMap(config.getDem()); 
-            
+            demFileManager.buildMap(config.getDem());
+
             GeoidManager geoidManager = new GeoidManager(config.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
                 demFileManager,
                 geoidManager,
                 isOverlappingTiles);
 
-            
             // Build sensors list
             // ------------------
             // Save sensors for each focal plane
@@ -241,8 +239,8 @@ public class Sen2VM
             //ds.checkNoVRT(detectors, bands);
 
             // GIPP
-            Float georefConventionOffsetPixel = 0.5f;
-            Float georefConventionOffsetLine = 0.5f;
+            Float georefConventionOffsetPixel = -0.5f;
+            Float georefConventionOffsetLine = +0.5f;
 
             OutputFileManager outputFileManager = new OutputFileManager();
 
@@ -252,11 +250,11 @@ public class Sen2VM
             }
 
 
+            LOGGER.info("");
             LOGGER.info("Starting grids generation");
-            for (BandInfo bandInfo: bands) 
+            for (BandInfo bandInfo: bands)
             {
 
-                LOGGER.info("");
                 LOGGER.info("");
                 LOGGER.info("###############");
                 LOGGER.info("### BAND " + bandInfo.getName() + " ###");
@@ -289,12 +287,15 @@ public class Sen2VM
                         DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffsetLine, georefConventionOffsetPixel,
                             step, startLine, startPixel, sizeLine, sizePixel);
 
-                        double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2 - georefConventionOffsetPixel, step/2 + georefConventionOffsetLine);
+
+                        double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2, step/2);
                         LOGGER.info("[DEBUG] sensorGridForDirectLoc lines: " + String.valueOf(sensorGridForDirectLoc[0][0]) + "....");
                         LOGGER.info("[DEBUG] sensorGridForDirectLoc pixels: " + String.valueOf(sensorGridForDirectLoc[0][1]) + "....");
 
                         // Direct Loc
                         double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
+                        LOGGER.info("[DEBUG] First value to direct loc : " + String.valueOf(sensorGridForDirectLoc[0][0]) + " " + String.valueOf(sensorGridForDirectLoc[0][1]));
+                        LOGGER.info("[DEBUG] First value after direct loc : " + String.valueOf(directLocGrid[0][0]) + " " + String.valueOf(directLocGrid[0][1]) +" " + String.valueOf(directLocGrid[0][2]));
 
                         Vector<String> inputTIFs = new Vector<String>();
                         float pixelOffset = dirGrid.getPixelOffsetGranule().floatValue();
@@ -302,10 +303,12 @@ public class Sen2VM
                         for (int g = 0; g < granulesToCompute.size(); g++)
                         {
                             Granule gr = granulesToCompute.get(g);
+
                             int startGranule = gr.getFirstLine(res);
                             int sizeGranule = gr.getSizeLines(res);
 
                             double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule, config.getExportAlt());
+
                             float subLineOffset = dirGrid.getLineOffsetGranule(startGranule).floatValue();
 
                             // Save in TIF
@@ -339,7 +342,7 @@ public class Sen2VM
                         double[][] groundGrid = invGrid.get2DgridLatLon();
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
-                        double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, georefConventionOffsetPixel, -georefConventionOffsetLine);
+                        double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, -georefConventionOffsetPixel, -georefConventionOffsetLine);
 
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());
                         outputFileManager.createGeoTiff(invFileName, bb[0], bb[1], invGrid.getStepX(), invGrid.getStepY(), grid3D, config.getInverseLocReferential(), "", 0.0f, 0.0f, false);

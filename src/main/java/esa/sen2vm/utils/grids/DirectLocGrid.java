@@ -50,9 +50,6 @@ public class DirectLocGrid
         info = info + " Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ");";
         info = info + " Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")";
         LOGGER.info("[DEBUG] Grid information: " + info);
-
-        LOGGER.info("[DEBUG] Grid Pixel: " + this.gridPixels.subList(0, 4) + "....");
-        LOGGER.info("[DEBUG] Grid Line: " + this.gridLines.subList(0, 4) + "....");
     }
 
     /**
@@ -68,15 +65,12 @@ public class DirectLocGrid
         int nbLines = this.gridLines.size();
 
         double[][] grid = new double[nbCols * nbLines][2];
-
         for (int l = 0; l < nbLines; l ++)
         {
             for (int c = 0; c < nbCols; c ++)
             {
-
-                grid[l*nbCols + c][0] = this.gridLines.get(l) + lineOffest;
-                grid[l*nbCols + c][1] = this.gridPixels.get(c) + pixelOffest;
-
+                grid[l*nbCols + c][0] = this.gridLines.get(l) + lineOffest + georefConventionOffsetLine;
+                grid[l*nbCols + c][1] = this.gridPixels.get(c) + pixelOffest + georefConventionOffsetPixel;
             }
         }
 
@@ -95,10 +89,9 @@ public class DirectLocGrid
     {
         Boolean insideGranule = true;
         ArrayList<Double> grid = new ArrayList<Double>();
+
         int i_grid = 0;
-
         double value = offset + (i_grid -  pixelOrigin) * step - step / 2;
-
         grid.add(value);
 
         while (insideGranule)
@@ -162,7 +155,6 @@ public class DirectLocGrid
         }
 
         double[][][] subDirectLocGrid = new double[nbBands][nbLines][nbCols];
-
         for (int l = 0; l < nbLines; l++)
         {
             for (int c = 0; c < nbCols; c++)

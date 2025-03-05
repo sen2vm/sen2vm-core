@@ -77,7 +77,7 @@ public class OutputFileManager
             ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
             ds.SetMetadataItem("LINE_STEP", String.valueOf(stepY));
             ds.SetMetadataItem("SRS", epsgData);
-            ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "TOP_LEFT_CORNER");
+            ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "CENTER_PIXEL");
             // ds.SetDescription("Direct Location Grid");
         }
 
@@ -171,7 +171,7 @@ public class OutputFileManager
         ds.SetMetadataItem("LINE_OFFSET", String.valueOf(lineOffset));
         ds.SetMetadataItem("LINE_STEP", String.valueOf(step));
         ds.SetMetadataItem("SRS", "EPSG:4326");
-        ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "TOP_LEFT_CORNER");
+        ds.SetMetadataItem("GEOREFERENCING_CONVENTION", "CENTER_PIXEL");
         ds.delete();
     }
 

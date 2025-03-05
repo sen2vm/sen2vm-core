@@ -89,7 +89,7 @@ public class InverseLocGrid
             grid.add(start + signedStep * i);
         }
         LOGGER.info("1D : " + String.valueOf(start) + " -> " + String.valueOf(grid.get(nb-1)) +
-            " (> " +  String.valueOf(start + size) + ")");
+            " (> " +  String.valueOf(start + size) + ") [" +  String.valueOf(nb) + "]");
 
         return grid;
     }
@@ -140,6 +140,7 @@ public class InverseLocGrid
             {
                 grid[0][l][c] = gridList[l*nbCols + c][0] + lineOffest;
                 grid[1][l][c] = gridList[l*nbCols + c][1] + pixelOffest;
+
             }
         }
         return grid;
