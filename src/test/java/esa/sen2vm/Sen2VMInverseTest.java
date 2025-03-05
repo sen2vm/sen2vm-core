@@ -85,27 +85,26 @@ import javax.imageio.ImageIO;
 public class Sen2VMInverseTest
 {
 
-    String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
+    String configTmpInverse = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
     String paramTmp = "src/test/resources/params_base.json";
-    String refDir = "src/test/resources/tests/input/ref";
+    String refDir = "src/test/resources/tests/ref";
 
-    // @Test
-    public void step_inverse()
+    @Test
+    public void testStepInverseLoc()
     {
 
-        String[] detectors = new String[]{"01", "02"};
+        String[] detectors = new String[]{"05"};
         String[] bands = new String[]{"B01", "B02", "B05"};
         int[] testsStep = new int[]{3000, 6000};
 
 
         for (int step : testsStep) {
             try {
-                String nameTest = "inverse_step_" +  Integer.toString(step) ;
-                String outputDir = Utils.createTestDir(nameTest, "inverse");
-                String config = Utils.config(configTmp, outputDir, step, "inverse", false);
-                String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+                String nameTest = "testStepInverseLoc_" +  Integer.toString(step);
+                String outputDir = Config.createTestDir(nameTest, "inverse");
+                String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
+                String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
-                System.out.println(config);
                 Sen2VM.main(args);
 
                 Configuration configFile = new Configuration(config);
@@ -118,10 +117,12 @@ public class Sen2VMInverseTest
                     for (String detector: detectors)
                     {
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(DetectorInfo.getDetectorInfoFromName(detector), BandInfo.getBandInfoFromNameWithB(band), configFile.getInverseLocOutputFolder());
+                        System.out.println(invFileName);
                         Dataset ds = gdal.Open(invFileName);
                         double[] transform = ds.GetGeoTransform();
-                        assertEquals(transform[1], -step);
-                        assertEquals(transform[5], step);
+
+                        assertEquals(transform[1], step);
+                        assertEquals(transform[5], -step);
                     }
 
                 }
@@ -135,138 +136,18 @@ public class Sen2VMInverseTest
         }
     }
 
-    // @Test
-    public void inverseLocD01B01_fromAsgard()
-    {
-        double delta = 1e-9;
-        try {
-            double[][] sensor = inverseLocD01B01(configTmp, "01", "B01", new double[]{0.0, 0.0, 0.0});
-            assertEquals(sensor[0][1], Double.NaN);
-            assertEquals(sensor[0][0], Double.NaN);
-
-            sensor = inverseLocD01B01(configTmp, "01", "B01", new double[]{-18.919175317847085, 33.79427774463745, 42.539127849734236});
-            assertEquals(sensor[0][0], 9.94165389e-01, delta);
-            assertEquals(sensor[0][1], 4.68505600e-06, delta);
-
-            sensor = inverseLocD01B01(configTmp, "01", "B01", new double[]{-18.919175317847085, 33.79427774463745});
-            assertEquals(sensor[0][0], 9.94165389e-01, delta);
-            assertEquals(sensor[0][1], 4.68505600e-06, delta);
-
-            sensor = inverseLocD01B01(configTmp, "01", "B01", new double[]{-18.821137292435186, 33.635377815436044, 42.87227050779195});
-            assertEquals(sensor[0][0], 250.50004268066434, delta);
-            assertEquals(sensor[0][1], 200.50000152164057, delta);
-        } catch (Sen2VMException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public double[][] inverseLocD01B01(String config, String det, String band, double[] ground) throws Sen2VMException
-    {
-        double[][] sensorCoordinates = {{0., 0.}};
-        try {
-
-            // Read configuration file
-            Configuration configFile = new Configuration(config);
-
-            List<DetectorInfo> detectors = new ArrayList<DetectorInfo>();
-            detectors.add(DetectorInfo.getDetectorInfoFromName(det));
-
-            List<BandInfo> bands = new ArrayList<BandInfo>();
-            bands.add(BandInfo.getBandInfoFromNameWithB(band));
-
-            // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
-
-            // Read GIPP
-            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
-
-            // Initialize SimpleLocEngine
-
-            // Init demManager
-            Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
-            SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
-            if(!demFileManager.findRasterFile()) {
-                throw new Sen2VMException("Error when checking for DEM file");
-            }
-
-            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
-            DemManager demManager = new DemManager(
-                demFileManager,
-                geoidManager,
-                isOverlappingTiles);
-
-            // Build sensor list
-            // Save sensors for each focal plane
-            HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
-            for (DetectorInfo detectorInfo: detectors) {
-                for (BandInfo bandInfo: bands) {
-                    SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
-                    SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
-                    SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
-                    SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
-
-                    // Save sensor information
-                    Sensor sensor = new Sensor(
-                        bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
-                        viewing,
-                        lineDatation,
-                        bandInfo.getPixelHeight(),
-                        focalplaneToSensor,
-                        msiToFocalplane,
-                        pilotingToMsi
-                    );
-                    sensorList.put(sensor.getName(), sensor);
-                }
-            }
-
-            // Init rugged instance
-            RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
-                demManager,
-                dataStripManager.getDataSensingInfos(),
-                Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
-                Sen2VMConstants.RESOLUTION_10M_DOUBLE,
-                new ArrayList(sensorList.values()),
-                Sen2VMConstants.MARGIN,
-                dataStripManager.getRefiningInfo()
-            );
-            ruggedManager.setLightTimeCorrection(false);
-            ruggedManager.setAberrationOfLightCorrection(false);
-
-            // Init simpleLocEngine
-            SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
-                dataStripManager.getDataSensingInfos(),
-                ruggedManager,
-                demManager
-            );
-
-            double[][] grounds = {ground};
-            sensorCoordinates = simpleLocEngine.computeInverseLoc(sensorList.get("B01/D01"), grounds, "EPSG:4326");
-        } catch ( SXGeoException e ) {
-            e.printStackTrace();
-        }  catch (Sen2VMException e) {
-            e.printStackTrace();
-        }
-
-        return sensorCoordinates;
-
-    }
-
-
-
-    // @Test
-    public void geoLocInverse()
+    @Test
+    public void testInverseLoc()
     {
 
-        String[] detectors = new String[]{"01","02","03","04","05","06","07","08","09","10","11","12"};
-        String[] bands = new String[]{"B01","B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
+        String[] detectors = new String[]{"01", "02","03","04","05","06","07","08","09","10","11","12"};
+        String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
+        int step = 6000;
         try {
-            int step = 6000;
-            String nameTest = "inverse_" + Integer.toString(step) + "m";
-            String outputDir = Utils.createTestDir(nameTest, "inverse");
-            String config = Utils.config(configTmp, outputDir, step, "inverse", false);
-            String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+            String nameTest = "testInverseLoc";
+            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
@@ -279,23 +160,21 @@ public class Sen2VMInverseTest
         }
     }
 
-    // @Test
-    public void inverse_testGipp()
+    @Test
+    public void testInverseGipp()
     {
+        String[] detectors = new String[]{"06"};
+        String[] bands = new String[]{"B02"};
+        String GIPP_2 = "src/test/resources/tests/data/GIPP/";
 
-        boolean checkGipp = false;
-        String gipp_2 = "/Sen2vm/sen2vm-core/src/test/resources/tests/input/TDS1/inputs/GIPP/"; // Todo
-
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01"};
-
-        try {
-            String nameTest = "inverse_checkGipp_" + checkGipp;
-            String outputDir = Utils.createTestDir(nameTest, "inverse");
-            String config = Utils.configCheckGipp(configTmp, gipp_2, checkGipp, outputDir);
-            String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+       try {
+            String nameTest = "testInverseGipp";
+            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String config = Config.configCheckGipp(configTmpInverse, GIPP_2, false, outputDir);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Sen2VMException e) {
@@ -303,46 +182,21 @@ public class Sen2VMInverseTest
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
     }
 
-    // @Test
-    public void geoRefining()
+    @Test
+    public void testInverseNoRefining()
     {
         boolean[] testsRef = new boolean[]{true, false};
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01","B02","B05"};
-
-        for (boolean ref : testsRef) {
-            try {
-                String nameTest = "inverse_refining_" + ref ;
-                String outputDir = Utils.createTestDir(nameTest, "inverse");
-                String config = Utils.config(configTmp, outputDir, 6000, "inverse", ref);
-                String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
-                String[] args = {"-c", config, "-p", param};
-                Sen2VM.main(args);
-                Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Sen2VMException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // @Test
-    public void iersHandling()
-    {
-
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01","B02","B05"};
+        String[] detectors = new String[]{"06"};
+        String[] bands = new String[]{"B01", "B02", "B05"};
 
         try {
-            String nameTest = "inverse_no_iers" ;
-            String outputDir = Utils.createTestDir("inverse_no_iers", "inverse");
-            String config = Utils.configSuppIERS(configTmp, outputDir);
-            String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+            String nameTest = "testInverseNoRefining";
+            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String config = Config.config(configTmpInverse, outputDir, 6000, "inverse", false);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
@@ -355,23 +209,56 @@ public class Sen2VMInverseTest
         }
     }
 
-    // @Test
-    public void parallelisationRobustness()
+    @Test
+    public void testInverseIers()
+    {
+
+        String[] detectors = new String[]{"06"};
+        String[] bands = new String[]{"B02"};
+
+        try {
+            String nameTest_ref = "testInverseIers_ref";
+            String outputDir_ref = Config.createTestDir(nameTest_ref, "inverse");
+            String iers_ref = "src/test/resources/tests/data/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000.txt";
+            String config_ref = Config.configIERS(configTmpInverse, outputDir_ref, iers_ref);
+            String param_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
+            String[] args_ref = {"-c", config_ref, "-p", param_ref};
+            Sen2VM.main(args_ref);
+
+            String nameTest = "testInverseIers_test";
+            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String config = Config.configIERS(configTmpInverse, outputDir, null);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+
+            Utils.verifyDirectLoc(config, outputDir_ref);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Sen2VMException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testInverseParallelisation()
     {
         try {
-            String outputDir1 = Utils.createTestDir("inverse_order_1", "inverse");
-            String[] detectors_order_1 = new String[]{"01", "02"};
+            String outputDir1 = Config.createTestDir("testInverseParallelisation_1", "inverse");
+            String[] detectors_order_1 = new String[]{"05", "06"};
             String[] bands_order_1 = new String[]{"B01", "B02"};
-            String config_order_1 = Utils.config(configTmp, outputDir1, 6000, "inverse", false);
-            String param_order_1 = Utils.changeParams(paramTmp, detectors_order_1, bands_order_1, outputDir1);
+            String config_order_1 = Config.config(configTmpInverse, outputDir1, 6000, "inverse", false);
+            String param_order_1 = Config.changeParams(paramTmp, detectors_order_1, bands_order_1, outputDir1);
             String[] args_order_1 = {"-c", config_order_1, "-p", param_order_1};
             Sen2VM.main(args_order_1);
 
-            String outputDir2 = Utils.createTestDir("inverse_order_2", "inverse");
-            String[] detectors_order_2 = new String[]{"02", "01"};
+            String outputDir2 = Config.createTestDir("testInverseParallelisation_2", "inverse");
+            String[] detectors_order_2 = new String[]{"06", "05"};
             String[] bands_order_2 = new String[]{"B02", "B01"};
-            String config_order_2 = Utils.config(configTmp, outputDir2, 6000, "inverse", false);
-            String param_order_2 = Utils.changeParams(paramTmp, detectors_order_2, bands_order_2, outputDir2);
+            String config_order_2 = Config.config(configTmpInverse, outputDir2, 6000, "inverse", false);
+            String param_order_2 = Config.changeParams(paramTmp, detectors_order_2, bands_order_2, outputDir2);
             String[] args_order_2 = {"-c", config_order_2, "-p", param_order_2};
             Sen2VM.main(args_order_2);
 
@@ -388,24 +275,28 @@ public class Sen2VMInverseTest
     }
 
     @Test
-    public void referential_handling()
+    public void testInverseReferentialArea()
     {
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01","B02"};
+        String[] detectors = new String[]{"02"};
+        String[] bands = new String[]{"B02"};
+
 
         try {
-            String nameTest = "referential_handling" ;
-            String outputDir = Utils.createTestDir(nameTest, "inverse");
-            Double ul_y = 699960.00 ;
-            Double ul_x = 3700020.00;
-            Double lr_y = 809760.000;
-            Double lr_x = 3590220.000;
+            String nameTest = "testInverseReferentialArea";
+            String outputDir = Config.createTestDir(nameTest, "inverse");
+
+            // T27SYT
+            Double ul_x = 699960.0;
+            Double ul_y=  3800040.0;
+            Double lr_x= 809760.0;
+            Double lr_y= 3690240.0;
             String referential = "EPSG:32627";
-            String config = Utils.configInverseBB(configTmp, ul_y, ul_x, lr_y, lr_x, referential, outputDir);
-            String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+
+            String config = Config.configInverseBB(configTmpInverse, ul_y, ul_x, lr_y, lr_x, referential, outputDir);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            Utils.verifyInverseLoc(config, "src/test/resources/tests/output/referential_handling_zero/");
+            Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Sen2VMException e) {
@@ -416,24 +307,27 @@ public class Sen2VMInverseTest
     }
 
     @Test
-    public void area_handling()
+    public void testInverseAreaHandling()
     {
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01","B02"};
+        String[] detectors = new String[]{"05"};
+        String[] bands = new String[]{"B02"};
 
         try {
-            String nameTest = "area_handling" ;
-            String outputDir = Utils.createTestDir(nameTest, "inverse");
-            Double ul_y = 199980.000;
-            Double ul_x = 3700020.000;
-            Double lr_y = 309780.000;
-            Double lr_x = 3590220.000;
+            String nameTest = "testInverseAreaHandling";
+            String outputDir = Config.createTestDir(nameTest, "inverse");
+
+            // T28SBA
+            Double ul_x = 199980.0;
+            Double ul_y = 3600000.0;
+            Double lr_x = 309780.0;
+            Double lr_y = 3490200.0;
             String referential = "EPSG:32628";
-            String config = Utils.configInverseBB(configTmp, ul_y, ul_x, lr_y, lr_x, referential, outputDir);
-            String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+
+            String config = Config.configInverseBB(configTmpInverse, ul_y, ul_x, lr_y, lr_x, referential, outputDir);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            Utils.verifyInverseLoc(config, "src/test/resources/tests/output/referential_handling_zero"); // refDir + "/" + nameTest);
+            Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Sen2VMException e) {
@@ -443,31 +337,37 @@ public class Sen2VMInverseTest
         }
     }
 
-    // @Test
-    public void dem()
+    @Test
+    public void testInverseDem()
     {
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01","B02"};
+        String[] detectors = new String[]{"06"};
+        String[] bands = new String[]{"B01", "B02"};
         String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
-        String refDir = "src/test/resources/tests/input/ref/direct_dem_D01_B01/";
-        for (String testDem : testsDem) {
 
-            try {
-                String nameTest = "inverse_" + testDem;
-                String outputDir = Utils.createTestDir(nameTest, "direct");
-                String config = Utils.changeDem(configTmp, "src/test/resources/tests/input/dem_tests/" + testDem, outputDir);
-                String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+        try {
+            String nameTest_ref = "testDirectDem_ref";
+            String outputDir_ref = Config.createTestDir(nameTest_ref, "inverse");
+            String config_ref = Config.config(configTmpInverse, outputDir_ref, 6000, "direct", false);
+            String params_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
+            String[] args_ref = {"-c", config_ref, "-p", params_ref};
+            Sen2VM.main(args_ref);
+
+            for (String testDem : testsDem) {
+                String nameTest = "testDirectDem_" + testDem;
+                String outputDir = Config.createTestDir(nameTest, "inverse");
+                String config = Config.changeDem(configTmpInverse, "src/test/resources/tests/input/dem_tests/" + testDem, outputDir);
+                String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
-                Utils.verifyDirectLoc(config, "src/test/resources/tests/input/ref/inverse_dem_D01_B01/");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Sen2VMException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
+                Utils.verifyDirectLoc(config, outputDir_ref);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Sen2VMException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-    }
 
+    }
 }

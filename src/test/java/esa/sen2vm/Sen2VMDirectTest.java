@@ -79,327 +79,29 @@ import javax.imageio.ImageIO;
 
 
 /**
- * Unit test for Sen2VM.
+ * Unit test for Sen2VM
  */
 
 public class Sen2VMDirectTest
 {
 
-    String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct.json";
+    String configTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct.json";
     String paramTmp = "src/test/resources/params_base.json";
-    String refDir = "src/test/resources/tests/input/ref";
+    String refDir = "src/test/resources/tests/ref";
 
-    // @Test
-    public void geoLocD01B01firstPixel()
+    @Test
+    public void testStepDirectLoc()
     {
-
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01"};
+        String[] detectors = new String[]{"02"};
+        String[] bands = new String[]{"B01", "B02", "B05"};
         int[] testsStep = new int[]{3000, 6000};
 
-        String granulePath = "src/test/resources/tests/6km_ref/GRANULE/S2A_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_N05.00/GEO_DATA/S2A_OPER_GEO_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_B01.tif";
-
         for (int step : testsStep) {
             try {
-                String nameTest = "direct_loc_" + Integer.toString(step);
-                String outputDir = Utils.createTestDir(nameTest, "direct");
-                String config = Utils.config(configTmp, outputDir, step, "direct", false);
-                String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
-                String[] args = {"-c", config, "-p", param};
-                Sen2VM.main(args);
-
-                Dataset granule = gdal.Open(outputDir + "/GRANULE/S2A_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_N05.00/GEO_DATA/S2A_OPER_GEO_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_B01.tif", 0);
-                Band b1 = granule.GetRasterBand(1);
-                Band b2 = granule.GetRasterBand(2);
-                Band b3 = granule.GetRasterBand(3);
-                double[] geoGrid = {0.0,0.0,0.0};
-                for(int i = 0; i < 1; i++)
-                {
-                    double[] data1 = new double[granule.getRasterXSize()];
-                    b1.ReadRaster(0, i, granule.getRasterXSize(), 1, data1);
-                    geoGrid[0] = data1[0];
-                    b2.ReadRaster(0, i, granule.getRasterXSize(), 1, data1);
-                    geoGrid[1] = data1[0];
-                    b3.ReadRaster(0, i, granule.getRasterXSize(), 1, data1);
-                    geoGrid[2] = data1[0];
-                }
-
-                double[][] grounds = geoLocD01B01(configTmp, "01", "B01", 1.0f, 0.0f);
-                System.out.println("pixels 1.0, 0.0 in sensor = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
-                System.out.println(" first pixels in geogrid = "+geoGrid[0]+" "+geoGrid[1]+" "+geoGrid[2]);
-
-                assertEquals(grounds[0][0], geoGrid[0]);
-                assertEquals(grounds[0][0], -18.919175317847085);
-                assertEquals(grounds[0][1], geoGrid[1]);
-                assertEquals(grounds[0][1], 33.79427774463745);
-                assertEquals(grounds[0][2], geoGrid[2]);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Sen2VMException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // @Test
-    public void geoTimeFirstLine()
-    {
-        int step = 6000;
-
-        try {
-            String nameTest = "direct_first_line_" + Integer.toString(step);
-            String outputDir = Utils.createTestDir(nameTest, "direct");
-            String config = Utils.config(configTmp, outputDir, step, "direct", false);
-            String param = Utils.changeParams(paramTmp, new String[]{"01"}, new String[]{"B01"}, outputDir);
-
-            Configuration configFile = new Configuration(config);
-            List<DetectorInfo> detectors = new ArrayList<DetectorInfo>();
-            detectors.add(DetectorInfo.getDetectorInfoFromName("01"));
-            List<BandInfo> bands = new ArrayList<BandInfo>();
-            bands.add(BandInfo.getBandInfoFromNameWithB("B01"));
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
-            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
-
-            // Build sensor list
-            // Save sensors for each focal plane
-            HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
-            for (DetectorInfo detectorInfo: detectors) {
-                for (BandInfo bandInfo: bands) {
-                    SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
-                    SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
-                    SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
-                    SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
-
-                    // Save sensor information
-                    Sensor sensor = new Sensor(
-                        bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
-                        viewing,
-                        lineDatation,
-                        bandInfo.getPixelHeight(),
-                        focalplaneToSensor,
-                        msiToFocalplane,
-                        pilotingToMsi
-                    );
-                    System.out.println(sensor.getName());
-                    sensorList.put(sensor.getName(), sensor);
-                }
-            }
-
-            // Init demManager
-            Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
-            SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
-
-            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
-            DemManager demManager = new DemManager(
-                demFileManager,
-                geoidManager,
-                isOverlappingTiles);
-
-            // Init rugged instance
-            RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
-                demManager,
-                dataStripManager.getDataSensingInfos(),
-                Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
-                Sen2VMConstants.RESOLUTION_10M_DOUBLE,
-                new ArrayList(sensorList.values()),
-                Sen2VMConstants.MARGIN,
-                dataStripManager.getRefiningInfo()
-            );
-            ruggedManager.setLightTimeCorrection(false);
-            ruggedManager.setAberrationOfLightCorrection(false);
-
-            // Init simpleLocEngine
-            SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
-                dataStripManager.getDataSensingInfos(),
-                ruggedManager,
-                demManager
-            );
-
-
-            double[][] pixels = {{0., 0.}};
-            double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get("B01/D01"), pixels);
-
-            LineSensor lineSensor = ruggedManager.getLineSensor("B01/D01");
-            String date = lineSensor.getDate(0.5).toString(TimeScalesFactory.getGPS());
-            System.out.println("date line 0.5:" + date);
-
-            assertEquals(date, "2020-08-16T12:02:45.812731");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch ( SXGeoException e ) {
-            e.printStackTrace();
-        }  catch (Sen2VMException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    // @Test
-    public void geoLocD01B01_fromAsgard()
-    {
-        double delta = 1e-9;
-        try {
-            double[][] grounds = geoLocD01B01(configTmp, "01", "B01", 0.0, 0.0);
-            System.out.println("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
-            assertEquals(grounds[0][0], -18.919024167218094, delta);
-            assertEquals(grounds[0][1], 33.79483143151926, delta);
-            assertEquals(grounds[0][2], 42.538715533140156, delta);
-
-            grounds = geoLocD01B01(configTmp, "01", "B01", 250.5, 700.5);
-            System.out.println("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
-            assertEquals(grounds[0][0], -18.490305707482214, delta);
-            assertEquals(grounds[0][1], 33.58277655913304, delta);
-            assertEquals(grounds[0][2], 43.448338191393816, delta);
-
-        } catch (Sen2VMException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public double[][] geoLocD01B01(String config, String det, String band, double line, double pixel) throws Sen2VMException
-    {
-        double[][] grounds = {{0., 0.}};
-        try {
-
-            // Read configuration file
-            Configuration configFile = new Configuration(config);
-
-            List<DetectorInfo> detectors = new ArrayList<DetectorInfo>();
-            detectors.add(DetectorInfo.getDetectorInfoFromName(det));
-
-            List<BandInfo> bands = new ArrayList<BandInfo>();
-            bands.add(BandInfo.getBandInfoFromNameWithB(band));
-
-            // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
-
-            // Read GIPP
-            GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
-
-            // Initialize SimpleLocEngine
-
-            // Init demManager
-            Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
-            SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
-            if(!demFileManager.findRasterFile()) {
-                throw new Sen2VMException("Error when checking for DEM file");
-            }
-
-            GeoidManager geoidManager = new GeoidManager(configFile.getGeoid(), isOverlappingTiles);
-            DemManager demManager = new DemManager(
-                demFileManager,
-                geoidManager,
-                isOverlappingTiles);
-
-            // Build sensor list
-            // Save sensors for each focal plane
-            HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
-            for (DetectorInfo detectorInfo: detectors) {
-                for (BandInfo bandInfo: bands) {
-                    SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
-                    SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
-                    SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
-                    SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
-
-                    // Save sensor information
-                    Sensor sensor = new Sensor(
-                        bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
-                        viewing,
-                        lineDatation,
-                        bandInfo.getPixelHeight(),
-                        focalplaneToSensor,
-                        msiToFocalplane,
-                        pilotingToMsi
-                    );
-                    sensorList.put(sensor.getName(), sensor);
-                }
-            }
-
-            // Init rugged instance
-            RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
-                demManager,
-                dataStripManager.getDataSensingInfos(),
-                Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
-                Sen2VMConstants.RESOLUTION_10M_DOUBLE,
-                new ArrayList(sensorList.values()),
-                Sen2VMConstants.MARGIN,
-                dataStripManager.getRefiningInfo()
-            );
-            ruggedManager.setLightTimeCorrection(false);
-            ruggedManager.setAberrationOfLightCorrection(false);
-
-            // Init simpleLocEngine
-            SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
-                dataStripManager.getDataSensingInfos(),
-                ruggedManager,
-                demManager
-            );
-
-            double[][] pixels = {{line, pixel}};
-            grounds = simpleLocEngine.computeDirectLoc(sensorList.get("B01/D01"), pixels);
-
-        } catch ( SXGeoException e ) {
-            e.printStackTrace();
-        }  catch (Sen2VMException e) {
-            e.printStackTrace();
-        }
-
-        return grounds;
-
-    }
-
-     public static HashMap<String, Sensor> getSensorHashMap(List<DetectorInfo> detectors, List<BandInfo> bands,
-         DataStripManager dataStripManager, GIPPManager gippManager) throws Sen2VMException {
-
-        // Save sensors for each focal plane
-        HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
-        for (DetectorInfo detectorInfo: detectors) {
-            for (BandInfo bandInfo: bands) {
-                SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
-                SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
-                SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
-                SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
-
-                // Save sensor information
-                Sensor sensor = new Sensor(
-                    bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
-                    viewing,
-                    lineDatation,
-                    bandInfo.getPixelHeight(),
-                    focalplaneToSensor,
-                    msiToFocalplane,
-                    pilotingToMsi
-                );
-                sensorList.put(sensor.getName(), sensor);
-            }
-
-        }
-        return sensorList;
-    }
-
-    // @Test
-    public void step()
-    {
-        String[] detectors = new String[]{"01", "02"};
-        String[] bands = new String[]{"B01", "B02", "B05"};
-        int[] testsStep = new int[]{3000}; // , 6000};
-
-        for (int step : testsStep) {
-            try {
-                String nameTest = "direct_step_" +  Integer.toString(step);
-                String outputDir = Utils.createTestDir(nameTest, "direct");
-                String config = Utils.config(configTmp, outputDir, step, "direct", false);
-                String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+                String nameTest = "testStepDirectLoc_" +  Integer.toString(step);
+                String outputDir = Config.createTestDir(nameTest, "direct");
+                String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
+                String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
                 Utils.verifyStepDirectLoc(config, step);
@@ -413,17 +115,17 @@ public class Sen2VMDirectTest
         }
     }
 
-    // @Test
-    public void geoLoc()
+    @Test
+    public void testDirectLoc()
     {
-        String[] detectors = new String[]{"01","02","03","04","05","06","07","08","09","10","11","12"};
-        String[] bands = new String[]{"B01","B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
+        String[] detectors = new String[]{"01", "02","03","04","05","06","07","08","09","10","11","12"};
+        String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
+        int step = 6000;
         try {
-            int step = 6000;
-            String nameTest = "direct_" +  Integer.toString(step);
-            String outputDir = Utils.createTestDir(nameTest, "direct");
-            String config = Utils.config(configTmp, outputDir, step, "direct", false);
-            String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+            String nameTest = "testDirectLoc";
+            String outputDir = Config.createTestDir(nameTest, "direct");
+            String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
@@ -436,79 +138,20 @@ public class Sen2VMDirectTest
         }
     }
 
-    /* // @Test
-    public void testGipp()
+
+
+    @Test
+    public void testDirectGipp()
     {
-
-        boolean[] checksGipp = new boolean[]{true, false};
-        String gipp_2 = "/Sen2vm/sen2vm-core/src/test/resources/tests/input/TDS1/inputs/GIPP/"; // Todo
-
         String[] detectors = new String[]{"01"};
         String[] bands = new String[]{"B01"};
+        String GIPP_2 = "src/test/resources/tests/data/GIPP/";
 
-        for (boolean checkGipp : checksGipp) {
-            boolean thrown = false;
-
-            try {
-                String nameTest = "direct_checkGipp_" + checkGipp;
-                String outputDir = Utils.createTestDir(nameTest, "direct");
-                String config = Utils.configCheckGipp(configTmp, gipp_2, checkGipp, outputDir);
-                String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
-                String[] args = {"-c", config, "-p", param};
-                Sen2VM.main(args);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Sen2VMException e) {
-                thrown = true;
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            assertEquals(thrown, !checkGipp);
-        }
-    }*/
-
-    // @Test
-    public void geoRefining()
-    {
-
-        boolean[] testsRef = new boolean[]{true, false};
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01","B02","B05"};
-
-        for (boolean ref : testsRef) {
-            try {
-                String nameTest = "direct_refining_" + ref;
-                String outputDir = Utils.createTestDir(nameTest, "direct");
-                String config = Utils.config(configTmp, outputDir, 6000, "direct", ref);
-                String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
-                String[] args = {"-c", config, "-p", param};
-                Sen2VM.main(args);
-                System.out.println(config);
-                System.out.println(refDir + "/" + nameTest);
-                Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Sen2VMException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // @Test
-    public void iersHandling()
-    {
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01","B02","B05"};
-
-        try {
-            String nameTest = "direct_no_iers";
-            String outputDir = Utils.createTestDir(nameTest, "direct");
-            String config = Utils.configSuppIERS(configTmp, outputDir);
-            String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+       try {
+            String nameTest = "testDirectGipp";
+            String outputDir = Config.createTestDir(nameTest, "direct");
+            String config = Config.configCheckGipp(configTmpDirect, GIPP_2, false, outputDir);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
@@ -519,32 +162,117 @@ public class Sen2VMDirectTest
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
     }
 
-    // @Test
-    public void parallelisationRobustness()
+    @Test
+    public void testDirectGippError()
+    {
+        String[] detectors = new String[]{"01"};
+        String[] bands = new String[]{"B01"};
+        String GIPP_2 = "src/test/resources/tests/data/GIPP/";
+
+       try {
+            String nameTest = "testDirectGipp";
+            String outputDir = Config.createTestDir(nameTest, "direct");
+            String config = Config.configCheckGipp(configTmpDirect, GIPP_2, true, outputDir);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Sen2VMException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testDirectNoRefining()
+    {
+
+        String[] detectors = new String[]{"01"};
+        String[] bands = new String[]{"B02"};
+
+        try {
+            String nameTest = "testDirectNoRefining";
+            String outputDir = Config.createTestDir(nameTest, "direct");
+            String config = Config.config(configTmpDirect, outputDir, 6000, "direct", false);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+            System.out.println(config);
+            System.out.println(refDir + "/" + nameTest);
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Sen2VMException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testDirectIers()
+    {
+        String[] detectors = new String[]{"01"};
+        String[] bands = new String[]{"B02"};
+
+        try {
+            String nameTest_ref = "testDirectIers_ref";
+            String outputDir_ref = Config.createTestDir(nameTest_ref, "direct");
+            String iers_ref = "src/test/resources/tests/data/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000.txt";
+            String config_ref = Config.configIERS(configTmpDirect, outputDir_ref, iers_ref);
+            String param_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
+            String[] args_ref = {"-c", config_ref, "-p", param_ref};
+            Sen2VM.main(args_ref);
+
+            String nameTest = "testDirectIers_test";
+            String outputDir = Config.createTestDir(nameTest, "direct");
+            String config = Config.configIERS(configTmpDirect, outputDir, null);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+
+            Utils.verifyDirectLoc(config, outputDir_ref);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Sen2VMException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testDirectParallelisation()
     {
 
         try {
-            String outputDir1 = Utils.createTestDir("direct_order_1", "direct");
+            String outputDir1 = Config.createTestDir("testDirectParallelisation_1", "direct");
             String[] detectors_order_1 = new String[]{"01", "02"};
             String[] bands_order_1 = new String[]{"B01", "B02"};
-            String config_order_1 = Utils.config(configTmp, outputDir1, 6000, "direct", false);
-            String param_order_1 = Utils.changeParams(paramTmp, detectors_order_1, bands_order_1, outputDir1);
+            String config_order_1 = Config.config(configTmpDirect, outputDir1, 6000, "direct", false);
+            String param_order_1 = Config.changeParams(paramTmp, detectors_order_1, bands_order_1, outputDir1);
             String[] args_order_1 = {"-c", config_order_1, "-p", param_order_1};
             Sen2VM.main(args_order_1);
 
-            String outputDir2 = Utils.createTestDir("direct_order_2", "direct");
+            String outputDir2 = Config.createTestDir("testDirectParallelisation_2", "direct");
             String[] detectors_order_2 = new String[]{"02", "01"};
             String[] bands_order_2 = new String[]{"B02", "B01"};
-            String config_order_2 = Utils.config(configTmp, outputDir2, 6000, "direct", false);
-            String param_order_2 = Utils.changeParams(paramTmp, detectors_order_2, bands_order_2, outputDir2);
+            String config_order_2 = Config.config(configTmpDirect, outputDir2, 6000, "direct", false);
+            String param_order_2 = Config.changeParams(paramTmp, detectors_order_2, bands_order_2, outputDir2);
             String[] args_order_2 = {"-c", config_order_2, "-p", param_order_2};
             Sen2VM.main(args_order_2);
 
             Utils.verifyDirectLoc(config_order_2, outputDir1);
             Utils.verifyDirectLoc(config_order_1, outputDir2);
 
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Sen2VMException e) {
@@ -554,31 +282,38 @@ public class Sen2VMDirectTest
         }
     }
 
-    // @Test
-    public void dem()
+    @Test
+    public void testDirectDem()
     {
         String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01","B02"};
-        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
-        String refDir = "src/test/resources/tests/input/ref/direct_dem_D01_B01/";
-        for (String testDem : testsDem) {
+        String[] bands = new String[]{"B01"};
+        String[] testsDem = new String[]{"dem1", "dem2", "dem3", "dem4"};
 
-            try {
-                String nameTest = "direct_" + testDem;
-                String outputDir = Utils.createTestDir(nameTest, "direct");
-                String config = Utils.changeDem(configTmp, "src/test/resources/tests/input/dem_tests/" + testDem, outputDir);
-                String param = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+        try {
+            String nameTest_ref = "testDirectDem_ref";
+            String outputDir_ref = Config.createTestDir(nameTest_ref, "direct");
+            String config_ref = Config.config(configTmpDirect, outputDir_ref, 6000, "direct", false);
+            String params_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
+            String[] args_ref = {"-c", config_ref, "-p", params_ref};
+            Sen2VM.main(args_ref);
+
+            for (String testDem : testsDem) {
+                String nameTest = "testDirectDem_" + testDem;
+                String outputDir = Config.createTestDir(nameTest, "direct");
+                String config = Config.changeDem(configTmpDirect, "src/test/resources/tests/input/dem_tests/" + testDem, outputDir);
+                String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
-                Utils.verifyDirectLoc(config, "src/test/resources/tests/input/ref/direct_dem_D01_B01/");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Sen2VMException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
+                Utils.verifyDirectLoc(config, outputDir_ref);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Sen2VMException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
     }
 
 

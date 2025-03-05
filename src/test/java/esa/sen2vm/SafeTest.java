@@ -88,7 +88,7 @@ public class SafeTest
     /**
      * Functional test
      */
-    // @Test
+    @Test
     public void testGranuleInformation()
     {
         try
@@ -121,7 +121,7 @@ public class SafeTest
             // Test Geo File Name computation / band
             Path p = Paths.get(gr.getCorrespondingGeoFileName(BandInfo.BAND_1));
             String fileName = p.getFileName().toString();
-            assertEquals(fileName, "S2A_OPER_GEO_L1B_GR_DPRM_20140630T140000_S20200816T120230_D01_B01.TIF");
+            assertEquals(fileName, "S2A_OPER_GEO_L1B_GR_DPRM_20140630T140000_S20200816T120230_D01_B01.tif");
         }
         catch (Sen2VMException e)
         {
@@ -181,9 +181,9 @@ public class SafeTest
             String paramFile = "" ;
             String outputDir = "";
             try {
-                outputDir = Utils.createTestDir("run_D10", "direct");
-                configFile = Utils.config(configTmp, outputDir, 6000, "direct", false);
-                paramFile = Utils.changeParams(paramTmp, detectors, bands, outputDir);
+                outputDir = Config.createTestDir("run_D10", "direct");
+                configFile = Config.config(configTmp, outputDir, 6000, "direct", false);
+                paramFile = Config.changeParams(paramTmp, detectors, bands, outputDir);
             } catch (ParseException e) {
                 e.printStackTrace();
             } catch (IOException e) {
