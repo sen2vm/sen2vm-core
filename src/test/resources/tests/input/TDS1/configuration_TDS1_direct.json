@@ -1,6 +1,5 @@
 {
   "l1b_product": "src/test/resources/tests/input/TDS1/L1B_all/",
-
   "gipp_folder": "src/test/resources/tests/input/TDS1/inputs/GIPP/",
   "gipp_version_check": true,
   "dem": "src/test/resources/DEM",

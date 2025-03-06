@@ -41,7 +41,6 @@ public class InverseLocGrid
     public InverseLocGrid(Float ul_x, Float ul_y, Float lr_x, Float lr_y,
                          String epsg, Float step)
     {
-
         this.epsg = Integer.valueOf(epsg.substring(5));
         this.ul = new Coordinates(ul_y, ul_x, this.epsg);
         this.ul.transform();
@@ -127,7 +126,6 @@ public class InverseLocGrid
      * Transform [[row0, col0], [row1, col1]..] to 3D grid before tiff saving
      * @return grid [[[row00, row01..], [row10, row11..] ..],[[col00, col01...], [col10, col11...], ...]
      */
-
      public double[][][] get3Dgrid(double[][] gridList, Float pixelOffest, Float lineOffest)
      {
         int nbCols = this.gridX.size();
@@ -146,13 +144,19 @@ public class InverseLocGrid
         return grid;
     }
 
-
-    public Float getStepX()
+    /**
+     * Get StepX
+     * @return stepX
+     */
+     public Float getStepX()
     {
         return this.stepX;
     }
 
-
+    /**
+     * Get StepY
+     * @return stepY
+     */
     public Float getStepY()
     {
         return this.stepY;

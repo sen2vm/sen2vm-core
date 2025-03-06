@@ -40,13 +40,21 @@ public class OutputFileManager
      * @param startPixel pixel upper left
      * @param startLine line upper left
      * @param endLine line bottom left
-     * @param step step of the grid (metadata)
-     * @param bandVal 3d ground coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]],[[alt00,alt01,,...], [...]]] in deg, deg, m
+     * @param stepX step of the grid in columns (metadata)
+     * @param stepY step of the grid in rows (metadata)
+     * @param bandVal 2d/3d for direct 2D : coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]]] in deg, deg
+     *                      for direct : coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]],[[alt00,alt01,,...], [...]]] in deg, deg, m
+     *                      for inverse : coordinate array as [[[row00,row01,...],[...]],[[col00,col01,,...]]] in pixel
      * @param src epsg
+     * @param src epsgData (metatdata)
      * @param srs subLineOffset line offset of the grid (metadata)
+     * @param lineOffset (metadata)
+     * @param pixelOffset (metadata)
+     * @param metadata true if export, false if not export
      */
      public void createGeoTiff(String fileName, Float startPixel, Float startLine,
-            Float stepX, Float stepY, double[][][] bandVal, String epsg, String epsgData, Float lineOffset, Float pixelOffset, Boolean metadata)
+            Float stepX, Float stepY, double[][][] bandVal, String epsg, String epsgData,
+            Float lineOffset, Float pixelOffset, Boolean metadata)
     {
 
         int nbBand = bandVal.length;
@@ -144,6 +152,10 @@ public class OutputFileManager
      * Build VRT from a list of input TIFFs and transform absolute to relative path from DS directory
      * @param vrtFilePath path of the VRT file to save to create # TODO tmp
      * @param inputTIFs list of TIFFs
+     * @param step of grid
+     * @param lineOffset startLine
+     * @param pixelOffset startPixel
+     * @param export band3 (altitude case)
      */
     public void createVRT(String vrtFilePath, Vector<String> inputTIFs,  Float step,
                             Float lineOffset, Float pixelOffset, boolean exportAlt)

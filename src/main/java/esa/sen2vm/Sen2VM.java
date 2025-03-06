@@ -209,7 +209,6 @@ public class Sen2VM
                     sensorList.put(sensor.getName(), sensor);
                 }
             }
-            
 
             // Init rugged instance
             // --------------------
@@ -249,7 +248,6 @@ public class Sen2VM
                 LOGGER.info("EGSG read from configuration file (for inverse location): " + config.getInverseLocReferential());
             }
 
-
             LOGGER.info("");
             LOGGER.info("Starting grids generation");
             for (BandInfo bandInfo: bands)
@@ -272,7 +270,6 @@ public class Sen2VM
 
                     if (config.getOperation().equals(Sen2VMConstants.DIRECT))
                     {
-
                         int[] BBox = safeManager.getFullSize(dataStripManager, bandInfo, detectorInfo);
                         int startLine = BBox[0];
                         int startPixel = BBox[1];
@@ -286,7 +283,6 @@ public class Sen2VM
                         // Get Full Sensor Grid
                         DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffsetLine, georefConventionOffsetPixel,
                             step, startLine, startPixel, sizeLine, sizePixel);
-
 
                         double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2, step/2);
                         LOGGER.info("[DEBUG] sensorGridForDirectLoc lines: " + String.valueOf(sensorGridForDirectLoc[0][0]) + "....");
@@ -320,7 +316,6 @@ public class Sen2VM
 
                             // Add TIF to the future VRT
                             inputTIFs.add(gridFileName);
-
                         }
 
                         // Create VRT
