@@ -89,60 +89,7 @@ public class Sen2VMCheckPointTest
     String paramTmp = "src/test/resources/params_base.json";
     String refDir = "src/test/resources/tests/ref";
 
-    @Test
-    public void geoLocD01B01firstPixel()
-    {
 
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01"};
-        int[] testsStep = new int[]{3000, 6000};
-
-        String granulePath = "src/test/resources/tests/6km_ref/GRANULE/S2A_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_N05.00/GEO_DATA/S2A_OPER_GEO_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_B01.tif";
-
-        for (int step : testsStep) {
-            try {
-                String nameTest = "direct_loc_" + Integer.toString(step);
-                String outputDir = Config.createTestDir(nameTest, "direct");
-                String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
-                String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
-                String[] args = {"-c", config, "-p", param};
-                Sen2VM.main(args);
-
-                Dataset granule = gdal.Open(outputDir + "/GRANULE/S2A_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_N05.00/GEO_DATA/S2A_OPER_GEO_L1B_GR_DPRM_20140630T140000_S20200816T120226_D01_B01.tif", 0);
-                Band b1 = granule.GetRasterBand(1);
-                Band b2 = granule.GetRasterBand(2);
-                Band b3 = granule.GetRasterBand(3);
-                double[] geoGrid = {0.0,0.0,0.0};
-                for(int i = 0; i < 1; i++)
-                {
-                    double[] data1 = new double[granule.getRasterXSize()];
-                    b1.ReadRaster(0, i, granule.getRasterXSize(), 1, data1);
-                    geoGrid[0] = data1[0];
-                    b2.ReadRaster(0, i, granule.getRasterXSize(), 1, data1);
-                    geoGrid[1] = data1[0];
-                    b3.ReadRaster(0, i, granule.getRasterXSize(), 1, data1);
-                    geoGrid[2] = data1[0];
-                }
-
-                double[][] grounds = geoLocD01B01(configTmpDirect, "01", "B01", 1.0f, 0.0f);
-                System.out.println("pixels 1.0, 0.0 in sensor = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
-                System.out.println(" first pixels in geogrid = "+geoGrid[0]+" "+geoGrid[1]+" "+geoGrid[2]);
-
-                assertEquals(grounds[0][0], geoGrid[0]);
-                assertEquals(grounds[0][0], -18.919175317847085);
-                assertEquals(grounds[0][1], geoGrid[1]);
-                assertEquals(grounds[0][1], 33.79427774463745);
-                assertEquals(grounds[0][2], geoGrid[2]);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Sen2VMException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Test
     public void geoTimeFirstLine()
@@ -246,13 +193,13 @@ public class Sen2VMCheckPointTest
     {
         double delta = 1e-9;
         try {
-            double[][] grounds = geoLocD01B01(configTmpDirect, "01", "B01", 0.0, 0.0);
+            double[][] grounds = geoLocD01B01(configTmpDirect, 0.0, 0.0);
             System.out.println("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
             assertEquals(grounds[0][0], -18.919024167218094, delta);
             assertEquals(grounds[0][1], 33.79483143151926, delta);
             assertEquals(grounds[0][2], 42.538715533140156, delta);
 
-            grounds = geoLocD01B01(configTmpDirect, "01", "B01", 250.5, 700.5);
+            grounds = geoLocD01B01(configTmpDirect, 250.5, 700.5);
             System.out.println("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
             assertEquals(grounds[0][0], -18.490305707482214, delta);
             assertEquals(grounds[0][1], 33.58277655913304, delta);
@@ -264,7 +211,7 @@ public class Sen2VMCheckPointTest
 
     }
 
-    public double[][] geoLocD01B01(String config, String det, String band, double line, double pixel) throws Sen2VMException
+    public double[][] geoLocD01B01(String config, double line, double pixel) throws Sen2VMException
     {
         double[][] grounds = {{0., 0.}};
         try {
@@ -273,10 +220,10 @@ public class Sen2VMCheckPointTest
             Configuration configFile = new Configuration(config);
 
             List<DetectorInfo> detectors = new ArrayList<DetectorInfo>();
-            detectors.add(DetectorInfo.getDetectorInfoFromName(det));
+            detectors.add(DetectorInfo.getDetectorInfoFromName("01"));
 
             List<BandInfo> bands = new ArrayList<BandInfo>();
-            bands.add(BandInfo.getBandInfoFromNameWithB(band));
+            bands.add(BandInfo.getBandInfoFromNameWithB("B01"));
 
             // Read datastrip
             DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());

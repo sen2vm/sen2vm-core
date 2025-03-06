@@ -79,7 +79,7 @@ import javax.imageio.ImageIO;
 
 
 /**
- * Unit test for Sen2VM
+ * Unit test for Sen2VM (direct loc).
  */
 
 public class Sen2VMDirectTest
@@ -138,8 +138,6 @@ public class Sen2VMDirectTest
         }
     }
 
-
-
     @Test
     public void testDirectGipp()
     {
@@ -162,7 +160,6 @@ public class Sen2VMDirectTest
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
     }
 
     @Test
@@ -186,7 +183,6 @@ public class Sen2VMDirectTest
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
     }
 
     @Test
@@ -213,7 +209,6 @@ public class Sen2VMDirectTest
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
     }
 
     @Test
@@ -271,8 +266,6 @@ public class Sen2VMDirectTest
 
             Utils.verifyDirectLoc(config_order_2, outputDir1);
             Utils.verifyDirectLoc(config_order_1, outputDir2);
-
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Sen2VMException e) {

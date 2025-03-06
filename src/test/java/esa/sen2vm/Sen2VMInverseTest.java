@@ -79,7 +79,7 @@ import javax.imageio.ImageIO;
 
 
 /**
- * Unit test for Sen2VM.
+ * Unit test for Sen2VM (inverse loc).
  */
 
 public class Sen2VMInverseTest

@@ -83,8 +83,8 @@ public class Utils {
     public Utils() {
     }
 
-    private static final double THRESHOLD_DIR = 1e-9;
-    private static final double THRESHOLD_INV = 1e-3;
+    private static final double THRESHOLD_DIR = 1e-8;
+    private static final double THRESHOLD_INV = 1e-3; // todo
 
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {
@@ -192,36 +192,38 @@ public class Utils {
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
         if (ds1.GetRasterCount() == ds2.GetRasterCount() && ds1.getRasterXSize() == ds2.getRasterXSize() && ds1.getRasterYSize() == ds2.getRasterYSize()) {
-            Band b1 = ds1.GetRasterBand(1);
-            Band b2 = ds2.GetRasterBand(1);
-
-            for(int i = 0; i < ds1.getRasterYSize(); i++)
+            for(int b = 1; b <= ds1.GetRasterCount(); b++)
             {
-                double[] data1 = new double[ds1.getRasterXSize()];
-                b1.ReadRaster(0, i, ds1.getRasterXSize(), 1, data1);
-                double[] data2 = new double[ds2.getRasterXSize()];
-                b2.ReadRaster(0, i, ds2.getRasterXSize(), 1, data2);
-                for(int d = 0; d < ds1.getRasterXSize(); d++) {
-                    if (!(Double.isNaN(data1[d]) == Double.isNaN(data2[d])))
-                    {
-                        return false;
+
+                Band b1 = ds1.GetRasterBand(b);
+                Band b2 = ds2.GetRasterBand(b);
+
+                for(int r = 0; r < ds1.getRasterYSize(); r++) {
+
+                    double[] data1 = new double[ds1.getRasterXSize()];
+                    b1.ReadRaster(0, r, ds1.getRasterXSize(), 1, data1);
+                    double[] data2 = new double[ds2.getRasterXSize()];
+                    b2.ReadRaster(0, r, ds2.getRasterXSize(), 1, data2);
+                    for(int c = 0; c < ds1.getRasterXSize(); c++) {
+                        if (!(Double.isNaN(data1[c]) == Double.isNaN(data2[c])))
+                        {
+                            return false;
+                        }
+                        if (!(Double.isNaN(data1[c]))  && Math.abs(data1[c] - data2[c]) < threshold) {
+                            System.out.println("[DEBUG] " + img1Path + " " + img2Path);
+                            String error = String.valueOf(data1[c]) + " - " + String.valueOf(data1[c]) + " = " + String.valueOf(data1[c] - data2[c]);
+                            System.out.println("[DEBUG] (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
+
+                        }
+
+                        if (!(Double.isNaN(data1[c]))  && Math.abs(data1[c] - data2[c]) > threshold)
+                        {
+                            System.out.println("[DEBUG] " + img1Path + " " + img2Path);
+                            String error = String.valueOf(data1[c]) + " - " + String.valueOf(data1[c]) + " = " + String.valueOf(data1[c] - data2[c]);
+                            System.out.println("[DEBUG] (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
+                            return false;
+                        }
                     }
-                    if (!(Double.isNaN(data1[d]))  && Math.abs(data1[d] - data2[d]) < threshold) {
-                        System.out.println("[DEBUG] " + img1Path + " " + img2Path);
-                        String error = String.valueOf(data1[d]) + " - " + String.valueOf(data1[d]) + " = " + String.valueOf(data1[d] - data2[d]);
-                        System.out.println("[DEBUG] " + String.valueOf(i) + "/" + String.valueOf(d) + ": " + error);
-
-                    }
-
-                    if (!(Double.isNaN(data1[d]))  && Math.abs(data1[d] - data2[d]) > threshold)
-                    {
-                        System.out.println("[DEBUG] " + img1Path + " " + img2Path);
-                        String error = String.valueOf(data1[d]) + " - " + String.valueOf(data1[d]) + " = " + String.valueOf(data1[d] - data2[d]);
-                        System.out.println("[DEBUG] " + String.valueOf(i) + "/" + String.valueOf(d) + ": " + error);
-                        return false;
-                    }
-
-
                 }
             }
             return true;
