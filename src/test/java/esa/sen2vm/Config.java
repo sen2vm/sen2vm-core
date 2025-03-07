@@ -267,6 +267,9 @@ public static String changeParams(String filePath, String[] detectors, String[] 
     {
         if(src.isDirectory())
         {
+
+            dest.getParentFile().mkdirs();
+
             if(!dest.exists())
             {
                 dest.mkdir();
