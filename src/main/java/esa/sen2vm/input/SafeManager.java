@@ -103,7 +103,8 @@ public class SafeManager
 
     /**
      * List of granules which are on the detector with the existing band
-     * TODO test grid
+     * @param detectorInfo
+     * @param bandInfo
      * @return ArrayList<Granule>
      */
      public ArrayList<Granule> getGranulesToCompute(DetectorInfo detector, BandInfo band)
@@ -115,10 +116,7 @@ public class SafeManager
 
             if (this.listGranules.get(g).getDetector().equals("D" + detector.getName()))
             {
-
-                //if (this.listGranules.get(g).getImage(band).isFile()) { TODO
-                    listGranulesToCompute.add(listGranules.get(g));
-                //}
+                listGranulesToCompute.add(listGranules.get(g));
             }
         }
         return listGranulesToCompute;
@@ -126,7 +124,9 @@ public class SafeManager
 
     /**
      * Compute Bounding Box in sensor grid of a datastrip
-     * TODO test grid
+     * @param dataStripManager
+     * @param detectorInfo
+     * @param bandInfo
      * @return bounding box [uly, ulx, size lines, size pixels]
      */
     public int[] getFullSize(DataStripManager dataStripManager, BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException

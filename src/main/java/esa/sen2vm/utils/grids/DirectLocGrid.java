@@ -55,8 +55,8 @@ public class DirectLocGrid
     /**
      * Create 2D grid from gridPixels and gridLines [len(gridPixels) * 2]
      * [[row0+lineOffset,col0+pixelOffest],[row1+lineOffset,col1+pixelOffest],...]
-     * @param pixelOffest # TODO BETTER EXPLAIN
-     * @param lineOffest # TODO BETTER EXPLAIN
+     * @param pixelOffest for s2geo convention
+     * @param lineOffest for s2geo convention
      */
     public double[][] get2Dgrid(Float pixelOffest, Float lineOffest)
     {
@@ -170,7 +170,7 @@ public class DirectLocGrid
     }
 
      /**
-     * Compute offset of a granule by its start
+     * Compute offset of a granule by the ds start
      * @return lineOffset
      */
     public Double getLineOffsetGranule(int startGranule)
@@ -181,8 +181,8 @@ public class DirectLocGrid
     }
 
      /**
-     * Compute offset of a granule by its start
-     * @return lineOffset
+     * Compute offset of a granule by the ds start
+     * @return pixelOffset
      */
     public Double getPixelOffsetGranule()
     {

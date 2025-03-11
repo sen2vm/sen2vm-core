@@ -94,7 +94,7 @@ public class InverseLocGrid
     }
 
     /**
-     * Create 2D grid from gridX and gridY with altitude = 0 # TODO
+     * Create 2D grid from gridX and gridY
      * @return grid [[lon0, lat0, alt0], [lon1, lat1, alt1], ..]
      */
     public double[][] get2DgridLatLon()

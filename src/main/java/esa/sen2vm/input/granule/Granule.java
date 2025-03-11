@@ -187,7 +187,7 @@ public class Granule
         for (int i = 0; i < list_img.length; i++)
         {
             String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
-            String bandName = name[name.length-1]; //.substring(0, 3) todo
+            String bandName = name[name.length-1];
 
             if (bandName.length() == 3)
             {

@@ -108,7 +108,7 @@ public class Sen2VMConstants
     
     // Granule line (for a 10m resolution band)
     public static final double GRANULE_NB_LINE_10_M = 2304.0;
-    // TODO ?? Granule line (for a 60m resolution band) 
+    // Granule line (for a 60m resolution band)
     public static final double GRANULE_NB_LINE_60_M = 384.0;
 
     // The interval is split in 1/4 parts.
