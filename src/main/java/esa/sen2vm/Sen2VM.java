@@ -54,14 +54,6 @@ public class Sen2VM
     // Get sen2VM logger
     private static final Logger LOGGER = Logger.getLogger(Sen2VM.class.getName());
 
-    public static final void showPoints(double[][] pixels, double[][] grounds)
-    {
-        for (int i=0; i<pixels.length; i++)
-        {
-            LOGGER.info("[DEBUG] pixels = "+pixels[i][0]+" "+pixels[i][1]+" grounds = "+grounds[i][0]+" "+grounds[i][1]+" "+grounds[i][2]);
-        }
-    }
-
     /**
      * Main process
      * @param args first arg: input json file. second param (optional): parameter json file
@@ -270,11 +262,11 @@ public class Sen2VM
 
                     if (config.getOperation().equals(Sen2VMConstants.DIRECT))
                     {
-                        int[] BBox = safeManager.getFullSize(dataStripManager, bandInfo, detectorInfo);
-                        int startLine = BBox[0];
-                        int startPixel = BBox[1];
-                        int sizeLine = BBox[2];
-                        int sizePixel = BBox[3];
+                        int[] bbox = safeManager.getFullSize(dataStripManager, bandInfo, detectorInfo);
+                        int startLine = bbox[0];
+                        int startPixel = bbox[1];
+                        int sizeLine = bbox[2];
+                        int sizePixel = bbox[3];
 
                         // Load Granule Info
                         ArrayList<Granule> granulesToCompute = safeManager.getGranulesToCompute(detectorInfo, bandInfo);
@@ -285,13 +277,13 @@ public class Sen2VM
                             step, startLine, startPixel, sizeLine, sizePixel);
 
                         double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2, step/2);
-                        LOGGER.info("[DEBUG] sensorGridForDirectLoc lines: " + String.valueOf(sensorGridForDirectLoc[0][0]) + "....");
-                        LOGGER.info("[DEBUG] sensorGridForDirectLoc pixels: " + String.valueOf(sensorGridForDirectLoc[0][1]) + "....");
+                        LOGGER.debug("sensorGridForDirectLoc lines: " + String.valueOf(sensorGridForDirectLoc[0][0]) + "....");
+                        LOGGER.d(ebug"sensorGridForDirectLoc pixels: " + String.valueOf(sensorGridForDirectLoc[0][1]) + "....");
 
                         // Direct Loc
                         double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
-                        LOGGER.info("[DEBUG] First value to direct loc : " + String.valueOf(sensorGridForDirectLoc[0][0]) + " " + String.valueOf(sensorGridForDirectLoc[0][1]));
-                        LOGGER.info("[DEBUG] First value after direct loc : " + String.valueOf(directLocGrid[0][0]) + " " + String.valueOf(directLocGrid[0][1]) +" " + String.valueOf(directLocGrid[0][2]));
+                        LOGGER.debug("First value to direct loc : " + String.valueOf(sensorGridForDirectLoc[0][0]) + " " + String.valueOf(sensorGridForDirectLoc[0][1]));
+                        LOGGER.debug("First value after direct loc : " + String.valueOf(directLocGrid[0][0]) + " " + String.valueOf(directLocGrid[0][1]) +" " + String.valueOf(directLocGrid[0][2]));
 
                         Vector<String> inputTIFs = new Vector<String>();
                         float pixelOffset = dirGrid.getPixelOffsetGranule().floatValue();

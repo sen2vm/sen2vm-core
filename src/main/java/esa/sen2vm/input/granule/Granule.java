@@ -236,7 +236,6 @@ public class Granule
      */
     public String getCorrespondingGeoFileName(BandInfo band)
     {
-        System.out.println(this.path + File.separator + "GEO_DATA");
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         geo_data.mkdir();
 

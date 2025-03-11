@@ -150,7 +150,7 @@ public class OutputFileManager
 
     /**
      * Build VRT from a list of input TIFFs and transform absolute to relative path from DS directory
-     * @param vrtFilePath path of the VRT file to save to create # TODO tmp
+     * @param vrtFilePath path of the VRT file to save to create
      * @param inputTIFs list of TIFFs
      * @param step of grid
      * @param lineOffset startLine
@@ -207,7 +207,7 @@ public class OutputFileManager
     /**
      * Change absolute paths to relative paths from GRANULE dir
      * and change stepY to -stepY and originY to -originY
-     * @param vrtFilePath path of the VRT file to correct # TODO tmp
+     * @param vrtFilePath path of the VRT file to correct
      */
     public void correctVRT(String vrtFilePath) throws Exception
     {
