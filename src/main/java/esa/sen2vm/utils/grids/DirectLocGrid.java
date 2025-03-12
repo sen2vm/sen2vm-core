@@ -50,6 +50,7 @@ public class DirectLocGrid
         info = info + " Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ");";
         info = info + " Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")";
         LOGGER.info("Grid information: " + info);
+
     }
 
     /**
