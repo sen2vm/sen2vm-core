@@ -17,6 +17,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import java.io.File;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.nio.file.Path;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -249,18 +251,7 @@ public static String changeParams(String filePath, String[] detectors, String[] 
         {
             if (copy)
             {
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest);
-
-                byte[] buffer = new byte[1024];
-
-                int length;
-                while ((length = in.read(buffer)) > 0){
-                    out.write(buffer, 0, length);
-                }
-
-                in.close();
-                out.close();
+                Files.copy(src.toPath(), dest.toPath(), REPLACE_EXISTING);
             }
             else
             {
