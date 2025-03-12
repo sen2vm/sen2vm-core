@@ -18,8 +18,8 @@ public class InverseLocGrid
     private Coordinates lr;
     private int epsg;
 
-    protected Float stepX;
-    protected Float stepY;
+    protected float stepX;
+    protected float stepY;
 
     protected int pixelOrigin;
     protected int lineOrigin;
@@ -38,8 +38,8 @@ public class InverseLocGrid
      * @param epsg reference
      * @param step in epsg referencial
      */
-    public InverseLocGrid(Float ul_x, Float ul_y, Float lr_x, Float lr_y,
-                         String epsg, Float step)
+    public InverseLocGrid(float ul_x, float ul_y, float lr_x, float lr_y,
+                         String epsg, float step)
     {
         this.epsg = Integer.valueOf(epsg.substring(5));
         this.ul = new Coordinates(ul_y, ul_x, this.epsg);
@@ -75,11 +75,11 @@ public class InverseLocGrid
 
     /**
      * Create the list of geo grid values for a specific range
-     * @param start of the grid
+     * @param star of the grid
      * @param size of the grid
      * @return list 1D
      */
-    private ArrayList<Float> grid_1D(Float start, Float size, Float signedStep)
+    private ArrayList<Float> grid_1D(float start, float size, float signedStep)
     {
         ArrayList<Float> grid = new ArrayList<Float>();
         int nb = (int) Math.ceil(Math.abs(size / signedStep)) + 1;
@@ -87,9 +87,6 @@ public class InverseLocGrid
         {
             grid.add(start + signedStep * i);
         }
-        LOGGER.info("1D : " + String.valueOf(start) + " -> " + String.valueOf(grid.get(nb-1)) +
-            " (> " +  String.valueOf(start + size) + ") [" +  String.valueOf(nb) + "]");
-
         return grid;
     }
 
@@ -126,7 +123,7 @@ public class InverseLocGrid
      * Transform [[row0, col0], [row1, col1]..] to 3D grid before tiff saving
      * @return grid [[[row00, row01..], [row10, row11..] ..],[[col00, col01...], [col10, col11...], ...]
      */
-     public double[][][] get3Dgrid(double[][] gridList, Float pixelOffest, Float lineOffest)
+     public double[][][] get3Dgrid(double[][] gridList, float pixelOffest, float lineOffest)
      {
         int nbCols = this.gridX.size();
         int nbLines = this.gridY.size();
@@ -148,7 +145,7 @@ public class InverseLocGrid
      * Get StepX
      * @return stepX
      */
-     public Float getStepX()
+     public float getStepX()
     {
         return this.stepX;
     }
@@ -157,7 +154,7 @@ public class InverseLocGrid
      * Get StepY
      * @return stepY
      */
-    public Float getStepY()
+    public float getStepY()
     {
         return this.stepY;
     }

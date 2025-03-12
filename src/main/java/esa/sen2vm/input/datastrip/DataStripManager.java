@@ -503,11 +503,11 @@ public class DataStripManager
             }
             // Extract Quaternion values from XML
             AbsoluteDate attitudeDate = new AbsoluteDate(gpsTime.toString(), gps);
-            List<Double> quaternionValues = values.getQUATERNION_VALUES();
-            Double q1 = quaternionValues.get(0);
-            Double q2 = quaternionValues.get(1);
-            Double q3 = quaternionValues.get(2);
-            Double q0 = quaternionValues.get(3);
+            java.util.List<Double> quaternionValues = values.getQUATERNION_VALUES();
+            double q1 = quaternionValues.get(0);
+            double q2 = quaternionValues.get(1);
+            double q3 = quaternionValues.get(2);
+            double q0 = quaternionValues.get(3);
 
             Rotation rotation = new Rotation(q0, q1, q2, q3, true);
             TimeStampedAngularCoordinates pair = new TimeStampedAngularCoordinates(attitudeDate, rotation, Vector3D.ZERO, Vector3D.ZERO);

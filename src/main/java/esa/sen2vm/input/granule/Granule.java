@@ -192,7 +192,6 @@ public class Granule
             if (bandName.length() == 3)
             {
                 int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
-                // LOGGER.debug(list_img[i].getName());
                 this.grids[indexBand] = list_img[i];
                 nbGranule++;
             }

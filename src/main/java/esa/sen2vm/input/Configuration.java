@@ -337,7 +337,7 @@ public class Configuration extends InputFileManager
      * Get the step of 10m band
      * @return the step for 10m band (pixels)
      */
-    public Float getStepBand10m()
+    public float getStepBand10m()
     {
        return this.step_band10m;
     }
@@ -346,7 +346,7 @@ public class Configuration extends InputFileManager
      * Get the step of 20m band
      * @return the step for 20m band (pixels)
      */
-    public Float getStepBand20m()
+    public float getStepBand20m()
     {
        return this.step_band20m;
     }
@@ -355,7 +355,7 @@ public class Configuration extends InputFileManager
      * Get the step of 60m band
      * @return the step for 60m band (pixels)
      */
-    public Float getStepBand60m()
+    public float getStepBand60m()
     {
        return this.step_band60m;
     }
@@ -365,9 +365,9 @@ public class Configuration extends InputFileManager
      * @param bandInfo
      * @return the step for a given band (pixels)
      */
-    public Float getStepFromBandInfo(BandInfo bandInfo)
+    public float getStepFromBandInfo(BandInfo bandInfo)
     {
-        Float step ;
+        float step ;
         switch((int) bandInfo.getPixelHeight())
         {
             case Sen2VMConstants.RESOLUTION_10M:
@@ -387,9 +387,9 @@ public class Configuration extends InputFileManager
      * Get the inverse location bounds
      * @return ulx, uly, lrx, lry (in referential unit)
      */
-    public Float[] getInverseLocBound()
+    public float[] getInverseLocBound()
     {
-        Float[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
+        float[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
         return bb;
     }
 

@@ -9,16 +9,16 @@ public class DirectLocGrid
     // Get sen2VM logger
     private static final Logger LOGGER = Logger.getLogger(DirectLocGrid.class.getName());
 
-    protected Float georefConventionOffsetPixel;
-    protected Float georefConventionOffsetLine;
-    protected Float step;
+    protected float georefConventionOffsetPixel;
+    protected float georefConventionOffsetLine;
+    protected float step;
     protected int pixelOrigin;
     protected int lineOrigin;
     protected int sizeLines;
     protected int sizePixels;
 
-    protected ArrayList<Double> gridPixels;
-    protected ArrayList<Double> gridLines;
+    protected ArrayList<Float> gridPixels;
+    protected ArrayList<Float> gridLines;
 
     /**
      * Constructor
@@ -29,8 +29,8 @@ public class DirectLocGrid
      * @param sizeLines
      * @param sizePixels
      */
-    public DirectLocGrid(Float georefConventionOffsetLine, Float georefConventionOffsetPixel,
-                         Float step,
+    public DirectLocGrid(float georefConventionOffsetLine, float georefConventionOffsetPixel,
+                         float step,
                          int lineOrigin, int pixelOrigin,
                          int sizeLines, int sizePixels)
     {
@@ -49,7 +49,7 @@ public class DirectLocGrid
         info = info + " Step: (" + String.valueOf(this.step) + ", " + String.valueOf(this.step) + ");";
         info = info + " Start: (" + String.valueOf(this.lineOrigin) + ", " + String.valueOf(this.pixelOrigin) + ");";
         info = info + " Size: (" + String.valueOf(this.sizeLines) + ", " + String.valueOf(this.sizePixels) + ")";
-        LOGGER.info("[DEBUG] Grid information: " + info);
+        LOGGER.info("Grid information: " + info);
     }
 
     /**
@@ -58,7 +58,7 @@ public class DirectLocGrid
      * @param pixelOffest for s2geo convention
      * @param lineOffest for s2geo convention
      */
-    public double[][] get2Dgrid(Float pixelOffest, Float lineOffest)
+    public double[][] get2Dgrid(float pixelOffest, float lineOffest)
     {
 
         int nbCols = this.gridPixels.size();
@@ -85,13 +85,13 @@ public class DirectLocGrid
      * @param step of the grid
      * @return list 1D
      */
-    private ArrayList<Double> grid_1D(int start, int size, int pixelOrigin, float step, float offset)
+    private ArrayList<Float> grid_1D(int start, int size, int pixelOrigin, float step, float offset)
     {
         Boolean insideGranule = true;
-        ArrayList<Double> grid = new ArrayList<Double>();
+        ArrayList<Float> grid = new ArrayList<Float>();
 
         int i_grid = 0;
-        double value = offset + (i_grid -  pixelOrigin) * step - step / 2;
+        float value = offset + (i_grid -  pixelOrigin) * step - step / 2;
         grid.add(value);
 
         while (insideGranule)
@@ -173,10 +173,10 @@ public class DirectLocGrid
      * Compute offset of a granule by the ds start
      * @return lineOffset
      */
-    public Double getLineOffsetGranule(int startGranule)
+    public float getLineOffsetGranule(int startGranule)
     {
         int grid_row_start = getRowInGrid(startGranule);
-        Double lineOffset = this.gridLines.get(grid_row_start) - startGranule;
+        float lineOffset = this.gridLines.get(grid_row_start) - startGranule;
         return lineOffset;
     }
 
@@ -184,7 +184,7 @@ public class DirectLocGrid
      * Compute offset of a granule by the ds start
      * @return pixelOffset
      */
-    public Double getPixelOffsetGranule()
+    public float getPixelOffsetGranule()
     {
         return this.gridPixels.get(getRowInGrid(0));
     }
@@ -193,7 +193,7 @@ public class DirectLocGrid
      * Get grid Pixels
      * @return gridPixels
      */
-    public ArrayList<Double> getGridPixels()
+    public ArrayList<Float> getGridPixels()
     {
         return this.gridPixels;
     }
@@ -202,7 +202,7 @@ public class DirectLocGrid
      * Get grid lines
      * @return gridLines
      */
-    public ArrayList<Double> getGridLines()
+    public ArrayList<Float> getGridLines()
     {
         return this.gridLines;
     }

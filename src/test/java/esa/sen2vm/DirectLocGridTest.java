@@ -103,17 +103,17 @@ public class DirectLocGridTest
         assertEquals(dirGrid.getLineOffsetGranule(200), -3.75);
         assertEquals(dirGrid.getLineOffsetGranule(210), -0.25);
 
-        ArrayList<Double> pixels = dirGrid.getGridPixels();
-        assertEquals(pixels.size(), 95);
-        assertEquals(pixels.get(0), -1.75);
+        ArrayList<Float> pixels = dirGrid.getGridPixels();
+        assertEquals(pixels.size(), 95.0);
+        assertEquals(pixels.get(0), -1.75f);
         assertEquals(pixels.get(1), pixels.get(0) + step);
-        assertEquals(pixels.get(dirGrid.getGridPixels().size() - 1), 421.25);
+        assertEquals(pixels.get(dirGrid.getGridPixels().size() - 1), 421.25f);
 
-        ArrayList<Double> lines = dirGrid.getGridLines();
+        ArrayList<Float> lines = dirGrid.getGridLines();
         assertEquals(lines.size(), 513);
-        assertEquals(lines.get(0), -1.75);
+        assertEquals(lines.get(0), -1.75f);
         assertEquals(lines.get(1), lines.get(0) + step);
-        assertEquals(lines.get(dirGrid.getGridLines().size() - 1), 2302.25);
+        assertEquals(lines.get(dirGrid.getGridLines().size() - 1), 2302.25f);
 
 
     }
