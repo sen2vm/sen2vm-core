@@ -139,7 +139,7 @@ public class SafeManager
         if (minGranule == null || minGranule == null)
         {
             Sen2VMException error = new Sen2VMException("Error GRANULE: no first or last granule of the datastrip.");
-			throw error;
+            throw error;
         }
 
         int[] ULpixel = minGranule.getULpixel(bandInfo.getPixelHeight());

@@ -33,8 +33,10 @@ public class Sen2VMDirectTest
         String[] bands = new String[]{"B01", "B02", "B05"};
         int[] testsStep = new int[]{3000, 6000};
 
-        for (int step : testsStep) {
-            try {
+        for (int step : testsStep)
+        {
+            try
+            {
                 String nameTest = "testStepDirectLoc_" +  Integer.toString(step);
                 String outputDir = Config.createTestDir(nameTest, "direct");
                 String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
@@ -58,7 +60,8 @@ public class Sen2VMDirectTest
         String[] detectors = new String[]{"01", "02","03","04","05","06","07","08","09","10","11","12"};
         String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
         int step = 6000;
-        try {
+        try
+        {
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
@@ -82,7 +85,8 @@ public class Sen2VMDirectTest
         String[] bands = new String[]{"B01"};
         String GIPP_2 = "src/test/resources/tests/data/GIPP/";
 
-       try {
+       try
+       {
             String nameTest = "testDirectGipp";
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.configCheckGipp(configTmpDirect, GIPP_2, false, outputDir);
@@ -106,7 +110,8 @@ public class Sen2VMDirectTest
         String[] bands = new String[]{"B01"};
         String GIPP_2 = "src/test/resources/tests/data/GIPP/";
 
-       try {
+       try
+       {
             String nameTest = "testDirectGipp";
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.configCheckGipp(configTmpDirect, GIPP_2, true, outputDir);
@@ -129,7 +134,8 @@ public class Sen2VMDirectTest
         String[] detectors = new String[]{"01"};
         String[] bands = new String[]{"B02"};
 
-        try {
+        try
+        {
             String nameTest = "testDirectNoRefining";
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.config(configTmpDirect, outputDir, 6000, "direct", false);
@@ -154,7 +160,8 @@ public class Sen2VMDirectTest
         String[] detectors = new String[]{"01"};
         String[] bands = new String[]{"B02"};
 
-        try {
+        try
+        {
             String nameTest_ref = "testDirectIers_ref";
             String outputDir_ref = Config.createTestDir(nameTest_ref, "direct");
             String iers_ref = "src/test/resources/tests/data/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000.txt";
@@ -184,7 +191,8 @@ public class Sen2VMDirectTest
     public void testDirectParallelisation()
     {
 
-        try {
+        try
+        {
             String outputDir1 = Config.createTestDir("testDirectParallelisation_1", "direct");
             String[] detectors_order_1 = new String[]{"01", "02"};
             String[] bands_order_1 = new String[]{"B01", "B02"};
@@ -219,7 +227,8 @@ public class Sen2VMDirectTest
         String[] bands = new String[]{"B01"};
         String[] testsDem = new String[]{"dem1", "dem2", "dem3", "dem4"};
 
-        try {
+        try
+        {
             String nameTest_ref = "testDirectDem_ref";
             String outputDir_ref = Config.createTestDir(nameTest_ref, "direct");
             String config_ref = Config.config(configTmpDirect, outputDir_ref, 6000, "direct", false);
@@ -227,7 +236,8 @@ public class Sen2VMDirectTest
             String[] args_ref = {"-c", config_ref, "-p", params_ref};
             Sen2VM.main(args_ref);
 
-            for (String testDem : testsDem) {
+            for (String testDem : testsDem)
+            {
                 String nameTest = "testDirectDem_" + testDem;
                 String outputDir = Config.createTestDir(nameTest, "direct");
                 String config = Config.changeDem(configTmpDirect, "src/test/resources/tests/input/dem_tests/" + testDem, outputDir);
@@ -245,7 +255,4 @@ public class Sen2VMDirectTest
         }
 
     }
-
-
-
 }

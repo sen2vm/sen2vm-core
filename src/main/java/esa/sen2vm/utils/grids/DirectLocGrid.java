@@ -136,7 +136,7 @@ public class DirectLocGrid
         LOGGER.info("Granule: " + String.valueOf(startGranule) + " -> " + String.valueOf(startGranule + sizeGranule));
 
         int grid_row_start = getRowInGrid(startGranule);
-        int grid_row_end = getRowInGrid(startGranule + sizeGranule) ;
+        int grid_row_end = getRowInGrid(startGranule + sizeGranule);
 
         int nbLines = grid_row_end - grid_row_start + 1;
         int nbCols = this.gridPixels.size();

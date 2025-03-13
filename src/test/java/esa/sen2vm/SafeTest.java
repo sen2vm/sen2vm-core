@@ -135,8 +135,6 @@ public class SafeTest
     {
         try
         {
-
-
             // Read configuration file
             Configuration config = new Configuration(configTmp);
             DataStripManager dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
@@ -172,15 +170,15 @@ public class SafeTest
     {
         try
         {
-
             // Before Test, create environnement
             String paramTmp = "src/test/resources/params_all.json";
             String[] detectors = new String[]{"10"};
             String[] bands = new String[]{"B01", "B02"};
-            String configFile = "" ;
-            String paramFile = "" ;
+            String configFile = "";
+            String paramFile = "";
             String outputDir = "";
-            try {
+            try
+            {
                 outputDir = Config.createTestDir("run_D10", "direct");
                 configFile = Config.config(configTmp, outputDir, 6000, "direct", false);
                 paramFile = Config.changeParams(paramTmp, detectors, bands, outputDir);
@@ -198,7 +196,7 @@ public class SafeTest
             SafeManager safeManager = new SafeManager(config.getL1bProduct(), dataStripManager);
             Datastrip datastrip = safeManager.getDatastrip();
 
-            ArrayList<Granule> listGranules = safeManager.getGranules() ;
+            ArrayList<Granule> listGranules = safeManager.getGranules();
             for(int g = 0; g < listGranules.size(); g++)
             {
                 for (BandInfo bandInfo: BandInfo.getAllBandInfo())
@@ -207,7 +205,7 @@ public class SafeTest
                 }
             }
 
-            File[][] vrt = datastrip.getVRT() ;
+            File[][] vrt = datastrip.getVRT();
             for(int d = 0; d < vrt.length; d++)
             {
                 for(int b = 0; b < vrt[d].length; b++)
@@ -217,7 +215,8 @@ public class SafeTest
             }
             System.out.println("   ");
 
-            try {
+            try
+            {
                 String[] args = {"-c", configFile, "-p", paramFile};
                 Sen2VM.main(args);
             } catch (Sen2VMException e) {
@@ -228,7 +227,7 @@ public class SafeTest
             dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
             safeManager = new SafeManager(config.getL1bProduct(), dataStripManager);
             datastrip = safeManager.getDatastrip();
-            listGranules = safeManager.getGranules() ;
+            listGranules = safeManager.getGranules();
             int nbPresent = 0;
             for(int g = 0; g < listGranules.size(); g++)
             {
@@ -236,19 +235,20 @@ public class SafeTest
                 {
                     if (listGranules.get(g).getGrids()[bandInfo.getIndex()] != null)
                     {
-                        nbPresent++ ;
+                        nbPresent++;
                     }
                 }
             }
             assertEquals(nbPresent, 12);
 
-            nbPresent = 0 ;
-            vrt = datastrip.getVRT() ;
+            nbPresent = 0;
+            vrt = datastrip.getVRT();
             for(int d = 0; d < vrt.length; d++)
             {
                 for(int b = 0; b < vrt[d].length; b++)
                 {
-                    if(vrt[d][b] != null) {
+                    if(vrt[d][b] != null)
+                    {
                         nbPresent++;
                     }
                 }
@@ -257,7 +257,8 @@ public class SafeTest
             String ok = "false";
             // configChangeOverwrite(String filePath, Boolean overwrite) throws FileNotFoundException,
 
-            try {
+            try
+            {
                 String[] args = {"-c", configFile, "-p", paramFile};
                 Sen2VM.main(args);
                 ok = "true";
@@ -272,6 +273,5 @@ public class SafeTest
             e.printStackTrace();
         }
     }
-
 
 }

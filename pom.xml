@@ -20,11 +20,24 @@
         <!-- cots version -->
         <gdal.version>3.6.2</gdal.version>
         <sxgeo.version>0.2.1</sxgeo.version>
-		<sxgeo.orekit.version>11.3.2</sxgeo.orekit.version>
-		<sxgeo.rugged.version>4.0.1</sxgeo.rugged.version>
-		<sxgeo.hipparchus.version>2.3</sxgeo.hipparchus.version>
+        <sxgeo.orekit-tools.version>1.2</sxgeo.orekit-tools.version>
+        <sxgeo.hipparchus.version>2.3</sxgeo.hipparchus.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.eopf.copernicus.eu/api/v4/projects/67/packages/maven</url>
+        </repository>
+        <repository>
+            <id>gitlab-maven-orekit-tools</id>
+            <url>https://gitlab.eopf.copernicus.eu/api/v4/projects/123/packages/maven</url>
+        </repository>
+        <repository>
+            <id>gitlab-maven-rugged</id>
+            <url>https://gitlab.eopf.copernicus.eu/api/v4/groups/136/-/packages/maven</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -65,28 +78,17 @@
             <groupId>org.sxgeo</groupId>
             <artifactId>sxgeo</artifactId>
             <version>${sxgeo.version}</version>
-            <type>jar</type>
-            <optional>false</optional>
         </dependency>
         <dependency>
-			<groupId>org.hipparchus</groupId>
-			<artifactId>hipparchus-core</artifactId>
-			<version>${sxgeo.hipparchus.version}</version>
-		</dependency>
-        <dependency>
-			<groupId>org.orekit</groupId>
-			<artifactId>rugged</artifactId>
-			<version>${sxgeo.rugged.version}</version>
-			<type>jar</type>
-			<optional>false</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.orekit</groupId>
-			<artifactId>orekit</artifactId>
-			<version>${sxgeo.orekit.version}</version>
-			<type>jar</type>
-			<optional>false</optional>
-		</dependency>
+            <groupId>org.hipparchus</groupId>
+                <artifactId>hipparchus-core</artifactId>
+                <version>${sxgeo.hipparchus.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.orekit</groupId>
+            <artifactId>orekit-tools</artifactId>
+            <version>${sxgeo.orekit-tools.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

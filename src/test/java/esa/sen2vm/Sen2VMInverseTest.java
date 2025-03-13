@@ -48,8 +48,10 @@ public class Sen2VMInverseTest
         int[] testsStep = new int[]{3000, 6000};
 
 
-        for (int step : testsStep) {
-            try {
+        for (int step : testsStep)
+        {
+            try
+            {
                 String nameTest = "testStepInverseLoc_" +  Integer.toString(step);
                 String outputDir = Config.createTestDir(nameTest, "inverse");
                 String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
@@ -93,7 +95,8 @@ public class Sen2VMInverseTest
         String[] detectors = new String[]{"01", "02","03","04","05","06","07","08","09","10","11","12"};
         String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
         int step = 6000;
-        try {
+        try
+        {
             String nameTest = "testInverseLoc";
             String outputDir = Config.createTestDir(nameTest, "inverse");
             String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
@@ -117,7 +120,8 @@ public class Sen2VMInverseTest
         String[] bands = new String[]{"B02"};
         String GIPP_2 = "src/test/resources/tests/data/GIPP/";
 
-       try {
+       try
+       {
             String nameTest = "testInverseGipp";
             String outputDir = Config.createTestDir(nameTest, "inverse");
             String config = Config.configCheckGipp(configTmpInverse, GIPP_2, false, outputDir);
@@ -142,7 +146,8 @@ public class Sen2VMInverseTest
         String[] detectors = new String[]{"06"};
         String[] bands = new String[]{"B01", "B02", "B05"};
 
-        try {
+        try
+        {
             String nameTest = "testInverseNoRefining";
             String outputDir = Config.createTestDir(nameTest, "inverse");
             String config = Config.config(configTmpInverse, outputDir, 6000, "inverse", false);
@@ -166,7 +171,8 @@ public class Sen2VMInverseTest
         String[] detectors = new String[]{"06"};
         String[] bands = new String[]{"B02"};
 
-        try {
+        try
+        {
             String nameTest_ref = "testInverseIers_ref";
             String outputDir_ref = Config.createTestDir(nameTest_ref, "inverse");
             String iers_ref = "src/test/resources/tests/data/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000.txt";
@@ -195,7 +201,8 @@ public class Sen2VMInverseTest
     @Test
     public void testInverseParallelisation()
     {
-        try {
+        try
+        {
             String outputDir1 = Config.createTestDir("testInverseParallelisation_1", "inverse");
             String[] detectors_order_1 = new String[]{"05", "06"};
             String[] bands_order_1 = new String[]{"B01", "B02"};
@@ -231,7 +238,8 @@ public class Sen2VMInverseTest
         String[] bands = new String[]{"B02"};
 
 
-        try {
+        try
+        {
             String nameTest = "testInverseReferentialArea";
             String outputDir = Config.createTestDir(nameTest, "inverse");
 
@@ -262,7 +270,8 @@ public class Sen2VMInverseTest
         String[] detectors = new String[]{"05"};
         String[] bands = new String[]{"B02"};
 
-        try {
+        try
+        {
             String nameTest = "testInverseAreaHandling";
             String outputDir = Config.createTestDir(nameTest, "inverse");
 
@@ -294,7 +303,8 @@ public class Sen2VMInverseTest
         String[] bands = new String[]{"B01", "B02"};
         String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
 
-        try {
+        try
+        {
             String nameTest_ref = "testDirectDem_ref";
             String outputDir_ref = Config.createTestDir(nameTest_ref, "inverse");
             String config_ref = Config.config(configTmpInverse, outputDir_ref, 6000, "direct", false);

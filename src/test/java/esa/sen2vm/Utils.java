@@ -179,8 +179,8 @@ public class Utils {
                 BandInfo bandInfo = BandInfo.getBandInfoFromIndex(b);
                 float res = (float) bandInfo.getPixelHeight();
                 if (outputGrids[d][b] != null) {
-                    File outputGrid = outputGrids[d][b] ;
-                    File refGrid = refGrids[d][b] ;
+                    File outputGrid = outputGrids[d][b];
+                    File refGrid = refGrids[d][b];
                     assertEquals(imagesEqualInverse(outputGrid.toString(), refGrid.toString(), THRESHOLD_INV, res), true);
                 }
             }
@@ -261,12 +261,12 @@ public class Utils {
                     if (!(Double.isNaN(data1b1[c]))) {
 
                         // Calculation planar error
-                        double diff_column = data1b1[c] - data2b1[c] ;
+                        double diff_column = data1b1[c] - data2b1[c];
                         double diff_column_2 = diff_column * diff_column;
-                        double diff_line = data1b2[c] - data2b2[c] ;
+                        double diff_line = data1b2[c] - data2b2[c];
                         double diff_line_2 = diff_line * diff_line;
                         double diff = Math.sqrt(diff_line_2 + diff_column_2);
-                        diff = diff * res ;
+                        diff = diff * res;
 
                         if (diff > threshold) {
                             System.out.println("Error in " + img1Path);

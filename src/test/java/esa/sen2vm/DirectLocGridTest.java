@@ -90,11 +90,11 @@ public class DirectLocGridTest
     @Test
     public void readConfigurationFile()
     {
-        float step = 4.5f ;
-        int startLine = 0 ;
-        int startPixel = 0 ;
-        int sizeLine = 2304 ;
-        int sizePixel = 425 ;
+        float step = 4.5f;
+        int startLine = 0;
+        int startPixel = 0;
+        int sizeLine = 2304;
+        int sizePixel = 425;
 
         DirectLocGrid dirGrid = new DirectLocGrid(0.5f, 0.5f,
                         step, startPixel, startLine, sizeLine, sizePixel);
@@ -114,8 +114,6 @@ public class DirectLocGridTest
         assertEquals(lines.get(0), -1.75f);
         assertEquals(lines.get(1), lines.get(0) + step);
         assertEquals(lines.get(dirGrid.getGridLines().size() - 1), 2302.25f);
-
-
     }
 
 

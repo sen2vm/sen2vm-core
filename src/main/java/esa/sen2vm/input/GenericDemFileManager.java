@@ -129,17 +129,20 @@ public class GenericDemFileManager extends SrtmFileManager
         double lonFloor = FastMath.floor(FastMath.toDegrees(longitude));
 
         // when close to the anti-meridian
-		if (lonFloor >= 180) {
-			lonFloor -= 360;
-		} else if (lonFloor < -180) {
-			lonFloor += 360;
-		}
+        if (lonFloor >= 180)
+        {
+            lonFloor -= 360;
+        }
+        else if (lonFloor < -180)
+        {
+            lonFloor += 360;
+        }
 
         String lonlat = (int) lonFloor + "/" + (int) latFloor;
         String filePath = this.demFilePathMap.get(lonlat);
         if (filePath == null)
         {
-	        filePath = "";
+            filePath = "";
         }
         return filePath;
     }

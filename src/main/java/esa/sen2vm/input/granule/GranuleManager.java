@@ -91,10 +91,12 @@ public class GranuleManager
             granulePosition = geometricInfo.getGranule_Position().getPOSITION();
             List<A_GEOMETRIC_INFO.Granule_Dimensions.Size> list_res = geometricInfo.getGranule_Dimensions().getSize();
 
-            for (A_GEOMETRIC_INFO.Granule_Dimensions.Size res : list_res) {
-                if (res.getResolution() == Sen2VMConstants.RESOLUTION_10M) {
+            for (A_GEOMETRIC_INFO.Granule_Dimensions.Size res : list_res)
+            {
+                if (res.getResolution() == Sen2VMConstants.RESOLUTION_10M)
+                {
                     sizeRes10 = new int[]{res.getNROWS(), res.getNCOLS()};
-                } else if (res.getResolution() == Sen2VMConstants.RESOLUTION_20M) {
+                } else if (res.getResolution() == Sen2VMConstants.RESOLUTION_20M){
                     sizeRes20 = new int[]{res.getNROWS(), res.getNCOLS()};
                 } else {
                     sizeRes60 = new int[]{res.getNROWS(), res.getNCOLS()};

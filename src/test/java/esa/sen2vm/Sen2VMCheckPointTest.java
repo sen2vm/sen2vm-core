@@ -96,7 +96,8 @@ public class Sen2VMCheckPointTest
     {
         int step = 6000;
 
-        try {
+        try
+        {
             String nameTest = "direct_first_line_" + Integer.toString(step);
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
@@ -192,7 +193,8 @@ public class Sen2VMCheckPointTest
     public void geoLocD01B01_fromAsgard()
     {
         double delta = 1e-9;
-        try {
+        try
+        {
             double[][] grounds = geoLocD01B01(configTmpDirect, 0.0, 0.0);
             System.out.println("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
             assertEquals(grounds[0][0], -18.919024167218094, delta);
@@ -214,8 +216,8 @@ public class Sen2VMCheckPointTest
     public double[][] geoLocD01B01(String config, double line, double pixel) throws Sen2VMException
     {
         double[][] grounds = {{0., 0.}};
-        try {
-
+        try
+        {
             // Read configuration file
             Configuration configFile = new Configuration(config);
 
@@ -236,7 +238,8 @@ public class Sen2VMCheckPointTest
             // Init demManager
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
             SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
-            if(!demFileManager.findRasterFile()) {
+            if(!demFileManager.findRasterFile())
+            {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
 
@@ -249,8 +252,10 @@ public class Sen2VMCheckPointTest
             // Build sensor list
             // Save sensors for each focal plane
             HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
-            for (DetectorInfo detectorInfo: detectors) {
-                for (BandInfo bandInfo: bands) {
+            for (DetectorInfo detectorInfo: detectors)
+            {
+                for (BandInfo bandInfo: bands)
+                {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
                     LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
@@ -309,8 +314,10 @@ public class Sen2VMCheckPointTest
 
         // Save sensors for each focal plane
         HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
-        for (DetectorInfo detectorInfo: detectors) {
-            for (BandInfo bandInfo: bands) {
+        for (DetectorInfo detectorInfo: detectors)
+        {
+            for (BandInfo bandInfo: bands)
+            {
                 SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
                 LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
                 SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
@@ -338,7 +345,8 @@ public class Sen2VMCheckPointTest
     public void inverseLocD01B01_fromAsgard()
     {
         double delta = 1e-9;
-        try {
+        try
+        {
             double[][] sensor = inverseLocD01B01(configTmpInverse, "01", "B01", new double[]{0.0, 0.0, 0.0});
             assertEquals(sensor[0][1], Double.NaN);
             assertEquals(sensor[0][0], Double.NaN);
@@ -364,7 +372,8 @@ public class Sen2VMCheckPointTest
     public double[][] inverseLocD01B01(String config, String det, String band, double[] ground) throws Sen2VMException
     {
         double[][] sensorCoordinates = {{0., 0.}};
-        try {
+        try
+        {
 
             // Read configuration file
             Configuration configFile = new Configuration(config);
@@ -386,7 +395,8 @@ public class Sen2VMCheckPointTest
             // Init demManager
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
             SrtmFileManager demFileManager = new SrtmFileManager(configFile.getDem());
-            if(!demFileManager.findRasterFile()) {
+            if(!demFileManager.findRasterFile())
+            {
                 throw new Sen2VMException("Error when checking for DEM file");
             }
 
@@ -399,8 +409,10 @@ public class Sen2VMCheckPointTest
             // Build sensor list
             // Save sensors for each focal plane
             HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
-            for (DetectorInfo detectorInfo: detectors) {
-                for (BandInfo bandInfo: bands) {
+            for (DetectorInfo detectorInfo: detectors)
+            {
+                for (BandInfo bandInfo: bands)
+                {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
                     LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
@@ -452,8 +464,4 @@ public class Sen2VMCheckPointTest
         return sensorCoordinates;
 
     }
-
-
-
-
 }

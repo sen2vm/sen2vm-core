@@ -38,14 +38,15 @@ import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.enums.BandInfo;
 
 
-public class Config {
+public class Config
+{
 
     private static final double THRESHOLD_DIR = 1e-9;
     private static final double THRESHOLD_INV = 1e-8;
 
     public static String config(String filePath, String l1b_product, int step, String operation, boolean refining) throws FileNotFoundException,
-            IOException, ParseException {
-
+            IOException, ParseException
+    {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
 
@@ -69,7 +70,6 @@ public class Config {
         writer.close();
 
         return outputConfig;
-
     }
 
 
@@ -78,14 +78,16 @@ public class Config {
      *
      */
     public static String configIERS(String filePath, String l1b_product, String iers) throws FileNotFoundException,
-            IOException, ParseException {
+            IOException, ParseException
+    {
 
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
 
         JSONObject objJson = (JSONObject) obj;
         objJson.put("l1b_product", l1b_product);
-        if (iers == null) {
+        if (iers == null)
+        {
             objJson.remove("iers");
         } else {
             objJson.put("iers", iers);
@@ -108,7 +110,8 @@ public class Config {
                                         double ul_y, double ul_x,
                                         double lr_y, double lr_x,
                                         String referential, String l1b_product) throws FileNotFoundException,
-                                         IOException, ParseException {
+                                         IOException, ParseException
+    {
 
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
@@ -130,11 +133,11 @@ public class Config {
         writer.close();
 
         return outputConfig;
-
     }
 
     public static String changeDem(String filePath, String demPath, String l1b_product) throws FileNotFoundException,
-            IOException, ParseException {
+            IOException, ParseException
+    {
 
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
@@ -152,11 +155,11 @@ public class Config {
         writer.close();
 
         return outputConfig;
-
     }
 
     public static String configCheckGipp(String filePath, String gippPath, boolean checkGipp, String l1b_product) throws FileNotFoundException,
-            IOException, ParseException {
+            IOException, ParseException
+    {
 
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
@@ -175,12 +178,12 @@ public class Config {
         writer.close();
 
         return outputConfig;
-
     }
 
     public static String createTestDir(String nameTest, String type) throws IOException
     {
-        if (type.equals("direct")) {
+        if (type.equals("direct"))
+        {
             String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
             String outputDir = "src/test/resources/tests/output/" + nameTest;
             copyFolder(new File(inputRef), new File(outputDir), true);
@@ -194,7 +197,8 @@ public class Config {
     }
 
 public static String changeParams(String filePath, String[] detectors, String[] bands, String outputDir) throws FileNotFoundException,
-            IOException, ParseException {
+            IOException, ParseException
+{
 
         // String[] detectors, String[] bands
 
@@ -202,12 +206,14 @@ public static String changeParams(String filePath, String[] detectors, String[] 
         Object obj = parser.parse(new FileReader(filePath));
 
         JSONArray detectorsJsonArray = new JSONArray();
-        for (String det : detectors) {
+        for (String det : detectors)
+        {
           detectorsJsonArray.add(det);
         }
 
         JSONArray bandsJsonArray = new JSONArray();
-        for (String band : bands) {
+        for (String band : bands)
+        {
           bandsJsonArray.add(band);
         }
 
@@ -221,7 +227,6 @@ public static String changeParams(String filePath, String[] detectors, String[] 
         writer.close();
 
         return outputParam;
-
     }
 
     public static void copyFolder(File src, File dest, boolean copy) throws IOException
@@ -257,7 +262,6 @@ public static String changeParams(String filePath, String[] detectors, String[] 
             {
                 Path records = src.toPath();
                 Path recordsLink = dest.toPath();
-
             }
         }
     }
