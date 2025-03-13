@@ -1,0 +1,11 @@
+<PAMDataset>
+  <Metadata domain="IMAGE_STRUCTURE">
+    <MDI key="INTERLEAVE">BAND</MDI>
+  </Metadata>
+  <Metadata>
+    <MDI key="Band_1">Band 1</MDI>
+  </Metadata>
+  <PAMRasterBand band="1">
+    <Description>Band 1</Description>
+  </PAMRasterBand>
+</PAMDataset>

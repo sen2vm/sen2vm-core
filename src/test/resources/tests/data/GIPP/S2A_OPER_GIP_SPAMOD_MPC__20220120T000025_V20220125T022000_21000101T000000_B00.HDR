@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Earth_Explorer_Header xmlns="http://eop-cfi.esa.int/S2/S2_SCHEMAS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Fixed_Header>
+		<File_Name>S2A_OPER_GIP_SPAMOD_MPC__20220120T000025_V20220125T022000_21000101T000000_B00</File_Name>
+		<File_Description>GIPP_SPACECRAFT_MODEL_PARAMETERS</File_Description>
+		<Notes>GSE Patch</Notes>
+		<Mission>Sentinel-2A</Mission>
+		<File_Class>OPER</File_Class>
+		<File_Type>GIP_SPAMOD</File_Type>
+		<File_Version>0025</File_Version>
+		<Validity_Period>
+                       <Validity_Start>UTC=2022-01-25T02:20:00</Validity_Start>
+                       <Validity_Stop>UTC=2100-01-01T00:00:00</Validity_Stop>
+		</Validity_Period>
+		<Source>
+			<System>MPC_</System>
+			<Creator>IQP</Creator>
+			<Creator_Version>2.0</Creator_Version>
+                        <Creation_Date>UTC=2022-01-20T00:00:25</Creation_Date>
+		</Source>
+	</Fixed_Header>
+	<Variable_Header></Variable_Header>
+</Earth_Explorer_Header>

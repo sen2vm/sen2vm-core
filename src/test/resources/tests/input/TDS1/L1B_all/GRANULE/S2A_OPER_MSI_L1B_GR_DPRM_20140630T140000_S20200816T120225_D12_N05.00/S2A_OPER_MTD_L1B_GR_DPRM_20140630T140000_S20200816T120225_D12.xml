@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<n1:Level-1B_Granule_ID xmlns:n1="https://psd-15.sentinel2.eo.esa.int/PSD/S2_PDI_Level-1B_Granule_Metadata.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://psd-15.sentinel2.eo.esa.int/PSD/S2_PDI_Level-1B_Granule_Metadata.xsd /dpc/app/s2ipf/FORMAT_METADATA_GR_L1B/06.03.00/scripts/../../../schemas/15.00.00/PSD/S2_PDI_Level-1B_Granule_Metadata.xsd">
+
+  <n1:General_Info>
+    <GRANULE_ID metadataLevel="Brief">S2A_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20200816T120225_D12_N05.00</GRANULE_ID>
+    <DETECTOR_ID metadataLevel="Brief">12</DETECTOR_ID>
+    <DATASTRIP_ID metadataLevel="Brief">S2A_OPER_MSI_L1B_DS_DPRM_20140630T140000_S20200816T120220_N05.00</DATASTRIP_ID>
+    <DOWNLINK_PRIORITY metadataLevel="Standard">NOMINAL</DOWNLINK_PRIORITY>
+    <SENSING_TIME metadataLevel="Standard">2020-08-16T12:02:25.994751Z</SENSING_TIME>
+    <Archiving_Info metadataLevel="Expertise">
+      <ARCHIVING_CENTRE>DPRM</ARCHIVING_CENTRE>
+      <ARCHIVING_TIME>2024-08-30T15:33:26.601935Z</ARCHIVING_TIME>
+    </Archiving_Info>
+  </n1:General_Info>
+
+  <n1:Geometric_Info>
+    <Granule_Footprint metadataLevel="Brief">
+      <Granule_Footprint>
+        <Footprint>
+          <EXT_POS_LIST>33.0333087448821 -16.1788806246477 -0.468947351258251 32.8213149270298 -16.2425069867717 0 32.7496651871731 -15.9674215337278 0 32.9615680311772 -15.9031604390586 0 33.0333087448821 -16.1788806246477 -0.468947351258251</EXT_POS_LIST>
+        </Footprint>
+      </Granule_Footprint>
+      <RASTER_CS_TYPE>POINT</RASTER_CS_TYPE>
+      <PIXEL_ORIGIN>1</PIXEL_ORIGIN>
+    </Granule_Footprint>
+    <Granule_Position metadataLevel="Standard">
+      <POSITION>2305</POSITION>
+      <Geometric_Header>
+        <GROUND_CENTER>32.8914087614731 -16.0728190379521 -0.0216671971965496</GROUND_CENTER>
+        <Incidence_Angles>
+          <ZENITH_ANGLE unit="deg">10.8058091082532</ZENITH_ANGLE>
+          <AZIMUTH_ANGLE unit="deg">290.878219173132</AZIMUTH_ANGLE>
+        </Incidence_Angles>
+        <Solar_Angles>
+          <ZENITH_ANGLE unit="deg">24.5544783789394</ZENITH_ANGLE>
+          <AZIMUTH_ANGLE unit="deg">138.32103063533</AZIMUTH_ANGLE>
+        </Solar_Angles>
+      </Geometric_Header>
+    </Granule_Position>
+    <Granule_Dimensions metadataLevel="Standard">
+      <Size resolution="10">
+        <NROWS>2304</NROWS>
+        <NCOLS>2552</NCOLS>
+      </Size>
+      <Size resolution="20">
+        <NROWS>1152</NROWS>
+        <NCOLS>1276</NCOLS>
+      </Size>
+      <Size resolution="60">
+        <NROWS>384</NROWS>
+        <NCOLS>425</NCOLS>
+      </Size>
+    </Granule_Dimensions>
+  </n1:Geometric_Info>
+
+  <n1:Quality_Indicators_Info metadataLevel="Standard">
+    <Image_Content_QI>
+      <CLOUDY_PIXEL_PERCENTAGE>0</CLOUDY_PIXEL_PERCENTAGE>
+      <DEGRADED_MSI_DATA_PERCENTAGE>0</DEGRADED_MSI_DATA_PERCENTAGE>
+    </Image_Content_QI>
+    <Pixel_Level_QI geometry="FULL_RESOLUTION">
+      <MASK_FILENAME bandId="0" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B01_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="1" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B02_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="2" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B03_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="3" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B04_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="4" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B05_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="5" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B06_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="6" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B07_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="7" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B08_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="8" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B8A_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="9" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B09_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="10" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B10_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="11" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B11_MSIL1B</MASK_FILENAME>
+      <MASK_FILENAME bandId="12" detectorId="12" type="MSK_QUALIT">S2A_OPER_MSK_QUALIT_DPRM_20140630T140000_S20200816T120225_D12_B12_MSIL1B</MASK_FILENAME>
+    </Pixel_Level_QI>
+  </n1:Quality_Indicators_Info>
+
+</n1:Level-1B_Granule_ID>

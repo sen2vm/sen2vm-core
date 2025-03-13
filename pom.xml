@@ -19,12 +19,25 @@
         <jaxb.plugin.version>2.5.0</jaxb.plugin.version>
         <!-- cots version -->
         <gdal.version>3.6.2</gdal.version>
-        <sxgeo.version>0.1.13</sxgeo.version>
-		<sxgeo.orekit.version>11.3.2</sxgeo.orekit.version>
-		<sxgeo.rugged.version>4.0.1</sxgeo.rugged.version>
-		<sxgeo.hipparchus.version>2.3</sxgeo.hipparchus.version>
+        <sxgeo.version>0.2.1</sxgeo.version>
+        <sxgeo.orekit-tools.version>1.2</sxgeo.orekit-tools.version>
+        <sxgeo.hipparchus.version>2.3</sxgeo.hipparchus.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.eopf.copernicus.eu/api/v4/projects/67/packages/maven</url>
+        </repository>
+        <repository>
+            <id>gitlab-maven-orekit-tools</id>
+            <url>https://gitlab.eopf.copernicus.eu/api/v4/projects/123/packages/maven</url>
+        </repository>
+        <repository>
+            <id>gitlab-maven-rugged</id>
+            <url>https://gitlab.eopf.copernicus.eu/api/v4/groups/136/-/packages/maven</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -41,6 +54,11 @@
             <groupId>com.github.erosb</groupId>
             <artifactId>everit-json-schema-jdk6</artifactId>
             <version>1.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
@@ -60,28 +78,17 @@
             <groupId>org.sxgeo</groupId>
             <artifactId>sxgeo</artifactId>
             <version>${sxgeo.version}</version>
-            <type>jar</type>
-            <optional>false</optional>
         </dependency>
         <dependency>
-			<groupId>org.hipparchus</groupId>
-			<artifactId>hipparchus-core</artifactId>
-			<version>${sxgeo.hipparchus.version}</version>
-		</dependency>
-        <dependency>
-			<groupId>org.orekit</groupId>
-			<artifactId>rugged</artifactId>
-			<version>${sxgeo.rugged.version}</version>
-			<type>jar</type>
-			<optional>false</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.orekit</groupId>
-			<artifactId>orekit</artifactId>
-			<version>${sxgeo.orekit.version}</version>
-			<type>jar</type>
-			<optional>false</optional>
-		</dependency>
+            <groupId>org.hipparchus</groupId>
+                <artifactId>hipparchus-core</artifactId>
+                <version>${sxgeo.hipparchus.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.orekit</groupId>
+            <artifactId>orekit-tools</artifactId>
+            <version>${sxgeo.orekit-tools.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -128,6 +135,7 @@
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_spacecraft_model_parameters.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_viewing_directions.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/Datastrip/S2_PDI_Level-1B_Datastrip_Metadata.xsd</source>
+                        <source>${basedir}/src/main/resources/xsd/Datastrip/S2_PDI_Level-1B_Granule_Metadata.xsd</source>
                     </sources>
                     <xjbSources>
                         <xjbSource>${basedir}/src/main/resources/binding/jaxb-bindings.xjb</xjbSource>
@@ -179,6 +187,27 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>esa.sen2vm.Sen2VM</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
             </plugin>
         </plugins>
 

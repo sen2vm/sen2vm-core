@@ -1,0 +1,88 @@
+{
+    "type": "object",
+    "properties": {
+        "l1b_product": {
+            "type": "string",
+            "description": "Path to L1B product folder"
+        },
+        "gipp_folder": {
+            "type": "string",
+            "description": "Path to GIPP folder"
+        },
+        "gipp_version_check": {
+            "type": "boolean",
+             "description": "(optional) Check of GIPP version"
+        },
+        "dem": {
+            "type": "string",
+            "description": "Path to DEM folder"
+        },
+        "geoid": {
+            "type": "string",
+            "description": "Path to GEOID folder"
+        },
+        "iers": {
+            "type": "string",
+            "description": "(optional) Path to IERS file"
+        },
+        "pod": {
+            "type": "string",
+            "description": "Path to POD file/folder"
+        },
+        "operation": {
+            "type": "string",
+            "description": "Type of operation available between direct or inverse operation",
+            "enum": ["direct", "inverse"]
+        },
+        "deactivate_available_refining": {
+             "type": "boolean",
+             "description": "(optional) Deactivate the refining, if available in the Datastrip Metadata. Default = false, i.e. the refining is kept. true => refining parameters are ignored"
+         },
+        "export_alt": {
+              "type": "boolean",
+              "description": "(optional) Export altitude in direct location grid"
+          },
+        "steps": {
+            "type": "object",
+            "properties": {
+              "10m_bands": {
+                  "type": "number",
+                  "minimum": 1
+              },
+              "20m_bands": {
+                  "type": "number",
+                  "minimum": 1
+              },
+              "60m_bands": {
+                  "type": "number",
+                  "minimum": 1
+              }
+            }
+        },
+        "inverse_location_additional_info": {
+          "type": "object",
+          "properties": {
+            "ul_x": {
+              "type": "number"
+            },
+            "ul_y": {
+              "type": "number"
+            },
+            "lr_x": {
+              "type": "number"
+            },
+            "lr_y": {
+              "type": "number"
+            },
+            "referential": {
+              "type": "string"
+            },
+            "output_folder": {
+              "type": "string"
+            }
+          },
+          "required":["ul_x", "ul_y", "lr_x", "lr_y", "referential", "output_folder"]
+        }
+    },
+    "required": ["l1b_product", "gipp_folder", "dem", "geoid", "operation", "steps"]
+}

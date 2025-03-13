@@ -1,0 +1,149 @@
+                                                                               
+      **********************************************************************   
+      *                                                                    *   
+      *                   I E R S   B U L L E T I N - A                    *   
+      *                                                                    *   
+      *           Rapid Service/Prediction of Earth Orientation            *   
+      **********************************************************************   
+      24 October 2019                                     Vol. XXXII No. 043   
+      ______________________________________________________________________   
+      GENERAL INFORMATION:                                                     
+         To receive this information electronically, contact:                  
+            ser7@maia.usno.navy.mil or use                                     
+            <http://maia.usno.navy.mil/docrequest.html>                        
+         MJD = Julian Date - 2 400 000.5 days                                  
+         UT2-UT1 = 0.022 sin(2*pi*T) - 0.012 cos(2*pi*T)                       
+                                     - 0.006 sin(4*pi*T) + 0.007 cos(4*pi*T)   
+            where pi = 3.14159265... and T is the date in Besselian years.     
+         TT = TAI + 32.184 seconds                                             
+         DUT1= (UT1-UTC) transmitted with time signals                         
+             =  -0.2 seconds beginning 02 May 2019 at 0000 UTC                 
+         Beginning 1 January 2017:                                             
+            TAI-UTC = 37.000 000 seconds                                       
+     ***********************************************************************
+     *                                                                     *
+     * Notice of Pending Publication Web and FTP Shutdown:                 *
+     * The US Naval Observatory's Rapid Service/Prediction Center web and  *
+     * FTP sites (at maia.usno.navy.mil and toshi.nofs.navy.mil) must      *
+     * undergo modernization and will be offline starting about 20:00 UTC, *
+     * Thursday, 24 October 2019. The expected completion of work and      *
+     * return of service is estimated as 30 April 2020. Please directly    *
+     * contact USNO Public Affairs Officer Geoff Chester at email address  *
+     * geoff.chester@navy.mil or phone number 1-202-762-1438.              *
+     *                                                                     *
+     * This shutdown may also lead to the indefinite cessation of          *
+     * IERS Bulletin A distribution emails. If this occurs, current        *
+     * subscribers to the Bulletin A email distribution list may receive   *
+     * future mailings from a different address (if this service is        *
+     * restored). In the meantime, we will be unable to process email      *
+     * subscription/unsubscription requests.                               *
+     *                                                                     *
+     * Until COB 24 October 2019:                                          *
+     * Note that daily and Bulletin A EOP data can be obtained from        *
+     * the primary Earth Orientation (EO) servers at:                      *
+     *   http://maia.usno.navy.mil   ftp://maia.usno.navy.mil              *
+     *   https://maia.usno.navy.mil                                        *
+     * and from the backup EO server at:                                   *
+     *   http://toshi.nofs.navy.mil  ftp://toshi.nofs.navy.mil             *
+     *   https://toshi.nofs.navy.mil                                       *
+     *                                                                     *
+     * After 24 October 2019, updated EOPs may be available at             *
+     * NASA's Archive of Space Geodesy Data anonymous FTP server at:       *
+     *   ftp://cddis.gsfc.nasa.gov/pub/products/iers                       *
+     * Daily EOP data may be uploaded here at 18:00 UTC, and               *
+     * Bulletin A EOP data should be available by 20:00 UTC.               *
+     * Users should please verify results obtained from this site;         *
+     * integrity of the files are not as assured as would be via HTTPS.    *
+     *                                                                     *
+     * For other download options from CDDIS, such as HTTPS, please refer  *
+     * to the https://cddis.nasa.gov/About/CDDIS_File_Download_FAQ.html    *
+     *                                                                     *
+     * Questions and enquiries about EOPs can be emailed to the            *
+     * following address:                                                  *
+     *     usn.ncr.navobsydc.mbx.eopcp@mail.mil                            *
+     *                                                                     *
+     * Distribution statement A.                                           *
+     *   Approved for public release: distribution unlimited.              *
+     *                                                                     *
+     ***********************************************************************
+
+     ________________________________________________________________________  
+       The contributed observations used in the preparation of this Bulletin   
+       are available at <http://www.usno.navy.mil/USNO/earth-orientation/      
+       eo-info/general/input-data>. The contributed analysis results are based 
+       on data from Very Long Baseline Interferometry (VLBI), Satellite Laser  
+       Ranging (SLR), the Global Positioning System (GPS) satellites, Lunar    
+       Laser Ranging (LLR), and meteorological predictions of variations in    
+       Atmospheric Angular Momentum (AAM).                                     
+     ________________________________________________________________________  
+                                                                               
+      COMBINED EARTH ORIENTATION PARAMETERS:                                   
+                                                                               
+                              IERS Rapid Service                               
+              MJD      x    error     y    error   UT1-UTC   error             
+                       "      "       "      "        s        s               
+   19 10 18  58774 0.17830 .00009 0.29558 .00009 -0.153137 0.000016          
+   19 10 19  58775 0.17674 .00009 0.29449 .00009 -0.153324 0.000012          
+   19 10 20  58776 0.17520 .00009 0.29341 .00009 -0.153418 0.000012          
+   19 10 21  58777 0.17373 .00009 0.29233 .00009 -0.153491 0.000010          
+   19 10 22  58778 0.17247 .00009 0.29128 .00009 -0.153604 0.000010          
+   19 10 23  58779 0.17133 .00009 0.29045 .00009 -0.153817 0.000008          
+   19 10 24  58780 0.17013 .00009 0.28992 .00009 -0.154249 0.000007          
+                                                                               
+      _______________________________________________________________________  
+                                                                               
+      PREDICTIONS:                                                             
+      The following formulas will not reproduce the predictions given below,   
+      but may be used to extend the predictions beyond the end of this table.  
+                                                                               
+      x =  0.1185 + 0.0787 cos A - 0.0863 sin A - 0.0282 cos C + 0.0102 sin C  
+      y =  0.3584 - 0.0789 cos A - 0.0725 sin A + 0.0102 cos C + 0.0282 sin C  
+         UT1-UTC = -0.1547 - 0.00047 (MJD - 58788) - (UT2-UT1)                 
+                                                                               
+      where A = 2*pi*(MJD-58780)/365.25 and C = 2*pi*(MJD-58780)/435.          
+                                                                               
+         TAI-UTC(MJD 58781) = 37.0                                             
+      The accuracy may be estimated from the expressions:                      
+      S x,y = 0.00068 (MJD-58780)**0.80   S t = 0.00025 (MJD-58780)**0.75      
+      Estimated accuracies are:  Predictions     10 d   20 d   30 d   40 d     
+                                 Polar coord's  0.004  0.007  0.010  0.013     
+                                 UT1-UTC        0.0014 0.0024 0.0032 0.0040    
+                                                                               
+                    MJD      x(arcsec)   y(arcsec)   UT1-UTC(sec)                       
+       2020  8 15  59076       0.2393      0.3620     -0.27381         
+       2020  8 16  59077       0.2393      0.3620     -0.27381         
+       2020  8 17  59078       0.2393      0.3620     -0.27381         
+       
+      These predictions are based on all announced leap seconds.               
+                                                                               
+      CELESTIAL POLE OFFSET SERIES:                                            
+                           NEOS Celestial Pole Offset Series                   
+                       MJD      dpsi    error     deps    error                
+                                        (msec. of arc)                         
+                      58758  -116.98    0.31   -9.73    0.11   
+                      58759  -117.04    0.31   -9.70    0.11   
+                      58760  -116.96    0.31   -9.91    0.11   
+                      58761  -116.90    0.13  -10.24    0.13   
+                      58762  -117.04    0.32  -10.39    0.16   
+                      58763  -117.35    0.55  -10.28    0.02   
+                      58764  -117.62    0.55  -10.06    0.02   
+                      58765  -117.79    0.55   -9.90    0.02   
+                                                            
+                     IAU2000A Celestial Pole Offset Series  
+                      MJD      dX     error     dY     error
+                                    (msec. of arc)          
+                      58758   -0.103  0.124    0.107   0.107          
+                      58759   -0.155  0.124    0.109   0.107          
+                      58760   -0.212  0.124    0.109   0.107          
+                      58761   -0.278  0.054    0.106   0.129          
+                      58762   -0.361  0.128    0.098   0.160          
+                      58763   -0.465  0.219    0.081   0.018          
+                      58764   -0.598  0.219    0.055   0.018          
+                      58765   -0.764  0.219    0.018   0.018          
+                                                                               
+    The recommended software to predict celestial pole offsets can be found at 
+    <http://www.usno.navy.mil/USNO/earth-orientation/software/aux/ceppred.f>   
+    and software for the calculation of the dX and dY components with          
+    respect to IAU2000A Nutation/Precession Theory can be found at the         
+    <http://maia.usno.navy.mil/conv2010/conventions.html>                      
+    web site in Chapter 5 Section 5.5 of the IERS Conventions (2010).          

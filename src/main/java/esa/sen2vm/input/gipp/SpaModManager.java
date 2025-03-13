@@ -1,4 +1,4 @@
-package esa.sen2vm;
+package esa.sen2vm.input.gipp;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,16 +16,17 @@ import generated.GS2_SPACECRAFT_MODEL_PARAMETERS.DATA.FOCAL_PLANE_TO_DETECTOR.FO
 import generated.GS2_SPACECRAFT_MODEL_PARAMETERS.DATA.MSI_TO_FOCAL_PLANE;
 
 import _int.esa.gs2.sy._1_0.misc.A_ROTATION_AROUND_THREE_AXIS_AND_SCALE;
+import esa.sen2vm.enums.BandInfo;
+import esa.sen2vm.enums.DetectorInfo;
+import esa.sen2vm.exception.Sen2VMException;
 
 /**
  * Class used to manage SPAMOD GIPP data
  */
-public class SpaModManager {
-
-    /*
-     * Get sen2VM logger
-     */
+public class SpaModManager
+{
     private static final Logger LOGGER = Logger.getLogger(GIPPManager.class.getName());
+    
     protected SpaceCraftModelTransformation pilotingToMsiTransformation = null;
     protected HashMap<String, SpaceCraftModelTransformation> msiToFocalPlaneTransformation = new HashMap<String, SpaceCraftModelTransformation>();
     protected HashMap<String, HashMap<DetectorInfo, SpaceCraftModelTransformation>> focalPlaneToDetectorTransformation = new HashMap<String, HashMap<DetectorInfo, SpaceCraftModelTransformation>> ();
@@ -34,12 +35,18 @@ public class SpaModManager {
     protected static int[] msiToFocalPlaneAngleSigns = {1, 1, 1};
     protected static int[] focalPlaneToDetectorAngleSigns = {1, 1, 1};
 
-    public SpaModManager(GS2_SPACECRAFT_MODEL_PARAMETERS spaModData) throws Sen2VMException {
-        if (spaModData != null) {
-
+    /*
+     * SpaModManager constructor
+     * @throws Sen2VMException
+     */
+    public SpaModManager(GS2_SPACECRAFT_MODEL_PARAMETERS spaModData) throws Sen2VMException
+    {
+        if (spaModData != null)
+        {
             // Get PILOTING_TO_MSI_FRAME rotations
             A_ROTATION_AROUND_THREE_AXIS_AND_SCALE pilotingToMSI = spaModData.getDATA().getPILOTING_TO_MSI_FRAME();
-            if (pilotingToMSI != null) {
+            if (pilotingToMSI != null)
+            {
                 // Get PILOTING_TO_MSI_FRAME transformation
                 pilotingToMsiTransformation =
                         new SpaceCraftModelTransformation(
@@ -67,7 +74,8 @@ public class SpaModManager {
             // Get MSI_TO_FOCAL_PLANE rotations
             MSI_TO_FOCAL_PLANE msiToFocalPlaneElement = spaModData.getDATA().getMSI_TO_FOCAL_PLANE();
             A_ROTATION_AROUND_THREE_AXIS_AND_SCALE rotations = null;
-            if (msiToFocalPlaneElement != null) {
+            if (msiToFocalPlaneElement != null)
+            {
                 // VNIR case
                 rotations = msiToFocalPlaneElement.getMSI_TO_VNIR();
                 SpaceCraftModelTransformation smt = new SpaceCraftModelTransformation(
@@ -119,12 +127,13 @@ public class SpaModManager {
 
             // get FOCAL_PLANE_TO_DETECTOR rotations
             FOCAL_PLANE_TO_DETECTOR fpd = spaModData.getDATA().getFOCAL_PLANE_TO_DETECTOR();
-            if (fpd != null) {
+            if (fpd != null)
+            {
                 // get VNIR transformations
                 HashMap<DetectorInfo, SpaceCraftModelTransformation> vnirTransfoMap = new HashMap<DetectorInfo, SpaceCraftModelTransformation>();
                 List<FOCAL_PLANE_TO_DETECTOR_VNIR> vnirList = fpd.getFOCAL_PLANE_TO_DETECTOR_VNIR();
-                for (FOCAL_PLANE_TO_DETECTOR_VNIR currentRotations : vnirList) {
-
+                for (FOCAL_PLANE_TO_DETECTOR_VNIR currentRotations : vnirList)
+                {
                     String detectorId = currentRotations.getDetector_Id();
                     DetectorInfo detector = DetectorInfo.getDetectorInfoFromName(detectorId);
                     SpaceCraftModelTransformation smt =
@@ -153,8 +162,8 @@ public class SpaModManager {
                 // get SWIR transformations
                 HashMap<DetectorInfo, SpaceCraftModelTransformation> swirTransfoMap = new HashMap<DetectorInfo, SpaceCraftModelTransformation>();
                 List<FOCAL_PLANE_TO_DETECTOR_SWIR> swirList = fpd.getFOCAL_PLANE_TO_DETECTOR_SWIR();
-                for (FOCAL_PLANE_TO_DETECTOR_SWIR currentRotations : swirList) {
-
+                for (FOCAL_PLANE_TO_DETECTOR_SWIR currentRotations : swirList)
+                {
                     String detectorId = currentRotations.getDetector_Id();
                     DetectorInfo detector = DetectorInfo.getDetectorInfoFromName(detectorId);
                     SpaceCraftModelTransformation smt =
@@ -183,20 +192,24 @@ public class SpaModManager {
         }
     }
 
-    public SpaceCraftModelTransformation getPilotingToMsiTransformation() {
+    public SpaceCraftModelTransformation getPilotingToMsiTransformation()
+    {
         return pilotingToMsiTransformation;
     }
 
-    public SpaceCraftModelTransformation getMsiToFocalPlaneTransformation(BandInfo bandInfo) {
+    public SpaceCraftModelTransformation getMsiToFocalPlaneTransformation(BandInfo bandInfo)
+    {
         // Get MSI to focal plane transfo according to focal plane type
         return msiToFocalPlaneTransformation.get(bandInfo.getSpaMod());
     }
 
-    public SpaceCraftModelTransformation getFocalPlaneToDetectorTransformation(BandInfo bandInfo, DetectorInfo detectorInfo) {
+    public SpaceCraftModelTransformation getFocalPlaneToDetectorTransformation(BandInfo bandInfo, DetectorInfo detectorInfo)
+    {
         // Get focal plane to detector transfo according to focal plane type and detector number
         HashMap<DetectorInfo, SpaceCraftModelTransformation> detectorMap = focalPlaneToDetectorTransformation.get(bandInfo.getSpaMod());
         SpaceCraftModelTransformation transfo = null;
-        if (detectorMap != null) {
+        if (detectorMap != null)
+        {
             transfo = detectorMap.get(detectorInfo);
         }
         return transfo;
