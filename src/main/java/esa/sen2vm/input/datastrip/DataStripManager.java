@@ -2,6 +2,7 @@ package esa.sen2vm.input.datastrip;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +40,6 @@ import org.sxgeo.input.datamodels.DataSensingInfos;
 import org.sxgeo.input.datamodels.RefiningInfo;
 import org.sxgeo.input.datamodels.sensor.Sensor;
 
-import esa.sen2vm.Sen2VM;
 import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.exception.Sen2VMException;
@@ -49,6 +49,7 @@ import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_ATTITUDE_DAT
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_AUXILIARY_DATA_INFO_DSL1B;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_EPHEMERIS_DATA_INV.GPS_Points_List.GPS_Point;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IERS_BULLETIN;
+import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.AN_IMAGE_DATA_INFO_DSL1B;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_ACQUISITION_CONFIGURATION.TDI_Configuration_List.TDI_CONFIGURATION;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GENERAL_INFO_DS;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GIPP_LIST;
@@ -73,7 +74,7 @@ public class DataStripManager
     /**
      * Get sen2VM logger
      */
-    private static final Logger LOGGER = Logger.getLogger(Sen2VM.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DataStripManager.class.getName());
 
     /**
      * File path of datastrip file
@@ -105,9 +106,15 @@ public class DataStripManager
     protected List<TimeStampedPVCoordinates> satellitePVList = null;
 
     /**
+     * List of granule positon by Detector in Datatrip (10m)
+     */
+    protected static Map[] positionGranuleByDetector;
+
+    /**
      * Min granule line found in Datastrip (10m)
      */
     protected Map<String, Double> minLinePerSensor = null;
+
     /**
      * Max granule line found in Datastrip (10m)
      */
@@ -191,8 +198,7 @@ public class DataStripManager
             sensorConfiguration = l1B_datastrip.getImage_Data_Info().getSensor_Configuration();
 
             auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
-
-            initOrekitRessources(Sen2VMConstants.OREKIT_DATA_DIR,iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
+            initOrekitRessources(Sen2VMConstants.OREKIT_DATA_DIR, iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
 
             // Test if we need to take refining data into account according to the flag
             if (activateAvailableRefining)
@@ -217,7 +223,7 @@ public class DataStripManager
             // Get quaternions and positions/velocities list from XML file
             computeSatelliteQList();
             computeSatellitePVList(activateAvailableRefining);
-            computeMinMaxLinePerSensor();
+            computePositionGranuleByDetector();
 
             // Instantiate dataSensingInfos that will be used for SimpleLocEngine
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
@@ -230,6 +236,45 @@ public class DataStripManager
             throw new Sen2VMException(e);
         }
     }
+
+    /**
+     * Load granules name/position from datastrip XML into positionGranuleByDetector list at detector indice
+     */
+    private void computePositionGranuleByDetector()
+    {
+        positionGranuleByDetector = new Map[Sen2VMConstants.NB_DETS];
+
+        List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector> det_list = l1B_datastrip.getImage_Data_Info().getGranules_Information().getDetector_List().getDetector();
+        for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector det : det_list)
+        {
+            List<AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule> gr_list = det.getGranule_List().getGranule();
+            Map<String, Integer> granulePosition = new HashMap<>();
+
+            for (AN_IMAGE_DATA_INFO_DSL1B.Granules_Information.Detector_List.Detector.Granule_List.Granule gr : gr_list)
+            {
+                granulePosition.put(gr.getGranuleId(), gr.getPOSITION());
+            }
+            positionGranuleByDetector[Integer.valueOf(det.getDetectorId()) - 1] = granulePosition;
+        }
+
+    }
+
+    /**
+     * Return min and max granule for a band/detector combinaison
+     * @param bandInfo band info
+     * @param detectorInfo detector info
+     * return {min granule name, max granule name}
+     * @throws Sen2VMException
+     */
+    public String[] getMinMaxGranule(BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException
+    {
+        Map granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
+        Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+        Map.Entry<String, Integer> max = Collections.max(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+        String[] minmax = { min.getKey(), max.getKey() };
+        return minmax;
+    }
+
 
     /**
      * Load orekit data and IERS file
@@ -263,7 +308,6 @@ public class DataStripManager
                 XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
                 AbsoluteDate datastripStartDateUTC = new AbsoluteDate(datastripStartDateGregorian.toString(), TimeScalesFactory.getUTC());
                 int year = datastripStartDateUTC.getComponents(TimeScalesFactory.getUTC()).getDate().getYear();
-                System.out.println("year = "+year);
 
                 IERSutils.setLoaders(IERSConventions.IERS_2010,
                                  IERSutils.buildEOPList(
@@ -459,11 +503,11 @@ public class DataStripManager
             }
             // Extract Quaternion values from XML
             AbsoluteDate attitudeDate = new AbsoluteDate(gpsTime.toString(), gps);
-            List<Double> quaternionValues = values.getQUATERNION_VALUES();
-            Double q1 = quaternionValues.get(0);
-            Double q2 = quaternionValues.get(1);
-            Double q3 = quaternionValues.get(2);
-            Double q0 = quaternionValues.get(3);
+            java.util.List<Double> quaternionValues = values.getQUATERNION_VALUES();
+            double q1 = quaternionValues.get(0);
+            double q2 = quaternionValues.get(1);
+            double q3 = quaternionValues.get(2);
+            double q0 = quaternionValues.get(3);
 
             Rotation rotation = new Rotation(q0, q1, q2, q3, true);
             TimeStampedAngularCoordinates pair = new TimeStampedAngularCoordinates(attitudeDate, rotation, Vector3D.ZERO, Vector3D.ZERO);
@@ -677,22 +721,6 @@ public class DataStripManager
         // Polynomial model of refining corrections are computed with that the time centered on this value;
         // i.e. this time is 0 for the polynoms
         return new AbsoluteDate(datastripStartDateUTC, halfDatastripDuration);
-    }
-
-    /**
-     * Compute min and max date line
-     */
-    private void computeMinMaxLinePerSensor()
-    {
-        minLinePerSensor = new HashMap<String, Double>();
-        maxLinePerSensor = new HashMap<String, Double>();
-//        for (DetectorInfo detectorInfo: DetectorInfo.getAllDetectorInfo()) {
-//            for (BandInfo bandInfo: BandInfo.getAllBandInfo()) {
-//                String sensor = bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD();
-//                minLinePerSensor.put(sensor, 1.0);
-//                maxLinePerSensor.put(sensor, 1.0);
-//            }
-//        }
     }
 
     /*

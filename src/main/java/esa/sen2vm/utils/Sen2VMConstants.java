@@ -5,6 +5,9 @@ package esa.sen2vm.utils;
  */
 public class Sen2VMConstants
 {
+    public static final int NB_BANDS = 13;
+    public static final int NB_DETS = 12;
+
     /**
      * For operation purpose
      */
@@ -25,7 +28,7 @@ public class Sen2VMConstants
      * To export altitude in direct location grid (by default the export is done)
      */
     public static final boolean EXPORT_ALT = false;
-    
+
     /**
      * For bandInfo purpose
      */
@@ -33,6 +36,20 @@ public class Sen2VMConstants
     public static final double RESOLUTION_10M_DOUBLE = 10.0;
     public static final int RESOLUTION_20M = 20;
     public static final int RESOLUTION_60M = 60;
+
+    /**
+     * DATA directories
+     */
+    public static final String SAFE_EXTENSION = ".SAFE";
+    public static final String TIFF_EXTENSION = ".tif";
+    public static final String JP2_EXTENSION = ".jp2";
+    public static final String VRT_EXTENSION = ".vrt";
+    public static final String DATASTRIP = "DATASTRIP";
+    public static final String GRANULE = "GRANULE";
+    public static final String GEO_DATA_DS = "GEO_DATA";
+    public static final String GEO_DATA_GR = "GEO_DATA";
+    public static final String QI_DATA = "QI_DATA";
+    public static final String IMG_DATA = "IMG_DATA";
 
     /**
      * For GIPP purpose
@@ -86,14 +103,12 @@ public class Sen2VMConstants
     /**
      * Rugged Manager initialization
      */
-    // Orekit data path
-    public static final String OREKIT_DATA_DIR = "orekit-data";
-    
-    
+    public static final String OREKIT_DATA_DIR = "src/main/resources/orekit-data";
+
     
     // Granule line (for a 10m resolution band)
     public static final double GRANULE_NB_LINE_10_M = 2304.0;
-    // TODO ?? Granule line (for a 60m resolution band) 
+    // Granule line (for a 60m resolution band)
     public static final double GRANULE_NB_LINE_60_M = 384.0;
 
     // The interval is split in 1/4 parts.
@@ -104,4 +119,6 @@ public class Sen2VMConstants
     // Compute margin according to the band pixel size
     public static final double BAND_PIXEL_SIZE = RESOLUTION_10M_DOUBLE;
     public static final double MARGIN = GRANULE_NB_LINE_60_M * RESOLUTION_10M_DOUBLE / BAND_PIXEL_SIZE;
+
+
 }

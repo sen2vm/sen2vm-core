@@ -17,8 +17,11 @@ import esa.sen2vm.utils.Sen2VMConstants;
  * Definition of all command line arguments 
  * @author Guylaine Prat
  */
-public class OptionManager {
-
+public class OptionManager
+{
+    /*******************************
+     * Options using files 
+     *******************************/
     /**
      * Option for the configuration file
      */
@@ -31,6 +34,9 @@ public class OptionManager {
     public static final String OPT_PARAM_LONG = "param";
     public static final String OPT_PARAM_SHORT = "p";
 
+    /*******************************
+     * Options for the configuration 
+     *******************************/
     /**
      * Option for the operation (direct, inverse)
      */
@@ -112,6 +118,22 @@ public class OptionManager {
     public static final String OPT_OUTPUT_FOLDER_LONG = "output_folder";
     public static final String OPT_OUTPUT_FOLDER_SHORT = "o";
 
+    /*******************************
+     * Options for the params 
+     *******************************/
+    /**
+     * Option to process only some detectors 
+     * (optional; no argument = all detectors are processed)
+     */
+    public static final String OPT_DETECTORS_LIST_LONG = "detectors";
+    public static final String OPT_DETECTORS_LIST_SHORT = "d";
+
+    /**
+     * Option to process only some detectors 
+     * (optional; no argument = all detectors are processed)
+     */
+    public static final String OPT_BANDS_LIST_LONG = "bands";
+    public static final String OPT_BANDS_LIST_SHORT = "b";
 
     // If configuration file and (optional) parameter file are present: true
     private static boolean areFiles;
@@ -196,22 +218,22 @@ public class OptionManager {
             // Compulsory arguments
             // --------------------
             Option operationOption = new Option(OPT_OPERATION_SHORT, OPT_OPERATION_LONG, true, 
-                                               "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Type of operation available between direct or inverse operation [\"direct\", \"inverse\"]");
+                                               "!!! MANDATORY !!!: Type of operation available between direct or inverse operation [\"direct\", \"inverse\"]");
             operationOption.setRequired(true);            
 
-            Option l1bOption = new Option(OPT_L1B_SHORT, OPT_L1B_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Path to L1B product folder");
+            Option l1bOption = new Option(OPT_L1B_SHORT, OPT_L1B_LONG, true, "!!! MANDATORY !!!: Path to L1B product folder");
             l1bOption.setRequired(true);
 
-            Option gippOption = new Option(OPT_GIPP_SHORT, OPT_GIPP_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Path to GIPP folder");
+            Option gippOption = new Option(OPT_GIPP_SHORT, OPT_GIPP_LONG, true, "!!! MANDATORY !!!: Path to GIPP folder");
             gippOption.setRequired(true);
 
-            Option demOption = new Option(OPT_DEM_SHORT, OPT_DEM_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Path to DEM folder");
+            Option demOption = new Option(OPT_DEM_SHORT, OPT_DEM_LONG, true, "!!! MANDATORY !!!: Path to DEM folder");
             demOption.setRequired(true);
 
-            Option geoidOption = new Option(OPT_GEOID_SHORT, OPT_GEOID_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Path to GEOID file");
+            Option geoidOption = new Option(OPT_GEOID_SHORT, OPT_GEOID_LONG, true, "!!! MANDATORY !!!: Path to GEOID file");
             geoidOption.setRequired(true);
            
-            Option steps = new Option(OPT_STEP_SHORT, OPT_STEP_LONG, true, "/!\\/!\\/!\\ MANDATORY /!\\/!\\/!\\: Steps (pixels) for bands 10, 20 and 60m \n"
+            Option steps = new Option(OPT_STEP_SHORT, OPT_STEP_LONG, true, "!!! MANDATORY !!!: Steps (pixels) for bands 10, 20 and 60m \n"
                                         + "(separated with whitespace, respect the order)");
             steps.setType(Float.class); // TODO  does not seem to work: read as array of String 
             steps.setArgs(3);
@@ -237,7 +259,7 @@ public class OptionManager {
 
             Option exportAltOption = new Option(OPT_EXPORT_ALT_SHORT, OPT_EXPORT_ALT_LONG, false, 
                                                "(optional) Export altitude in direct location grid;\n"
-                                                  + "if present= \"true\" => Refining is deactivated, if not= \"false\" => refining is kept.");
+                                                  + "if present= \"true\", if not= \"false\".");
             exportAltOption.setRequired(false);
 
             // For inverse location: the following options are compulsory
@@ -256,7 +278,19 @@ public class OptionManager {
             
             Option outputFolderOption = new Option(OPT_OUTPUT_FOLDER_SHORT, OPT_OUTPUT_FOLDER_LONG, true, "(Mandatory for inverse loc) output folder");
             outputFolderOption.setRequired(false);
-              
+     
+            // params arguments
+            // ------------------
+            Option detectors = new Option(OPT_DETECTORS_LIST_SHORT, OPT_DETECTORS_LIST_LONG, true, "(optional) List of detectors to process separated by spaces, example: 01 05 06 10 11");
+            detectors.setType(Float.class);
+            detectors.setArgs(Option.UNLIMITED_VALUES);
+            detectors.setRequired(false);
+
+            Option bands = new Option(OPT_BANDS_LIST_SHORT, OPT_BANDS_LIST_LONG, true, "(optional) List of bands to process separated by spaces, example: B01 B08 B8A B10 B11");
+            bands.setType(Float.class);
+            bands.setArgs(Option.UNLIMITED_VALUES);
+            bands.setRequired(false);
+
             // Add the compulsory arguments
             optionsNoFile.addOption(operationOption);
             optionsNoFile.addOption(l1bOption);
@@ -277,6 +311,10 @@ public class OptionManager {
             optionsNoFile.addOption(lryOption);
             optionsNoFile.addOption(referentialOption);
             optionsNoFile.addOption(outputFolderOption);
+
+            // Add the params arguments
+            optionsNoFile.addOption(detectors);
+            optionsNoFile.addOption(bands);
 
             try
             {

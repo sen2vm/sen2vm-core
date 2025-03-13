@@ -25,7 +25,6 @@ public class InputFileManager
         boolean correct_schema = false;
         try (InputStream jsonStream = new FileInputStream(filepath))
         {
-
             JSONObject jsonSchema = new JSONObject(new JSONTokener(schemaStream));
             Schema schema = SchemaLoader.load(jsonSchema);
 
