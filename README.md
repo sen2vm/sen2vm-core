@@ -25,7 +25,7 @@ It starts by the command line which will be the entry point for user or for the 
 Inside `sen2vm-core` folder, run the next commands :
 ```
 mvn clean install
-java -jar target/sen2vm-core-0.0.1-SNAPSHOT.jar -c [configuration_filepath] [-p [parameters_filepath]]
+java -jar target/sen2vm-core-<NN.NN.NN>-SNAPSHOT.jar -c [configuration_filepath] [-p [parameters_filepath]]
 ```
 
 Where:
@@ -54,10 +54,11 @@ Each parameter description can be found in the table below. More information abo
 | gipp_check  | boolean  | Optional      | If true(default), check of GIPP version activated (see GIPP section §<mark>**XXX**</mark>)|
 |dem          | string   | **Mandatory** | Path to the FOLDER containing a DEM in the right format (cf <mark>**XXX**</mark>)|
 |geoid        | string   | **Mandatory** | Path to the FOLDER containing a GEOID in the right format (cf <mark>**XXX**</mark>)|
-| <mark>pod</mark>     |<mark>string</mark>| <mark>Optional</mark>  |<mark>Path to the POD FILE in the right format (cf <mark>**XXX**</mark>)</mark>|
 | iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf <mark>**XXX**</mark>)|
+| <mark>pod</mark>     |<mark>string</mark>| <mark>Optional</mark>  |<mark>Path to the POD FILE in the right format (cf <mark>**XXX**</mark>)</mark>|
 |operation    | string   | **Mandatory** | Possibilities:<ul><li>“direct”: to configure Sen2VM to compute direct location grids</li><li>“inverse”: to configure Sen2VM to compute inverse location grids</li></ul>|
 | deactivate_available_refining| boolean  | Optional      | If false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf product description in §<mark>**XXX**</mark>|
+| export_alt   | boolean  | Optional      | If false (default), direct locations grids will contain only 2 bands (<mark>**Lat/Long**</mark>), if true, a third band containing the altitude will be exported (but output grids will be bigger in size) cf product description in §<mark>**XXX**</mark>|
 | steps       | float    | **Mandatory** | <ul><li>One per resolution: “10m_bands”, “20m_bands” & “60m_bands”</li><li>Accept only floating numbers (NNNN.DDD)</li><li>Unit in pixel</li></ul>|
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**| See dedicated table below|
 
@@ -75,10 +76,11 @@ The field “inverse_location_additional_info” is not required and will be ign
 
 #### 1.2.1 L1B Product
 > [!NOTE]
-> L1B products can be downloaded at <mark>**XXX**</mark>
+> L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). <mark>**Special access from L1B products might be required and asked directly on the plateform**</mark>
 
 > [!IMPORTANT]
 > The expected format is the SAFE format, i.e. a folder structured as illustrated in <mark>**TODO**</mark>
+
 
 Refining information can be found in the datastrip Metadata. If refined, the model of the satellite shall be modified accordingly. Information is stored in the filed “Level-1B_DataStrip_ID/Image_Data_Info//Geometric_Info/Refined_Corrections_List/Refined_Corrections/MSI_State”. They are present only if the flag “Image_Refining” is set at “REFINED” and absent if set at “NOT_REFINED”.
 ![Refining information inside Datastrip metadata](/assets/images/README_RefiningInformationInsideDatastripMetadata.png "Refining information inside Datastrip metadata.")
@@ -138,7 +140,7 @@ Hence an IERS bulletin can be provided in input for user (as optional).
 
 <mark>**TODO illustration "IERS information in L1B Datastrip Medata**</mark>
 
-Format of the IERS bulletin that can be provided is [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html) 
+Format of the IERS bulletin that can be provided is [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
 
 #### 1.2.5 <mark>POD</mark>
 <mark>**DESCOPED**</mark>
@@ -282,5 +284,3 @@ Output will be named:
 - [x] Test done
 - [ ] Test Not Done
 - [ ] Final Issue :tada:
-
-
