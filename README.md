@@ -22,7 +22,10 @@ It starts by the command line which will be the entry point for user or for the 
 
 ### 1.1 How to run sen2vm-core
 
-Inside `sen2vm-core` folder, run the next commands :
+> [!NOTE]
+> To install dependencies, please refer to [https://github.com/sen2vm/sen2vm-build-env/tree/main](https://github.com/sen2vm/sen2vm-build-env/tree/main)
+
+Then, inside `sen2vm-core` folder, run the next commands:
 ```
 mvn clean install
 java -jar target/sen2vm-core-<NN.NN.NN>-SNAPSHOT.jar -c [configuration_filepath] [-p [parameters_filepath]]
