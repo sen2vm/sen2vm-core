@@ -14,3 +14,6 @@ jobs:
       run: mvn -B -U -f pom.xml install
     - name: Artifact deployment
       run: mvn -B -U -f pom.xml deploy -Dmaven.repository.target=${{ github.repository }}
+      env:
+        MAVEN_USERNAME: ${{ secrets.actor }}
+        MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
