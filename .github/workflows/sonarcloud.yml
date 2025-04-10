@@ -38,11 +38,12 @@ on:
 permissions:
   pull-requests: read # allows SonarCloud to decorate PRs with analysis results
 
+env:
+  SONAR_TOKEN_DEFINED: ${{ secrets.SONAR_TOKEN != '' }}
+
 jobs:
   Analysis:
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    if: ${{ env.SONAR_TOKEN != '' }}
+    if: ${{ env.SONAR_TOKEN_DEFINED }}
     runs-on: ubuntu-latest
     steps:
       - name: Analyze with SonarCloud
