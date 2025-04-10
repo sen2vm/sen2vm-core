@@ -2,10 +2,6 @@ name: Java CI with Maven
 
 on: [ push ]
 
-env:
-  MAVEN_USERNAME: ${{ secrets.actor }}
-  MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   build:
     name: Build
@@ -13,12 +9,9 @@ jobs:
     container:
       image: ghcr.io/sen2vm/sen2vm-build-env:0.1.0
     steps:
-    - uses: actions/checkout@v4
-    - name: Build with Maven
-      run: mvn -B -U -f pom.xml install
-    - name: maven-settings-xml-action
-      uses: whelk-io/maven-settings-xml-action@9dc09b23833fa9aa7f27b63db287951856f3433d # v22
-      with:
-        servers: '[{ "id": "github", "username": "$MAVEN_USERNAME", "password": "$MAVEN_PASSWORD" }]'
-    - name: Artifact deployment
-      run: mvn -B -U -f pom.xml deploy -Dmaven.repository.target=${{ github.repository }}
+      - uses: actions/checkout@v4
+      - name: Build and deploy
+        run: mvn -B -U -f pom.xml -s .CI/maven-settings.xml deploy -Dmaven.repository.target=${{ github.repository }}
+        env:
+          MAVEN_USERNAME: ${{ secrets.actor }}
+          MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
