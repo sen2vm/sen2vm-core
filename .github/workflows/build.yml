@@ -1,0 +1,14 @@
+name: Java CI with Maven
+
+on: [ push ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sen2vm/sen2vm-build-env:sha256-6961244f8763e9356add97e553302a8929b2765160fd51c6635ee707bfa1e268.sig
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build with Maven
+      run: mvn -B -U -f pom.xml install
