@@ -41,7 +41,7 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
-    if: ${{ secrets.SONAR_TOKEN }} != ''
+    if: ${{ secrets.SONAR_TOKEN != '' }}
     steps:
       - name: Analyze with SonarCloud
         # You can pin the exact commit or the version.
