@@ -367,7 +367,7 @@ public class Configuration extends InputFileManager
      */
     public float getStepFromBandInfo(BandInfo bandInfo)
     {
-        float step ;
+        float step;
         switch((int) bandInfo.getPixelHeight())
         {
             case Sen2VMConstants.RESOLUTION_10M:

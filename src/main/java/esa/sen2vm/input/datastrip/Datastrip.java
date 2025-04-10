@@ -94,7 +94,7 @@ public class Datastrip
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         geo_data.mkdir();
 
-        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + Sen2VMConstants.VRT_EXTENSION ;
+        String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + Sen2VMConstants.VRT_EXTENSION;
         String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + vrt).getPath();
 
