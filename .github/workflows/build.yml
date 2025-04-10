@@ -12,3 +12,5 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build with Maven
       run: mvn -B -U -f pom.xml install
+    - name: Artifact deployment
+      run: mvn -B -U -f pom.xml deploy -Dmaven.repository.target=${{ github.repository }}
