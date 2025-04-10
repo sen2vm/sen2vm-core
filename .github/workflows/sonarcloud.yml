@@ -43,10 +43,10 @@ env:
 
 jobs:
   Analysis:
-    if: env.SONAR_TOKEN_DEFINED == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Analyze with SonarCloud
+        if: env.SONAR_TOKEN_DEFINED == 'true'
         # You can pin the exact commit or the version.
         # uses: SonarSource/sonarcloud-github-action@v2.2.0
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
