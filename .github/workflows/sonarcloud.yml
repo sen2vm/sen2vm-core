@@ -43,7 +43,7 @@ env:
 
 jobs:
   Analysis:
-    if: ${{ env.SONAR_TOKEN_DEFINED }}
+    if: env.SONAR_TOKEN_DEFINED == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Analyze with SonarCloud
