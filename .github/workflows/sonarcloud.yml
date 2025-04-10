@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    if: env.SONAR_TOKEN != ''
+    if: $SONAR_TOKEN != ''
     steps:
       - name: Analyze with SonarCloud
         # You can pin the exact commit or the version.
