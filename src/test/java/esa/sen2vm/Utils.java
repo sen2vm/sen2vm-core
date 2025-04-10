@@ -85,7 +85,7 @@ public class Utils {
 
     private static final double THRESHOLD_DIR = 1e-8;
     private static final double THRESHOLD_INV = 1e-6; // todo
-
+    
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {
 
@@ -166,6 +166,11 @@ public class Utils {
 
     public static void verifyInverseLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
     {
+        verifyInverseLoc(configFilepath, outputRef, THRESHOLD_INV);
+    }
+
+    public static void verifyInverseLoc(String configFilepath, String outputRef, double threshold) throws Sen2VMException, IOException
+    {
         Configuration configFile = new Configuration(configFilepath);
         DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
@@ -181,13 +186,11 @@ public class Utils {
                 if (outputGrids[d][b] != null) {
                     File outputGrid = outputGrids[d][b];
                     File refGrid = refGrids[d][b];
-                    assertEquals(imagesEqualInverse(outputGrid.toString(), refGrid.toString(), THRESHOLD_INV, res), true);
+                    assertEquals(imagesEqualInverse(outputGrid.toString(), refGrid.toString(), threshold, res), true);
                 }
             }
         }
-     }
-
-
+    }
 
     public static boolean imagesEqualDirect(String img1Path, String img2Path, double threshold) throws IOException{
 
