@@ -1,10 +1,12 @@
 # Project sen2vm-core
-Sen2VM standalone tool that will also be called by Sen2VM SNAP Plugin
+The sen2vm core is a standalone tool designed to generate geolocation grids that will be included in the Level-1B (L1B) product. Its primary function is to create direct location grids, mapping the L1B product in sensor geometry down to the ground. Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
+
+Please note that Sen2VM exist implemented as a SNAP plugin, which calls the Sen2VM standalone tool during execution.
 
 This documentation is split into 3 parts:
-* Expected inputs description and format + how to run Sen2VM: §[Inputs](#1-inputs)
-* Outputs description: §[Outputs](#2-outputs)
-* Validation description (tests and test data used): §[Validation](#3-validation)
+* Description and format of expected inputs, along with instructions for running Sen2VM: §[Inputs](#1-inputs)
+* Details on generated outputs: §[Outputs](#2-outputs)
+* Validation process, including test procedures and data used: §[Validation](#3-validation)
 
 ## 1. Inputs
 Inputs required by Sen2VM are:
