@@ -16,7 +16,12 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           TAG_NAME=${GITHUB_REF##*/}
-          if [[ "$TAG_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          if [[ "$TAG_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] ; then
+            PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+            if [[ "$TAG_NAME" != "$PROJECT_VERSION" ]] ; then
+                echo "ERROR: the tag name ($TAG_NAME) doesn't match the project version ($PROJECT_VERSION) stated in the pom.xml file"
+                exit 1
+            fi
             mvn -B -U -f pom.xml \
                 -s .CI/maven-settings.xml \
                 deploy -DskipTests=true \
