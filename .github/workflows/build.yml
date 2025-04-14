@@ -2,29 +2,33 @@ name: Java CI with Maven
 
 on: [ push ]
 
+permissions:
+      packages: write
+
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/sen2vm/sen2vm-build-env:0.1.0
+    env:
+      MAVEN_CLI_OPTS: "-s .CI/maven-settings.xml --file pom.xml --batch-mode --update-snapshots"
     steps:
       - uses: actions/checkout@v4
       - name: Build
-        run: mvn -B -U -f pom.xml install
+        run: mvn $MAVEN_CLI_OPTS install
       - name: Deploy
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           TAG_NAME=${GITHUB_REF##*/}
           if [[ "$TAG_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] ; then
-            PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+            PROJECT_VERSION=$(mvn $MAVEN_CLI_OPTS help:evaluate -Dexpression=project.version -q -DforceStdout)
             if [[ "$TAG_NAME" != "$PROJECT_VERSION" ]] ; then
                 echo "ERROR: the tag name ($TAG_NAME) doesn't match the project version ($PROJECT_VERSION) stated in the pom.xml file"
                 exit 1
             fi
-            mvn -B -U -f pom.xml \
-                -s .CI/maven-settings.xml \
-                deploy -DskipTests=true \
+            mvn $MAVEN_CLI_OPTS deploy \
+                -DskipTests=true \
                 -Dmaven.repository.target=${{ github.repository }}
           else
             echo "Tag '$TAG_NAME' does not follow SemVer format. No artifact released."
