@@ -22,7 +22,8 @@ import esa.sen2vm.exception.Sen2VMException;
 public class Sen2VMDirectTest
 {
 
-    String configTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct.json";
+    String configTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct_DEM.json";
+    String configCopernicusDEMTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct_COPERNICUS_DEM.json";
     String paramTmp = "src/test/resources/params_base.json";
     String refDir = "src/test/resources/tests/ref";
 
@@ -65,6 +66,30 @@ public class Sen2VMDirectTest
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Sen2VMException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testDirectLocCopernicusDEM()
+    {
+        String[] detectors = new String[]{"01"};
+        String[] bands = new String[]{"B01"};
+        int step = 6000;
+        try
+        {
+            String nameTest = "testDirectLoc";
+            String outputDir = Config.createTestDir(nameTest, "direct");
+            String config = Config.config(configCopernicusDEMTmpDirect, outputDir, step, "direct", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
