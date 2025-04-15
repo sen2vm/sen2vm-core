@@ -10,11 +10,11 @@ This documentation is split into 3 parts:
 
 ## 1. Inputs
 Inputs required by Sen2VM are:
-* Parts of the L1B Product,
+* L1B Product,
 * Some GIPP files (parameters file used in operational production),
-* DEM,
-* GEOID,
-* IERS,
+* Digital Elevation Model (DEM),
+* GEOID model to measure precise surface elevations,
+* IERS bulletin that provides data and standards related to Earth rotation and reference frames,
 * Attitude data,
 * Additional information for configuration.
 
@@ -24,8 +24,7 @@ It starts by the command line which will be the entry point for user or for the 
 
 ### 1.1 How to run sen2vm-core
 
-> [!NOTE]
-> To install dependencies, please refer to [https://github.com/sen2vm/sen2vm-build-env/tree/main](https://github.com/sen2vm/sen2vm-build-env/tree/main)
+Before running sen2vm-core, make sure to install the required dependencies. To do so, please refer to [https://github.com/sen2vm/sen2vm-build-env/tree/main](https://github.com/sen2vm/sen2vm-build-env/tree/main)
 
 Then, inside `sen2vm-core` folder, run the next commands:
 ```
@@ -35,8 +34,8 @@ java -jar target/sen2vm-core-<NN.NN.NN>-SNAPSHOT.jar -c [configuration_filepath]
 
 Where:
 * <NN.NN.NN> is the version number of Sen2VM launched,
-* configuration_filepath: **Mandatory**. configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[1.2 Configuration file](#12-configuration-file) for further information),
-* parameters_filepath: **Optional**. File to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §XXX for further information).
+* configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[1.2 Configuration file](#12-configuration-file) for further information). Please note that this input is **Mandatory**. 
+* parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §XXX for further information).This input is **Optional**.
 
 Example from current repository:
 ```
