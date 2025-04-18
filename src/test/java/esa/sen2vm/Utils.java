@@ -85,7 +85,7 @@ public class Utils {
 
     private static final double THRESHOLD_DIR = 1e-8;
     private static final double THRESHOLD_INV = 1e-2; // todo
-    protected Double noDataRasterValue = -32768.0; // todo
+    protected Double noDataRasterValue = -32768.0;
 
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {

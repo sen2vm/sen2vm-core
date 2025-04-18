@@ -66,7 +66,7 @@ public class InverseLocGrid
         log = log + "(" + String.valueOf(this.ul.getLongitude()) + ", " + String.valueOf(this.ul.getLatitude()) + ")";
         LOGGER.info(log);
 
-        this.gridY = grid_1D(ul_y + stepY / 2, lr_y - ul_y, stepY);
+        this.gridY = grid_1D(ul_y + stepY / 2, lr_y - ul_y, stepY); // start to the pixel center
         this.gridX = grid_1D(ul_x + stepX / 2, lr_x - ul_x, stepX);
         // LOGGER.info("Grid Pixel: " + this.gridX);
         // LOGGER.info("Grid Line: " + this.gridY);
