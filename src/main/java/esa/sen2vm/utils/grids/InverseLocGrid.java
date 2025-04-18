@@ -66,8 +66,8 @@ public class InverseLocGrid
         log = log + "(" + String.valueOf(this.ul.getLongitude()) + ", " + String.valueOf(this.ul.getLatitude()) + ")";
         LOGGER.info(log);
 
-        this.gridY = grid_1D(ul_y, lr_y - ul_y, stepY);
-        this.gridX = grid_1D(ul_x, lr_x - ul_x, stepX);
+        this.gridY = grid_1D(ul_y + stepY / 2, lr_y - ul_y, stepY);
+        this.gridX = grid_1D(ul_x + stepX / 2, lr_x - ul_x, stepX);
         // LOGGER.info("Grid Pixel: " + this.gridX);
         // LOGGER.info("Grid Line: " + this.gridY);
     }
@@ -121,7 +121,7 @@ public class InverseLocGrid
 
      /**
      * Transform [[row0, col0], [row1, col1]..] to 3D grid before tiff saving
-     * @return grid [[[row00, row01..], [row10, row11..] ..],[[col00, col01...], [col10, col11...], ...]
+     * @return grid [[[col00, col01...], [col10, col11...], [[row00, row01..], [row10, row11..] ..]]
      */
      public double[][][] get3Dgrid(double[][] gridList, float pixelOffest, float lineOffest)
      {
@@ -133,8 +133,14 @@ public class InverseLocGrid
         {
             for (int c = 0; c < nbCols; c ++)
             {
-                grid[0][l][c] = gridList[l*nbCols + c][0] + lineOffest;
-                grid[1][l][c] = gridList[l*nbCols + c][1] + pixelOffest;
+                grid[0][l][c] = gridList[l*nbCols + c][1] + pixelOffest;
+                grid[1][l][c] = gridList[l*nbCols + c][0] + lineOffest;
+                if (Double.isNaN(grid[0][l][c])) {
+                    grid[0][l][c] = -32768.0;
+                }
+                if (Double.isNaN(grid[1][l][c])) {
+                    grid[1][l][c] = -32768.0;
+                }
 
             }
         }

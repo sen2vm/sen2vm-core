@@ -228,7 +228,7 @@ public class Sen2VM
             //ds.checkNoVRT(detectors, bands);
 
             // GIPP
-            Float georefConventionOffsetPixel = -0.5f;
+            Float georefConventionOffsetPixel = +0.5f;
             Float georefConventionOffsetLine = +0.5f;
 
             OutputFileManager outputFileManager = new OutputFileManager();
@@ -273,7 +273,7 @@ public class Sen2VM
                         // Get Full Sensor Grid
                         DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffsetLine, georefConventionOffsetPixel,
                             step, startLine, startPixel, sizeLine, sizePixel);
-                        double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2, step/2);
+                        double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2 - georefConventionOffsetPixel, step/2 + georefConventionOffsetLine);
 
                         // Direct Loc
                         double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
