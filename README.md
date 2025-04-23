@@ -43,19 +43,18 @@ java -jar target/sen2vm-core-0.0.1-SNAPSHOT.jar -c src/test/resources/configurat
 ```
 
 ### 1.2 Configuration file
-The configuration file will contain all information about the product, the aux data and the operation to be performed.
-Its format is  [JSON format](https://en.wikipedia.org/wiki/JSON)
-An example is available at: https://github.com/sen2vm/sen2vm-core/blob/main/src/test/resources/configuration_example.json
+The configuration file will contain all information about the product, the auxiliarry data and the operations to be performed.
+It  is a file in  [JSON format](https://en.wikipedia.org/wiki/JSON) and an example is available at: https://github.com/sen2vm/sen2vm-core/blob/main/src/test/resources/configuration_example.json
 
 ![Configuration file example](/assets/images/README_ConfigurationFileExample.png "Configuration file example.")
 
-Each parameter description can be found in the table below. More information about them are available in the hereafter subsections, quoted in the table.
+Each parameter description can be found in the table below:
 
 | Name        | Type     | Required      | Description   |
 | ----------- | :------: | :-----------: | :-----------: |
 | l1b_product | string   | **Mandatory** | Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in §<mark>**XXX**</mark>, including DATASTRIP + GRANULE)|
 | gipp_folder | string   | **Mandatory** | Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to §<mark>**XXX**</mark>.|
-| gipp_check  | boolean  | Optional      | If true(default), check of GIPP version activated (see GIPP section §<mark>**XXX**</mark>)|
+| gipp_check  | boolean  | Optional      | If true (default), check of GIPP version activated (see GIPP section §<mark>**XXX**</mark>)|
 |dem          | string   | **Mandatory** | Path to the FOLDER containing a DEM in the right format (cf <mark>**XXX**</mark>)|
 |geoid        | string   | **Mandatory** | Path to the FOLDER containing a GEOID in the right format (cf <mark>**XXX**</mark>)|
 | iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf <mark>**XXX**</mark>)|
@@ -80,7 +79,7 @@ The field “inverse_location_additional_info” is not required and will be ign
 
 #### 1.2.1 L1B Product
 > [!NOTE]
-> L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). <mark>**Special access from L1B products might be required and asked directly on the plateform**</mark>
+> L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). Please note that special access for L1B products might be required by submiting  a request via the FAQ section.
 
 > [!IMPORTANT]
 > The expected format is the SAFE format, i.e. a folder structured as illustrated in <mark>**TODO**</mark>
