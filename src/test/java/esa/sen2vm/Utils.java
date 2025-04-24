@@ -84,7 +84,8 @@ public class Utils {
     }
 
     private static final double THRESHOLD_DIR = 1e-8;
-    private static final double THRESHOLD_INV = 1e-6; // todo
+    private static final double THRESHOLD_INV = 1e-2; // todo
+    protected Double noDataRasterValue = -32768.0; // todo
 
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {
@@ -166,6 +167,7 @@ public class Utils {
 
     public static void verifyInverseLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
     {
+
         Configuration configFile = new Configuration(configFilepath);
         DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
@@ -226,10 +228,18 @@ public class Utils {
         return false;
     }
 
+     public static boolean myIsNan(double value){
+        if ((value == -32768.0) || (Double.isNaN(value))) {
+            return true;
+        }
+        return false;
+     }
+
      public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, Float res) throws IOException{
 
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
+
         if (ds1.GetRasterCount() == ds2.GetRasterCount() && ds1.getRasterXSize() == ds2.getRasterXSize() && ds1.getRasterYSize() == ds2.getRasterYSize()) {
 
             Band ds1b1 = ds1.GetRasterBand(1);
@@ -252,7 +262,7 @@ public class Utils {
                 for(int c = 0; c < ds1.getRasterXSize(); c++) {
 
                     // nan in one grid and value in other grid case
-                    if (!(Double.isNaN(data1b1[c]) == Double.isNaN(data2b1[c])))
+                    if (!(myIsNan(data1b1[c]) == myIsNan(data2b1[c])))
                     {
                         return false;
                     }
