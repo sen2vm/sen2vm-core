@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.gdal.osr.CoordinateTransformation;
 import org.gdal.osr.SpatialReference;
 import java.text.DecimalFormat;
+import esa.sen2vm.utils.Sen2VMConstants;
 
 import java.util.logging.Logger;
 
@@ -136,10 +137,10 @@ public class InverseLocGrid
                 grid[0][l][c] = gridList[l*nbCols + c][1] + pixelOffest;
                 grid[1][l][c] = gridList[l*nbCols + c][0] + lineOffest;
                 if (Double.isNaN(grid[0][l][c])) {
-                    grid[0][l][c] = -32768.0;
+                    grid[0][l][c] = Sen2VMConstants.noDataRasterValue;
                 }
                 if (Double.isNaN(grid[1][l][c])) {
-                    grid[1][l][c] = -32768.0;
+                    grid[1][l][c] = Sen2VMConstants.noDataRasterValue;
                 }
 
             }

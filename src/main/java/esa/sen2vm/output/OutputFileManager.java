@@ -23,7 +23,6 @@ public class OutputFileManager
     private static final Logger LOGGER = Logger.getLogger(OutputFileManager.class.getName());
     protected Dataset dataset = null;
     protected Driver driver = null;
-    protected Double noDataRasterValue = -32768.0;
 
     /**
      * Constructor
@@ -94,7 +93,7 @@ public class OutputFileManager
         {
             Band band = ds.GetRasterBand(b+1);
             fileInfo.setXBand(band);
-            band.SetNoDataValue(noDataRasterValue);
+            band.SetNoDataValue(Sen2VMConstants.noDataRasterValue);
             bands.add(band);
         }
 

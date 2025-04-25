@@ -7,13 +7,14 @@ public class Sen2VMConstants
 {
     public static final int NB_BANDS = 13;
     public static final int NB_DETS = 12;
+    public static final Double noDataRasterValue = -32768.0;
 
     /**
      * For operation purpose
      */
     public static final String DIRECT = "DIRECT";
     public static final String INVERSE = "INVERSE";
-    
+
     /**
      * To check the GIPP version (by default the GIPP version is checked)
      */

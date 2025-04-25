@@ -84,8 +84,8 @@ public class Utils {
     }
 
     private static final double THRESHOLD_DIR = 1e-8;
-    private static final double THRESHOLD_INV = 1e-2; // todo
-    protected Double noDataRasterValue = -32768.0;
+    private static final double THRESHOLD_INV = 1e-6;
+
 
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {
@@ -229,7 +229,7 @@ public class Utils {
     }
 
      public static boolean myIsNan(double value){
-        if ((value == -32768.0) || (Double.isNaN(value))) {
+        if ((value == Sen2VMConstants.noDataRasterValue) || (Double.isNaN(value))) {
             return true;
         }
         return false;
