@@ -228,8 +228,8 @@ public class Sen2VM
             //ds.checkNoVRT(detectors, bands);
 
             // GIPP
-            Float georefConventionOffsetPixel = +0.5f;
-            Float georefConventionOffsetLine = +0.5f;
+            float georefConventionOffsetPixel = +0.5f;
+            float georefConventionOffsetLine = +0.5f;
 
             OutputFileManager outputFileManager = new OutputFileManager();
 
