@@ -39,25 +39,16 @@ public class InverseLocGrid
      * @param epsg reference
      * @param step in epsg referencial
      */
-    public InverseLocGrid(float ul_x, float ul_y, float lr_x, float lr_y,
-                         String epsg, float step)
+    public InverseLocGrid(float ulX, float ulY, float lrX, float lrY,
+                         String epsg, float stepX, float stepY)
     {
         this.epsg = Integer.valueOf(epsg.substring(5));
-        this.ul = new Coordinates(ul_y, ul_x, this.epsg);
+        this.ul = new Coordinates(ulY, ulX, this.epsg);
         this.ul.transform();
-        this.lr = new Coordinates(lr_y, lr_x, this.epsg);
+        this.lr = new Coordinates(lrY, lrX, this.epsg);
         this.lr.transform();
-        stepY = step;
-        stepX = step;
-
-        if (ul_y > lr_y)
-        {
-            stepY = -step;
-        }
-        if (ul_x > lr_x)
-        {
-            stepX = -step;
-        }
+        this.stepY = stepX;
+        this.stepX = stepY;
 
         LOGGER.info("# Grid information");
         String log = "Step: (" + String.valueOf(this.stepX) + ", " + String.valueOf(this.stepY) + "); ";
@@ -67,8 +58,8 @@ public class InverseLocGrid
         log = log + "(" + String.valueOf(this.ul.getLongitude()) + ", " + String.valueOf(this.ul.getLatitude()) + ")";
         LOGGER.info(log);
 
-        this.gridY = grid_1D(ul_y + stepY / 2, lr_y - ul_y, stepY); // start to the pixel center
-        this.gridX = grid_1D(ul_x + stepX / 2, lr_x - ul_x, stepX);
+        this.gridY = grid_1D(ulY + stepY / 2, lrY - ulY, stepY); // start to the pixel center
+        this.gridX = grid_1D(ulX + stepX / 2, lrX - ulX, stepX);
         // LOGGER.info("Grid Pixel: " + this.gridX);
         // LOGGER.info("Grid Line: " + this.gridY);
     }
