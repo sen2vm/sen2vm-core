@@ -45,10 +45,13 @@ public class InverseLocGrid
         float resX = res ;
         float resY = res ;
 
+        // test if upper and bottom are reversed
         if (ulY > lrY)
         {
             resY = -resY;
         }
+
+        // test if left and right are reversed
         if (ulX > lrX)
         {
             resX = -resX;
@@ -57,16 +60,17 @@ public class InverseLocGrid
         this.stepX = step * resX;
         this.stepY = step * resY;
 
-        // Syncho first pixel center pixel from bounding box with first pixel center pixel from grid
+        // Synchro first grid point (centre of a grid pixel) with the center of the first
+        // image pixel (band resolution) of the area
         this.ulX = ulX - stepX / 2 + resX / 2;
         this.ulY = ulY - stepY / 2 + resY / 2;
-        this.lrX = lrX ;
-        this.lrY = lrY ;
+        this.lrX = lrX + stepX / 2 - resX / 2;
+        this.lrY = lrY + stepY / 2 - resY / 2;
 
         LOGGER.info("# Grid information");
-        String log = "Step: (" + String.valueOf(this.stepX) + ", " + String.valueOf(this.stepY) + "); ";
-        log = log + "UL: (" + String.valueOf(this.ulX) + ", " + String.valueOf(this.ulY) + ") ";
-        log = log + "LR: (" + String.valueOf(this.lrX) + ", " + String.valueOf(this.lrY) + ") ";
+        String log = "Step: (" + String.valueOf(this.stepY) + ", " + String.valueOf(this.stepX) + "); ";
+        log = log + "UL: (" + String.valueOf(this.ulY) + ", " + String.valueOf(this.ulX) + ") ";
+        log = log + "LR: (" + String.valueOf(this.lrY) + ", " + String.valueOf(this.lrX) + ") ";
         LOGGER.info(log);
 
         this.gridY = grid_1D(this.ulY + this.stepY / 2, this.lrY, this.stepY); // start to the pixel center
