@@ -318,37 +318,14 @@ public class Sen2VM
                     {
                         float[] bb =  config.getInverseLocBound();
 
-                        float stepY = step * res;
-                        float stepX = step * res;
-                        float shiftHalfPixelX = res/2;
-                        float shiftHalfPixelY = res/2;
-
-                        if (bb[1] > bb[3])
-                        {
-                            stepY = -step;
-                            shiftHalfPixelY = -shiftHalfPixelY;
-                        }
-                        if (bb[0] > bb[2])
-                        {
-                            stepX = -step;
-                            shiftHalfPixelX = -shiftHalfPixelX;
-                        }
-                        // todo simplify with a simple if for resX/resY
-
-                        // Syncho first pixel center pixel from bounding box with first pixel center pixel from grid
-                        float ulX = bb[0] - stepX + shiftHalfPixelX;
-                        float ulY = bb[1] - stepY + shiftHalfPixelY;
-                        float lrX = bb[2] + stepY - shiftHalfPixelY;
-                        float lrY = bb[3] + stepX - shiftHalfPixelX;
-
-                        InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, config.getInverseLocReferential(), stepX, stepY);
+                        InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), res, step);
                         double[][] groundGrid = invGrid.get2DgridLatLon();
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
                         double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, georefConventionOffsetPixel, -georefConventionOffsetLine);
 
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());
-                        outputFileManager.createGeoTiff(invFileName, ulX, ulY, invGrid.getStepX(), invGrid.getStepY(), grid3D, config.getInverseLocReferential(), "", 0.0f, 0.0f, false);
+                        outputFileManager.createGeoTiff(invFileName, invGrid.getUlX(), invGrid.getUlY(), invGrid.getStepX(), invGrid.getStepY(), grid3D, config.getInverseLocReferential(), "", 0.0f, 0.0f, false);
                     }
                     else
                     {

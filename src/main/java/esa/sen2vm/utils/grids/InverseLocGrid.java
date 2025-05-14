@@ -15,70 +15,96 @@ public class InverseLocGrid
     // Get sen2VM logger
     private static final Logger LOGGER = Logger.getLogger(InverseLocGrid.class.getName());
 
-    private Coordinates ul;
-    private Coordinates lr;
     private int epsg;
 
     protected float stepX;
     protected float stepY;
 
-    protected int pixelOrigin;
-    protected int lineOrigin;
-    protected int sizeLines;
-    protected int sizePixels;
+    protected float ulX;
+    protected float ulY;
+    protected float lrX;
+    protected float lrY;
 
     protected ArrayList<Float> gridX;
     protected ArrayList<Float> gridY;
 
     /**
      * Constructor
-     * @param ul_x in epsg referencial
-     * @param ul_y in epsg referencial
-     * @param lr_x in epsg referencial
-     * @param lr_y in epsg referencial
+     * @param ulX in epsg referencial
+     * @param ulY in epsg referencial
+     * @param lrX in epsg referencial
+     * @param lrY in epsg referencial
      * @param epsg reference
      * @param step in epsg referencial
+     * @param res of the band in meters
      */
     public InverseLocGrid(float ulX, float ulY, float lrX, float lrY,
-                         String epsg, float stepX, float stepY)
+                         String epsg, float res, float step)
     {
         this.epsg = Integer.valueOf(epsg.substring(5));
-        this.ul = new Coordinates(ulY, ulX, this.epsg);
-        this.ul.transform();
-        this.lr = new Coordinates(lrY, lrX, this.epsg);
-        this.lr.transform();
-        this.stepY = stepX;
-        this.stepX = stepY;
+        float resX = res ;
+        float resY = res ;
+
+        if (ulY > lrY)
+        {
+            resY = -resY;
+        }
+        if (ulX > lrX)
+        {
+            resX = -resX;
+        }
+
+        this.stepX = step * resX;
+        this.stepY = step * resY;
+
+        // Syncho first pixel center pixel from bounding box with first pixel center pixel from grid
+        this.ulX = ulX - stepX / 2 + resX / 2;
+        this.ulY = ulY - stepY / 2 + resY / 2;
+        this.lrX = lrX ;
+        this.lrY = lrY ;
 
         LOGGER.info("# Grid information");
         String log = "Step: (" + String.valueOf(this.stepX) + ", " + String.valueOf(this.stepY) + "); ";
-        log = log + "UL: (" + String.valueOf(this.ul.getX()) + ", " + String.valueOf(this.ul.getY()) + ") ";
-        log = log + "(" + String.valueOf(this.ul.getLongitude()) + ", " + String.valueOf(this.ul.getLatitude()) + "); ";
-        log = log + "LR: (" + String.valueOf(this.lr.getX()) + ", " + String.valueOf(this.lr.getY()) + ") ";
-        log = log + "(" + String.valueOf(this.ul.getLongitude()) + ", " + String.valueOf(this.ul.getLatitude()) + ")";
+        log = log + "UL: (" + String.valueOf(this.ulX) + ", " + String.valueOf(this.ulY) + ") ";
+        log = log + "LR: (" + String.valueOf(this.lrX) + ", " + String.valueOf(this.lrY) + ") ";
         LOGGER.info(log);
 
-        this.gridY = grid_1D(ulY + stepY / 2, lrY - ulY, stepY); // start to the pixel center
-        this.gridX = grid_1D(ulX + stepX / 2, lrX - ulX, stepX);
-        // LOGGER.info("Grid Pixel: " + this.gridX);
-        // LOGGER.info("Grid Line: " + this.gridY);
+        this.gridY = grid_1D(this.ulY + this.stepY / 2, this.lrY, this.stepY); // start to the pixel center
+        this.gridX = grid_1D(this.ulX + this.stepX / 2, this.lrX, this.stepX);
     }
 
 
     /**
      * Create the list of geo grid values for a specific range
      * @param star of the grid
-     * @param size of the grid
+     * @param end of the grid
      * @return list 1D
      */
-    private ArrayList<Float> grid_1D(float start, float size, float signedStep)
+    private ArrayList<Float> grid_1D(float start, float end, float signedStep)
     {
         ArrayList<Float> grid = new ArrayList<Float>();
-        int nb = (int) Math.ceil(Math.abs(size / signedStep)) + 1;
-        for (int i = 0; i < nb; i++)
+
+        float value = start;
+        grid.add(value);
+
+        if (signedStep > 0)
         {
-            grid.add(start + signedStep * i);
+            while(value + signedStep < end)
+            {
+                value = value + signedStep;
+                grid.add(value);
+            }
         }
+        else
+        {
+            while(value + signedStep > end)
+            {
+                value = value + signedStep;
+                grid.add(value);
+            }
+        }
+
+        grid.add(value + signedStep);
         return grid;
     }
 
@@ -155,5 +181,59 @@ public class InverseLocGrid
     public float getStepY()
     {
         return this.stepY;
+    }
+
+     /**
+     * Get ulX
+     * @return ulX
+     */
+     public float getUlX()
+    {
+        return this.ulX;
+    }
+
+     /**
+     * Get ulY
+     * @return ulY
+     */
+     public float getUlY()
+    {
+        return this.ulY;
+    }
+
+     /**
+     * Get lrX
+     * @return lrX
+     */
+     public float getLrX()
+    {
+        return this.lrX;
+    }
+
+     /**
+     * Get lrY
+     * @return lrY
+     */
+     public float getLrY()
+    {
+        return this.lrY;
+    }
+
+     /**
+     * Get gridX
+     * @return gridX
+     */
+     public ArrayList<Float> getGridX()
+    {
+        return this.gridX;
+    }
+
+     /**
+     * Get gridY
+     * @return gridY
+     */
+     public ArrayList<Float> getGridY()
+    {
+        return this.gridY;
     }
 }
