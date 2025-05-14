@@ -75,9 +75,30 @@ public class InverseLocGrid
 
 
     /**
+     * Test if value + step is above end
+     * @param star of the grid
+     * @param end of the grid
+     * @param signedStep of the grid
+     * @return true/false
+     */
+    private boolean testEnd(float value, float end, float signedStep)
+    {
+        if (signedStep > 0)
+        {
+            return (value + signedStep < end);
+        }
+        else
+        {
+            return (value + signedStep > end);
+        }
+    }
+
+
+    /**
      * Create the list of geo grid values for a specific range
      * @param star of the grid
      * @param end of the grid
+     * @param signedStep of the grid
      * @return list 1D
      */
     private ArrayList<Float> grid_1D(float start, float end, float signedStep)
@@ -87,21 +108,10 @@ public class InverseLocGrid
         float value = start;
         grid.add(value);
 
-        if (signedStep > 0)
+        while(testEnd(value, end, signedStep))
         {
-            while(value + signedStep < end)
-            {
-                value = value + signedStep;
-                grid.add(value);
-            }
-        }
-        else
-        {
-            while(value + signedStep > end)
-            {
-                value = value + signedStep;
-                grid.add(value);
-            }
+            value = value + signedStep;
+            grid.add(value);
         }
 
         grid.add(value + signedStep);
