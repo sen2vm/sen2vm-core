@@ -245,9 +245,9 @@ public class Sen2VMInverseTest
 
             // T27SYT
             Double ul_x = 699960.0;
-            Double ul_y=  3800040.0;
-            Double lr_x= 809760.0;
-            Double lr_y= 3690240.0;
+            Double ul_y = 3800040.0;
+            Double lr_x = 809760.0;
+            Double lr_y = 3690240.0;
             String referential = "EPSG:32627";
 
             String config = Config.configInverseBB(configTmpInverse, ul_y, ul_x, lr_y, lr_x, referential, outputDir);

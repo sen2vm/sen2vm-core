@@ -10,9 +10,9 @@ public class Coordinates
     private float y;
     private float z;
     private SpatialReference sourceSRS;
-    private double latitude;
-    private double longitude;
-    private double altitude;
+    private float latitude;
+    private float longitude;
+    private float altitude;
 
     /**
      * Constructor
@@ -52,7 +52,7 @@ public class Coordinates
      * Get latitude
      * @return latitude in WGS84
      */
-    public double getLatitude()
+    public float getLatitude()
     {
         return this.latitude;
     }
@@ -61,7 +61,7 @@ public class Coordinates
      * Get longitude
      * @return longitude in WGS84
      */
-    public double getLongitude()
+    public float getLongitude()
     {
         return this.longitude;
     }
@@ -75,8 +75,8 @@ public class Coordinates
         targetSRS.ImportFromEPSG(4326);
         CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
         double[] res = transformer.TransformPoint(x, y, z);
-        this.longitude = res[1];
-        this.latitude = res[0];
-        this.altitude = res[2];
+        this.longitude = (float) res[1];
+        this.latitude = (float) res[0];
+        this.altitude = (float) res[2];
     }
 }

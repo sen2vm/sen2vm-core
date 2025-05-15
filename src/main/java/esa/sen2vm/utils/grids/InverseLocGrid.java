@@ -45,27 +45,29 @@ public class InverseLocGrid
         float resX = res ;
         float resY = res ;
 
+        this.stepX = step;
+        this.stepY = step;
+
         // test if upper and bottom are reversed
         if (ulY > lrY)
         {
             resY = -resY;
+            this.stepY = -this.stepY;
         }
 
         // test if left and right are reversed
         if (ulX > lrX)
         {
             resX = -resX;
+            this.stepX = -this.stepX;
         }
-
-        this.stepX = step * resX;
-        this.stepY = step * resY;
 
         // Synchro first grid point (centre of a grid pixel) with the center of the first
         // image pixel (band resolution) of the area
-        this.ulX = ulX - stepX / 2 + resX / 2;
-        this.ulY = ulY - stepY / 2 + resY / 2;
-        this.lrX = lrX + stepX / 2 - resX / 2;
-        this.lrY = lrY + stepY / 2 - resY / 2;
+        this.ulX = ulX - this.stepX / 2 + resX / 2;
+        this.ulY = ulY - this.stepY / 2 + resY / 2;
+        this.lrX = lrX + this.stepX / 2 - resX / 2;
+        this.lrY = lrY + this.stepY / 2 - resY / 2;
 
         LOGGER.info("# Grid information");
         String log = "Step: (" + String.valueOf(this.stepY) + ", " + String.valueOf(this.stepX) + "); ";

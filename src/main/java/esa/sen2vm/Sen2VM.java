@@ -319,6 +319,7 @@ public class Sen2VM
                         float[] bb =  config.getInverseLocBound();
 
                         InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), res, step);
+
                         double[][] groundGrid = invGrid.get2DgridLatLon();
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
