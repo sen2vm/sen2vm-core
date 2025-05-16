@@ -60,12 +60,23 @@ public class InverseLocGrid
         this.stepX = step * resX;
         this.stepY = step * resY;
 
-        // Synchro first grid point (centre of a grid pixel) with the center of the first
+        // Synchro first grid point (center of a grid pixel) with the center of the first
         // image pixel (band resolution) of the area
-        this.ulX = ulX - stepX / 2 + resX / 2;
         this.ulY = ulY - stepY / 2 + resY / 2;
-        this.lrX = lrX + stepX / 2 - resX / 2;
-        this.lrY = lrY + stepY / 2 - resY / 2;
+        this.ulX = ulX - stepX / 2 + resX / 2;
+
+        // Update lower right bounding box by synchro last grid point (center of a grid pixel)
+        // with the center of the last image pixel (band resolution) of the area
+        lrY = lrY + stepY / 2 - resY / 2;
+        lrX = lrX + stepX / 2 - resX / 2;
+
+        // Compute grid with center pixel convention
+        this.gridY = grid_1D(this.ulY + this.stepY / 2, lrY + this.stepY / 2, this.stepY); // start to the pixel center
+        this.gridX = grid_1D(this.ulX + this.stepX / 2, lrX + this.stepX / 2, this.stepX);
+
+        // Compute lower right of the grid after computation
+        this.lrY = gridY.get(gridY.size()-1) + stepY / 2 ;
+        this.lrX = gridX.get(gridX.size()-1) + stepX / 2 ;
 
         LOGGER.info("# Grid information");
         String log = "Step: (" + String.valueOf(this.stepY) + ", " + String.valueOf(this.stepX) + "); ";
@@ -73,15 +84,13 @@ public class InverseLocGrid
         log = log + "LR: (" + String.valueOf(this.lrY) + ", " + String.valueOf(this.lrX) + ") ";
         LOGGER.info(log);
 
-        this.gridY = grid_1D(this.ulY + this.stepY / 2, this.lrY, this.stepY); // start to the pixel center
-        this.gridX = grid_1D(this.ulX + this.stepX / 2, this.lrX, this.stepX);
     }
 
 
     /**
      * Test if value + step is above end
-     * @param star of the grid
-     * @param end of the grid
+     * @param value to test
+     * @param end
      * @param signedStep of the grid
      * @return true/false
      */
@@ -101,7 +110,7 @@ public class InverseLocGrid
     /**
      * Create the list of geo grid values for a specific range
      * @param star of the grid
-     * @param end of the grid
+     * @param end min of the grid
      * @param signedStep of the grid
      * @return list 1D
      */
@@ -118,7 +127,7 @@ public class InverseLocGrid
             grid.add(value);
         }
 
-        grid.add(value + signedStep);
+        // grid.add(value + signedStep);
         return grid;
     }
 

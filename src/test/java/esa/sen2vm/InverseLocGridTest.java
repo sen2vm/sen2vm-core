@@ -88,25 +88,24 @@ public class InverseLocGridTest
         assertEquals(stepY, - step * res);
         assertEquals(invGrid.getUlX() + invGrid.getStepX() / 2, ulX + res/2);
         assertEquals(invGrid.getUlY() + invGrid.getStepY() / 2, ulY - res/2);
-        assertEquals(gridX.size(), 2442);
-        assertEquals(gridY.size(), 2442);
-        assertEquals(invGrid.getLrX(), 309797.5);
-        assertEquals(invGrid.getLrY(), 3590202.5);
 
         // size grids
-
+        assertEquals(gridX.size(), 2441);
+        assertEquals(gridY.size(), 2441);
 
         // start grids
         assertEquals(gridX.get(0), ulX + res/2);
         assertEquals(gridY.get(0), ulY - res/2);
 
-        // last grid pixel exceed input bb
-        assertTrue(gridX.get(gridX.size()-1) - stepX/2 > lrX);
-        assertTrue(gridY.get(gridY.size()-1) - stepY/2 < lrY);
-        assertTrue(gridX.get(gridX.size()-1) > invGrid.getLrX());
-        assertTrue(gridX.get(gridX.size()-2) < invGrid.getLrX());
-        assertTrue(gridY.get(gridY.size()-1) < invGrid.getLrY());
-        assertTrue(gridY.get(gridY.size()-2) > invGrid.getLrY());
+        // last grid pixel equal or exceed last the center of the last
+        // image pixel (band resolution) of the area
+        assertTrue(gridX.get(gridX.size()-1) >= ulX - res/2);
+        assertTrue(gridY.get(gridY.size()-1) <= ulY + res/2);;
+        assertEquals(invGrid.getLrX(), gridX.get(gridX.size()-1) + stepX / 2);
+        assertEquals(invGrid.getLrX(), 309807.5);
+        assertEquals(invGrid.getLrY(), gridY.get(gridY.size()-1) + stepY / 2);
+        assertEquals(invGrid.getLrY(), 3590192.5);
+
 
         int epsg_int = Integer.valueOf(epsg.substring(5));
         Coordinates ul = new Coordinates(ulX, ulY, epsg_int);
@@ -120,6 +119,53 @@ public class InverseLocGridTest
 
     }
 
+    @Test
+    public void endGrid()
+    {
+
+        float ulX = 0f;
+        float ulY = 0f;
+        float lrX = 100f;
+        float lrY = 100f;
+        float step = 1.0f;
+        float res = 10f;
+        String epsg = "EPSG:32628";
+        InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        ArrayList<Float> gridX = invGrid.getGridX() ;
+        assertEquals(gridX.get(0), 5);
+        assertEquals(gridX.get(gridX.size()-1), 95);
+        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+
+        step = 2.0f;
+        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        gridX = invGrid.getGridX() ;
+        assertEquals(gridX.get(0), 5);
+        assertEquals(gridX.get(gridX.size()-1), 105);
+        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+
+        step = 8.0f;
+        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        gridX = invGrid.getGridX() ;
+        assertEquals(gridX.get(0), 5);
+        assertEquals(gridX.get(gridX.size()-1), 165);
+        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+
+        step = 1.0f;
+        res = 2.0f;
+        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        gridX = invGrid.getGridX() ;
+        assertEquals(gridX.get(0), 1);
+        assertEquals(gridX.get(gridX.size()-1), 99);
+        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+
+        step = 0.5f;
+        res = 20f;
+        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        gridX = invGrid.getGridX() ;
+        assertEquals(gridX.get(0), 10);
+        assertEquals(gridX.get(gridX.size()-1), 90);
+        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+    }
 
     @Test
     public void testInverseLocGeoTransform()
