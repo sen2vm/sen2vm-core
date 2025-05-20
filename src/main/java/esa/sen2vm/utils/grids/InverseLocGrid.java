@@ -65,16 +65,15 @@ public class InverseLocGrid
         this.ulY = ulY - stepY / 2 + resY / 2;
         this.ulX = ulX - stepX / 2 + resX / 2;
 
-        // Update lower right bounding box by synchro last grid point (center of a grid pixel)
-        // with the center of the last image pixel (band resolution) of the area
-        lrY = lrY + stepY / 2 - resY / 2;
-        lrX = lrX + stepX / 2 - resX / 2;
+
 
         // Compute grid with center pixel convention
-        this.gridY = grid_1D(this.ulY + this.stepY / 2, lrY + this.stepY / 2, this.stepY); // start to the pixel center
-        this.gridX = grid_1D(this.ulX + this.stepX / 2, lrX + this.stepX / 2, this.stepX);
+        // start to the pixel center
+        // The LowerRight is englobing the last pixel, hence to cover the last pixel, the center of last pixel of the grid shall go over the LR - res / 2
+        this.gridY = grid_1D(this.ulY + this.stepY / 2, lrY - resY / 2, this.stepY); 
+        this.gridX = grid_1D(this.ulX + this.stepX / 2, lrX - resX / 2, this.stepX);
 
-        // Compute lower right of the grid after computation
+        // Compute englobing lower right of the grid after computation
         this.lrY = gridY.get(gridY.size()-1) + stepY / 2 ;
         this.lrX = gridX.get(gridX.size()-1) + stepX / 2 ;
 
@@ -127,7 +126,8 @@ public class InverseLocGrid
             grid.add(value);
         }
 
-        // grid.add(value + signedStep);
+        grid.add(value + signedStep);
+
         return grid;
     }
 
