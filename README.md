@@ -274,6 +274,7 @@ Grids characteristics are:
  * Convention: grid raster type is "point" with first grid cell centre at first pixel centre of the first granule (referred by PIXEL_ORIGIN in granule geometric info). Grid position given an image position (_row_, _col_), is
 
    ![Direct grid handling](/assets/images/README_DirectGridHandling.png "Direct Grid Handling.")
+   
 with (_grid row_,_grid col_) = (_Pixel Origin_, _Pixel Origin_) = (_1_,_1_) at center of first grid cell
 
 Example:
