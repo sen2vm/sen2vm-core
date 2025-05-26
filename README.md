@@ -271,9 +271,9 @@ Example of product with grid inside it:
 Grids characteristics are:
  
  * Convention: grid raster type is "point" with first grid cell centre at first pixel centre of the first granule (referred by PIXEL_ORIGIN in granule geometric info). Grid position given an image position (_row_, _col_), is
- <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid row=\frac{(row-PixelOrigin) - LineOffset}{LineStep} + PixelOrigin" title="\Grid row convention" />
- <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid col=\frac{(col-PixelOrigin) - LineOffset}{PixelStep} + PixelOrigin" title="\grid col convention" />
- with (_grid row_,_grid col_) = (_Pixel Origin_, _Pixel Origin_) = (_1_,_1_) at center of first grid cell
+
+   ![Direct grid handling](/assets/images/README_DirectGridHandling.png "Direct Grid Handling.")
+with (_grid row_,_grid col_) = (_Pixel Origin_, _Pixel Origin_) = (_1_,_1_) at center of first grid cell
  example
  ![Direct convention](/assets/images/README_DirectConvention.png "Direct convention.")
 
@@ -295,8 +295,7 @@ Grids characteristics are:
 Direct location grids are intended to be used with bilinear interpolation operation. Direct location (i.e lon/lat positions) should be as follow:
 
  * Given an image position (_row_/_col_) compute grid fractional position (grid row, grid col):
-  <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid row=\frac{(row-PixelOrigin) - LineOffset}{LineStep} + PixelOrigin" title="\Grid row convention" />
- <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid col=\frac{(col-PixelOrigin) - LineOffset}{PixelStep} + PixelOrigin" title="\grid col convention" />
+   ![Direct grid handling](/assets/images/README_DirectGridHandling.png "Direct Grid Handling.")
 
  * Use bilinear interpolation on (_grid row_, _grid col_) to retrieve lon/lat/(alt).
 
@@ -370,8 +369,7 @@ as for Direct location, the first grid center if syncrhonized with the first cen
 Grids are intended to be used with bilinear interpolation operation. Inverse locations (i.e image position given a ground position) should be as follow:
 
  * Given an ground position (_lon_/_lat_) or (_x_, _y_) compute grid fractional position (grid row, grid col)using grid geotransform for GRID_ORIGIN and GRID_STEP:
-  <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid row=\frac{y-GridOriginY}{GridStepY} + PixelOrigin -0.5" title="\Inv Grid row convention" />
- <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid col=\frac{x-GridOriginX}{GridStepY} + PixelOrigin - 0.5" title="\Inv grid col convention" />
+     ![Inverse grid handling](/assets/images/README_InverseGridHandling.png "Inverse Grid Handling.")
 
  * Use bilinear interpolation on (_grid row_, _grid col_) to retrieve _row_/_col_.
  
