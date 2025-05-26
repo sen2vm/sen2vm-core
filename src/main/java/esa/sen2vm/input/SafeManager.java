@@ -3,6 +3,7 @@ package esa.sen2vm.input;
 import java.util.ArrayList;
 //import java.util.logging.Logger;
 import java.io.File;
+import java.util.List;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.enums.BandInfo;
@@ -11,6 +12,7 @@ import esa.sen2vm.utils.Sen2VMConstants;
 import esa.sen2vm.input.datastrip.DataStripManager;
 import esa.sen2vm.input.datastrip.Datastrip;
 import esa.sen2vm.input.granule.Granule;
+import esa.sen2vm.exception.Sen2VMException;
 
 public class SafeManager
 {
@@ -181,7 +183,7 @@ public class SafeManager
      * @return grids[det][band]
      */
      public File[][] getInverseGrids(String outputDirPath)
-    {
+     {
         File outputDir = new File(outputDirPath);
         File[][] inverseGrids = new File[Sen2VMConstants.NB_DETS][Sen2VMConstants.NB_BANDS];
         File[] listOfFiles = outputDir.listFiles();
@@ -206,5 +208,25 @@ public class SafeManager
             }
         }
         return inverseGrids;
+    }
+
+    public void testifGridsToComputeAlreadyExists(List<DetectorInfo> detectors, List<BandInfo> bands) throws Sen2VMException
+    {
+        for (DetectorInfo detectorInfo: detectors)
+        {
+            for (BandInfo bandInfo: bands)
+            {
+                ArrayList<Granule> granulesToCompute = getGranulesToCompute(detectorInfo, bandInfo) ;
+                for (Granule granuleToCompute: granulesToCompute) {
+                    if (granuleToCompute.getGrid(bandInfo) != null)
+                    {
+                        String error = "Direct grid(s) already exists" ;
+                        error = error + " (" + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
+                        throw new Sen2VMException(error);
+                    }
+                }
+            }
+        }
+
     }
 }

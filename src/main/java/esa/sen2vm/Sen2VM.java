@@ -240,6 +240,10 @@ public class Sen2VM
 
             LOGGER.info("");
             LOGGER.info("Starting grids generation");
+
+            // Test if no grids exists already
+            safeManager.testifGridsToComputeAlreadyExists(detectors, bands) ;
+
             for (BandInfo bandInfo: bands)
             {
 
@@ -268,7 +272,6 @@ public class Sen2VM
 
                         // Load Granule Info
                         ArrayList<Granule> granulesToCompute = safeManager.getGranulesToCompute(detectorInfo, bandInfo);
-                        LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
 
                         // Get Full Sensor Grid
                         DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffsetLine, georefConventionOffsetPixel,
