@@ -1,35 +1,31 @@
 # Project sen2vm-core
-The sen2vm core is a standalone tool designed to generate geolocation grids that will be included in the Level-1B (L1B) product. Its primary function is to create direct location grids, mapping the L1B product in sensor geometry down to the ground. Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
+The Sen2VM core is a standalone tool designed to generate geolocation grids that will be included in the Level-1B (L1B) product. Its primary function is to create direct location grids, mapping the L1B product in sensor geometry down to the ground. Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
 
-Please note that Sen2VM exist implemented as a SNAP plugin, which calls the Sen2VM standalone tool during execution.
+Please note that Sen2VM exists implemented as a SNAP plugin, which calls the Sen2VM standalone tool during execution.
 
 This documentation is split into 3 parts:
-* Description and format of expected inputs, along with instructions for running Sen2VM: §[Inputs](#1-inputs)
-* Details on generated outputs: §[Outputs](#2-outputs)
-* Validation process, including test procedures and data used: §[Validation](#3-validation)
+* Description and format of expected inputs, along with instructions for running Sen2VM: § [Inputs](#1-inputs)
+* Details on generated outputs: § [Outputs](#2-outputs)
+* Validation process, including test procedures and data used: § [Validation](#3-validation)
 
 ## 1. Inputs
 Inputs required by Sen2VM are:
 * L1B Product,
-* Some GIPP files (parameters file used in operational production),
+* Some GIPP files (parameters files used in operational production),
 * Digital Elevation Model (DEM),
 * GEOID model to measure precise surface elevations,
 * IERS bulletin that provides data and standards related to Earth rotation and reference frames,
-* Attitude data,
 * Additional information for configuration.
 
 All inputs are described in this section.
 
 It starts by the command line which will be the entry point for user or for the Sen2VM SNAP plugin. Then a description of all what can be passed from the user to Sen2VM (through command line) is described.
 
-### 1.1 How to run sen2vm-core
+### 1.1 How to run or compile sen2vm-core
 
-Before running sen2vm-core, make sure to install the required dependencies. To do so, please refer to [https://github.com/sen2vm/sen2vm-build-env/tree/main](https://github.com/sen2vm/sen2vm-build-env/tree/main)
-
-Then, inside `sen2vm-core` folder, run the next commands:
+First, download the jar of Sen2VM core, then run the following commad to launch it:
 ```
-mvn clean install
-java -jar target/sen2vm-core-<NN.NN.NN>-SNAPSHOT.jar -c [configuration_filepath] [-p [parameters_filepath]]
+java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
 ```
 
 Where:
@@ -39,7 +35,16 @@ Where:
 
 Example from current repository:
 ```
-java -jar target/sen2vm-core-0.0.1-SNAPSHOT.jar -c src/test/resources/configuration_example.json -p src/test/resources/params.json
+java -jar target/sen2vm-core-0.0.1-jar-with-dependencies.jar -c src/test/resources/configuration_example.json -p src/test/resources/params.json
+```
+
+Sen2VM core can also be rebuild from sources:
+Before compiling/installing sen2vm-core, make sure to install the required dependencies. To do so, please refer to [https://github.com/sen2vm/sen2vm-build-env/tree/main](https://github.com/sen2vm/sen2vm-build-env/tree/main)
+
+Then, inside `sen2vm-core` folder, run the next commands:
+```
+mvn clean install
+java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
 ```
 
 ### 1.2 Configuration file
@@ -52,17 +57,16 @@ Each parameter description can be found in the table below:
 
 | Name        | Type     | Required      | Description   |
 | ----------- | :------: | :-----------: | :-----------: |
-| l1b_product | string   | **Mandatory** | Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in §<mark>**XXX**</mark>, including DATASTRIP + GRANULE)|
-| gipp_folder | string   | **Mandatory** | Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to §<mark>**XXX**</mark>.|
-| gipp_check  | boolean  | Optional      | If true (default), check of GIPP version activated (see GIPP section §<mark>**XXX**</mark>)|
-|dem          | string   | **Mandatory** | Path to the FOLDER containing a DEM in the right format (cf <mark>**XXX**</mark>)|
-|geoid        | string   | **Mandatory** | Path to the FOLDER containing a GEOID in the right format (cf <mark>**XXX**</mark>)|
-| iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf <mark>**XXX**</mark>)|
-| <mark>pod</mark>     |<mark>string</mark>| <mark>Optional</mark>  |<mark>Path to the POD FILE in the right format (cf <mark>**XXX**</mark>)</mark>|
+| l1b_product | string   | **Mandatory** | Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in § [L1B Product](#121-l1b-product), including DATASTRIP + GRANULE)|
+| gipp_folder | string   | **Mandatory** | Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to § [GIPP](#122-gipp).|
+| gipp_check  | boolean  | Optional      | If true (default), check of GIPP version activated (see GIPP section § [GIPP](#122-gipp)</mark>)|
+|dem          | string   | **Mandatory** | Path to the FOLDER containing a DEM in the right format (cf § [Altitude/DEM](#1231-dem)).|
+|geoid        | string   | **Mandatory** | Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#1231-geoid))|
+| iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf § [Altitude/DEM](#124-iers))|
 |operation    | string   | **Mandatory** | Possibilities:<ul><li>“direct”: to configure Sen2VM to compute direct location grids</li><li>“inverse”: to configure Sen2VM to compute inverse location grids</li></ul>|
-| deactivate_available_refining| boolean  | Optional      | If false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf product description in §<mark>**XXX**</mark>|
-| export_alt   | boolean  | Optional      | If false (default), direct locations grids will contain only 2 bands (<mark>**Lat/Long**</mark>), if true, a third band containing the altitude will be exported (but output grids will be bigger in size) cf product description in §<mark>**XXX**</mark>|
-| steps       | float    | **Mandatory** | <ul><li>One per resolution: “10m_bands”, “20m_bands” & “60m_bands”</li><li>Accept only floating numbers (NNNN.DDD)</li><li>Unit in pixel</li></ul>|
+| deactivate_available_refining| boolean  | Optional      | If false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf product description in § [L1B Product](#1212-refining-information)|
+| export_alt   | boolean  | Optional      | If false (default), direct locations grids will contain only 2 bands (<mark>**Lat/Long**</mark>), if true, a third band containing the altitude will be exported (but output grids will be bigger in size) cf product description in §[Direct location grids](#21-direct location grids)|
+| steps       | float    | **Mandatory** | <ul><li>One per resolution: “10m_bands”, “20m_bands” & “60m_bands”</li><li>Floating numbers (NNNN.DDD)</li><li>Unit in pixel</li></ul>|
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**| See dedicated table below|
 
 
@@ -75,17 +79,43 @@ The field “inverse_location_additional_info” is not required and will be ign
 | lr_x          | float    | **Mandatory** | **X** coordinates of the **lower right** point that will define the squared area where to compute the grids|
 | lr_y          | float    | **Mandatory** | **Y** coordinates of the **lower right** point that will define the squared area where to compute the grids|
 | referential   | string   | **Mandatory** | A string defining the **referential** used. **Note, UL and LR points’ coordinates** will be in this referential. Example: EPSG:4326|
-| output_folder | string   | **Mandatory**|Output path where the inverse location grids will be written (see §<mark>**XXX**</mark>)|
+| output_folder | string   | **Mandatory**|Output path where the inverse location grids will be written (see § [Inverse location grids](#22-inverse-location-grids))|
 
 #### 1.2.1 L1B Product
 > [!NOTE]
 > L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). Please note that special access for L1B products might be required by submiting  a request via the FAQ section.
 
 > [!IMPORTANT]
-> The expected format is the SAFE format, i.e. a folder structured as illustrated in <mark>**TODO**</mark>
+> The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated following sections
+
+##### 1.2.1.1 L1B Product input tree structure
+The mandatory inputs for Sen2Vm are the Metadata:
+ * Datastrip Metadata
+ * Granules Metadata
+
+They shall be stored in a particulr tree, first, in the L1B folder, only 2 folders will be looked at:
+ * DATASTRIP
+ * GRANULES
+
+![L1B Folder](/assets/images/README_L1BProduct.png "Necessary folders.")
+
+There can be other files (as in the SAFE format) but they will simply be ignored by Sen2VM core.
+
+Regarding the DATASTRIP folder, it shall contain a subfolder named with the Datastrip reference and inside this subfolder, the Datastrip Metadata named with the Datastrip reference. This format is compatible with SAFE and others files/folders will be ignored:
+
+![DATASTRIP Folder](/assets/images/README_DatastripFolder.png "tree structure example of DATASTRIP folder.")
+
+Finally the GRANULE folder shall contain one folder per granule, each with the GRANULE naming convention, and each containing the GRANULE metadata. This format is compatible with SAFE and others files/folders will be ignored:
+
+![GRANULE Folder](/assets/images/README_GranuleFolder.png "tree structure example of GRANULE folder.")
+\[...\]
 
 
-Refining information can be found in the datastrip Metadata. If refined, the model of the satellite shall be modified accordingly. Information is stored in the filed “Level-1B_DataStrip_ID/Image_Data_Info//Geometric_Info/Refined_Corrections_List/Refined_Corrections/MSI_State”. They are present only if the flag “Image_Refining” is set at “REFINED” and absent if set at “NOT_REFINED”.
+##### 1.2.1.2 Refining information
+
+Refining for Sentinel-2 is a geolocation refining to correct the geometric models of the Satellite versus a [GRI](https://s2gri.csgroup.space)
+
+Refining information can be found in the Datastrip Metadata. If refined, the model of the satellite shall be modified accordingly. Information is stored in the filed “Level-1B_DataStrip_ID/Image_Data_Info//Geometric_Info/Refined_Corrections_List/Refined_Corrections/MSI_State”. They are present only if the flag “Image_Refining” is set at “REFINED” and absent if set at “NOT_REFINED”.
 ![Refining information inside Datastrip metadata](/assets/images/README_RefiningInformationInsideDatastripMetadata.png "Refining information inside Datastrip metadata.")
 
 An optional boolean argument is available in the configuration file (see §[1.2 Configuration file](#1.2-configuration-file)): deactivate_available_refining.
@@ -99,7 +129,7 @@ GIPP are configuration files used in operation to:
 
 By nature, GIPP are then versionnable. It is important to process with the version used to generate the L1B product.
 > [!WARNING]
->  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf <mark>**XXX**</mark>). **This parameter is optional, and by default, its value is at true and the check is done, it can be forced at false if needed**.
+>  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf §[1.2 Configuration file](#1.2-configuration-file)). **This parameter is optional, and by default, its value is at true and the check is done, it can be forced at false if needed**.
 
 The version used in operation of the GIPP are listed in the L1B Datastrip Metadata of the L1B product (see §[1.2.2 L1B Product](#121-l1b-product)), in the following section: _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
 
@@ -121,7 +151,20 @@ The main purpose of the tool is to add geolocation to the L1B product images. He
 
 ![Altitude importance on geolocation](/assets/images/README_AltitudeImportanceOnGeolocation.png "Altitude importance on geolocation.")
 
-<mark>**TODO**</mark>
+For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used. So, path of both shall be provided in input (cf §[1.2 Configuration file](#1.2-configuration-file)).
+
+##### 1.2.3.1 DEM
+The expected format for the DEM is:
+ * link to a folder containing the DEM
+ * The DEM shall be split into files or folders (dynamically read) per square degrees
+ * each DEM file (per square degree) shall be readable by gdal
+
+ Examples of DEM structures can be found in [/src/test/resources/DEM/](/src/test/resources/DEM)
+
+##### 1.2.3.2 GEOID
+The GEOID shall be readable by gdal. On example of GEOID is available at [S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx](/src/test/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx)
+
+
 #### 1.2.4 IERS
 The IERS represents the ["International Earth Rotation and Reference Systems"](https://www.iers.org/IERS/EN/Home/home_node.html). It is important to have a valid and precise one to have a precise geolocation. During operation processing, IERS information are integrated in the L1B metadata datastrip, hence IERS information are available in the L1B product used in input, in the field _Level-1B_DataStrip_ID/Auxiliary_Data_Info/IERS_Bulletin_ as illustrated below:
 
@@ -132,7 +175,7 @@ IERS bulletins are used seamlessly with OREKIT, leading in very precise EOPhandl
 
 However, a very slight (neglectable) difference will be observed in geolocation compared to operational processing which uses the full IERS bulletin for its ortho-rectification process.
 
-Hence an IERS bulletin can be provided in input for user (as optional).
+Hence an IERS bulletin can be provided in input by users (as optional).
 > [!IMPORTANT]
 > **Sen2VM behaviour regarding IERS will then be**:
 > * If an IERS bulletin is provided in input:
@@ -141,21 +184,17 @@ Hence an IERS bulletin can be provided in input for user (as optional).
 >    * Use the IERS bulletin if it contains the full datastrip duration,
 >* If not, use the information available in the L1B Datastrip Metadata.
 
-<mark>**TODO illustration "IERS information in L1B Datastrip Medata**</mark>
-
 Format of the IERS bulletin that can be provided is [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
 
-#### 1.2.5 <mark>POD</mark>
-<mark>**DESCOPED**</mark>
-
 ### 1.3 Parameters file
-Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent mode, user might want to process only parts of the Datastrip per thread. This is handled by SXGEO and was propagated to Sen2VM. Configuration of the detectors/bands to process are done through the parameters file which is a json. **If not available, Sen2VM will process all detectors/bands**.
+Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent mode, user might want to process only parts of the Datastrip per thread. This is handled by SXGEO and was propagated to Sen2VM. This way, users can parallelize the process by itself, outside ou Sen2VM.
+
+Configuration of the detectors/bands to process are done through the parameters file which is a json. **If not available, Sen2VM will process all detectors/bands**.
 
 The configuration file contains 2 fields:
 * “detectors”: Detectors are passed through string representing Sentinel-2 detectors encoded in **2 digits**, **separated by “-”.** Detectors indexes are from **“01” to “12”.**
 * “bands”: Bands are passed through string representing Sentinel-2 bands encoded in **2 digits with a “B”** before and **separated from “-”**. Bands are going from **“B01” to “B12”, including a “B8A”.**
 
-<mark>**TODO Link Example**</mark>
 
 ![Parameters file example](/assets/images/README_ParametersFileExample.png "Parameters file example.")
 
@@ -174,11 +213,11 @@ Output can be direct location grids or inverse location grids. Their computation
 Direct and inverse location grids are different subject. Only the direct location grids will be included in the input product and handled by gdal. Inverse location grids, as they represent an area on the ground will be exported outside the product, in a folder chosen by the user (which can be inside the input product if wanted).
 
 ### 2.1 Direct location grids
-A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular in sensor reference frame (for one band and one detector).
+A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular in sensor reference frame (for one couple band/detector).
 
-Sen2VM direct location grid computation takes as input product and auxiliary information (see <mark>**TODO**</mark>) and grid parametrization:
-* Band/detector to process,
-* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (floating number).
+Sen2VM direct location grid computation takes as input product and auxiliary information (see [L1B product](#121-l1b-product), [GIPP](#122-gipp), [Altitude](#123-altitude), [IERS](#124-iers)) and grid parametrization:
+* Band/detector to process ([Parameters File](#13-parameters-file)),
+* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (floating number) [Configuration File](#12-configuration-file).
 
 As output:
 * At granule level: geolocation grids will be written (per granules/bands).
@@ -222,23 +261,60 @@ As example, for an datastrip metadata of the DATASTRIP folder, named:
 A folder named GEO_DATA, beside the QI_DATA folder and datastrip metadata will contain 156 vrt files (12detectorsx13bands) named:
 * S2B_OPER_**GEO**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.vrt</strong>
 
-<mark>**TODO: example of product with grid inside it**</mark>
+Example of product with grid inside it:
+![Output example of Datastrip vrt for direct location grids](/assets/images/README_OutputDatastrip.PNG "Output example of Datastrip vrt for direct location grids.")
 
 #### 2.1.2 Direct location grids’ specifications
-<mark>**TODO**</mark>
+> [!NOTE]
+> To be consistent with granules convention with first pixel center, outputs grids have the same first pixel centres.
+
+Grids characteristics are:
+ 
+ * Convention: grid raster type is "point" with first grid cell centre at first pixel centre of the first granule (referred by PIXEL_ORIGIN in granule geometric info). Grid position given an image position (_row_, _col_), is
+ <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid row=\frac{(row-PixelOrigin) - LineOffset}{LineStep} + PixelOrigin" title="\Grid row convention" />
+ <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid col=\frac{(col-PixelOrigin) - LineOffset}{PixelStep} + PixelOrigin" title="\grid col convention" />
+ with (_grid row_,_grid col_) = (_Pixel Origin_, _Pixel Origin_) = (_1_,_1_) at center of first grid cell
+ example
+ ![Direct convention](/assets/images/README_DirectConvention.png "Direct convention.")
+
+ * Grid Metadata: Grids will contain Metadata information of [GDAL geolocation grids](https://gdal.org/development/rfc/rfc4_geolocate.html):
+
+     * SRS: WGS84 WKT format
+     * PIXEL_OFFSET
+     * LINE_OFFSET
+     * PIXEL_STEP: GRID STEP
+     * LINE_STEP: GRID STEP
+     * GEOREFERENCING_CONVENTION: PIXEL_CENTER
+
+ * Overlap: to ensure grid granule continuity, one pixel overlap will be added. Taking advantage of this overlap, one granule can be individually resampled, or multiple granules (whole Datastrip for example) using the vrt grid concatenation without extra disk cost). Thus _PIXEL/LINE OFFSET_ of the Grid Metadata will vary for each grid.
+  ![Direct overlpas](/assets/images/README_DirectOverlaps.png "Direct overlaps.")
+ 
+ 
 
 #### 2.1.3 Grid handling
-<mark>**TODO**</mark>
+Direct location grids are intended to be used with bilinear interpolation operation. Direct location (i.e lon/lat positions) should be as follow:
+
+ * Given an image position (_row_/_col_) compute grid fractional position (grid row, grid col):
+  <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid row=\frac{(row-PixelOrigin) - LineOffset}{LineStep} + PixelOrigin" title="\Grid row convention" />
+ <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid col=\frac{(col-PixelOrigin) - LineOffset}{PixelStep} + PixelOrigin" title="\grid col convention" />
+
+ * Use bilinear interpolation on (_grid row_, _grid col_) to retrieve lon/lat/(alt).
+
+> [!CAUTION]
+> Beware of convention [1,1] is the first pixel of the grid
+
+> [!TIP]
+> If user wants to perform direct location of a position outside the granule footprint, a bilinear extrapolation is possible.
 
 #### 2.1.4 Degraded cases
-<mark>**TODO**</mark>
+Grids should at least have 2x2 cells
 
 ### 2.2 Inverse location grids
 An inverse location grid is a grid which maps ground coordinates with sensor ones.
 Inverse location grids are georeferenced in **geographic or cartographic reference frame**.
 Inverse location grid is regular in **ground reference frame** (for one band and one detector).
 
-To define the extend of the inverse location grid, parameters are described in section §<mark>**XXX**</mark>, but it can be resumed at:
+To define the extend of the inverse location grid, parameters are described in section §§[1.2 Configuration file](#12-configuration-file), but it can be resumed at:
 * A referential system,
 * A square defined by:
     * One Upper Left point (UL),
@@ -263,27 +339,63 @@ As example, for a Datastrip metadata of the DATASTRIP folder:
 Output will be named:
 * S2B_OPER_**INV**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.tif</strong>
 
-<mark>**TODO: Graph to illustrate.**</mark>
+Example:
+![Output example of inverse location grids](/assets/images/README_OutputInv.PNG "Output example of inverse location grids.")
 
 
 #### 2.2.2 Inverse location grids’ specifications
-<mark>**TODO**</mark>
+Inverse location grids **will give the coordinates in the “detector” image**, meaning as if the granules of the same detector were concatenated.
+
+ * Grid metadata:
+    * will be written as GDAL GEO information (SRS and geotransform) and Metadata keys, containing ROW_BAND and COL_BAND to specify row col index and PIXEL_ORIGIN which specify granule first pixel center convention, and NoData value.  
+   * Metadata keys are:
+       * the SRS
+       * NoData fill value
+       * the grid footprint
+       * the size of the grid,
+       * the step of the grid,
+       * margins,
+       * the GIPP dataset used,
+       * the DEM and associated geoid (TBD),
+       * Was refining deactivated
+
+as for Direct location, the first grid center if syncrhonized with the first center of theoutput boundinig box considering a pixel at resolution of the processed band. THe center of the last pixel will be computed to cover at least the last pixel of the Bounding box provided in input:
+
+![Inverse Convention](/assets/images/README_InverseConvention.png "Inverse Convention.")
+ 
+
 
 #### 2.2.3 Grid handling
-<mark>**TODO**</mark>
+
+Grids are intended to be used with bilinear interpolation operation. Inverse locations (i.e image position given a ground position) should be as follow:
+
+ * Given an ground position (_lon_/_lat_) or (_x_, _y_) compute grid fractional position (grid row, grid col)using grid geotransform for GRID_ORIGIN and GRID_STEP:
+  <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid row=\frac{y-GridOriginY}{GridStepY} + PixelOrigin -0.5" title="\Inv Grid row convention" />
+ <img src="https://latex.codecogs.com/svg.latex?\Large&space;grid col=\frac{x-GridOriginX}{GridStepY} + PixelOrigin - 0.5" title="\Inv grid col convention" />
+
+ * Use bilinear interpolation on (_grid row_, _grid col_) to retrieve _row_/_col_.
+ 
+> [!CAUTION]
+> Beware of convention [PIXEL ORIGIN,PIXEL ORIGIN] is the first pixel of the grid..
+
+
 
 #### 2.2.4 Degraded cases
-<mark>**TODO**</mark>
+Grids should at least have 2x2 cells.
 
 ## 3. Validation
-<mark>**TODO Intro**</mark>
-### 3.1 Test Data
-<mark>**TODO**</mark>
 
-### 3.2 Tests description
-<mark>**TODO**</mark>
+In a nutshell, validation is split into 2 main parts:
+ * **Some functional tests**:
+     * Integrated into the CI/CD process:
+     * Validate that Sen2VM takes into account the different input provided, and that output grids are consistent with reference ones,
+ * Some quality tests:
+     * Launched manually
+     * Proving, using several TDS, that grids generated by Sen2VM are consistent with the ones generated with the legacy,
+     * Prove that those grids can be used to reach equivalent quality at L1C,
+     * these processings will also be used to assess the processing performances,
 
-<mark>List demo:</mark>
-- [x] Test done
-- [ ] Test Not Done
-- [ ] Final Issue :tada:
+Tests are more detailed in:
+ * In [/src/test/java/esa/sen2vm/](/src/test/java/esa/sen2vm/) for fucntionnal tests,
+ * In dediceted <mark>**Document**</mark>, for quality tests (which also includes functionnal tests description)
+
