@@ -262,6 +262,7 @@ A folder named GEO_DATA, beside the QI_DATA folder and datastrip metadata will c
 * S2B_OPER_**GEO**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.vrt</strong>
 
 Example of product with grid inside it:
+
 ![Output example of Datastrip vrt for direct location grids](/assets/images/README_OutputDatastrip.PNG "Output example of Datastrip vrt for direct location grids.")
 
 #### 2.1.2 Direct location grids’ specifications
@@ -274,7 +275,9 @@ Grids characteristics are:
 
    ![Direct grid handling](/assets/images/README_DirectGridHandling.png "Direct Grid Handling.")
 with (_grid row_,_grid col_) = (_Pixel Origin_, _Pixel Origin_) = (_1_,_1_) at center of first grid cell
- example
+
+Example:
+
  ![Direct convention](/assets/images/README_DirectConvention.png "Direct convention.")
 
  * Grid Metadata: Grids will contain Metadata information of [GDAL geolocation grids](https://gdal.org/development/rfc/rfc4_geolocate.html):
@@ -287,6 +290,7 @@ with (_grid row_,_grid col_) = (_Pixel Origin_, _Pixel Origin_) = (_1_,_1_) at c
      * GEOREFERENCING_CONVENTION: PIXEL_CENTER
 
  * Overlap: to ensure grid granule continuity, one pixel overlap will be added. Taking advantage of this overlap, one granule can be individually resampled, or multiple granules (whole Datastrip for example) using the vrt grid concatenation without extra disk cost). Thus _PIXEL/LINE OFFSET_ of the Grid Metadata will vary for each grid.
+
   ![Direct overlpas](/assets/images/README_DirectOverlaps.png "Direct overlaps.")
  
  
@@ -295,6 +299,7 @@ with (_grid row_,_grid col_) = (_Pixel Origin_, _Pixel Origin_) = (_1_,_1_) at c
 Direct location grids are intended to be used with bilinear interpolation operation. Direct location (i.e lon/lat positions) should be as follow:
 
  * Given an image position (_row_/_col_) compute grid fractional position (grid row, grid col):
+
    ![Direct grid handling](/assets/images/README_DirectGridHandling.png "Direct Grid Handling.")
 
  * Use bilinear interpolation on (_grid row_, _grid col_) to retrieve lon/lat/(alt).
@@ -339,6 +344,7 @@ Output will be named:
 * S2B_OPER_**INV**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.tif</strong>
 
 Example:
+
 ![Output example of inverse location grids](/assets/images/README_OutputInv.PNG "Output example of inverse location grids.")
 
 
@@ -369,6 +375,7 @@ as for Direct location, the first grid center if syncrhonized with the first cen
 Grids are intended to be used with bilinear interpolation operation. Inverse locations (i.e image position given a ground position) should be as follow:
 
  * Given an ground position (_lon_/_lat_) or (_x_, _y_) compute grid fractional position (grid row, grid col)using grid geotransform for GRID_ORIGIN and GRID_STEP:
+
      ![Inverse grid handling](/assets/images/README_InverseGridHandling.png "Inverse Grid Handling.")
 
  * Use bilinear interpolation on (_grid row_, _grid col_) to retrieve _row_/_col_.
