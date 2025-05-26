@@ -200,6 +200,12 @@ public class OutputFileManager
             ds.SetGeoTransform(gtInfo);
             ds.FlushCache();
             ds.delete();
+
+            // Delete auxiliary file created (.aux.xml)
+            File fXml = new File(inputTIFs.get(g) + Sen2VMConstants.AUX_EXTENSION);
+            if(fXml.exists()) {
+                fXml.delete();
+            }
         }
     }
 
