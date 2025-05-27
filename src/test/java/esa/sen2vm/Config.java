@@ -182,18 +182,15 @@ public class Config
 
     public static String createTestDir(String nameTest, String type) throws IOException
     {
-        if (type.equals("direct"))
-        {
-            String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
-            String outputDir = "src/test/resources/tests/output/" + nameTest;
-            copyFolder(new File(inputRef), new File(outputDir), true);
-            return outputDir;
-        } else {
-            String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
-            String outputDir = "src/test/resources/tests/output/" + nameTest;
-            copyFolder(new File(inputRef), new File(outputDir), true);
-            return outputDir;
+
+        String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
+        String outputDir = "src/test/resources/tests/output/" + nameTest;
+        File outputDirFile = new File(outputDir);
+        if(outputDirFile.exists()) {
+            outputDirFile.delete();
         }
+        copyFolder(new File(inputRef), new File(outputDir), true);
+        return outputDir;
     }
 
 public static String changeParams(String filePath, String[] detectors, String[] bands, String outputDir) throws FileNotFoundException,
