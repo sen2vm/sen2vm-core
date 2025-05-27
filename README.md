@@ -109,6 +109,11 @@ Its requirements are:
 
 #### 1.2.2 Resampling using inverse locations grids
 
+> [!CAUTION]
+> Please note that there is an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on OTB side. Until corrected, **the grid information shall be changed of half the resolution of the target pixel** (spacing) in both directions, to be synchronised. Hence in the previous command:
+>  * out.ulx **shall be updated to 293080** ( = 293050 + 60/2)
+>  * out.uly **shall be updated to 3697870** ( = 3697900 + (-60)/2)
+
 ```python
 # If needed, point to the local gdal version handling Sen2VM grids
 # export PATH=~/code/senv2vm/bin/bin/:$PATH
@@ -132,11 +137,6 @@ otbcli_GridBasedImageResampling -io.in  /PATH_TO_DATA/working/madeire_D09_B01.ti
 # Add georeferencing to the image
 gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PATH_TO_DATA/working/warp_otb_D09_B01_georef.tif
 ```
-> [!CAUTION]
-> Please note that there is an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on OTB side. Until corrected, **the grid information shall be changed of half the resolution of the target pixel** (spacing) in both directions, to be synchronised. Hence in the previous command:
->  * out.ulx **shall be updated to 293050** ( = 293050 + 60/2)
->  * out.uly **shall be updated to 3697870** ( = 3697900 + (-60)/2)
-
 
 
 ## 2. Inputs
@@ -239,7 +239,7 @@ The version used in operation of the GIPP are listed in the L1B Datastrip Metada
 ![GIPP list in L1B Datastrip metadata](/assets/images/README_GIPPListInL1BDatastripMetadata.png "GIPP list in L1B Datastrip metadata.")
 
 > [!CAUTION]
-> GIPP are however not directly available in the L1B product, then shall then be downloaded beforehand by the user. All versions are available at <mark>**XXX**</mark>.
+> GIPP are however not directly available in L1B products, then they shall be downloaded beforehand by the user. All versions are available at <mark>**XXX**</mark>.
 
 The GIPP required are the following ones:
 * **GIP_VIEDIR**: contains Viewing Direction required by Rugged to create viewing model from TAN_PSI_X/Y_LIST tags, one GIP_VIEDIR file **per band**, each file containing information per **detector!** (in _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_X_LIST]_ and _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_Y_LIST]_)
