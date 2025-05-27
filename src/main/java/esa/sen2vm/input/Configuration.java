@@ -31,7 +31,6 @@ public class Configuration extends InputFileManager
     private String dem;
     private String geoid;
     private String iers = "";
-    private String pod;
     private String operation;
     private boolean deactivateRefining = Sen2VMConstants.DEACTIVATE_REFINING;
     private float step_band10m;
@@ -83,11 +82,6 @@ public class Configuration extends InputFileManager
         {
             LOGGER.info("Reading IERS file at: " + commandLine.getOptionValue(OptionManager.OPT_IERS_SHORT));
             this.iers = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_IERS_SHORT));
-        }
-        
-        if (commandLine.hasOption(OptionManager.OPT_POD_SHORT))
-        {
-            this.pod = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_POD_SHORT));
         }
         
         // By default we want the check of GIPP version. The option deactivate the check
@@ -172,7 +166,6 @@ public class Configuration extends InputFileManager
             this.dem = PathUtils.checkPath(jsonObject.getString("dem"));
             this.geoid = PathUtils.checkPath(jsonObject.getString("geoid"));
 
-            this.pod = jsonObject.getString("pod");
             this.operation = jsonObject.getString("operation");
 
             JSONObject steps = jsonObject.getJSONObject("steps");
@@ -303,15 +296,6 @@ public class Configuration extends InputFileManager
     public String getIers()
     {
        return iers;
-    }
-
-    /**
-     * Get the POD folder
-     * @return the POD folder
-     */
-    public String getPod()
-    {
-       return pod;
     }
 
     /**
