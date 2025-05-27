@@ -44,7 +44,7 @@ java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configurat
 
 #### 1.2.1 Resampling using direct locations grids
 
-Direct locations grids can be used to preform a resampling. It can be done using gdal or using [OTB](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
+Direct location grids can be used to preform a resampling. It can be done using gdal or using [OTB](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
 
 ##### 1.2.1.1 Using gdal
 
@@ -93,7 +93,7 @@ python sen2vm_invloc_from_dir_loc_grid.py /PATH_TO_DATA/S2B_MSIL1B_20241019T1202
 # - grid.in: an inverse location grid
 otbcli_GridBasedImageResampling -io.in  /PATH_TO_DATA/working/madeire_D09_B01.tif -io.out /PATH_TO_DATA/working/warp_otb_D09_B01.tif -grid.in  /PATH_TO_DATA/working/grid_D09_B01.tif -grid.type loc -out.ulx 293050  -out.uly 3697900 -out.spacingx 60 -out.spacingy -60 -out.sizex 933   -out.sizey   2040
 
-# georeferencing the image
+# Add georeferencing to the image
 gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PATH_TO_DATA/working/warp_otb_D09_B01_georef.tif
 ```
 
@@ -162,7 +162,7 @@ Each parameter description can be found in the table below:
 | iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf § [IERS](#214-iers))|
 |operation    | string   | **Mandatory** | Possibilities:<ul><li>“direct”: to configure Sen2VM to compute direct location grids</li><li>“inverse”: to configure Sen2VM to compute inverse location grids</li></ul>|
 | deactivate_available_refining| boolean  | Optional      | If false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf product description in § [L1B Product](#2112-refining-information)|
-| export_alt   | boolean  | Optional      | If false (default), direct locations grids will contain only 2 bands (<mark>**Lat/Long**</mark>), if true, a third band containing the altitude will be exported (but output grids will be bigger in size) cf product description in §[Direct location grids](#31-direct location grids)|
+| export_alt   | boolean  | Optional      | If false (default), direct locations grids will contain only 2 bands (Long/Lat), if true, a third band containing the altitude will be exported (but output grids will be bigger in size) cf product description in §[Direct location grids](#31-direct location grids)|
 | steps       | float    | **Mandatory** | <ul><li>One per resolution: “10m_bands”, “20m_bands” & “60m_bands”</li><li>Floating numbers (NNNN.DDD)</li><li>Unit in pixel</li></ul>|
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**| See dedicated table below|
 
@@ -330,7 +330,7 @@ Before processing, **a check will be done** to see if direct location grids are 
 ##### 3.1.1.1 Granule level
 Grids’ location and naming is at granules level:
 * 1 grid per couple “L1B granule”/”Sentinel-2 band”,
-* Grids **include 2 (_optionally 3_) bands (Lat/Long/_alt_)**
+* Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
 * Grids are in **geotiff format with float32 coding positions** which allow approximately centimetre precision on lat/lon coordinates. JP2000 cannot be used at it does not allow float32 encoding, meaning the precision will not be enough,
 * Grids location will be inside a **GEO_DATA folder** which will be inside each granules folders (at the same level than IMG_DATA and QI_DATA folders),
 * Grids naming conventions will respect the corresponding image data inside the IMG_DATA folder with:
@@ -346,7 +346,7 @@ The direct location grid will be generated in the GEO_DATA folder, and named:
 ##### 3.1.1.2 Datastrip level
 At datastrip level grids’ location and naming is:
 * 1 vrt per couple “detector”/”Sentinel-2 band”,
-* Grids **include 2 (_optionally 3_) bands (Lat/Long/_alt_)**
+* Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
 * Grid location will be inside a **GEO_DATA folder** inside **DATASTRIP** folder (at the same level QI_DATA folder)
 * Grids naming conventions will respect the corresponding datastrip metadata convention with:
     * **GEO** instead of **MTD**
@@ -430,7 +430,7 @@ Outputs will be **written in the folder provided by the user**. For inverse loca
 
 Output grids’ convention will be:
 * 13 grids (1 per Sentinel-2 band) per detector intersecting the area,
-* Grids are in **geotiff format with float32 coding positions** which allow decimal information on row/col positions. JP2000 cannot be used at it does not allow float32 encoding, meaning the precision will not be enough,
+* Grids are in **geotiff format with float32 coding positions** which allow decimal information on **col/row** positions. JP2000 cannot be used at it does not allow float32 encoding, meaning the precision will not be enough,
 * Grids naming conventions will respect the corresponding datastrip metadata convention with:
     * **INV** instead of **MTD**,
     * <strong>_DXX_BYY.tif</strong> instead of <strong>.xml</strong> extension.
@@ -450,7 +450,7 @@ Example:
 Inverse location grids **will give the coordinates in the “detector” image**, meaning as if the granules of the same detector were concatenated.
 
  * Grid metadata:
-    * will be written as GDAL GEO information (SRS and geotransform) and Metadata keys, containing ROW_BAND and COL_BAND to specify row col index and PIXEL_ORIGIN which specify granule first pixel center convention, and NoData value.  
+    * are written as GDAL GEO information (SRS and geotransform) and Metadata keys, containing ROW_BAND and COL_BAND to specify row col index and PIXEL_ORIGIN which specify granule first pixel center convention, and NoData value.  
    * Metadata keys are:
        * the SRS
        * NoData fill value
