@@ -20,7 +20,7 @@ java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configurat
 
 Where:
 * <NN.NN.NN> is the version number of Sen2VM launched,
-* configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[1.2 Configuration file](#12-configuration-file) for further information). Please note that this input is **Mandatory**. 
+* configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please note that this input is **Mandatory**. 
 * parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §XXX for further information).This input is **Optional**.
 
 Example from current repository:
@@ -37,7 +37,101 @@ mvn clean install
 java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
 ```
 ### 1.2 Example of use
-<mark>**TODO**</mark>
+
+> [!CAUTION]
+> gdal version shall be compatible with the new Sen2VM grids. Official gdal does not yet include this driver/possibility. A [Pull Request](https://github.com/OSGeo/gdal/pull/12431 ) is currently openned, but in the meantime, this gdal version can be find [here](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c)
+
+
+#### 1.2.1 Resampling using direct locations grids
+
+Direct locations grids can be used to preform a resampling. It can be done using gdal or using [OTB](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
+
+##### 1.2.1.1 Using gdal
+
+```python
+# If needed, point to the local gdal version handling Sen2VM grids
+# export PATH=~/code/senv2vm/bin/bin/:$PATH
+# export LD_LIBRARY_PATH=~/code/senv2vm/bin/lib:$LD_LIBRARY_PATH
+
+
+#Initialisation of the product for gdal
+gdalinfo  /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml
+
+# Creation of a mosaic for D09_B01
+gdal_translate  SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01 /PATH_TO_DATA/working/madeire_D09_B01.tif
+
+# Resampling/orthorectification using gdal
+gdal_warp SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B04 /PATH_TO_DATA/working/projected_D09_B04.tif -t_srs EPSG:32628 -tr 10 -10
+```
+
+##### 1.2.1.1 Using otb
+This method is performe into three main steps:
+ * Creation of a mosaic of all images
+ * Convert the direct location grid into an inverse location grid using scipy
+ * use the otb resampling using the mosaic and the inverse location grid
+
+
+```python
+# If needed, point to the local gdal version handling Sen2VM grids
+# export PATH=~/code/senv2vm/bin/bin/:$PATH
+# export LD_LIBRARY_PATH=~/code/senv2vm/bin/lib:$LD_LIBRARY_PATH
+
+
+# To get the name of the grid for your band/detector either
+# - look inside teh DATASTRIP/S*/GEO_DATA folder 
+# - launch a gdalinfo to get the list
+gdalinfo  /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml
+
+# Creation of a mosaic of images of all granules (for D09_B01)
+gdal_translate  SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01 /PATH_TO_DATA/working/madeire_D09_B01.tif
+
+# Conversion of Sen2VM direct location grid into an inverse location grid with a 45m step
+python sen2vm_invloc_from_dir_loc_grid.py /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/DATASTRIP/S2B_OPER_MSI_L1B_DS_2BPS_20241019T153411_S20241019T120215_N05.11/GEO_DATA/S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01.vrt --loglevel INFO 45.0  /PATH_TO_DATA/working/grid_D09_B01.tif
+
+# Use OTB for resampling (default BCO interpolator) with
+# - io.in: Mosaic of all images
+# - grid.in: an inverse location grid
+otbcli_GridBasedImageResampling -io.in  /PATH_TO_DATA/working/madeire_D09_B01.tif -io.out /PATH_TO_DATA/working/warp_otb_D09_B01.tif -grid.in  /PATH_TO_DATA/working/grid_D09_B01.tif -grid.type loc -out.ulx 293050  -out.uly 3697900 -out.spacingx 60 -out.spacingy -60 -out.sizex 933   -out.sizey   2040
+
+# georeferencing the image
+gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PATH_TO_DATA/working/warp_otb_D09_B01_georef.tif
+```
+
+Please note that the script ```sen2vm_invloc_from_dir_loc_grid.py``` used by this method is directly available on this git, at this [location](/assets/scripts/sen2vm_invloc_from_dir_loc_grid.py).
+
+Its requirements are: 
+ * numpy
+ * rasterio
+ * utm
+ * scipy
+ * argparse
+ * pathlib
+
+#### 1.2.2 Resampling using inverse locations grids
+
+```python
+# If needed, point to the local gdal version handling Sen2VM grids
+# export PATH=~/code/senv2vm/bin/bin/:$PATH
+# export LD_LIBRARY_PATH=~/code/senv2vm/bin/lib:$LD_LIBRARY_PATH
+
+
+# To get the name of the grid for your band/detector either
+# - look inside teh DATASTRIP/S*/GEO_DATA folder 
+# - launch a gdalinfo to get the list
+gdalinfo  /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml
+
+# Creation of a mosaic of images of all granules (for D09_B01)
+gdal_translate  SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01 /PATH_TO_DATA/working/madeire_D09_B01.tif
+
+
+# Use OTB for resampling (default BCO interpolator) with
+# - io.in: Mosaic of all images
+# - grid.in: an inverse location grid
+otbcli_GridBasedImageResampling -io.in  /PATH_TO_DATA/working/madeire_D09_B01.tif -io.out /PATH_TO_DATA/working/warp_otb_D09_B01.tif -grid.in  /PATH_TO_DATA/OUTPUT_INV_GRID/XXX.tif -grid.type loc -out.ulx 293050  -out.uly 3697900 -out.spacingx 60 -out.spacingy -60 -out.sizex 933   -out.sizey   2040
+
+# Add georeferencing to the image
+gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PATH_TO_DATA/working/warp_otb_D09_B01_georef.tif
+```
 
 ## 2. Inputs
 Inputs required by Sen2VM are:
@@ -64,8 +158,8 @@ Each parameter description can be found in the table below:
 | gipp_folder | string   | **Mandatory** | Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to § [GIPP](#212-gipp).|
 | gipp_check  | boolean  | Optional      | If true (default), check of GIPP version activated (see GIPP section § [GIPP](#212-gipp)</mark>)|
 |dem          | string   | **Mandatory** | Path to the FOLDER containing a DEM in the right format (cf § [Altitude/DEM](#2131-dem)).|
-|geoid        | string   | **Mandatory** | Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#2131-geoid))|
-| iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf § [Altitude/DEM](#214-iers))|
+|geoid        | string   | **Mandatory** | Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#2132-geoid))|
+| iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf § [IERS](#214-iers))|
 |operation    | string   | **Mandatory** | Possibilities:<ul><li>“direct”: to configure Sen2VM to compute direct location grids</li><li>“inverse”: to configure Sen2VM to compute inverse location grids</li></ul>|
 | deactivate_available_refining| boolean  | Optional      | If false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf product description in § [L1B Product](#2112-refining-information)|
 | export_alt   | boolean  | Optional      | If false (default), direct locations grids will contain only 2 bands (<mark>**Lat/Long**</mark>), if true, a third band containing the altitude will be exported (but output grids will be bigger in size) cf product description in §[Direct location grids](#31-direct location grids)|
@@ -82,7 +176,7 @@ The field “inverse_location_additional_info” is not required and will be ign
 | lr_x          | float    | **Mandatory** | **X** coordinates of the **lower right** point that will define the squared area where to compute the grids|
 | lr_y          | float    | **Mandatory** | **Y** coordinates of the **lower right** point that will define the squared area where to compute the grids|
 | referential   | string   | **Mandatory** | A string defining the **referential** used. **Note, UL and LR points’ coordinates** will be in this referential. Example: EPSG:4326|
-| output_folder | string   | **Mandatory**|Output path where the inverse location grids will be written (see § [Inverse location grids](#42-inverse-location-grids))|
+| output_folder | string   | **Mandatory**|Output path where the inverse location grids will be written (see § [Inverse location grids](#32-inverse-location-grids))|
 
 #### 2.1.1 L1B Product
 > [!NOTE]
@@ -121,7 +215,7 @@ Refining for Sentinel-2 is a geolocation refining to correct the geometric model
 Refining information can be found in the Datastrip Metadata. If refined, the model of the satellite shall be modified accordingly. Information is stored in the filed “Level-1B_DataStrip_ID/Image_Data_Info//Geometric_Info/Refined_Corrections_List/Refined_Corrections/MSI_State”. They are present only if the flag “Image_Refining” is set at “REFINED” and absent if set at “NOT_REFINED”.
 ![Refining information inside Datastrip metadata](/assets/images/README_RefiningInformationInsideDatastripMetadata.png "Refining information inside Datastrip metadata.")
 
-An optional boolean argument is available in the configuration file (see §[1.2 Configuration file](#2.1-configuration-file)): deactivate_available_refining.
+An optional boolean argument is available in the configuration file (see §[2.1 Configuration file](#21-configuration-file)): deactivate_available_refining.
 > [!WARNING]
 > **By default, it is set at false**, meaning that the refining **information shall be taken into account** if available in the Datastrip Metadata. However, **if set at true**, the datastrip shall be **considered as NOT_REFINED**, meaning ignoring the refining information.
 #### 2.1.2 GIPP
@@ -132,7 +226,7 @@ GIPP are configuration files used in operation to:
 
 By nature, GIPP are then versionnable. It is important to process with the version used to generate the L1B product.
 > [!WARNING]
->  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf §[2.1 Configuration file](#1.2-configuration-file)). **This parameter is optional, and by default, its value is at true and the check is done, it can be forced at false if needed**.
+>  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf §[2.1 Configuration file](#21-configuration-file)). **This parameter is optional, and by default, its value is at true and the check is done, it can be forced at false if needed**.
 
 The version used in operation of the GIPP are listed in the L1B Datastrip Metadata of the L1B product (see §[2.1.1 L1B Product](#211-l1b-product)), in the following section: _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
 
@@ -154,7 +248,7 @@ The main purpose of the tool is to add geolocation to the L1B product images. He
 
 ![Altitude importance on geolocation](/assets/images/README_AltitudeImportanceOnGeolocation.png "Altitude importance on geolocation.")
 
-For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used. So, path of both shall be provided in input (cf §[1.2 Configuration file](#1.2-configuration-file)).
+For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used. So, path of both shall be provided in input (cf §[2.1 Configuration file](#21-configuration-file)).
 
 ##### 2.1.3.1 DEM
 The expected format for the DEM is:
@@ -194,7 +288,7 @@ Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to
 
 Configuration of the detectors/bands to process are done through the parameters file which is a json. **If not available, Sen2VM will process all detectors/bands**.
 
-The configuration file contains 2 fields:
+The parameters file contains 2 fields:
 * “detectors”: Detectors are passed through string representing Sentinel-2 detectors encoded in **2 digits**, **separated by “-”.** Detectors indexes are from **“01” to “12”.**
 * “bands”: Bands are passed through string representing Sentinel-2 bands encoded in **2 digits with a “B”** before and **separated from “-”**. Bands are going from **“B01” to “B12”, including a “B8A”.**
 
@@ -322,7 +416,7 @@ An inverse location grid is a grid which maps ground coordinates with sensor one
 Inverse location grids are georeferenced in **geographic or cartographic reference frame**.
 Inverse location grid is regular in **ground reference frame** (for one band and one detector).
 
-To define the extend of the inverse location grid, parameters are described in section §§[2.1 Configuration file](#12-configuration-file), but it can be resumed at:
+To define the extend of the inverse location grid, parameters are described in section §[2.1 Configuration file](#21-configuration-file), but it can be resumed at:
 * A referential system,
 * A square defined by:
     * One Upper Left point (UL),
