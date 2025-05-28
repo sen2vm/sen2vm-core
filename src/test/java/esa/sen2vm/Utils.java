@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
@@ -82,6 +83,7 @@ public class Utils {
 
     public Utils() {
     }
+    private static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
 
     private static final double THRESHOLD_DIR = 1e-8;
     private static final double THRESHOLD_INV = 1e-6;
@@ -215,9 +217,9 @@ public class Utils {
                         }
 
                         if (!(Double.isNaN(data1[c]))  && Math.abs(data1[c] - data2[c]) > threshold) {
-                            System.out.println("Error in " + img1Path);
+                            LOGGER.warning("Error in " + img1Path);
                             String error = String.valueOf(data1[c]) + " - " + String.valueOf(data1[c]) + " = " + String.valueOf(data1[c] - data2[c]);
-                            System.out.println("Band "+ String.valueOf(b) + "/ coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
+                            LOGGER.warning("Band "+ String.valueOf(b) + "/ coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
                             return false;
                         }
                     }
@@ -279,11 +281,11 @@ public class Utils {
                         diff = diff * res;
 
                         if (diff > threshold) {
-                            System.out.println("Error in " + img1Path);
+                            LOGGER.warning("Error in " + img1Path);
                             String error = "(" + String.valueOf(data1b2[c]) + ", " + String.valueOf(data1b1[c])  + ")";
                             error = error + " vs (" + String.valueOf(data2b2[c]) + ", " + String.valueOf(data2b1[c]) + ")";
                             error = error + " = " + String.valueOf(diff);
-                            System.out.println("Coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
+                            LOGGER.warning("Coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
                             return false;
                         }
                     }

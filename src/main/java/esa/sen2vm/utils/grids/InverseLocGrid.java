@@ -42,8 +42,8 @@ public class InverseLocGrid
                          String epsg, float res, float step)
     {
         this.epsg = Integer.valueOf(epsg.substring(5));
-        float resX = res ;
-        float resY = res ;
+        float resX = res;
+        float resY = res;
 
         // test if upper and bottom are reversed
         if (ulY > lrY)
@@ -74,8 +74,8 @@ public class InverseLocGrid
         this.gridX = grid_1D(this.ulX + this.stepX / 2, lrX - resX / 2, this.stepX);
 
         // Compute englobing lower right of the grid after computation
-        this.lrY = gridY.get(gridY.size()-1) + stepY / 2 ;
-        this.lrX = gridX.get(gridX.size()-1) + stepX / 2 ;
+        this.lrY = gridY.get(gridY.size()-1) + stepY / 2;
+        this.lrX = gridX.get(gridX.size()-1) + stepX / 2;
 
         LOGGER.info("# Grid information");
         String log = "Step: (" + String.valueOf(this.stepY) + ", " + String.valueOf(this.stepX) + "); ";

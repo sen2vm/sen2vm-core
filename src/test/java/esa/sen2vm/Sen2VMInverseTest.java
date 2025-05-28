@@ -78,7 +78,7 @@ public class Sen2VMInverseTest
                     for (String detector: detectors)
                     {
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(DetectorInfo.getDetectorInfoFromName(detector), BandInfo.getBandInfoFromNameWithB(band), configFile.getInverseLocOutputFolder());
-                        System.out.println(invFileName);
+                        LOGGER.info(invFileName);
                         Dataset ds = gdal.Open(invFileName);
                         double[] transform = ds.GetGeoTransform();
 

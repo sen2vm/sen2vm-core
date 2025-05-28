@@ -242,7 +242,7 @@ public class Sen2VM
             LOGGER.info("Starting grids generation");
 
             // Test if no grids exists already
-            safeManager.testifGridsToComputeAlreadyExists(detectors, bands) ;
+            safeManager.testifGridsToComputeAlreadyExists(detectors, bands);
 
             for (BandInfo bandInfo: bands)
             {

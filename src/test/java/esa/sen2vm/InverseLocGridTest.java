@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.enums.BandInfo;
@@ -37,7 +38,7 @@ import org.gdal.gdal.gdal;
  */
 public class InverseLocGridTest
 {
-
+    private static final Logger LOGGER = Logger.getLogger(InverseLocGridTest.class.getName());
 
     String configTmpInverse = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
     String paramTmp = "src/test/resources/params_base.json";
@@ -60,27 +61,28 @@ public class InverseLocGridTest
 
         // new bounding box
         InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
-        ArrayList<Float> gridX = invGrid.getGridX() ;
-        ArrayList<Float> gridY = invGrid.getGridY() ;
+        ArrayList<Float> gridX = invGrid.getGridX();
+        ArrayList<Float> gridY = invGrid.getGridY();
 
-        System.out.println("SIZE_GRIDX = " + String.valueOf(gridX.size()));
-        System.out.println("UL_X_input= " + String.valueOf(ulX));
-        System.out.println("UL_X_grid =" + String.valueOf(invGrid.getUlX()));
-        System.out.println("Start_X_sans_conv = " + String.valueOf(gridX.get(0) - invGrid.getStepX() / 2));
-        System.out.println("Start_X_avec_conv = " + String.valueOf(gridX.get(0)));
-        System.out.println("END_X_avec_conv = " + String.valueOf(gridX.get(gridX.size()-1)));
-        System.out.println("END_X_sans_conv = " + String.valueOf(gridX.get(gridX.size()-1) - invGrid.getStepX() / 2) );
-        System.out.println("LR_X_input = " + String.valueOf(lrX));
-        System.out.println("");
 
-        System.out.println("SIZE_GRIDY = " + String.valueOf(gridY.size()));
-        System.out.println("UL_Y_input = " + String.valueOf(ulY));
-        System.out.println("UL_Y_grid = " + String.valueOf(invGrid.getUlY()));
-        System.out.println("Start_Y_sans_conv = " + String.valueOf(gridY.get(0) - invGrid.getStepY() / 2));
-        System.out.println("Start_Y_avec_conv = " + String.valueOf(gridY.get(0)));
-        System.out.println("END_Y_avec_conv = " + String.valueOf(gridY.get(gridY.size()-1)));
-        System.out.println("END_Y_sans_conv = " + String.valueOf(gridY.get(gridY.size()-1) - invGrid.getStepY() / 2) );
-        System.out.println("LR_Y_input = " + String.valueOf(lrY));
+        LOGGER.info("SIZE_GRIDX = " + String.valueOf(gridX.size()));
+        LOGGER.info("UL_X_input= " + String.valueOf(ulX));
+        LOGGER.info("UL_X_grid =" + String.valueOf(invGrid.getUlX()));
+        LOGGER.info("Start_X_sans_conv = " + String.valueOf(gridX.get(0) - invGrid.getStepX() / 2));
+        LOGGER.info("Start_X_avec_conv = " + String.valueOf(gridX.get(0)));
+        LOGGER.info("END_X_avec_conv = " + String.valueOf(gridX.get(gridX.size()-1)));
+        LOGGER.info("END_X_sans_conv = " + String.valueOf(gridX.get(gridX.size()-1) - invGrid.getStepX() / 2));
+        LOGGER.info("LR_X_input = " + String.valueOf(lrX));
+        LOGGER.info("");
+
+        LOGGER.info("SIZE_GRIDY = " + String.valueOf(gridY.size()));
+        LOGGER.info("UL_Y_input = " + String.valueOf(ulY));
+        LOGGER.info("UL_Y_grid = " + String.valueOf(invGrid.getUlY()));
+        LOGGER.info("Start_Y_sans_conv = " + String.valueOf(gridY.get(0) - invGrid.getStepY() / 2));
+        LOGGER.info("Start_Y_avec_conv = " + String.valueOf(gridY.get(0)));
+        LOGGER.info("END_Y_avec_conv = " + String.valueOf(gridY.get(gridY.size()-1)));
+        LOGGER.info("END_Y_sans_conv = " + String.valueOf(gridY.get(gridY.size()-1) - invGrid.getStepY() / 2));
+        LOGGER.info("LR_Y_input = " + String.valueOf(lrY));
 
         float stepX = invGrid.getStepX();
         float stepY = invGrid.getStepY();
@@ -112,10 +114,8 @@ public class InverseLocGridTest
         ul.transform();
         Coordinates lr = new Coordinates(lrX, lrY, epsg_int);
         lr.transform();
-        System.out.println("UL XY(" + String.valueOf(ul.getLongitude()) + ", " + String.valueOf(ul.getLatitude()) + ")");
-        System.out.println("LR XY(" + String.valueOf(lr.getLongitude()) + ", " + String.valueOf(lr.getLatitude()) + ")");
-
-
+        LOGGER.info("UL XY(" + String.valueOf(ul.getLongitude()) + ", " + String.valueOf(ul.getLatitude()) + ")");
+        LOGGER.info("LR XY(" + String.valueOf(lr.getLongitude()) + ", " + String.valueOf(lr.getLatitude()) + ")");
 
     }
 
@@ -131,40 +131,40 @@ public class InverseLocGridTest
         float res = 10f;
         String epsg = "EPSG:32628";
         InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
-        ArrayList<Float> gridX = invGrid.getGridX() ;
+        ArrayList<Float> gridX = invGrid.getGridX();
         assertEquals(gridX.get(0), 5);
         assertEquals(gridX.get(gridX.size()-1), 95);
-        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+        LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
 
         step = 2.0f;
         invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
-        gridX = invGrid.getGridX() ;
+        gridX = invGrid.getGridX();
         assertEquals(gridX.get(0), 5);
         assertEquals(gridX.get(gridX.size()-1), 105);
-        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+        LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
 
         step = 8.0f;
         invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
-        gridX = invGrid.getGridX() ;
+        gridX = invGrid.getGridX();
         assertEquals(gridX.get(0), 5);
         assertEquals(gridX.get(gridX.size()-1), 165);
-        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+        LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
 
         step = 1.0f;
         res = 2.0f;
         invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
-        gridX = invGrid.getGridX() ;
+        gridX = invGrid.getGridX();
         assertEquals(gridX.get(0), 1);
         assertEquals(gridX.get(gridX.size()-1), 99);
-        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+        LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
 
         step = 0.5f;
         res = 20f;
         invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
-        gridX = invGrid.getGridX() ;
+        gridX = invGrid.getGridX();
         assertEquals(gridX.get(0), 10);
         assertEquals(gridX.get(gridX.size()-1), 90);
-        System.out.println(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
+        LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
     }
 
     @Test

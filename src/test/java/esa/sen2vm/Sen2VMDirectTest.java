@@ -10,9 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import esa.sen2vm.input.Configuration;
-import java.io.IOException;
 import org.json.simple.parser.ParseException;
+
+import java.util.logging.Logger;
+import java.io.IOException;
+
+import esa.sen2vm.input.Configuration;
 import esa.sen2vm.exception.Sen2VMException;
 
 /**
@@ -21,6 +24,7 @@ import esa.sen2vm.exception.Sen2VMException;
 
 public class Sen2VMDirectTest
 {
+    private static final Logger LOGGER = Logger.getLogger(Sen2VMDirectTest.class.getName());
 
     String configTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct.json";
     String paramTmp = "src/test/resources/params_base.json";
@@ -142,8 +146,8 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            System.out.println(config);
-            System.out.println(refDir + "/" + nameTest);
+            LOGGER.info(config);
+            LOGGER.info(refDir + "/" + nameTest);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
         } catch (IOException e) {
             e.printStackTrace();
