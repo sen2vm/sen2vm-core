@@ -65,7 +65,7 @@ gdal_warp SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_OPER_MTD_SAFL1B_PDMC_2024
 ```
 
 ##### 1.2.1.1 Using otb
-This method consists of three main steps:
+This method can be resumed into three main steps:
  * Creation of a mosaic of all images,
  * Convertion of the direct location grid into an inverse location grid using scipy,
  * Computation of the otb resampling using the mosaic and the inverse location grid.
@@ -99,7 +99,7 @@ gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PAT
 
 Please note that the script ```sen2vm_invloc_from_dir_loc_grid.py``` used by this method is directly available on this git, at this [location](/assets/scripts/sen2vm_invloc_from_dir_loc_grid.py).
 
-Necessary prerequisites include: 
+Necessary prerequisites: 
  * numpy
  * rasterio
  * utm
@@ -166,10 +166,10 @@ Each parameter description can be found in the table below:
 |dem          | string   | **Mandatory** | Path to the FOLDER containing a DEM in the right format (cf § [Altitude/DEM](#2131-dem)).|
 |geoid        | string   | **Mandatory** | Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#2132-geoid))|
 | iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf § [IERS](#214-iers))|
-|operation    | string   | **Mandatory** | In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>|
+| operation    | string   | **Mandatory** | In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>|
 | deactivate_available_refining| boolean  | Optional      | If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in § [L1B Product](#2112-refining-information)|
-| export_alt   | boolean  | Optional      | If set to false (default), direct location grids will include only two bands: **Lat/Long**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](#31-direct location grids)|
-| steps       | float    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel.|
+| export_alt   | boolean  | Optional      | If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](#31-direct location grids)|
+| steps       | float    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in referential system for inverse location.|
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**| For the inverse location additional information please refer to the dedicated table below|
 
 
@@ -192,7 +192,7 @@ The field “inverse_location_additional_info” is not required and will be ign
 > The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated in the following sections.
 
 ##### 2.1.1.1 L1B Product input tree structure
-The mandatory inputs for Sen2Vm are the Datastrip and the Granules metadata. 
+The mandatory inputs for Sen2VM are the Datastrip and the Granules metadata. 
 
 These metadata must be organized in a specific directory structure. Within the L1B folder, only the following subdirectories will be considered:
  * DATASTRIP
@@ -214,7 +214,7 @@ Finally the GRANULE folder shall contain one folder per granule, each with the G
 
 ##### 2.1.1.2 Refining information
  
-Refining for Sentinel-2 refers to geolocation refinement that aims to correct the satellite geometric models relative to the [**G**lobal **R**eference **I**mage](https://s2gri.csgroup.space).
+Refining for Sentinel-2 refers to geolocation refinement that aims at correcting the satellite geometric models relative to the [**G**lobal **R**eference **I**mage](https://s2gri.csgroup.space).
 
 Refining information can be found in the Datastrip metadata. If refined, the model of the satellite shall be adjusted accordingly. This information is stored in the field “Level-1B_DataStrip_ID/Image_Data_Info//Geometric_Info/Refined_Corrections_List/Refined_Corrections/MSI_State”. It is present only if the flag “Image_Refining” is set to “REFINED” and absent if set to “NOT_REFINED”.
 ![Refining information inside Datastrip metadata](/assets/images/README_RefiningInformationInsideDatastripMetadata.png "Refining information inside Datastrip metadata.")
@@ -228,9 +228,9 @@ GIPP are configuration files used in operation to:
 * configure calibration parameters of the satellite,
 * configure several algorithms of the processing chain.
 
-By nature, the GIPP are versionnable. It is important to process with the version used to generate the L1B product.
+By nature, GIPP are versionnable. It is important to process with the version used to generate the L1B product.
 > [!WARNING]
->  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be desactivated through "gipp_check" parameter of the configuration file (cf §[2.1 Configuration file](#21-configuration-file)). **This parameter is optional, and by default, its value is set to true.**.
+>  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf §[2.1 Configuration file](#21-configuration-file)). **This parameter is optional, and by default, its value is set to true.**.
 
 The versions of the GIPP used in operation are listed in the L1B Datastrip Metadata of the L1B product (see §[2.1.1 L1B Product](#211-l1b-product)), in the tag _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
 
@@ -288,7 +288,7 @@ Hence an IERS bulletin can be provided in input by users (as optional).
 Format of the IERS bulletin that can be provided is [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
 
 ### 2.2 Parameters file
-Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent mode, user might want to process only parts of the Datastrip per thread. This capability is handled by SXGEO and was propagated to Sen2VM. This way, users can parallelize the process by itself, outside of Sen2VM.
+Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent model, user might want to process only parts of the Datastrip per thread. This capability is handled by SXGEO and was propagated to Sen2VM. This way, users can parallelize the process by itself, outside of Sen2VM.
 
 The selection of detectors and bands to process is defined in a JSON parameters file. **If this file is not provided, Sen2VM will process all detectors/bands**.
 
