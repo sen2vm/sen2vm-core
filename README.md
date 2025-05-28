@@ -110,7 +110,7 @@ Its requirements are:
 #### 1.2.2 Resampling using inverse locations grids
 
 > [!CAUTION]
-> Please note that there is an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on OTB side. Until corrected, **the grid information shall be changed of half the resolution of the target pixel** (spacing) in both directions, to be synchronised. Hence in the previous command:
+> Please note that there is an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on OTB side. Until corrected, **the grid information shall be changed of half the resolution of the target pixel** (spacing) in both directions, to be synchronised. Hence in the command from the script below:
 >  * out.ulx **shall be updated to 293080** ( = 293050 + 60/2)
 >  * out.uly **shall be updated to 3697870** ( = 3697900 + (-60)/2)
 
