@@ -57,7 +57,7 @@ Direct location grids can be used to preform a resampling. It can be done using 
 #Initialisation of the product for gdal
 gdalinfo  /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml
 
-# Creation of a mosaic for D09_B01
+# Creation of a mosaic for D09_B01 (D - detector; B - band)
 gdal_translate  SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01 /PATH_TO_DATA/working/madeire_D09_B01.tif
 
 # Resampling/orthorectification using gdal
@@ -65,10 +65,10 @@ gdal_warp SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_OPER_MTD_SAFL1B_PDMC_2024
 ```
 
 ##### 1.2.1.1 Using otb
-This method is performe into three main steps:
- * Creation of a mosaic of all images
- * Convert the direct location grid into an inverse location grid using scipy
- * use the otb resampling using the mosaic and the inverse location grid
+This method consists of three main steps:
+ * Creation of a mosaic of all images,
+ * Convertion of the direct location grid into an inverse location grid using scipy,
+ * Computation of the otb resampling using the mosaic and the inverse location grid.
 
 
 ```python
@@ -99,7 +99,7 @@ gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PAT
 
 Please note that the script ```sen2vm_invloc_from_dir_loc_grid.py``` used by this method is directly available on this git, at this [location](/assets/scripts/sen2vm_invloc_from_dir_loc_grid.py).
 
-Its requirements are: 
+Necessary prerequisites include: 
  * numpy
  * rasterio
  * utm
@@ -110,7 +110,7 @@ Its requirements are:
 #### 1.2.2 Resampling using inverse locations grids
 
 > [!CAUTION]
-> Please note that there is an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on OTB side. Until corrected, **the grid information shall be changed of half the resolution of the target pixel** (spacing) in both directions, to be synchronised. Hence in the command from the script below:
+> Please note that there is currently an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on the OTB side. Until corrected, **the grid information must be adjusted by half the resolution of the target pixel** (spacing) in both directions, to be synchronised as following:
 >  * out.ulx **shall be updated to 293080** ( = 293050 + 60/2)
 >  * out.uly **shall be updated to 3697870** ( = 3697900 + (-60)/2)
 
@@ -120,8 +120,8 @@ Its requirements are:
 # export LD_LIBRARY_PATH=~/code/senv2vm/bin/lib:$LD_LIBRARY_PATH
 
 
-# To get the name of the grid for your band/detector either
-# - look inside teh DATASTRIP/S*/GEO_DATA folder 
+# To get the name of the grid for your band/detector either:
+# - look inside the DATASTRIP/S*/GEO_DATA folder 
 # - launch a gdalinfo to get the list
 gdalinfo  /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml
 
@@ -129,7 +129,7 @@ gdalinfo  /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SA
 gdal_translate  SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01 /PATH_TO_DATA/working/madeire_D09_B01.tif
 
 
-# Use OTB for resampling (default BCO interpolator) with
+# Use OTB for resampling (default BCO interpolator) with:
 # - io.in: Mosaic of all images
 # - grid.in: an inverse location grid
 otbcli_GridBasedImageResampling -io.in  /PATH_TO_DATA/working/madeire_D09_B01.tif -io.out /PATH_TO_DATA/working/warp_otb_D09_B01.tif -grid.in  /PATH_TO_DATA/OUTPUT_INV_GRID/XXX.tif -grid.type loc -out.ulx 293050  -out.uly 3697900 -out.spacingx 60 -out.spacingy -60 -out.sizex 933   -out.sizey   2040
@@ -166,45 +166,43 @@ Each parameter description can be found in the table below:
 |dem          | string   | **Mandatory** | Path to the FOLDER containing a DEM in the right format (cf § [Altitude/DEM](#2131-dem)).|
 |geoid        | string   | **Mandatory** | Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#2132-geoid))|
 | iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf § [IERS](#214-iers))|
-|operation    | string   | **Mandatory** | Possibilities:<ul><li>“direct”: to configure Sen2VM to compute direct location grids</li><li>“inverse”: to configure Sen2VM to compute inverse location grids</li></ul>|
-| deactivate_available_refining| boolean  | Optional      | If false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf product description in § [L1B Product](#2112-refining-information)|
-| export_alt   | boolean  | Optional      | If false (default), direct locations grids will contain only 2 bands (Long/Lat), if true, a third band containing the altitude will be exported (but output grids will be bigger in size) cf product description in §[Direct location grids](#31-direct location grids)|
-| steps       | float    | **Mandatory** | <ul><li>One per resolution: “10m_bands”, “20m_bands” & “60m_bands”</li><li>Floating numbers (NNNN.DDD)</li><li>Unit in pixel</li></ul>|
-| inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**| See dedicated table below|
+|operation    | string   | **Mandatory** | In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>|
+| deactivate_available_refining| boolean  | Optional      | If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in § [L1B Product](#2112-refining-information)|
+| export_alt   | boolean  | Optional      | If set to false (default), direct location grids will include only two bands: **Lat/Long**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](#31-direct location grids)|
+| steps       | float    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel.|
+| inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**| For the inverse location additional information please refer to the dedicated table below|
 
 
-The field “inverse_location_additional_info” is not required and will be ignored if direct location grids are asked. However, it is mandatory for inverse location grids generation and **Sen2VM will raise an error** if information is missing in it.
+The field “inverse_location_additional_info” is not required and will be ignored if direct location grids are asked. However, it is mandatory for inverse location grids generation and **Sen2VM will raise an error** if this information is missing.
 
 | Name          | Type     | Required      | Description   |
 | ------------- | :------: | :-----------: | :-----------: |
-| ul_x          | float    | **Mandatory** | **X** coordinates of the upper left point that will define the squared area where to compute the grids|
-| ul_y          | float    | **Mandatory** | **Y** coordinates of the **upper left** point that will define the squared area where to compute the grids|
-| lr_x          | float    | **Mandatory** | **X** coordinates of the **lower right** point that will define the squared area where to compute the grids|
-| lr_y          | float    | **Mandatory** | **Y** coordinates of the **lower right** point that will define the squared area where to compute the grids|
-| referential   | string   | **Mandatory** | A string defining the **referential** used. **Note, UL and LR points’ coordinates** will be in this referential. Example: EPSG:4326|
-| output_folder | string   | **Mandatory**|Output path where the inverse location grids will be written (see § [Inverse location grids](#32-inverse-location-grids))|
+| ul_x          | float    | **Mandatory** | **X** coordinates of the **upper left** point defining the squared area where to compute the grids|
+| ul_y          | float    | **Mandatory** | **Y** coordinates of the **upper left** point defining the squared area where to compute the grids|
+| lr_x          | float    | **Mandatory** | **X** coordinates of the **lower right** point defining the squared area where to compute the grids|
+| lr_y          | float    | **Mandatory** | **Y** coordinates of the **lower right** point defining the squared area where to compute the grids|
+| referential   | string   | **Mandatory** | A string defining the **referential** used. **Please note, ul and lr points’ coordinates** are given in this referential. Example: EPSG:4326|
+| output_folder | string   | **Mandatory**|Path where the inverse location grids are written (see § [Inverse location grids](#32-inverse-location-grids))|
 
 #### 2.1.1 L1B Product
 > [!NOTE]
-> L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). Please note that special access for L1B products might be required by submiting  a request via the FAQ section.
+> L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). Please note that special access for L1B products might be required by submitting  a request via the FAQ section.
 
 > [!IMPORTANT]
-> The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated following sections
+> The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated in the following sections.
 
 ##### 2.1.1.1 L1B Product input tree structure
-The mandatory inputs for Sen2Vm are the Metadata:
- * Datastrip Metadata
- * Granules Metadata
+The mandatory inputs for Sen2Vm are the Datastrip and the Granules metadata. 
 
-They shall be stored in a particulr tree, first, in the L1B folder, only 2 folders will be looked at:
+These metadata must be organized in a specific directory structure. Within the L1B folder, only the following subdirectories will be considered:
  * DATASTRIP
  * GRANULES
 
 ![L1B Folder](/assets/images/README_L1BProduct.png "Necessary folders.")
 
-There can be other files (as in the SAFE format) but they will simply be ignored by Sen2VM core.
+Additional files (as in the SAFE format) may be present in the folders, but they will simply be ignored by Sen2VM core.
 
-Regarding the DATASTRIP folder, it shall contain a subfolder named with the Datastrip reference and inside this subfolder, the Datastrip Metadata named with the Datastrip reference. This format is compatible with SAFE and others files/folders will be ignored:
+As for the DATASTRIP folder, it must contain a subfolder named after the Datastrip reference and inside this subfolder, the Datastrip Metadata (also named after the Datastrip reference). This structure is compatible with the SAFE format and others files/folders will be ignored:
 
 ![DATASTRIP Folder](/assets/images/README_DatastripFolder.png "tree structure example of DATASTRIP folder.")
 
@@ -215,10 +213,10 @@ Finally the GRANULE folder shall contain one folder per granule, each with the G
 
 
 ##### 2.1.1.2 Refining information
+ 
+Refining for Sentinel-2 refers to geolocation refinement that aims to correct the satellite geometric models relative to the [**G**lobal **R**eference **I**mage](https://s2gri.csgroup.space).
 
-Refining for Sentinel-2 is a geolocation refining to correct the geometric models of the Satellite versus a [GRI](https://s2gri.csgroup.space)
-
-Refining information can be found in the Datastrip Metadata. If refined, the model of the satellite shall be modified accordingly. Information is stored in the filed “Level-1B_DataStrip_ID/Image_Data_Info//Geometric_Info/Refined_Corrections_List/Refined_Corrections/MSI_State”. They are present only if the flag “Image_Refining” is set at “REFINED” and absent if set at “NOT_REFINED”.
+Refining information can be found in the Datastrip metadata. If refined, the model of the satellite shall be adjusted accordingly. This information is stored in the field “Level-1B_DataStrip_ID/Image_Data_Info//Geometric_Info/Refined_Corrections_List/Refined_Corrections/MSI_State”. It is present only if the flag “Image_Refining” is set to “REFINED” and absent if set to “NOT_REFINED”.
 ![Refining information inside Datastrip metadata](/assets/images/README_RefiningInformationInsideDatastripMetadata.png "Refining information inside Datastrip metadata.")
 
 An optional boolean argument is available in the configuration file (see §[2.1 Configuration file](#21-configuration-file)): deactivate_available_refining.
@@ -228,26 +226,26 @@ An optional boolean argument is available in the configuration file (see §[2.1 
 GIPP are configuration files used in operation to:
 * represent the stable satellite information,
 * configure calibration parameters of the satellite,
-* configure the several algorithms of the processing chain.
+* configure several algorithms of the processing chain.
 
-By nature, GIPP are then versionnable. It is important to process with the version used to generate the L1B product.
+By nature, the GIPP are versionnable. It is important to process with the version used to generate the L1B product.
 > [!WARNING]
->  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf §[2.1 Configuration file](#21-configuration-file)). **This parameter is optional, and by default, its value is at true and the check is done, it can be forced at false if needed**.
+>  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be desactivated through "gipp_check" parameter of the configuration file (cf §[2.1 Configuration file](#21-configuration-file)). **This parameter is optional, and by default, its value is set to true.**.
 
-The version used in operation of the GIPP are listed in the L1B Datastrip Metadata of the L1B product (see §[2.1.1 L1B Product](#211-l1b-product)), in the following section: _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
+The versions of the GIPP used in operation are listed in the L1B Datastrip Metadata of the L1B product (see §[2.1.1 L1B Product](#211-l1b-product)), in the tag _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
 
 ![GIPP list in L1B Datastrip metadata](/assets/images/README_GIPPListInL1BDatastripMetadata.png "GIPP list in L1B Datastrip metadata.")
 
 > [!CAUTION]
-> GIPP are however not directly available in L1B products, then they shall be downloaded beforehand by the user. All versions are available at <mark>**XXX**</mark>.
+> Please note that the GIPP are not directly available in L1B products; they must be downloaded beforehand by the user at <mark>**XXX**</mark>.
 
 The GIPP required are the following ones:
-* **GIP_VIEDIR**: contains Viewing Direction required by Rugged to create viewing model from TAN_PSI_X/Y_LIST tags, one GIP_VIEDIR file **per band**, each file containing information per **detector!** (in _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_X_LIST]_ and _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_Y_LIST]_)
+* **GIP_VIEDIR**: contains Viewing Direction required by Rugged to create viewing model based on TAN_PSI_X/Y_LIST tags. There is one GIP_VIEDIR file **per band** and each file contains information per **detector** (in the following tags: _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_X_LIST]_ and _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_Y_LIST]_)
 * **GIP_SPAMOD**: contains transformations to apply to viewing direction from tags, available in the _[DATA]_ field:
     * PILOTING_TO_MSI,
     * MSI_TO_FOCAL_PLANE,
-    * FOCAL_PLANE_TO_DETECTOR XML, available **per detector**!
-* **GIP_BLINDP**: contains information on blind pixel, contained in BLIND_PIXEL_NUMBER tag: _[DATA/BAND/BLIND_PIXEL_NUMBER]_, available **per band**!
+    * FOCAL_PLANE_TO_DETECTOR XML, available **per detector**
+* **GIP_BLINDP**: contains information on blind pixel, contained in BLIND_PIXEL_NUMBER tag: _[DATA/BAND/BLIND_PIXEL_NUMBER]_, available **per band**
 
 #### 2.1.3 Altitude
 The main purpose of the tool is to add geolocation to the L1B product images. Hence to be precise, the altitude shall be taken into account, as its importance is far from neglectable on final geolocation, as illustrated below:
@@ -257,24 +255,24 @@ The main purpose of the tool is to add geolocation to the L1B product images. He
 For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used. So, path of both shall be provided in input (cf §[2.1 Configuration file](#21-configuration-file)).
 
 ##### 2.1.3.1 DEM
-The expected format for the DEM is:
- * link to a folder containing the DEM
- * The DEM shall be split into files or folders (dynamically read) per square degrees
- * each DEM file (per square degree) shall be readable by gdal
+Access to the DEM is provided via a path to a folder containing the dataset. 
+The DEM must meet the following requirements:
+ * it should be split into files or folders (dynamically read) per square degrees,
+ * each DEM file (per square degree) shall be readable by gdal.  
 
  Examples of DEM structures can be found in [/src/test/resources/DEM/](/src/test/resources/DEM)
 
 ##### 2.1.3.2 GEOID
-The GEOID shall be readable by gdal. On example of GEOID is available at [S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx](/src/test/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx)
+The GEOID shall be readable by gdal. One example of GEOID is available at [S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx](/src/test/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx)
 
 
 #### 2.1.4 IERS
-The IERS represents the ["International Earth Rotation and Reference Systems"](https://www.iers.org/IERS/EN/Home/home_node.html). It is important to have a valid and precise one to have a precise geolocation. During operation processing, IERS information are integrated in the L1B metadata datastrip, hence IERS information are available in the L1B product used in input, in the field _Level-1B_DataStrip_ID/Auxiliary_Data_Info/IERS_Bulletin_ as illustrated below:
+The IERS represents the ["International Earth Rotation and Reference Systems"](https://www.iers.org/IERS/EN/Home/home_node.html). It is important to have a valid and precise one to get a precise geolocation. During operational processing of the Sentinel-2 data, IERS information are integrated in the L1B metadata datastrip, hence IERS information are available in the L1B product used in input, in the field _Level-1B_DataStrip_ID/Auxiliary_Data_Info/IERS_Bulletin_ as illustrated below:
 
 ![IERS information in L1B Datastrip metadata](/assets/images/README_IERSInformationInL1BDatastripMetadata.png "IERS information in L1B Datastrip metadata.")
 
 
-IERS bulletins are used seamlessly with OREKIT, leading in very precise EOPhandling. However, the IERS available in the L1B Datastrip metadata is not in the right format, hence EOP (Earth Orientation Parameters) entries are initialized directly with the information, as “custom EOP”, skipping the IERS bulletins reader parts.
+IERS bulletins are used seamlessly with OREKIT, leading in very precise EOP (Earth Orientation Parameters) handling. However, the IERS available in the L1B Datastrip metadata is not in the right format, hence EOP entries are initialized directly with the information, as “custom EOP”, skipping the IERS bulletins reader parts.
 
 However, a very slight (neglectable) difference will be observed in geolocation compared to operational processing which uses the full IERS bulletin for its ortho-rectification process.
 
@@ -290,13 +288,13 @@ Hence an IERS bulletin can be provided in input by users (as optional).
 Format of the IERS bulletin that can be provided is [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
 
 ### 2.2 Parameters file
-Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent mode, user might want to process only parts of the Datastrip per thread. This is handled by SXGEO and was propagated to Sen2VM. This way, users can parallelize the process by itself, outside ou Sen2VM.
+Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent mode, user might want to process only parts of the Datastrip per thread. This capability is handled by SXGEO and was propagated to Sen2VM. This way, users can parallelize the process by itself, outside of Sen2VM.
 
-Configuration of the detectors/bands to process are done through the parameters file which is a json. **If not available, Sen2VM will process all detectors/bands**.
+The selection of detectors and bands to process is defined in a JSON parameters file. **If this file is not provided, Sen2VM will process all detectors/bands**.
 
 The parameters file contains 2 fields:
-* “detectors”: Detectors are passed through string representing Sentinel-2 detectors encoded in **2 digits**, **separated by “-”.** Detectors indexes are from **“01” to “12”.**
-* “bands”: Bands are passed through string representing Sentinel-2 bands encoded in **2 digits with a “B”** before and **separated from “-”**. Bands are going from **“B01” to “B12”, including a “B8A”.**
+* “detectors”: detectors are passed through string representing Sentinel-2 detectors encoded in **2 digits**, **separated by “-”.** Detectors indexes are from **“01” to “12”.**
+* “bands”: bands are passed through string representing Sentinel-2 bands encoded in **2 digits with a “B”** before and **separated from “-”**. Bands are going from **“B01” to “B12”, including a “B8A”.**
 
 
 ![Parameters file example](/assets/images/README_ParametersFileExample.png "Parameters file example.")
