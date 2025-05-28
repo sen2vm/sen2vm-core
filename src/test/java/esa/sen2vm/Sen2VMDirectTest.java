@@ -58,8 +58,8 @@ public class Sen2VMDirectTest
     @Test
     public void testDirectLoc()
     {
-        String[] detectors = new String[]{"01", "02","03","04","05","06","07","08","09","10","11","12"};
-        String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
+        String[] detectors = new String[]{"01","02","03","04","05","06","07","08", "09","10","11","12"};
+        String[] bands = new String[]{"B01","B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
         int step = 6000;
         try
         {
@@ -82,18 +82,47 @@ public class Sen2VMDirectTest
     @Test
     public void testDirectLocCopernicusDEM()
     {
-        String[] detectors = new String[]{"01"};
-        String[] bands = new String[]{"B01"};
+        // Test the version cop dem (encoded in float)
+        String[] detectors = new String[]{"01","02","03","04","05","06","07","08", "09","10","11","12"};
+        String[] bands = new String[]{"B01","B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
         int step = 6000;
         try
         {
-            String nameTest = "testDirectLoc";
+            String localconfig = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct_COPERNICUS_DEM.json";
+            String nameTest = "testDirectLocCopernicusDEM";
             String outputDir = Config.createTestDir(nameTest, "direct");
-            String config = Config.config(configCopernicusDEMTmpDirect, outputDir, step, "direct", false);
+            String config = Config.config(localconfig, outputDir, step, "direct", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Sen2VMException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testDirectLocCopernicusDEMAWS()
+    {
+        // @TODO fix this test, the AWS COP DEM, do not have overlap pixel
+        String[] detectors = new String[]{"01","02","03","04","05","06","07","08", "09","10","11","12"};
+        String[] bands = new String[]{"B01"};
+        int step = 6000;
+        try
+        {
+            String localconfig = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct_COPERNICUS_DEM_AWS.json";
+            String nameTest = "testDirectLocCopernicusDEMAWS";
+            String outputDir = Config.createTestDir(nameTest, "direct");
+            String config = Config.config(localconfig, outputDir, step, "direct", false);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+            String refDir2 = "src/test/resources/tests/ref/testDirectLoc";
+            Utils.verifyDirectLoc(config, refDir2);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Sen2VMException e) {
