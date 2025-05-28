@@ -65,8 +65,6 @@ public class InverseLocGrid
         this.ulY = ulY - stepY / 2 + resY / 2;
         this.ulX = ulX - stepX / 2 + resX / 2;
 
-
-
         // Compute grid with center pixel convention
         // start to the pixel center
         // The LowerRight is englobing the last pixel, hence to cover the last pixel, the center of last pixel of the grid shall go over the LR - res / 2

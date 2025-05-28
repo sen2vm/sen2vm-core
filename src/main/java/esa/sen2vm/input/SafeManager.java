@@ -176,7 +176,8 @@ public class SafeManager
      public ArrayList<Granule> getGranules()
      {
         return this.listGranules;
-    }
+     }
+
 
     /**
      * Get all inverse grid from an output directory
@@ -210,7 +211,7 @@ public class SafeManager
         return inverseGrids;
     }
 
-    public void testifGridsToComputeAlreadyExists(List<DetectorInfo> detectors, List<BandInfo> bands) throws Sen2VMException
+    public void testifDirectGridsToComputeAlreadyExist(List<DetectorInfo> detectors, List<BandInfo> bands) throws Sen2VMException
     {
         for (DetectorInfo detectorInfo: detectors)
         {
@@ -227,6 +228,24 @@ public class SafeManager
                 }
             }
         }
+    }
 
+    public void testifInverseGridsToComputeAlreadyExist(List<DetectorInfo> detectors, List<BandInfo> bands,
+        String outputDirPath) throws Sen2VMException
+    {
+        for (BandInfo bandInfo: bands)
+        {
+            for (DetectorInfo detectorInfo: detectors)
+            {
+                String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, outputDirPath);
+                File f = new File(invFileName);
+                if (f.exists())
+                {
+                    String error = "Inverse grid(s) already exists" ;
+                    error = error + " (" + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
+                    throw new Sen2VMException(error);
+                }
+            }
+        }
     }
 }

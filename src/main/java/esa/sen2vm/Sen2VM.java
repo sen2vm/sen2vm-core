@@ -12,6 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.io.File;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import java.util.Date;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 
 import org.orekit.rugged.linesensor.LineDatation;
 
@@ -242,7 +248,14 @@ public class Sen2VM
             LOGGER.info("Starting grids generation");
 
             // Test if no grids exists already
-            safeManager.testifGridsToComputeAlreadyExists(detectors, bands) ;
+            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+            {
+                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands) ;
+            }
+            else if (config.getOperation().equals(Sen2VMConstants.INVERSE))
+            {
+                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder()) ;
+            }
 
             for (BandInfo bandInfo: bands)
             {
@@ -336,6 +349,33 @@ public class Sen2VM
                     }
                 }
             }
+
+            // Copy configuration path into DATASTRIP/GEO_DATA dir for direct loc
+            // and OUTPUT dir for inverse loc
+
+            // Get date (string format)
+            Format formatterDay = new SimpleDateFormat("YYYYMMdd");
+            Format formatterTime = new SimpleDateFormat("hhmmss");
+            String date = formatterDay.format(new Date()) + "T" + formatterTime.format(new Date());
+
+            // Construct file path
+            File toCopy = new File(commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT));
+            String configNameSave = toCopy.getName().toString();
+            configNameSave = configNameSave.substring(0, configNameSave.lastIndexOf(".")) + "_" + date;
+            configNameSave = configNameSave + Sen2VMConstants.JSON_EXTENSION;
+            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+            {
+                configNameSave = datastrip.getPath() + File.separator + Sen2VMConstants.GEO_DATA_DS + File.separator + configNameSave;
+            }
+            else if (config.getOperation().equals(Sen2VMConstants.INVERSE))
+            {
+                configNameSave = config.getInverseLocOutputFolder() + File.separator + configNameSave;
+            }
+            File copy = new File(configNameSave);
+
+            // Copy the file
+            Files.copy(toCopy.toPath(), copy.toPath(), REPLACE_EXISTING);
+
         }
         catch ( IOException exception )
         {

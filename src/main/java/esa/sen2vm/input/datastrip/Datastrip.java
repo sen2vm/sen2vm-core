@@ -77,6 +77,14 @@ public class Datastrip
     }
 
     /*
+     * Get the path
+     */
+    public File getPath()
+    {
+        return this.path;
+    }
+
+    /*
      * Get the name
      */
     public File[][] getVRT()
@@ -91,7 +99,7 @@ public class Datastrip
      */
     public String getCorrespondingVRTFileName(DetectorInfo detector, BandInfo band)
     {
-        File geo_data = new File(this.path + File.separator + "GEO_DATA");
+        File geo_data = new File(this.path + File.separator + Sen2VMConstants.GEO_DATA_DS);
         geo_data.mkdir();
 
         String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + Sen2VMConstants.VRT_EXTENSION;
@@ -99,6 +107,7 @@ public class Datastrip
         return new File(geo_data.getPath() + File.separator + vrt).getPath();
 
     }
+
 
     /**
      * Get corresponding inverse loc grid file name by band/detector in output dir

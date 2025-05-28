@@ -142,8 +142,6 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            System.out.println(config);
-            System.out.println(refDir + "/" + nameTest);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
         } catch (IOException e) {
             e.printStackTrace();
