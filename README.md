@@ -306,18 +306,18 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 > It is to be noted that a small optimization in SXGEO is done not to reload DEM tiles when processing bands of the same resolution for the same detector.
 
 ## 3. Outputs
-Output can be direct location grids or inverse location grids. Their computation is parametrized by:
-* Detector/bands,
-* Grid step,
-* Computation options (refining for example).
+The output of the Sen2VM tool can be either direct location grids or inverse location grids. Their computation depends on the following parameters:
+* selected detectors and bands,
+* grid step,
+* computation options (e.g. refining).
 
-Direct and inverse location grids are different subject. Only the direct location grids will be included in the input product and handled by gdal. Inverse location grids, as they represent an area on the ground will be exported outside the product, in a folder chosen by the user (which can be inside the input product if wanted).
+Please note that only the direct location grids will be included in the input product and handled by gdal. Inverse location grids, as they represent a particulat area on the ground will be exported outside the product, in a folder selected by the user (which can be inside the input product if wanted).
 
 ### 3.1 Direct location grids
 A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular in sensor reference frame (for one couple band/detector).
 
-Sen2VM direct location grid computation takes as input product and auxiliary information (see [L1B product](#211-l1b-product), [GIPP](#212-gipp), [Altitude](#123-altitude), [IERS](#214-iers)) and grid parametrization:
-* Band/detector to process ([Parameters File](#22-parameters-file)),
+Sen2VM direct location grid computation takes as input the L1B product product, the auxiliary information (see [L1B product](#211-l1b-product), [GIPP](#212-gipp), [Altitude](#123-altitude), [IERS](#214-iers)) and the grid parametrization:
+* Bands/detectors to process ([Parameters File](#22-parameters-file)),
 * 3 steps, one per band resolution (10m, 20m, 60m) in pixels (floating number) [Configuration File](#21-configuration-file).
 
 As output:
@@ -327,7 +327,7 @@ As output:
 #### 3.1.1 Direct locations grids' outputs
 Output grids will be integrated directly in the input product.
 >  [!CAUTION]
-> Hence writing rights in the input L1B folder will be **mandatory**.
+> Please note that writing permissions in the L1B input  folder are **mandatory**.
 
 Before processing, **a check will be done** to see if direct location grids are already available in the input L1B product folder, for the detectors/bands selected. If at least one is present for one couple detector/band, Sen2VM **will raise an error and stop**. Both granules and datastrip folder will be checked (see output grids format and location in the rest of this section).
 
