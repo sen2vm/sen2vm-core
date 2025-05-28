@@ -218,7 +218,8 @@ public class SafeManager
             for (BandInfo bandInfo: bands)
             {
                 ArrayList<Granule> granulesToCompute = getGranulesToCompute(detectorInfo, bandInfo);
-                for (Granule granuleToCompute: granulesToCompute) {
+                for (Granule granuleToCompute: granulesToCompute)
+                {
                     if (granuleToCompute.getGrid(bandInfo) != null)
                     {
                         String error = "Direct grid(s) already exists";
@@ -241,7 +242,7 @@ public class SafeManager
                 File f = new File(invFileName);
                 if (f.exists())
                 {
-                    String error = "Inverse grid(s) already exists" ;
+                    String error = "Inverse grid(s) already exists";
                     error = error + " (" + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
                     throw new Sen2VMException(error);
                 }

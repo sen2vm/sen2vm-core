@@ -128,7 +128,9 @@ public class SafeTest
         }
         catch (Sen2VMException e)
         {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -164,7 +166,9 @@ public class SafeTest
         }
         catch (Sen2VMException e)
         {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -186,8 +190,10 @@ public class SafeTest
                 configFile = Config.config(configTmp, outputDir, 6000, "direct", false);
                 paramFile = Config.changeParams(paramTmp, detectors, bands, outputDir);
             } catch (ParseException e) {
+                LOGGER.warning(e.getMessage());
                 e.printStackTrace();
             } catch (IOException e) {
+                LOGGER.warning(e.getMessage());
                 e.printStackTrace();
             }
 
@@ -223,6 +229,7 @@ public class SafeTest
                 String[] args = {"-c", configFile, "-p", paramFile};
                 Sen2VM.main(args);
             } catch (Sen2VMException e) {
+                LOGGER.warning(e.getMessage());
                 e.printStackTrace();
             }
 
@@ -266,6 +273,7 @@ public class SafeTest
                 Sen2VM.main(args);
                 ok = "true";
             } catch (Sen2VMException e) {
+                LOGGER.warning(e.getMessage());
                 e.printStackTrace();
             }
             LOGGER.info(ok);
@@ -273,7 +281,9 @@ public class SafeTest
         }
         catch (Sen2VMException e)
         {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 

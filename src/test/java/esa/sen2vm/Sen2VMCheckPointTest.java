@@ -181,13 +181,21 @@ public class Sen2VMCheckPointTest
             assertEquals(date, "2020-08-16T12:02:45.812731");
 
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch ( SXGeoException e ) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }  catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
 
     }
@@ -211,7 +219,9 @@ public class Sen2VMCheckPointTest
             assertEquals(grounds[0][2], 43.448338191393816, delta);
 
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
 
     }
@@ -303,9 +313,13 @@ public class Sen2VMCheckPointTest
             grounds = simpleLocEngine.computeDirectLoc(sensorList.get("B01/D01"), pixels);
 
         } catch ( SXGeoException e ) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }  catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
 
         return grounds;
@@ -367,7 +381,9 @@ public class Sen2VMCheckPointTest
             assertEquals(sensor[0][1], 200.50000152164057, delta);
             LOGGER.info("OK");
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
 
     }
@@ -459,9 +475,13 @@ public class Sen2VMCheckPointTest
             double[][] grounds = {ground};
             sensorCoordinates = simpleLocEngine.computeInverseLoc(sensorList.get("B01/D01"), grounds, "EPSG:4326");
         } catch ( SXGeoException e ) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }  catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
 
         return sensorCoordinates;

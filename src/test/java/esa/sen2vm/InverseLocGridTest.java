@@ -185,11 +185,17 @@ public class InverseLocGridTest
             // Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
 
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 

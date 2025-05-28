@@ -88,11 +88,17 @@ public class Sen2VMInverseTest
 
                 }
             } catch (IOException e) {
+                LOGGER.warning(e.getMessage());
                 e.printStackTrace();
+                assert(false);
             } catch (Sen2VMException e) {
+                LOGGER.warning(e.getMessage());
                 e.printStackTrace();
+                assert(false);
             } catch (ParseException e) {
+                LOGGER.warning(e.getMessage());
                 e.printStackTrace();
+                assert(false);
             }
         }
     }
@@ -115,11 +121,17 @@ public class Sen2VMInverseTest
             LOGGER.warning("Threshold released at: " + THRESHOLD_INV_HIGH); // TODO
             Utils.verifyInverseLoc(config, refDir + "/" + nameTest, THRESHOLD_INV_HIGH);
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -140,11 +152,17 @@ public class Sen2VMInverseTest
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
 
     }
@@ -167,11 +185,17 @@ public class Sen2VMInverseTest
             LOGGER.warning("Threshold released at: " + THRESHOLD_INV_HIGH); // TODO
             Utils.verifyInverseLoc(config, refDir + "/" + nameTest, THRESHOLD_INV_HIGH);
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -201,11 +225,17 @@ public class Sen2VMInverseTest
 
             Utils.verifyDirectLoc(config, outputDir_ref);
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -234,11 +264,17 @@ public class Sen2VMInverseTest
             Utils.verifyInverseLoc(config_order_1, outputDir2);
 
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -267,11 +303,17 @@ public class Sen2VMInverseTest
             Sen2VM.main(args);
             Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -299,11 +341,17 @@ public class Sen2VMInverseTest
             Sen2VM.main(args);
             Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -333,11 +381,17 @@ public class Sen2VMInverseTest
                 Utils.verifyDirectLoc(config, outputDir_ref);
             }
         } catch (IOException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         } catch (ParseException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
 
     }
