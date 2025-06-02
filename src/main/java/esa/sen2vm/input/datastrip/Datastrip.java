@@ -59,12 +59,16 @@ public class Datastrip
         File[] list_img = directory.listFiles();
         for (int i = 0; i < list_img.length; i++)
         {
-            String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
-            String bandName = name[name.length-1];
-            int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
-            String detectorName = name[name.length-2].substring(1);
-            int indexDetector = Integer.valueOf(detectorName);
-            this.vrts[indexDetector-1][indexBand] = list_img[i];
+            if (list_img[i].getName().endsWith(".vrt")) {
+                String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
+                String bandName = name[name.length-1];
+                System.out.println(list_img[i].getName());
+                int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
+                String detectorName = name[name.length-2].substring(1);
+                int indexDetector = Integer.valueOf(detectorName);
+                this.vrts[indexDetector-1][indexBand] = list_img[i];
+            }
+
         }
     }
 
