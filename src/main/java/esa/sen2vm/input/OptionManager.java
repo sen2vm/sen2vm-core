@@ -118,6 +118,12 @@ public class OptionManager
     public static final String OPT_OUTPUT_FOLDER_LONG = "output_folder";
     public static final String OPT_OUTPUT_FOLDER_SHORT = "o";
 
+    /**
+     * Option for the output image res (referential)
+     */
+    public static final String OPT_OUTPUT_IMAGE_RES_LONG = "output_image_res";
+    public static final String OPT_OUTPUT_IMAGE_RES_SHORT = "or";
+
     /*******************************
      * Options for the params 
      *******************************/
@@ -278,6 +284,11 @@ public class OptionManager
             
             Option outputFolderOption = new Option(OPT_OUTPUT_FOLDER_SHORT, OPT_OUTPUT_FOLDER_LONG, true, "(Mandatory for inverse loc) output folder");
             outputFolderOption.setRequired(false);
+
+            Option outputImageRes = new Option(OPT_OUTPUT_IMAGE_RES_SHORT, OPT_OUTPUT_IMAGE_RES_LONG, true, "(Mandatory for inverse loc) output folder");
+            outputImageRes.setType(Float.class); // TODO  does not seem to work: read as array of String
+            outputImageRes.setArgs(3);
+            outputImageRes.setRequired(true);
      
             // params arguments
             // ------------------
@@ -311,6 +322,7 @@ public class OptionManager
             optionsNoFile.addOption(lryOption);
             optionsNoFile.addOption(referentialOption);
             optionsNoFile.addOption(outputFolderOption);
+            optionsNoFile.addOption(outputImageRes);
 
             // Add the params arguments
             optionsNoFile.addOption(detectors);

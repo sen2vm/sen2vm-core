@@ -264,7 +264,15 @@ public class Sen2VM
                 LOGGER.info("###############");
                 LOGGER.info("### BAND " + bandInfo.getName() + " ###");
                 LOGGER.info("###############");
-                float res = (float) bandInfo.getPixelHeight();
+
+                float res ;
+                if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+                {
+                    res = (float) bandInfo.getPixelHeight();
+                } else {
+                    res = config.getOutResFromBandInfo(bandInfo) ;
+                }
+
                 float step = config.getStepFromBandInfo(bandInfo);
 
                 LOGGER.info("Grid resolution: " + String.valueOf(config.getStepFromBandInfo(bandInfo)));

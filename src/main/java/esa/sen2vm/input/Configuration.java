@@ -37,6 +37,9 @@ public class Configuration extends InputFileManager
     private float step_band10m;
     private float step_band20m;
     private float step_band60m;
+    private float outRes_band10m;
+    private float outRes_band20m;
+    private float outRes_band60m;
     private boolean exportAlt = Sen2VMConstants.EXPORT_ALT;
     private float ul_x;
     private float ul_y;
@@ -130,7 +133,12 @@ public class Configuration extends InputFileManager
             this.lr_x =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
             this.lr_y =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
             this.outputFolder = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_OUTPUT_FOLDER_SHORT));
+            Float[] outResValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_OUTPUT_IMAGE_RES_SHORT)).map(Float::valueOf).toArray(Float[]::new);
+            this.outRes_band10m = outResValues[0];
+            this.outRes_band20m = outResValues[1];
+            this.outRes_band60m = outResValues[2];
         }
+
     }
 
     /**
@@ -216,6 +224,11 @@ public class Configuration extends InputFileManager
                        this.lr_y = inverseLoc.getFloat("lr_y");
                        this.referential = inverseLoc.getString("referential");
                        this.outputFolder = inverseLoc.getString("output_folder");
+                       JSONObject outRes = inverseLoc.getJSONObject("output_image_res");
+                       this.outRes_band10m = outRes.getFloat("10m_bands");
+                       this.outRes_band20m = outRes.getFloat("20m_bands");
+                       this.outRes_band60m = outRes.getFloat("60m_bands");
+
                    }
                    catch(JSONException e)
                    {
@@ -409,6 +422,56 @@ public class Configuration extends InputFileManager
     public String getInverseLocOutputFolder()
     {
         return this.outputFolder;
+    }
+
+    /**
+     * Get the output res (inverse grid) of 10m band
+     * @return the output res (inverse grid) for 10m band (pixels)
+     */
+    public float getOutRes10m()
+    {
+       return this.outRes_band10m;
+    }
+
+    /**
+     * Get the output res (inverse grid) of 20m band
+     * @return the output res (inverse grid) for 20m band (pixels)
+     */
+    public float getOutRes20m()
+    {
+       return this.outRes_band20m;
+    }
+
+    /**
+     * Get the output res (inverse grid) of 60m band
+     * @return the output res (inverse grid) for 60m band (pixels)
+     */
+    public float getOutRes60m()
+    {
+       return this.outRes_band60m;
+    }
+
+     /**
+     * Get the output res (inverse grid) of the band
+     * @param bandInfo
+     * @return the output res for a given band (ref)
+     */
+    public float getOutResFromBandInfo(BandInfo bandInfo)
+    {
+        float outRes;
+        switch((int) bandInfo.getPixelHeight())
+        {
+            case Sen2VMConstants.RESOLUTION_10M:
+                outRes = this.getOutRes10m();
+                break;
+            case Sen2VMConstants.RESOLUTION_20M:
+                outRes = this.getOutRes20m();
+                break;
+            default:
+                outRes = this.getOutRes60m();
+                break;
+        }
+        return outRes;
     }
 }
 

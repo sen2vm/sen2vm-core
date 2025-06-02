@@ -20,6 +20,11 @@
     "lr_x": 155110,
     "lr_y": 3728317,
 	"referential": "EPSG:32628",
+    "output_image_res": {
+        "10m_bands": 10,
+        "20m_bands": 20,
+        "60m_bands": 60
+      },
 	"output_folder": "tmp"
   }
 }
