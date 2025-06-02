@@ -131,7 +131,7 @@ public class Sen2VMDirectTest
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
-            assert(true);
+            assert(true); //An error is expected due to the GIPP
         } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
