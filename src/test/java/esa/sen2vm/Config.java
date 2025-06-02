@@ -44,7 +44,7 @@ public class Config
     private static final double THRESHOLD_DIR = 1e-9;
     private static final double THRESHOLD_INV = 1e-8;
 
-    public static String config(String filePath, String l1b_product, int step, String operation, boolean refining) throws FileNotFoundException,
+    public static String config(String filePath, String l1b_product, float step, String operation, boolean refining) throws FileNotFoundException,
             IOException, ParseException
     {
         JSONParser parser = new JSONParser();
@@ -116,8 +116,8 @@ public class Config
 
 
     public static String configInverseBB(String filePath,
-                                        double ul_y, double ul_x,
-                                        double lr_y, double lr_x,
+                                        float ul_y, float ul_x,
+                                        float lr_y, float lr_x,
                                         String referential, String l1b_product) throws FileNotFoundException,
                                          IOException, ParseException
     {
@@ -135,6 +135,42 @@ public class Config
         inverse.put("lr_x", lr_x);
         inverse.put("referential", referential);
         inverse.put("output_folder", l1b_product);
+
+        String outputConfig = l1b_product + "/configuration.json";
+        FileWriter writer = new FileWriter(outputConfig, false);
+        writer.write(obj.toString());
+        writer.close();
+
+        return outputConfig;
+    }
+
+    public static String configInverseBBwithStep(String filePath,
+                                        float ul_y, float ul_x,
+                                        float lr_y, float lr_x,
+                                        float step,
+                                        String referential, String l1b_product) throws FileNotFoundException,
+                                         IOException, ParseException
+    {
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(filePath));
+
+        JSONObject objJson = (JSONObject) obj;
+        objJson.put("l1b_product", l1b_product);
+
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("ul_y", ul_y);
+        inverse.put("ul_x", ul_x);
+        inverse.put("lr_y", lr_y);
+        inverse.put("lr_x", lr_x);
+        inverse.put("referential", referential);
+        inverse.put("output_folder", l1b_product);
+
+
+        JSONObject steps = (JSONObject) objJson.get("steps");
+        steps.put("10m_bands", 0.059554205768443);
+        steps.put("20m_bands", 0.059554205768443);
+        steps.put("60m_bands", 0.059554205768443);
 
         String outputConfig = l1b_product + "/configuration.json";
         FileWriter writer = new FileWriter(outputConfig, false);

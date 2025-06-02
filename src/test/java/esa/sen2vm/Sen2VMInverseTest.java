@@ -19,7 +19,8 @@ import esa.sen2vm.input.Configuration;
 import esa.sen2vm.input.SafeManager;
 import esa.sen2vm.input.datastrip.DataStripManager;
 import esa.sen2vm.input.datastrip.Datastrip;
-
+import org.gdal.osr.CoordinateTransformation;
+import org.gdal.osr.SpatialReference;
 
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
@@ -54,13 +55,13 @@ public class Sen2VMInverseTest
 
         String[] detectors = new String[]{"05"};
         String[] bands = new String[]{"B01", "B02", "B05"};
-        int[] testsStep = new int[]{3000, 6000};
+        float[] testsStep = new float[]{3000, 6000};
 
-        for (int step : testsStep)
+        for (float step : testsStep)
         {
             try
             {
-                String nameTest = "testStepInverseLoc_" +  Integer.toString(step);
+                String nameTest = "testStepInverseLoc_" +  Float.toString(step);
                 String outputDir = Config.createTestDir(nameTest, "inverse");
                 String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
@@ -270,10 +271,10 @@ public class Sen2VMInverseTest
             String outputDir = Config.createTestDir(nameTest, "inverse");
 
             // T27SYT
-            Double ul_x = 699960.0;
-            Double ul_y = 3800040.0;
-            Double lr_x = 809760.0;
-            Double lr_y = 3690240.0;
+            float ul_x = 699960.0f;
+            float ul_y = 3800040.0f;
+            float lr_x = 809760.0f;
+            float lr_y = 3690240.0f;
             String referential = "EPSG:32627";
 
             String config = Config.configInverseBB(configTmpInverse, ul_y, ul_x, lr_y, lr_x, referential, outputDir);
@@ -292,6 +293,7 @@ public class Sen2VMInverseTest
         }
     }
 
+
     @Test
     public void testInverseAreaHandling()
     {
@@ -304,10 +306,10 @@ public class Sen2VMInverseTest
             String outputDir = Config.createTestDir(nameTest, "inverse");
 
             // T28SBA
-            Double ul_x = 199980.0;
-            Double ul_y = 3600000.0;
-            Double lr_x = 309780.0;
-            Double lr_y = 3490200.0;
+            float ul_x = 199980.0f;
+            float ul_y = 3600000.0f;
+            float lr_x = 309780.0f;
+            float lr_y = 3490200.0f;
             String referential = "EPSG:32628";
 
             String config = Config.configInverseBB(configTmpInverse, ul_y, ul_x, lr_y, lr_x, referential, outputDir);

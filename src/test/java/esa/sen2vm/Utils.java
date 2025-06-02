@@ -240,7 +240,6 @@ public class Utils {
      }
 
      public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, Float res) throws IOException{
-
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
 
