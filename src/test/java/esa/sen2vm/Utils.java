@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
@@ -82,10 +83,11 @@ public class Utils {
 
     public Utils() {
     }
+    private static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
 
     private static final double THRESHOLD_DIR = 1e-8;
-    private static final double THRESHOLD_INV = 1e-6; // todo
-
+    private static final double THRESHOLD_INV = 1e-6;
+    
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {
 
@@ -166,6 +168,11 @@ public class Utils {
 
     public static void verifyInverseLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
     {
+        verifyInverseLoc(configFilepath, outputRef, THRESHOLD_INV);
+    }
+
+    public static void verifyInverseLoc(String configFilepath, String outputRef, double threshold) throws Sen2VMException, IOException
+    {
         Configuration configFile = new Configuration(configFilepath);
         DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
@@ -181,13 +188,11 @@ public class Utils {
                 if (outputGrids[d][b] != null) {
                     File outputGrid = outputGrids[d][b];
                     File refGrid = refGrids[d][b];
-                    assertEquals(imagesEqualInverse(outputGrid.toString(), refGrid.toString(), THRESHOLD_INV, res), true);
+                    assertEquals(imagesEqualInverse(outputGrid.toString(), refGrid.toString(), threshold, res), true);
                 }
             }
         }
-     }
-
-
+    }
 
     public static boolean imagesEqualDirect(String img1Path, String img2Path, double threshold) throws IOException{
 
@@ -213,9 +218,9 @@ public class Utils {
                         }
 
                         if (!(Double.isNaN(data1[c]))  && Math.abs(data1[c] - data2[c]) > threshold) {
-                            System.out.println("Error in " + img1Path);
+                            LOGGER.warning("Error in " + img1Path);
                             String error = String.valueOf(data1[c]) + " - " + String.valueOf(data2[c]) + " = " + String.valueOf(data1[c] - data2[c]);
-                            System.out.println("Band "+ String.valueOf(b) + "/ coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
+                            LOGGER.warning("Band "+ String.valueOf(b) + "/ coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
                             return false;
                         }
                     }
@@ -226,10 +231,18 @@ public class Utils {
         return false;
     }
 
+     public static boolean myIsNan(double value){
+        if ((value == Sen2VMConstants.noDataRasterValue) || (Double.isNaN(value))) {
+            return true;
+        }
+        return false;
+     }
+
      public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, Float res) throws IOException{
 
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
+
         if (ds1.GetRasterCount() == ds2.GetRasterCount() && ds1.getRasterXSize() == ds2.getRasterXSize() && ds1.getRasterYSize() == ds2.getRasterYSize()) {
 
             Band ds1b1 = ds1.GetRasterBand(1);
@@ -252,7 +265,7 @@ public class Utils {
                 for(int c = 0; c < ds1.getRasterXSize(); c++) {
 
                     // nan in one grid and value in other grid case
-                    if (!(Double.isNaN(data1b1[c]) == Double.isNaN(data2b1[c])))
+                    if (!(myIsNan(data1b1[c]) == myIsNan(data2b1[c])))
                     {
                         return false;
                     }
@@ -269,11 +282,11 @@ public class Utils {
                         diff = diff * res;
 
                         if (diff > threshold) {
-                            System.out.println("Error in " + img1Path);
+                            LOGGER.warning("Error in " + img1Path);
                             String error = "(" + String.valueOf(data1b2[c]) + ", " + String.valueOf(data1b1[c])  + ")";
                             error = error + " vs (" + String.valueOf(data2b2[c]) + ", " + String.valueOf(data2b1[c]) + ")";
                             error = error + " = " + String.valueOf(diff);
-                            System.out.println("Coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
+                            LOGGER.warning("Coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
                             return false;
                         }
                     }

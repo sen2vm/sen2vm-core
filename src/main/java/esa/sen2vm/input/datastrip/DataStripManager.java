@@ -578,7 +578,7 @@ public class DataStripManager
                 if (dateSet.contains(ephemerisDate))
                 {
                     // duplicate data for the current ephemeris date => we aldeady add this pv coordinate => we just ignore it
-                    System.out.println("Duplicate PV !" + ephemeris.getGPS_TIME().toString());
+                    LOGGER.warning("Duplicate PV !" + ephemeris.getGPS_TIME().toString());
                 }
                 else
                 {

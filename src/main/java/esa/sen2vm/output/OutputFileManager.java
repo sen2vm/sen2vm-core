@@ -23,7 +23,6 @@ public class OutputFileManager
     private static final Logger LOGGER = Logger.getLogger(OutputFileManager.class.getName());
     protected Dataset dataset = null;
     protected Driver driver = null;
-    protected Double noDataRasterValue = Double.NaN;
 
     /**
      * Constructor
@@ -44,7 +43,7 @@ public class OutputFileManager
      * @param stepY step of the grid in rows (metadata)
      * @param bandVal 2d/3d for direct 2D : coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]]] in deg, deg
      *                      for direct : coordinate array as [[[lon00,lon01,...],[...]],[[lat00,lat01,,...], [...]],[[alt00,alt01,,...], [...]]] in deg, deg, m
-     *                      for inverse : coordinate array as [[[row00,row01,...],[...]],[[col00,col01,,...]]] in pixel
+     *                      for inverse : coordinate array as [[[col00,col01,,...]],[[row00,row01,...],[...]]] in pixel
      * @param src epsg
      * @param src epsgData (metatdata)
      * @param srs subLineOffset line offset of the grid (metadata)
@@ -94,7 +93,7 @@ public class OutputFileManager
         {
             Band band = ds.GetRasterBand(b+1);
             fileInfo.setXBand(band);
-            band.SetNoDataValue(noDataRasterValue);
+            band.SetNoDataValue(Sen2VMConstants.noDataRasterValue);
             bands.add(band);
         }
 

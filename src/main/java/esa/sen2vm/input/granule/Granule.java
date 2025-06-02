@@ -196,7 +196,6 @@ public class Granule
                 nbGranule++;
             }
         }
-        LOGGER.info(" --> Number of grids already existing: " + String.valueOf(nbGranule));
     }
 
      /*
@@ -214,11 +213,12 @@ public class Granule
      * Get geo grid in geo grids array by index of a specific band
      * return path file
      */
-    public File getGrid(String band)
+    public File getGrid(BandInfo band)
     {
-        int indexBand = BandInfo.valueOf(band).ordinal();
+        int indexBand = band.ordinal();
         return this.grids[indexBand];
     }
+
 
     /*
      * Get geo grids

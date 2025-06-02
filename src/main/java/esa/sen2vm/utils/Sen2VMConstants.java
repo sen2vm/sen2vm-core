@@ -7,13 +7,14 @@ public class Sen2VMConstants
 {
     public static final int NB_BANDS = 13;
     public static final int NB_DETS = 12;
+    public static final Double noDataRasterValue = -32768.0;
 
     /**
      * For operation purpose
      */
     public static final String DIRECT = "DIRECT";
     public static final String INVERSE = "INVERSE";
-    
+
     /**
      * To check the GIPP version (by default the GIPP version is checked)
      */
@@ -44,12 +45,15 @@ public class Sen2VMConstants
     public static final String TIFF_EXTENSION = ".tif";
     public static final String JP2_EXTENSION = ".jp2";
     public static final String VRT_EXTENSION = ".vrt";
+    public static final String JSON_EXTENSION = ".json";
+    public static final String AUX_EXTENSION = ".aux.xml";
     public static final String DATASTRIP = "DATASTRIP";
     public static final String GRANULE = "GRANULE";
     public static final String GEO_DATA_DS = "GEO_DATA";
     public static final String GEO_DATA_GR = "GEO_DATA";
     public static final String QI_DATA = "QI_DATA";
     public static final String IMG_DATA = "IMG_DATA";
+
 
     /**
      * For GIPP purpose

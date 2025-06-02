@@ -10,9 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import esa.sen2vm.input.Configuration;
-import java.io.IOException;
 import org.json.simple.parser.ParseException;
+
+import java.util.logging.Logger;
+import java.io.IOException;
+
+import esa.sen2vm.input.Configuration;
 import esa.sen2vm.exception.Sen2VMException;
 
 /**
@@ -21,6 +24,7 @@ import esa.sen2vm.exception.Sen2VMException;
 
 public class Sen2VMDirectTest
 {
+    private static final Logger LOGGER = Logger.getLogger(Sen2VMDirectTest.class.getName());
 
     String configTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct_DEM.json";
     String configCopernicusDEMTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct_COPERNICUS_DEM.json";
@@ -45,12 +49,14 @@ public class Sen2VMDirectTest
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
                 Utils.verifyStepDirectLoc(config, step);
-            } catch (IOException e) {
-                e.printStackTrace();
             } catch (Sen2VMException e) {
+                LOGGER.warning(e.getMessage());
                 e.printStackTrace();
-            } catch (ParseException e) {
+                assert(false);
+            } catch (Exception e) {
+                LOGGER.warning(e.getMessage());
                 e.printStackTrace();
+                assert(false);
             }
         }
     }
@@ -70,12 +76,14 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -148,12 +156,14 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -172,12 +182,14 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(true); //An error is expected due to the GIPP
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -196,15 +208,15 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            System.out.println(config);
-            System.out.println(refDir + "/" + nameTest);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -232,12 +244,14 @@ public class Sen2VMDirectTest
             Sen2VM.main(args);
 
             Utils.verifyDirectLoc(config, outputDir_ref);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -265,12 +279,14 @@ public class Sen2VMDirectTest
 
             Utils.verifyDirectLoc(config_order_2, outputDir1);
             Utils.verifyDirectLoc(config_order_1, outputDir2);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -279,7 +295,7 @@ public class Sen2VMDirectTest
     {
         String[] detectors = new String[]{"01"};
         String[] bands = new String[]{"B01"};
-        String[] testsDem = new String[]{"dem1", "dem2", "dem3", "dem4"};
+        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
 
         try
         {
@@ -294,18 +310,20 @@ public class Sen2VMDirectTest
             {
                 String nameTest = "testDirectDem_" + testDem;
                 String outputDir = Config.createTestDir(nameTest, "direct");
-                String config = Config.changeDem(configTmpDirect, "src/test/resources/tests/input/dem_tests/" + testDem, outputDir);
+                String config = Config.changeDem(configTmpDirect, "src/test/resources/tests/data/dem_tests/" + testDem, outputDir);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
                 Utils.verifyDirectLoc(config, outputDir_ref);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
 
     }
