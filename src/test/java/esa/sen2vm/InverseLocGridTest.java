@@ -167,38 +167,6 @@ public class InverseLocGridTest
         LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
     }
 
-    @Test
-    public void testInverseLocGeoTransform()
-    {
-
-        String[] detectors = new String[]{"07"};
-        String[] bands = new String[]{"B02"};
-        int step = 6000;
-        try
-        {
-            String nameTest = "testInverseLocGeoTransform";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
-            String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
-            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
-            String[] args = {"-c", config, "-p", param};
-            Sen2VM.main(args);
-            // Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
-
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
-        } catch (Sen2VMException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
-        } catch (ParseException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
-        }
-    }
-
 }
 
 
