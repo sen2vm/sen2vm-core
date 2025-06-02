@@ -150,7 +150,7 @@ public class InverseLocGridTest
         assertEquals(gridX.get(gridX.size()-1), 165);
         LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
 
-        step = 20f;
+        step = 2.0f;
         res = 2.0f;
         invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
         gridX = invGrid.getGridX();
@@ -158,8 +158,8 @@ public class InverseLocGridTest
         assertEquals(gridX.get(gridX.size()-1), 99);
         LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
 
-        step = 10f;
-        res = 20f;
+        step = 10.0f;
+        res = 20.0f;
         invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
         gridX = invGrid.getGridX();
         assertEquals(gridX.get(0), 10);

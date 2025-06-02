@@ -94,16 +94,12 @@ public class InverseLocGrid
      */
     private boolean testEnd(float value, float end, float signedStep)
     {
-        System.out.println(String.valueOf(value) + ", " + String.valueOf(end) + ", " + String.valueOf(signedStep));
         if (signedStep > 0)
         {
-
-            System.out.println(String.valueOf(value + signedStep) +  " < " +  String.valueOf(end));
             return (value + signedStep < end);
         }
         else
         {
-            System.out.println(String.valueOf(value + signedStep) +  " > " +  String.valueOf(end));
             return (value + signedStep > end);
         }
     }
