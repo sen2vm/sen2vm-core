@@ -192,9 +192,11 @@ public class SafeTest
             } catch (ParseException e) {
                 LOGGER.warning(e.getMessage());
                 e.printStackTrace();
+                assert(false);
             } catch (IOException e) {
                 LOGGER.warning(e.getMessage());
                 e.printStackTrace();
+                assert(false);
             }
 
             // Test if no vrt and geogrid found
@@ -231,6 +233,7 @@ public class SafeTest
             } catch (Sen2VMException e) {
                 LOGGER.warning(e.getMessage());
                 e.printStackTrace();
+                assert(false);
             }
 
             config = new Configuration(configFile);
@@ -275,6 +278,7 @@ public class SafeTest
             } catch (Sen2VMException e) {
                 LOGGER.warning(e.getMessage());
                 e.printStackTrace();
+                assert(false);
             }
             LOGGER.info(ok);
 

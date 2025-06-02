@@ -151,6 +151,7 @@ public class Sen2VMDirectTest
         } catch (ParseException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
