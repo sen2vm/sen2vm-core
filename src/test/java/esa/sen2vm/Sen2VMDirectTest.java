@@ -104,12 +104,14 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -131,12 +133,14 @@ public class Sen2VMDirectTest
             Sen2VM.main(args);
             String refDir2 = "src/test/resources/tests/ref/testDirectLoc";
             Utils.verifyDirectLoc(config, refDir2);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
     }
 
