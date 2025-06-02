@@ -374,7 +374,7 @@ public class Sen2VMInverseTest
             for (String testDem : testsDem) {
                 String nameTest = "testDirectDem_" + testDem;
                 String outputDir = Config.createTestDir(nameTest, "inverse");
-                String config = Config.changeDem(configTmpInverse, "src/test/resources/tests/input/dem_tests/" + testDem, outputDir);
+                String config = Config.changeDem(configTmpInverse, "src/test/resources/tests/data/dem_tests/" + testDem, outputDir);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);

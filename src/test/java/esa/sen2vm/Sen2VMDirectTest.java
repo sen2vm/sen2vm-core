@@ -268,7 +268,7 @@ public class Sen2VMDirectTest
     {
         String[] detectors = new String[]{"01"};
         String[] bands = new String[]{"B01"};
-        String[] testsDem = new String[]{"dem1", "dem2", "dem3", "dem4"};
+        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
 
         try
         {
@@ -283,7 +283,7 @@ public class Sen2VMDirectTest
             {
                 String nameTest = "testDirectDem_" + testDem;
                 String outputDir = Config.createTestDir(nameTest, "direct");
-                String config = Config.changeDem(configTmpDirect, "src/test/resources/tests/input/dem_tests/" + testDem, outputDir);
+                String config = Config.changeDem(configTmpDirect, "src/test/resources/tests/data/dem_tests/" + testDem, outputDir);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
