@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
@@ -84,6 +85,8 @@ import javax.imageio.ImageIO;
 
 public class Sen2VMCheckPointTest
 {
+    private static final Logger LOGGER = Logger.getLogger(Sen2VMCheckPointTest.class.getName());
+
     String configTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct.json";
     String configTmpInverse = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
     String paramTmp = "src/test/resources/params_base.json";
@@ -132,7 +135,7 @@ public class Sen2VMCheckPointTest
                         msiToFocalplane,
                         pilotingToMsi
                     );
-                    System.out.println(sensor.getName());
+                    LOGGER.info(sensor.getName());
                     sensorList.put(sensor.getName(), sensor);
                 }
             }
@@ -173,18 +176,22 @@ public class Sen2VMCheckPointTest
 
             LineSensor lineSensor = ruggedManager.getLineSensor("B01/D01");
             String date = lineSensor.getDate(0.5).toString(TimeScalesFactory.getGPS());
-            System.out.println("date line 0.5:" + date);
+            LOGGER.info("date line 0.5:" + date);
 
             assertEquals(date, "2020-08-16T12:02:45.812731");
 
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch ( SXGeoException e ) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }  catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
-        } catch (ParseException e) {
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }
 
     }
@@ -196,19 +203,25 @@ public class Sen2VMCheckPointTest
         try
         {
             double[][] grounds = geoLocD01B01(configTmpDirect, 0.0, 0.0);
-            System.out.println("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
+            LOGGER.info("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
             assertEquals(grounds[0][0], -18.919024167218094, delta);
             assertEquals(grounds[0][1], 33.79483143151926, delta);
             assertEquals(grounds[0][2], 42.538715533140156, delta);
 
             grounds = geoLocD01B01(configTmpDirect, 250.5, 700.5);
-            System.out.println("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
+            LOGGER.info("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
             assertEquals(grounds[0][0], -18.490305707482214, delta);
             assertEquals(grounds[0][1], 33.58277655913304, delta);
             assertEquals(grounds[0][2], 43.448338191393816, delta);
 
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
         }
 
     }
@@ -300,9 +313,17 @@ public class Sen2VMCheckPointTest
             grounds = simpleLocEngine.computeDirectLoc(sensorList.get("B01/D01"), pixels);
 
         } catch ( SXGeoException e ) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }  catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
+        }  catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
         }
 
         return grounds;
@@ -362,9 +383,15 @@ public class Sen2VMCheckPointTest
             sensor = inverseLocD01B01(configTmpInverse, "01", "B01", new double[]{-18.821137292435186, 33.635377815436044, 42.87227050779195});
             assertEquals(sensor[0][0], 250.50004268066434, delta);
             assertEquals(sensor[0][1], 200.50000152164057, delta);
-            System.out.println("OK");
+            LOGGER.info("OK");
         } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
+        }  catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
         }
 
     }
@@ -456,9 +483,17 @@ public class Sen2VMCheckPointTest
             double[][] grounds = {ground};
             sensorCoordinates = simpleLocEngine.computeInverseLoc(sensorList.get("B01/D01"), grounds, "EPSG:4326");
         } catch ( SXGeoException e ) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
         }  catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
+        }  catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
         }
 
         return sensorCoordinates;

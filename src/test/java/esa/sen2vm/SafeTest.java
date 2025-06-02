@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -83,6 +84,8 @@ import javax.imageio.ImageIO;
  */
 public class SafeTest
 {
+    private static final Logger LOGGER = Logger.getLogger(SafeTest.class.getName());
+
     String configTmp = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct.json";
 
     /**
@@ -125,7 +128,13 @@ public class SafeTest
         }
         catch (Sen2VMException e)
         {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
+        }  catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -143,7 +152,7 @@ public class SafeTest
             // Test granules number
             assertEquals(safeManager.getGranules().size(), 72);
 
-            System.out.println("   ");
+            LOGGER.info("   ");
             int[] BBox = safeManager.getFullSize(dataStripManager, BandInfo.BAND_1, DetectorInfo.DETECTOR_1);
             assertEquals(BBox[0], 0); // startLine
             assertEquals(BBox[1], 0); // startPixel
@@ -158,11 +167,16 @@ public class SafeTest
 
             assertEquals(safeManager.getGranulesToCompute(DetectorInfo.DETECTOR_3, BandInfo.BAND_2).size(), 6);
 
-        }
-        catch (Sen2VMException e)
-        {
+        }  catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
+        }  catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
         }
+
     }
 
     // @Test
@@ -177,19 +191,13 @@ public class SafeTest
             String configFile = "";
             String paramFile = "";
             String outputDir = "";
-            try
-            {
-                outputDir = Config.createTestDir("run_D10", "direct");
-                configFile = Config.config(configTmp, outputDir, 6000, "direct", false);
-                paramFile = Config.changeParams(paramTmp, detectors, bands, outputDir);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+            outputDir = Config.createTestDir("run_D10", "direct");
+            configFile = Config.config(configTmp, outputDir, 6000, "direct", false);
+            paramFile = Config.changeParams(paramTmp, detectors, bands, outputDir);
 
             // Test if no vrt and geogrid found
-            System.out.println(configFile);
+            LOGGER.info(configFile);
 
             Configuration config = new Configuration(configFile);
             DataStripManager dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
@@ -205,7 +213,7 @@ public class SafeTest
                 }
             }
 
-            File[][] vrt = datastrip.getVRT();
+            File[][] vrt = datastrip.getVRTs();
             for(int d = 0; d < vrt.length; d++)
             {
                 for(int b = 0; b < vrt[d].length; b++)
@@ -213,15 +221,10 @@ public class SafeTest
                     assertEquals(vrt[d][b], null);
                 }
             }
-            System.out.println("   ");
+            LOGGER.info("   ");
 
-            try
-            {
-                String[] args = {"-c", configFile, "-p", paramFile};
-                Sen2VM.main(args);
-            } catch (Sen2VMException e) {
-                e.printStackTrace();
-            }
+            String[] args = {"-c", configFile, "-p", paramFile};
+            Sen2VM.main(args);
 
             config = new Configuration(configFile);
             dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
@@ -242,7 +245,7 @@ public class SafeTest
             assertEquals(nbPresent, 12);
 
             nbPresent = 0;
-            vrt = datastrip.getVRT();
+            vrt = datastrip.getVRTs();
             for(int d = 0; d < vrt.length; d++)
             {
                 for(int b = 0; b < vrt[d].length; b++)
@@ -257,20 +260,21 @@ public class SafeTest
             String ok = "false";
             // configChangeOverwrite(String filePath, Boolean overwrite) throws FileNotFoundException,
 
-            try
-            {
-                String[] args = {"-c", configFile, "-p", paramFile};
-                Sen2VM.main(args);
-                ok = "true";
-            } catch (Sen2VMException e) {
-                e.printStackTrace();
-            }
-            System.out.println(ok);
+            String[] args2 = {"-c", configFile, "-p", paramFile};
+            Sen2VM.main(args2);
+            ok = "true";
+            LOGGER.info(ok);
 
         }
         catch (Sen2VMException e)
         {
+            LOGGER.warning(e.getMessage());
             e.printStackTrace();
+            assert(false);
+        }  catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
         }
     }
 

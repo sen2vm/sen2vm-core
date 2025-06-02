@@ -42,8 +42,8 @@ public class InverseLocGrid
                          String epsg, float res, float step)
     {
         this.epsg = Integer.valueOf(epsg.substring(5));
-        float resX = res ;
-        float resY = res ;
+        float resX = res;
+        float resY = res;
 
         this.stepX = step;
         this.stepY = step;
@@ -60,41 +60,50 @@ public class InverseLocGrid
         {
             resX = -resX;
             this.stepX = -this.stepX;
-        }
+       }
 
-        // Synchro first grid point (centre of a grid pixel) with the center of the first
+        // Synchro first grid point (center of a grid pixel) with the center of the first
         // image pixel (band resolution) of the area
-        this.ulX = ulX - this.stepX / 2 + resX / 2;
         this.ulY = ulY - this.stepY / 2 + resY / 2;
-        this.lrX = lrX + this.stepX / 2 - resX / 2;
-        this.lrY = lrY + this.stepY / 2 - resY / 2;
+        this.ulX = ulX - this.stepX / 2 + resX / 2;
+
+        // Compute grid with center pixel convention
+        // start to the pixel center
+        // The LowerRight is englobing the last pixel, hence to cover the last pixel, the center of last pixel of the grid shall go over the LR - res / 2
+        this.gridY = grid_1D(this.ulY + this.stepY / 2, lrY - resY / 2, this.stepY); 
+        this.gridX = grid_1D(this.ulX + this.stepX / 2, lrX - resX / 2, this.stepX);
+
+        // Compute englobing lower right of the grid after computation
+        this.lrY = gridY.get(gridY.size()-1) + this.stepY / 2;
+        this.lrX = gridX.get(gridX.size()-1) + this.stepX / 2;
 
         LOGGER.info("# Grid information");
         String log = "Step: (" + String.valueOf(this.stepY) + ", " + String.valueOf(this.stepX) + "); ";
         log = log + "UL: (" + String.valueOf(this.ulY) + ", " + String.valueOf(this.ulX) + ") ";
         log = log + "LR: (" + String.valueOf(this.lrY) + ", " + String.valueOf(this.lrX) + ") ";
         LOGGER.info(log);
-
-        this.gridY = grid_1D(this.ulY + this.stepY / 2, this.lrY, this.stepY); // start to the pixel center
-        this.gridX = grid_1D(this.ulX + this.stepX / 2, this.lrX, this.stepX);
     }
 
 
     /**
      * Test if value + step is above end
-     * @param star of the grid
-     * @param end of the grid
+     * @param value to test
+     * @param end
      * @param signedStep of the grid
      * @return true/false
      */
     private boolean testEnd(float value, float end, float signedStep)
     {
+        System.out.println(String.valueOf(value) + ", " + String.valueOf(end) + ", " + String.valueOf(signedStep));
         if (signedStep > 0)
         {
+
+            System.out.println(String.valueOf(value + signedStep) +  " < " +  String.valueOf(end));
             return (value + signedStep < end);
         }
         else
         {
+            System.out.println(String.valueOf(value + signedStep) +  " > " +  String.valueOf(end));
             return (value + signedStep > end);
         }
     }
@@ -103,7 +112,7 @@ public class InverseLocGrid
     /**
      * Create the list of geo grid values for a specific range
      * @param star of the grid
-     * @param end of the grid
+     * @param end min of the grid
      * @param signedStep of the grid
      * @return list 1D
      */
@@ -114,6 +123,7 @@ public class InverseLocGrid
         float value = start;
         grid.add(value);
 
+
         while(testEnd(value, end, signedStep))
         {
             value = value + signedStep;
@@ -121,6 +131,7 @@ public class InverseLocGrid
         }
 
         grid.add(value + signedStep);
+
         return grid;
     }
 
