@@ -62,13 +62,11 @@ public class Datastrip
             if (list_img[i].getName().endsWith(".vrt")) {
                 String[] name = list_img[i].getName().substring(0, list_img[i].getName().lastIndexOf(".")).split("_");
                 String bandName = name[name.length-1];
-                System.out.println(list_img[i].getName());
                 int indexBand = BandInfo.getBandInfoFromNameWithB(bandName).getIndex();
                 String detectorName = name[name.length-2].substring(1);
                 int indexDetector = Integer.valueOf(detectorName);
                 this.vrts[indexDetector-1][indexBand] = list_img[i];
             }
-
         }
     }
 
@@ -89,9 +87,17 @@ public class Datastrip
     }
 
     /*
-     * Get the name
+     * Get the vrt (det/and)
      */
-    public File[][] getVRT()
+    public File getVRT(DetectorInfo detector, BandInfo band)
+    {
+        return this.vrts[detector.getIndex()][band.getIndex()];
+    }
+
+    /*
+     * Get all the vrt
+     */
+    public File[][] getVRTs()
     {
         return this.vrts;
     }

@@ -213,7 +213,7 @@ public class SafeTest
                 }
             }
 
-            File[][] vrt = datastrip.getVRT();
+            File[][] vrt = datastrip.getVRTs();
             for(int d = 0; d < vrt.length; d++)
             {
                 for(int b = 0; b < vrt[d].length; b++)
@@ -245,7 +245,7 @@ public class SafeTest
             assertEquals(nbPresent, 12);
 
             nbPresent = 0;
-            vrt = datastrip.getVRT();
+            vrt = datastrip.getVRTs();
             for(int d = 0; d < vrt.length; d++)
             {
                 for(int b = 0; b < vrt[d].length; b++)

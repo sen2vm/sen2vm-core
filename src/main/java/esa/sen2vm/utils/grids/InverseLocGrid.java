@@ -80,7 +80,6 @@ public class InverseLocGrid
         log = log + "UL: (" + String.valueOf(this.ulY) + ", " + String.valueOf(this.ulX) + ") ";
         log = log + "LR: (" + String.valueOf(this.lrY) + ", " + String.valueOf(this.lrX) + ") ";
         LOGGER.info(log);
-
     }
 
 

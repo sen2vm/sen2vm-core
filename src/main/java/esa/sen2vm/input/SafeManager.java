@@ -205,32 +205,52 @@ public class SafeManager
                         inverseGrids[indexDetector][indexBand] = listOfFiles[i];
                     }
                 }
-
             }
         }
         return inverseGrids;
     }
 
+    /**
+     * Check if one grid (tif/vrt) in the wanted configs already exists
+     * @param detectors and bands : list of configs to check
+     * throw Sen2VMException if yes
+     */
     public void testifDirectGridsToComputeAlreadyExist(List<DetectorInfo> detectors, List<BandInfo> bands) throws Sen2VMException
     {
         for (DetectorInfo detectorInfo: detectors)
         {
             for (BandInfo bandInfo: bands)
             {
+                // Check grids by granules
                 ArrayList<Granule> granulesToCompute = getGranulesToCompute(detectorInfo, bandInfo);
                 for (Granule granuleToCompute: granulesToCompute)
                 {
                     if (granuleToCompute.getGrid(bandInfo) != null)
                     {
-                        String error = "Direct grid(s) already exists";
-                        error = error + " (" + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
+                        String error = "Direct grid(s) already exist(s)";
+                        error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
                         throw new Sen2VMException(error);
                     }
                 }
+
+                // Check vrt
+                File vrt = this.datastrip.getVRT(detectorInfo, bandInfo);
+                if (vrt != null)
+                {
+                    String error = "VRT grid(s) already exist(s)";
+                    error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
+                    throw new Sen2VMException(error);
+                }
+
             }
         }
     }
 
+    /**
+     * Check if one inverse grid in the wanted configs already exists
+     * @param detectors and bands : list of configs to check
+     * throw Sen2VMException if yes
+     */
     public void testifInverseGridsToComputeAlreadyExist(List<DetectorInfo> detectors, List<BandInfo> bands,
         String outputDirPath) throws Sen2VMException
     {
@@ -242,8 +262,8 @@ public class SafeManager
                 File f = new File(invFileName);
                 if (f.exists())
                 {
-                    String error = "Inverse grid(s) already exists";
-                    error = error + " (" + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
+                    String error = "Inverse grid(s) already exist(s)";
+                    error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
                     throw new Sen2VMException(error);
                 }
             }
