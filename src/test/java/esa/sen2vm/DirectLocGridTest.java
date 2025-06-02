@@ -88,7 +88,7 @@ public class DirectLocGridTest
      * Functional test
      */
     @Test
-    public void readConfigurationFile()
+    public void createGrid()
     {
         float step = 4.5f;
         int startLine = 0;

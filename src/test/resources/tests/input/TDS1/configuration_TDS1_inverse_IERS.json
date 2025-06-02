@@ -7,7 +7,6 @@
   "iers": "src/test/resources/tests/input/TDS1/inputs/IERS/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000_MTD.txt",
   "pod": "PATH_TO_POD_file/folder?",
   "operation": "inverse",
-  "overwrite_existing_grids": false,
   "deactivate_available_refining": false,
   "steps": {
     "10m_bands": 600,

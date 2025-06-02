@@ -12,6 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.io.File;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import java.util.Date;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 
 import org.orekit.rugged.linesensor.LineDatation;
 
@@ -58,7 +64,7 @@ public class Sen2VM
      * @throws Sen2VMException
      */
 
-    public static void main( String[] args ) throws Sen2VMException
+    public static void main( String[] args ) throws Sen2VMException, Exception
     {
         // Get the logger configuration
         InputStream logProperties = Thread.currentThread().getContextClassLoader().getResourceAsStream("log.properties");
@@ -228,8 +234,8 @@ public class Sen2VM
             //ds.checkNoVRT(detectors, bands);
 
             // GIPP
-            Float georefConventionOffsetPixel = -0.5f;
-            Float georefConventionOffsetLine = +0.5f;
+            float georefConventionOffsetPixel = +0.5f;
+            float georefConventionOffsetLine = +0.5f;
 
             OutputFileManager outputFileManager = new OutputFileManager();
 
@@ -240,6 +246,17 @@ public class Sen2VM
 
             LOGGER.info("");
             LOGGER.info("Starting grids generation");
+
+            // Test if no grids exists already
+            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+            {
+                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands) ;
+            }
+            else if (config.getOperation().equals(Sen2VMConstants.INVERSE))
+            {
+                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder()) ;
+            }
+
             for (BandInfo bandInfo: bands)
             {
 
@@ -268,12 +285,11 @@ public class Sen2VM
 
                         // Load Granule Info
                         ArrayList<Granule> granulesToCompute = safeManager.getGranulesToCompute(detectorInfo, bandInfo);
-                        LOGGER.info("Number of granules found: " +  String.valueOf(granulesToCompute.size()));
 
                         // Get Full Sensor Grid
                         DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffsetLine, georefConventionOffsetPixel,
                             step, startLine, startPixel, sizeLine, sizePixel);
-                        double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2, step/2);
+                        double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2 - georefConventionOffsetPixel, step/2 + georefConventionOffsetLine);
 
                         // Direct Loc
                         double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
@@ -318,14 +334,14 @@ public class Sen2VM
                     {
                         float[] bb =  config.getInverseLocBound();
 
-                        InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), step * res);
+                        InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), res, step);
                         double[][] groundGrid = invGrid.get2DgridLatLon();
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
-                        double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, -georefConventionOffsetPixel, -georefConventionOffsetLine);
+                        double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, georefConventionOffsetPixel, -georefConventionOffsetLine);
 
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());
-                        outputFileManager.createGeoTiff(invFileName, bb[0], bb[1], invGrid.getStepX(), invGrid.getStepY(), grid3D, config.getInverseLocReferential(), "", 0.0f, 0.0f, false);
+                        outputFileManager.createGeoTiff(invFileName, invGrid.getUlX(), invGrid.getUlY(), invGrid.getStepX(), invGrid.getStepY(), grid3D, config.getInverseLocReferential(), "", 0.0f, 0.0f, false);
                     }
                     else
                     {
@@ -333,6 +349,33 @@ public class Sen2VM
                     }
                 }
             }
+
+            // Copy configuration path into DATASTRIP/GEO_DATA dir for direct loc
+            // and OUTPUT dir for inverse loc
+
+            // Get date (string format)
+            Format formatterDay = new SimpleDateFormat("YYYYMMdd");
+            Format formatterTime = new SimpleDateFormat("hhmmss");
+            String date = formatterDay.format(new Date()) + "T" + formatterTime.format(new Date());
+
+            // Construct file path
+            File toCopy = new File(commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT));
+            String configNameSave = toCopy.getName().toString();
+            configNameSave = configNameSave.substring(0, configNameSave.lastIndexOf(".")) + "_" + date;
+            configNameSave = configNameSave + Sen2VMConstants.JSON_EXTENSION;
+            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+            {
+                configNameSave = datastrip.getPath() + File.separator + Sen2VMConstants.GEO_DATA_DS + File.separator + configNameSave;
+            }
+            else if (config.getOperation().equals(Sen2VMConstants.INVERSE))
+            {
+                configNameSave = config.getInverseLocOutputFolder() + File.separator + configNameSave;
+            }
+            File copy = new File(configNameSave);
+
+            // Copy the file
+            Files.copy(toCopy.toPath(), copy.toPath(), REPLACE_EXISTING);
+
         }
         catch ( IOException exception )
         {
@@ -341,10 +384,6 @@ public class Sen2VM
         catch ( SXGeoException exception )
         {
             throw new Sen2VMException(exception);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
         }
     }
 }

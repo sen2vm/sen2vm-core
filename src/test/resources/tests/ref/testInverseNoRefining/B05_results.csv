@@ -1,0 +1,2 @@
+,band,det,nb_valeurs not nan,nb_errors > 10-6 m,nb_errors > 10-4 m,nb_errors > 10-2 m,mean (m),max (m),std (m),ce95 (m)
+0,B05,D06,89,5,5,0,2.3262237573231062e-05,0.0009727578437608252,0.00012003032660653172,6.437599881532742e-05

@@ -70,8 +70,8 @@ public class DirectLocGrid
         {
             for (int c = 0; c < nbCols; c ++)
             {
-                grid[l*nbCols + c][0] = this.gridLines.get(l) + lineOffest + georefConventionOffsetLine;
-                grid[l*nbCols + c][1] = this.gridPixels.get(c) + pixelOffest + georefConventionOffsetPixel;
+                grid[l*nbCols + c][0] = this.gridLines.get(l) + lineOffest;
+                grid[l*nbCols + c][1] = this.gridPixels.get(c) + pixelOffest;
             }
         }
 
