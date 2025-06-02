@@ -180,6 +180,16 @@ public class Config
         return outputConfig;
     }
 
+    public static boolean deleteDirectory(File directory) {
+        File[] listOfFiles = directory.listFiles();
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                deleteDirectory(file);
+            }
+        }
+        return directory.delete();
+    }
+
     public static String createTestDir(String nameTest, String type) throws IOException
     {
 
@@ -187,15 +197,15 @@ public class Config
         String outputDir = "src/test/resources/tests/output/" + nameTest;
         File outputDirFile = new File(outputDir);
         if(outputDirFile.exists()) {
-            outputDirFile.delete();
+            deleteDirectory(outputDirFile);
         }
         copyFolder(new File(inputRef), new File(outputDir), true);
         return outputDir;
     }
 
-public static String changeParams(String filePath, String[] detectors, String[] bands, String outputDir) throws FileNotFoundException,
-            IOException, ParseException
-{
+    public static String changeParams(String filePath, String[] detectors, String[] bands, String outputDir) throws FileNotFoundException,
+                IOException, ParseException
+    {
 
         // String[] detectors, String[] bands
 
