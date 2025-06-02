@@ -131,6 +131,10 @@ public class SafeTest
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
+        }  catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
         }
     }
 
@@ -163,13 +167,16 @@ public class SafeTest
 
             assertEquals(safeManager.getGranulesToCompute(DetectorInfo.DETECTOR_3, BandInfo.BAND_2).size(), 6);
 
-        }
-        catch (Sen2VMException e)
-        {
+        }  catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }  catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
         }
+
     }
 
     // @Test
@@ -184,20 +191,10 @@ public class SafeTest
             String configFile = "";
             String paramFile = "";
             String outputDir = "";
-            try
-            {
-                outputDir = Config.createTestDir("run_D10", "direct");
-                configFile = Config.config(configTmp, outputDir, 6000, "direct", false);
-                paramFile = Config.changeParams(paramTmp, detectors, bands, outputDir);
-            } catch (ParseException e) {
-                LOGGER.warning(e.getMessage());
-                e.printStackTrace();
-                assert(false);
-            } catch (IOException e) {
-                LOGGER.warning(e.getMessage());
-                e.printStackTrace();
-                assert(false);
-            }
+
+            outputDir = Config.createTestDir("run_D10", "direct");
+            configFile = Config.config(configTmp, outputDir, 6000, "direct", false);
+            paramFile = Config.changeParams(paramTmp, detectors, bands, outputDir);
 
             // Test if no vrt and geogrid found
             LOGGER.info(configFile);
@@ -226,15 +223,8 @@ public class SafeTest
             }
             LOGGER.info("   ");
 
-            try
-            {
-                String[] args = {"-c", configFile, "-p", paramFile};
-                Sen2VM.main(args);
-            } catch (Sen2VMException e) {
-                LOGGER.warning(e.getMessage());
-                e.printStackTrace();
-                assert(false);
-            }
+            String[] args = {"-c", configFile, "-p", paramFile};
+            Sen2VM.main(args);
 
             config = new Configuration(configFile);
             dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
@@ -270,21 +260,18 @@ public class SafeTest
             String ok = "false";
             // configChangeOverwrite(String filePath, Boolean overwrite) throws FileNotFoundException,
 
-            try
-            {
-                String[] args = {"-c", configFile, "-p", paramFile};
-                Sen2VM.main(args);
-                ok = "true";
-            } catch (Sen2VMException e) {
-                LOGGER.warning(e.getMessage());
-                e.printStackTrace();
-                assert(false);
-            }
+            String[] args2 = {"-c", configFile, "-p", paramFile};
+            Sen2VM.main(args2);
+            ok = "true";
             LOGGER.info(ok);
 
         }
         catch (Sen2VMException e)
         {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }  catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);

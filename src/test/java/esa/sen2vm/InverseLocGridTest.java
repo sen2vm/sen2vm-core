@@ -184,15 +184,11 @@ public class InverseLocGridTest
             Sen2VM.main(args);
             // Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
 
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);

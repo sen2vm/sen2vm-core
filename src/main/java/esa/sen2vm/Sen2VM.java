@@ -64,7 +64,7 @@ public class Sen2VM
      * @throws Sen2VMException
      */
 
-    public static void main( String[] args ) throws Sen2VMException
+    public static void main( String[] args ) throws Sen2VMException, Exception
     {
         // Get the logger configuration
         InputStream logProperties = Thread.currentThread().getContextClassLoader().getResourceAsStream("log.properties");
@@ -384,11 +384,6 @@ public class Sen2VM
         catch ( SXGeoException exception )
         {
             throw new Sen2VMException(exception);
-        }
-        catch (Exception e)
-        {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
         }
     }
 }

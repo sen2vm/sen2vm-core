@@ -48,15 +48,11 @@ public class Sen2VMDirectTest
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
                 Utils.verifyStepDirectLoc(config, step);
-            } catch (IOException e) {
-                LOGGER.warning(e.getMessage());
-                e.printStackTrace();
-                assert(false);
             } catch (Sen2VMException e) {
                 LOGGER.warning(e.getMessage());
                 e.printStackTrace();
                 assert(false);
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 LOGGER.warning(e.getMessage());
                 e.printStackTrace();
                 assert(false);
@@ -79,15 +75,11 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
@@ -110,15 +102,11 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
@@ -140,15 +128,11 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
@@ -171,15 +155,11 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
@@ -210,15 +190,11 @@ public class Sen2VMDirectTest
             Sen2VM.main(args);
 
             Utils.verifyDirectLoc(config, outputDir_ref);
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
@@ -249,15 +225,11 @@ public class Sen2VMDirectTest
 
             Utils.verifyDirectLoc(config_order_2, outputDir1);
             Utils.verifyDirectLoc(config_order_1, outputDir2);
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
@@ -290,15 +262,11 @@ public class Sen2VMDirectTest
                 Sen2VM.main(args);
                 Utils.verifyDirectLoc(config, outputDir_ref);
             }
-        } catch (IOException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
