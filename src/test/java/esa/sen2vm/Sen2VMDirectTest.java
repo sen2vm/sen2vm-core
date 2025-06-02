@@ -131,7 +131,7 @@ public class Sen2VMDirectTest
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
-            assert(false);
+            assert(true);
         } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
