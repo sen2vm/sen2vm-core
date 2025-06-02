@@ -182,7 +182,7 @@ public class InverseLocGridTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            // Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
+            Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
 
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
@@ -194,7 +194,6 @@ public class InverseLocGridTest
             assert(false);
         }
     }
-
 }
 
 
