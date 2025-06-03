@@ -134,9 +134,25 @@ public class InverseLocGrid
 
     /**
      * Create 2D grid from gridX and gridY
-     * @return grid [[lon0, lat0, alt0], [lon1, lat1, alt1], ..]
+     * @return grid [[lon0, lat0], [lon1, lat1], ..]
      */
     public double[][] get2DgridLatLon()
+    {
+        if (this.epsg == 4326)
+        {
+            return get2Dgrid();
+        }
+        else
+        {
+            return get2DgridWithConvLatLon();
+        }
+    }
+
+    /**
+     * Create 2D grid with lat lon from gridX and gridY
+     * @return grid [[lon0, lat0], [lon1, lat1], ..]
+     */
+    public double[][] get2DgridWithConvLatLon()
     {
         int nbCols = this.gridX.size();
         int nbLines = this.gridY.size();
@@ -153,12 +169,33 @@ public class InverseLocGrid
             for (int c = 0; c < nbCols; c ++)
             {
                 double[] res = transformer.TransformPoint(this.gridX.get(c), this.gridY.get(l));
-                grid[l*nbCols + c][0] = res[0];
-                grid[l*nbCols + c][1] = res[1];
+                grid[l*nbCols + c][0] = res[1];
+                grid[l*nbCols + c][1] = res[0];
             }
         }
         System.out.println("tl");
 
+        return grid;
+    }
+
+    /**
+     * Create 2D grid from gridX and gridY
+     * @return grid [[lon0, lat0], [lon1, lat1], ..]
+     */
+    public double[][] get2Dgrid()
+    {
+        int nbCols = this.gridX.size();
+        int nbLines = this.gridY.size();
+        double[][] grid = new double[nbCols * nbLines][2];
+
+        for (int l = 0; l < nbLines; l ++)
+        {
+            for (int c = 0; c < nbCols; c ++)
+            {
+                grid[l*nbCols + c][0] = (double) this.gridX.get(c);
+                grid[l*nbCols + c][1] = (double) this.gridY.get(l);
+            }
+        }
         return grid;
     }
 
