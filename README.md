@@ -463,9 +463,9 @@ Inverse location grids **will give the coordinates in the “detector” image**
        * margins,
        * the GIPP dataset used,
        * the DEM and associated geoid (TBD),
-       * refining activated or not.
+       * whether was refining deactivated or not.
          
-As for direct location grids, the center of the first grid is aligned with the center of the first output boundinig box considering a pixel at resolution of the processed band. The center of the last grid pixel is calculated to ensure that it covers at least the last pixel of the input bounding box.
+As for direct location grids, the center of the first grid point is aligned with the center of the first output pixel of the bounding box considering a pixel at resolution of the processed band. The center of the last grid pixel is calculated to ensure that it covers at least the last pixel center of the input bounding box.
 
 Bounding box provided in input:
 
