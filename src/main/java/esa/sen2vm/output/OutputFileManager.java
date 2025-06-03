@@ -194,13 +194,13 @@ public class OutputFileManager
      {
         for(int g = 0; g < inputTIFs.size(); g++ )
         {
-            Dataset ds = gdal.Open(inputTIFs.get(g), 0);
+            Dataset ds = gdal.Open(inputTIFs.get(g), gdalconst.GA_Update);
             double[] transform = ds.GetGeoTransform();
             double[] gtInfo = getGeoTransformInfo((float) transform[0], (float) transform[1], (float) -transform[3], (float)  -transform[5]);
             ds.SetGeoTransform(gtInfo);
             ds.FlushCache();
             ds.delete();
-        }
+       }
     }
 
     /**
