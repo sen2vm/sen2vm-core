@@ -34,17 +34,17 @@ public class Configuration extends InputFileManager
     private String pod;
     private String operation;
     private boolean deactivateRefining = Sen2VMConstants.DEACTIVATE_REFINING;
-    private float step_band10m;
-    private float step_band20m;
-    private float step_band60m;
-    private float outRes_band10m;
-    private float outRes_band20m;
-    private float outRes_band60m;
+    private double step_band10m;
+    private double step_band20m;
+    private double step_band60m;
+    private double outRes_band10m;
+    private double outRes_band20m;
+    private double outRes_band60m;
     private boolean exportAlt = Sen2VMConstants.EXPORT_ALT;
-    private float ul_x;
-    private float ul_y;
-    private float lr_x;
-    private float lr_y;
+    private double ul_x;
+    private double ul_y;
+    private double lr_x;
+    private double lr_y;
     private String referential;
     private String outputFolder;
 
@@ -73,8 +73,8 @@ public class Configuration extends InputFileManager
         
         this.geoid = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_GEOID_SHORT));
         
-        // convert the string array to an float array
-        Float[] stepsValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_STEP_SHORT)).map(Float::valueOf).toArray(Float[]::new);
+        // convert the string array to an double array
+        Double[] stepsValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_STEP_SHORT)).map(Double::valueOf).toArray(Double[]::new);
 
         this.step_band10m = stepsValues[0];
         this.step_band20m = stepsValues[1];
@@ -349,7 +349,7 @@ public class Configuration extends InputFileManager
      * Get the step of 10m band
      * @return the step for 10m band (pixels)
      */
-    public float getStepBand10m()
+    public double getStepBand10m()
     {
        return this.step_band10m;
     }
@@ -358,7 +358,7 @@ public class Configuration extends InputFileManager
      * Get the step of 20m band
      * @return the step for 20m band (pixels)
      */
-    public float getStepBand20m()
+    public double getStepBand20m()
     {
        return this.step_band20m;
     }
@@ -367,7 +367,7 @@ public class Configuration extends InputFileManager
      * Get the step of 60m band
      * @return the step for 60m band (pixels)
      */
-    public float getStepBand60m()
+    public double getStepBand60m()
     {
        return this.step_band60m;
     }
@@ -377,9 +377,9 @@ public class Configuration extends InputFileManager
      * @param bandInfo
      * @return the step for a given band (pixels)
      */
-    public float getStepFromBandInfo(BandInfo bandInfo)
+    public double getStepFromBandInfo(BandInfo bandInfo)
     {
-        float step;
+        double step;
         switch((int) bandInfo.getPixelHeight())
         {
             case Sen2VMConstants.RESOLUTION_10M:
@@ -399,9 +399,9 @@ public class Configuration extends InputFileManager
      * Get the inverse location bounds
      * @return ulx, uly, lrx, lry (in referential unit)
      */
-    public float[] getInverseLocBound()
+    public double[] getInverseLocBound()
     {
-        float[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
+        double[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
         return bb;
     }
 
@@ -427,7 +427,7 @@ public class Configuration extends InputFileManager
      * Get the output res (inverse grid) of 10m band
      * @return the output res (inverse grid) for 10m band (pixels)
      */
-    public float getOutRes10m()
+    public double getOutRes10m()
     {
        return this.outRes_band10m;
     }
@@ -436,7 +436,7 @@ public class Configuration extends InputFileManager
      * Get the output res (inverse grid) of 20m band
      * @return the output res (inverse grid) for 20m band (pixels)
      */
-    public float getOutRes20m()
+    public double getOutRes20m()
     {
        return this.outRes_band20m;
     }
@@ -445,7 +445,7 @@ public class Configuration extends InputFileManager
      * Get the output res (inverse grid) of 60m band
      * @return the output res (inverse grid) for 60m band (pixels)
      */
-    public float getOutRes60m()
+    public double getOutRes60m()
     {
        return this.outRes_band60m;
     }
@@ -455,9 +455,9 @@ public class Configuration extends InputFileManager
      * @param bandInfo
      * @return the output res for a given band (ref)
      */
-    public float getOutResFromBandInfo(BandInfo bandInfo)
+    public double getOutResFromBandInfo(BandInfo bandInfo)
     {
-        float outRes;
+        double outRes;
         switch((int) bandInfo.getPixelHeight())
         {
             case Sen2VMConstants.RESOLUTION_10M:

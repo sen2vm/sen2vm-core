@@ -51,9 +51,9 @@ public class OutputFileManager
      * @param pixelOffset (metadata)
      * @param metadata true if export, false if not export
      */
-     public void createGeoTiff(String fileName, float startPixel, float startLine,
-            float stepX, float stepY, double[][][] bandVal, String epsg, String epsgData,
-            float lineOffset, float pixelOffset, Boolean metadata)
+     public void createGeoTiff(String fileName, double startPixel, double startLine,
+            double stepX, double stepY, double[][][] bandVal, String epsg, String epsgData,
+            double lineOffset, double pixelOffset, Boolean metadata)
     {
 
         int nbBand = bandVal.length;
@@ -134,7 +134,7 @@ public class OutputFileManager
      * @param originY y-coordinate of the upper-left corner of the upper-left pixel.
      * @param gridYStep n-s pixel resolution / pixel height (negative value for a north-up image).
      */
-    public double[] getGeoTransformInfo(float originX, float gridXStep, float originY, float gridYStep)
+    public double[] getGeoTransformInfo(double originX, double gridXStep, double originY, double gridYStep)
     {
         double[] gtInfo = new double[6];
         int idx = 0;
@@ -156,8 +156,8 @@ public class OutputFileManager
      * @param pixelOffset startPixel
      * @param export band3 (altitude case)
      */
-    public void createVRT(String vrtFilePath, Vector<String> inputTIFs,  float step,
-                            float lineOffset, float pixelOffset, boolean exportAlt)
+    public void createVRT(String vrtFilePath, Vector<String> inputTIFs,  double step,
+                            double lineOffset, double pixelOffset, boolean exportAlt)
     {
         // Create file tmp
         String vrtFilePath_tmp = vrtFilePath.substring(0, vrtFilePath.length() -4) + "_tmp" + Sen2VMConstants.VRT_EXTENSION;
@@ -196,7 +196,7 @@ public class OutputFileManager
         {
             Dataset ds = gdal.Open(inputTIFs.get(g), gdalconst.GA_Update);
             double[] transform = ds.GetGeoTransform();
-            double[] gtInfo = getGeoTransformInfo((float) transform[0], (float) transform[1], (float) -transform[3], (float)  -transform[5]);
+            double[] gtInfo = getGeoTransformInfo(transform[0], transform[1], -transform[3], -transform[5]);
             ds.SetGeoTransform(gtInfo);
             ds.FlushCache();
             ds.delete();
@@ -234,8 +234,8 @@ public class OutputFileManager
             if (s.contains("GeoTransform"))
             {
                 String[] parts = s.split(",");
-                float originYf = - Float.parseFloat(parts[3]);
-                float stepYf = - Float.parseFloat(parts[5].split("<")[0]);
+                double originYf = - Double.parseDouble(parts[3]);
+                double stepYf = - Double.parseDouble(parts[5].split("<")[0]);
                 s = parts[0] + "," + parts[1] + "," + parts[2];
                 s = s + "," + String.valueOf(originYf) + "," + parts[4] + "," + stepYf + " </GeoTransform>";
             }

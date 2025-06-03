@@ -265,16 +265,16 @@ public class Sen2VM
                 LOGGER.info("### BAND " + bandInfo.getName() + " ###");
                 LOGGER.info("###############");
 
-                float res ;
+                double res ;
                 if (config.getOperation().equals(Sen2VMConstants.DIRECT))
                 {
-                    res = (float) bandInfo.getPixelHeight();
+                    res = (double) bandInfo.getPixelHeight();
                 } else
                 {
                     res = config.getOutResFromBandInfo(bandInfo) ;
                 }
 
-                float step = config.getStepFromBandInfo(bandInfo);
+                double step = config.getStepFromBandInfo(bandInfo);
 
                 LOGGER.info("Grid resolution: " + String.valueOf(config.getStepFromBandInfo(bandInfo)));
                 LOGGER.info("Band resolution: " + String.valueOf(res));
@@ -304,7 +304,7 @@ public class Sen2VM
                         double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
 
                         Vector<String> inputTIFs = new Vector<String>();
-                        float pixelOffset = dirGrid.getPixelOffsetGranule();
+                        double pixelOffset = dirGrid.getPixelOffsetGranule();
 
                         for (int g = 0; g < granulesToCompute.size(); g++)
                         {
@@ -315,7 +315,7 @@ public class Sen2VM
 
                             double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule, config.getExportAlt());
 
-                            float subLineOffset = dirGrid.getLineOffsetGranule(startGranule);
+                            double subLineOffset = dirGrid.getLineOffsetGranule(startGranule);
 
                             // Save in TIF
                             String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
@@ -329,17 +329,18 @@ public class Sen2VM
                         }
 
                         // Create VRT
-                        float lineOffset = dirGrid.getLineOffsetGranule(0);
+                        double lineOffset = dirGrid.getLineOffsetGranule(0);
                         String vrtFileName = datastrip.getCorrespondingVRTFileName(detectorInfo, bandInfo);
                         outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset, pixelOffset, config.getExportAlt());
 
                         // Correction post build VRT
                         outputFileManager.correctGeoGrid(inputTIFs);
                         outputFileManager.correctVRT(vrtFileName);
+
                     }
                     else if (config.getOperation().equals(Sen2VMConstants.INVERSE))
                     {
-                        float[] bb =  config.getInverseLocBound();
+                        double[] bb =  config.getInverseLocBound();
 
                         InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), res, step);
                         double[][] groundGrid = invGrid.get2DgridLatLon();

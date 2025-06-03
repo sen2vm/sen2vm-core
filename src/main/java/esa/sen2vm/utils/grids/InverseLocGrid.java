@@ -17,16 +17,16 @@ public class InverseLocGrid
 
     private int epsg;
 
-    protected float stepX;
-    protected float stepY;
+    protected double stepX;
+    protected double stepY;
 
-    protected float ulX;
-    protected float ulY;
-    protected float lrX;
-    protected float lrY;
+    protected double ulX;
+    protected double ulY;
+    protected double lrX;
+    protected double lrY;
 
-    protected ArrayList<Float> gridX;
-    protected ArrayList<Float> gridY;
+    protected ArrayList<Double> gridX;
+    protected ArrayList<Double> gridY;
 
     /**
      * Constructor
@@ -38,12 +38,12 @@ public class InverseLocGrid
      * @param step in epsg referencial
      * @param res of the band in meters
      */
-    public InverseLocGrid(float ulX, float ulY, float lrX, float lrY,
-                         String epsg, float res, float step)
+    public InverseLocGrid(double ulX, double ulY, double lrX, double lrY,
+                         String epsg, double res, double step)
     {
         this.epsg = Integer.valueOf(epsg.substring(5));
-        float resX = res;
-        float resY = res;
+        double resX = res;
+        double resY = res;
 
         this.stepX = step;
         this.stepY = step;
@@ -92,7 +92,7 @@ public class InverseLocGrid
      * @param signedStep of the grid
      * @return true/false
      */
-    private boolean testEnd(float value, float end, float signedStep)
+    private boolean testEnd(double value, double end, double signedStep)
     {
         if (signedStep > 0)
         {
@@ -112,14 +112,13 @@ public class InverseLocGrid
      * @param signedStep of the grid
      * @return list 1D
      */
-    private ArrayList<Float> grid_1D(float start, float end, float signedStep)
+    private ArrayList<Double> grid_1D(double start, double end, double signedStep)
     {
-        ArrayList<Float> grid = new ArrayList<Float>();
+        ArrayList<Double> grid = new ArrayList<Double>();
 
-        float value = start;
+        double value = start;
         grid.add(value);
 
-        System.out.println(value);
 
         while(testEnd(value, end, signedStep))
         {
@@ -203,7 +202,7 @@ public class InverseLocGrid
      * Transform [[row0, col0], [row1, col1]..] to 3D grid before tiff saving
      * @return grid [[[col00, col01...], [col10, col11...], [[row00, row01..], [row10, row11..] ..]]
      */
-     public double[][][] get3Dgrid(double[][] gridList, float pixelOffest, float lineOffest)
+     public double[][][] get3Dgrid(double[][] gridList, double pixelOffest, double lineOffest)
      {
         int nbCols = this.gridX.size();
         int nbLines = this.gridY.size();
@@ -231,7 +230,7 @@ public class InverseLocGrid
      * Get StepX
      * @return stepX
      */
-     public float getStepX()
+     public double getStepX()
     {
         return this.stepX;
     }
@@ -240,7 +239,7 @@ public class InverseLocGrid
      * Get StepY
      * @return stepY
      */
-    public float getStepY()
+    public double getStepY()
     {
         return this.stepY;
     }
@@ -249,7 +248,7 @@ public class InverseLocGrid
      * Get ulX
      * @return ulX
      */
-     public float getUlX()
+     public double getUlX()
     {
         return this.ulX;
     }
@@ -258,7 +257,7 @@ public class InverseLocGrid
      * Get ulY
      * @return ulY
      */
-     public float getUlY()
+     public double getUlY()
     {
         return this.ulY;
     }
@@ -267,7 +266,7 @@ public class InverseLocGrid
      * Get lrX
      * @return lrX
      */
-     public float getLrX()
+     public double getLrX()
     {
         return this.lrX;
     }
@@ -276,7 +275,7 @@ public class InverseLocGrid
      * Get lrY
      * @return lrY
      */
-     public float getLrY()
+     public double getLrY()
     {
         return this.lrY;
     }
@@ -285,7 +284,7 @@ public class InverseLocGrid
      * Get gridX
      * @return gridX
      */
-     public ArrayList<Float> getGridX()
+     public ArrayList<Double> getGridX()
     {
         return this.gridX;
     }
@@ -294,7 +293,7 @@ public class InverseLocGrid
      * Get gridY
      * @return gridY
      */
-     public ArrayList<Float> getGridY()
+     public ArrayList<Double> getGridY()
     {
         return this.gridY;
     }

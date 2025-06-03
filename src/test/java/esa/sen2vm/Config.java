@@ -44,7 +44,7 @@ public class Config
     private static final double THRESHOLD_DIR = 1e-9;
     private static final double THRESHOLD_INV = 1e-8;
 
-    public static String config(String filePath, String l1b_product, float step, String operation, boolean refining) throws FileNotFoundException,
+    public static String config(String filePath, String l1b_product, double step, String operation, boolean refining) throws FileNotFoundException,
             IOException, ParseException
     {
         JSONParser parser = new JSONParser();
@@ -116,8 +116,8 @@ public class Config
 
 
     public static String configInverseBB(String filePath,
-                                        float ul_y, float ul_x,
-                                        float lr_y, float lr_x,
+                                        double ul_y, double ul_x,
+                                        double lr_y, double lr_x,
                                         String referential, String l1b_product) throws FileNotFoundException,
                                          IOException, ParseException
     {
@@ -145,9 +145,9 @@ public class Config
     }
 
     public static String configInverseBBwithStep10m(String filePath,
-                                        float ul_y, float ul_x,
-                                        float lr_y, float lr_x,
-                                        float step10m, float outRes10m,
+                                        double ul_y, double ul_x,
+                                        double lr_y, double lr_x,
+                                        double step10m, double outRes10m,
                                         String referential, String l1b_product) throws FileNotFoundException,
                                          IOException, ParseException
     {

@@ -9,16 +9,16 @@ public class DirectLocGrid
     // Get sen2VM logger
     private static final Logger LOGGER = Logger.getLogger(DirectLocGrid.class.getName());
 
-    protected float georefConventionOffsetPixel;
-    protected float georefConventionOffsetLine;
-    protected float step;
+    protected double georefConventionOffsetPixel;
+    protected double georefConventionOffsetLine;
+    protected double step;
     protected int pixelOrigin;
     protected int lineOrigin;
     protected int sizeLines;
     protected int sizePixels;
 
-    protected ArrayList<Float> gridPixels;
-    protected ArrayList<Float> gridLines;
+    protected ArrayList<Double> gridPixels;
+    protected ArrayList<Double> gridLines;
 
     /**
      * Constructor
@@ -29,8 +29,8 @@ public class DirectLocGrid
      * @param sizeLines
      * @param sizePixels
      */
-    public DirectLocGrid(float georefConventionOffsetLine, float georefConventionOffsetPixel,
-                         float step,
+    public DirectLocGrid(double georefConventionOffsetLine, double georefConventionOffsetPixel,
+                         double step,
                          int lineOrigin, int pixelOrigin,
                          int sizeLines, int sizePixels)
     {
@@ -59,7 +59,7 @@ public class DirectLocGrid
      * @param pixelOffest for s2geo convention
      * @param lineOffest for s2geo convention
      */
-    public double[][] get2Dgrid(float pixelOffest, float lineOffest)
+    public double[][] get2Dgrid(double pixelOffest, double lineOffest)
     {
 
         int nbCols = this.gridPixels.size();
@@ -86,13 +86,13 @@ public class DirectLocGrid
      * @param step of the grid
      * @return list 1D
      */
-    private ArrayList<Float> grid_1D(int start, int size, int pixelOrigin, float step, float offset)
+    private ArrayList<Double> grid_1D(int start, int size, int pixelOrigin, double step, double offset)
     {
         Boolean insideGranule = true;
-        ArrayList<Float> grid = new ArrayList<Float>();
+        ArrayList<Double> grid = new ArrayList<Double>();
 
         int i_grid = 0;
-        float value = offset + (i_grid -  pixelOrigin) * step - step / 2;
+        double value = offset + (i_grid -  pixelOrigin) * step - step / 2;
         grid.add(value);
 
         while (insideGranule)
@@ -174,10 +174,10 @@ public class DirectLocGrid
      * Compute offset of a granule by the ds start
      * @return lineOffset
      */
-    public float getLineOffsetGranule(int startGranule)
+    public double getLineOffsetGranule(int startGranule)
     {
         int grid_row_start = getRowInGrid(startGranule);
-        float lineOffset = this.gridLines.get(grid_row_start) - startGranule;
+        double lineOffset = this.gridLines.get(grid_row_start) - startGranule;
         return lineOffset;
     }
 
@@ -185,7 +185,7 @@ public class DirectLocGrid
      * Compute offset of a granule by the ds start
      * @return pixelOffset
      */
-    public float getPixelOffsetGranule()
+    public double getPixelOffsetGranule()
     {
         return this.gridPixels.get(getRowInGrid(0));
     }
@@ -194,7 +194,7 @@ public class DirectLocGrid
      * Get grid Pixels
      * @return gridPixels
      */
-    public ArrayList<Float> getGridPixels()
+    public ArrayList<Double> getGridPixels()
     {
         return this.gridPixels;
     }
@@ -203,7 +203,7 @@ public class DirectLocGrid
      * Get grid lines
      * @return gridLines
      */
-    public ArrayList<Float> getGridLines()
+    public ArrayList<Double> getGridLines()
     {
         return this.gridLines;
     }

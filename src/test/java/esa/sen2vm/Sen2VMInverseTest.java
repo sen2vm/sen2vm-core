@@ -55,13 +55,13 @@ public class Sen2VMInverseTest
 
         String[] detectors = new String[]{"05"};
         String[] bands = new String[]{"B01", "B02", "B05"};
-        float[] testsStep = new float[]{3000, 6000};
+        double[] testsStep = new double[]{3000, 6000};
 
-        for (float step : testsStep)
+        for (double step : testsStep)
         {
             try
             {
-                String nameTest = "testStepInverseLoc_" +  Float.toString(step);
+                String nameTest = "testStepInverseLoc_" +  Double.toString(step);
                 String outputDir = Config.createTestDir(nameTest, "inverse");
                 String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
@@ -270,10 +270,10 @@ public class Sen2VMInverseTest
             String outputDir = Config.createTestDir(nameTest, "inverse");
 
             // T27SYT
-            float ul_x = 699960.0f;
-            float ul_y = 3800040.0f;
-            float lr_x = 809760.0f;
-            float lr_y = 3690240.0f;
+            double ul_x = 699960.0f;
+            double ul_y = 3800040.0f;
+            double lr_x = 809760.0f;
+            double lr_y = 3690240.0f;
             String referential = "EPSG:32627";
 
             String config = Config.configInverseBB(configTmpInverse, ul_y, ul_x, lr_y, lr_x, referential, outputDir);
@@ -305,10 +305,10 @@ public class Sen2VMInverseTest
             String outputDir = Config.createTestDir(nameTest, "inverse");
 
             // T28SBA
-            float ul_x = 199980.0f;
-            float ul_y = 3600000.0f;
-            float lr_x = 309780.0f;
-            float lr_y = 3490200.0f;
+            double ul_x = 199980.0f;
+            double ul_y = 3600000.0f;
+            double lr_x = 309780.0f;
+            double lr_y = 3490200.0f;
             String referential = "EPSG:32628";
 
             String config = Config.configInverseBB(configTmpInverse, ul_y, ul_x, lr_y, lr_x, referential, outputDir);
@@ -372,10 +372,10 @@ public class Sen2VMInverseTest
 
 		try
 		{
-			float ul_x = 199980.0f;
-			float ul_y = 3700020.0f;
-			float lr_x = 309780.0f;
-			float lr_y = 3590220.0f;
+			double ul_x = 199980.0f;
+			double ul_y = 3700020.0f;
+			double lr_x = 309780.0f;
+			double lr_y = 3590220.0f;
 			String referential = "EPSG:32628";
 
 			String nameTest = "testInverseLatLonArea";
@@ -390,10 +390,18 @@ public class Sen2VMInverseTest
 
 			double[] ul = transformer.TransformPoint(ul_x, ul_y);
 			double[] lr = transformer.TransformPoint(lr_x, lr_y);
+            System.out.println(String.valueOf(ul[0]));
+            System.out.println(String.valueOf((double)ul[0]));
+            System.out.println(String.valueOf((double)ul[0]) + " " +String.valueOf((double)ul[1]) + " " + String.valueOf((double)lr[0]) + " " + String.valueOf((double)lr[1]));
+            System.out.println(String.valueOf(0.05f));
+            System.out.println(String.valueOf(9.00901E-5f));
+            System.out.println(String.valueOf(9.00901E-5f*4.5));
+
 
 			String config = Config.configInverseBBwithStep10m(configTmpInverse,
-			    (float)ul[0], (float)ul[1], (float)lr[0], (float)lr[1],
-			    0.005f, 0.001f, "EPSG:4326", outputDir);
+			    (double)ul[0], (double)ul[1], (double)lr[0], (double)lr[1],
+			    9.00901E-5f*45f, 9.00901E-5f, "EPSG:4326", outputDir);
+
 			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
 			String[] args = {"-c", config, "-p", param};
 			Sen2VM.main(args);

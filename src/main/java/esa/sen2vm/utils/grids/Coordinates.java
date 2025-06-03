@@ -6,13 +6,13 @@ import java.text.DecimalFormat;
 
 public class Coordinates
 {
-    private float x;
-    private float y;
-    private float z;
+    private double x;
+    private double y;
+    private double z;
     private SpatialReference sourceSRS;
-    private float latitude;
-    private float longitude;
-    private float altitude;
+    private double latitude;
+    private double longitude;
+    private double altitude;
 
     /**
      * Constructor
@@ -21,7 +21,7 @@ public class Coordinates
      * @param epsg referencial
      * @throws Sen2VMException
      */
-    public Coordinates(float x, float y, int epsg)
+    public Coordinates(double x, double y, int epsg)
     {
         this.x = x;
         this.y = y;
@@ -34,7 +34,7 @@ public class Coordinates
      * Get x
      * @return x in epsg referencial
      */
-    public float getX()
+    public double getX()
     {
         return this.x;
     }
@@ -43,7 +43,7 @@ public class Coordinates
      * Get y
      * @return y in epsg referencial
      */
-    public float getY()
+    public double getY()
     {
         return this.y;
     }
@@ -52,7 +52,7 @@ public class Coordinates
      * Get latitude
      * @return latitude in WGS84
      */
-    public float getLatitude()
+    public double getLatitude()
     {
         return this.latitude;
     }
@@ -61,7 +61,7 @@ public class Coordinates
      * Get longitude
      * @return longitude in WGS84
      */
-    public float getLongitude()
+    public double getLongitude()
     {
         return this.longitude;
     }
@@ -75,8 +75,8 @@ public class Coordinates
         targetSRS.ImportFromEPSG(4326);
         CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
         double[] res = transformer.TransformPoint(x, y, z);
-        this.longitude = (float) res[1];
-        this.latitude = (float) res[0];
-        this.altitude = (float) res[2];
+        this.longitude = res[1];
+        this.latitude = res[0];
+        this.altitude = res[2];
     }
 }

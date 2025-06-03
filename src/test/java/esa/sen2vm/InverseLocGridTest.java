@@ -51,18 +51,18 @@ public class InverseLocGridTest
     public void createGrid()
     {
 
-        float ulX = 199980.0f;
-        float ulY = 3700020.0f;
-        float lrX = 309780.0f;
-        float lrY = 3590220.0f;
-        float res = 10.0f;
-        float step = 45f;
+        double ulX = 199980.0f;
+        double ulY = 3700020.0f;
+        double lrX = 309780.0f;
+        double lrY = 3590220.0f;
+        double res = 10.0f;
+        double step = 45f;
         String epsg = "EPSG:32628";
 
         // new bounding box
         InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
-        ArrayList<Float> gridX = invGrid.getGridX();
-        ArrayList<Float> gridY = invGrid.getGridY();
+        ArrayList<Double> gridX = invGrid.getGridX();
+        ArrayList<Double> gridY = invGrid.getGridY();
 
 
         LOGGER.info("SIZE_GRIDX = " + String.valueOf(gridX.size()));
@@ -84,8 +84,8 @@ public class InverseLocGridTest
         LOGGER.info("END_Y_sans_conv = " + String.valueOf(gridY.get(gridY.size()-1) - invGrid.getStepY() / 2));
         LOGGER.info("LR_Y_input = " + String.valueOf(lrY));
 
-        float stepX = invGrid.getStepX();
-        float stepY = invGrid.getStepY();
+        double stepX = invGrid.getStepX();
+        double stepY = invGrid.getStepY();
         assertEquals(stepX, step);
         assertEquals(stepY, - step);
         assertEquals(invGrid.getUlX() + invGrid.getStepX() / 2, ulX + res/2);
@@ -123,15 +123,15 @@ public class InverseLocGridTest
     public void endGrid()
     {
 
-        float ulX = 0f;
-        float ulY = 0f;
-        float lrX = 100f;
-        float lrY = 100f;
-        float step = 10f;
-        float res = 10f;
+        double ulX = 0f;
+        double ulY = 0f;
+        double lrX = 100f;
+        double lrY = 100f;
+        double step = 10f;
+        double res = 10f;
         String epsg = "EPSG:32628";
         InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
-        ArrayList<Float> gridX = invGrid.getGridX();
+        ArrayList<Double> gridX = invGrid.getGridX();
         assertEquals(gridX.get(0), 5);
         assertEquals(gridX.get(gridX.size()-1), 95);
         LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
