@@ -314,9 +314,9 @@ The output of the Sen2VM tool can be either direct location grids or inverse loc
 Please note that only the direct location grids will be included in the input product and handled by gdal. Inverse location grids, as they represent a particulat area on the ground will be exported outside the product, in a folder selected by the user (which can be inside the input product if wanted).
 
 ### 3.1 Direct location grids
-A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular in sensor reference frame (for one couple band/detector).
+A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular and in sensor reference frame (for one  band/detector couple).
 
-Sen2VM direct location grid computation takes as input the L1B product product, the auxiliary information (see [L1B product](#211-l1b-product), [GIPP](#212-gipp), [Altitude](#123-altitude), [IERS](#214-iers)) and the grid parametrization:
+Sen2VM direct location grid computation takes as input the L1B product, the auxiliary information (see [L1B product](#211-l1b-product), [GIPP](#212-gipp), [Altitude](#123-altitude), [IERS](#214-iers)) and the grid parametrization:
 * Bands/detectors to process ([Parameters File](#22-parameters-file)),
 * 3 steps, one per band resolution (10m, 20m, 60m) in pixels (floating number) [Configuration File](#21-configuration-file).
 
@@ -327,15 +327,15 @@ As output:
 #### 3.1.1 Direct locations grids' outputs
 Output grids will be integrated directly in the input product.
 >  [!CAUTION]
-> Please note that writing permissions in the L1B input  folder are **mandatory**.
+> Please note that writing permissions in the L1B input folder are **mandatory**.
 
-Before processing, **a check will be done** to see if direct location grids are already available in the input L1B product folder, for the detectors/bands selected. If at least one is present for one couple detector/band, Sen2VM **will raise an error and stop**. Both granules and datastrip folder will be checked (see output grids format and location in the rest of this section).
+Before processing, **a verification will be done** to determine whether direct location grids are already available in the input L1B product folder, for the detectors/bands selected. If at least one is present for one couple detector/band, Sen2VM **will raise an error and stop**. Both granules and datastrip folder will be inspected (see output grids format and location in the following sections).
 
 ##### 3.1.1.1 Granule level
 Grids’ location and naming is at granules level:
 * 1 grid per couple “L1B granule”/”Sentinel-2 band”,
 * Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
-* Grids are in **geotiff format with float32 coding positions** which allow approximately centimetre precision on lat/lon coordinates. JP2000 cannot be used at it does not allow float32 encoding, meaning the precision will not be enough,
+* Grids are in **geotiff format with float32 coding positions** which allow approximately centimetre precision for lat/lon coordinates. JP2000 is not suitable, as it does not support Float32 encoding, resulting in insufficient precision.
 * Grids location will be inside a **GEO_DATA folder** which will be inside each granules folders (at the same level than IMG_DATA and QI_DATA folders),
 * Grids naming conventions will respect the corresponding image data inside the IMG_DATA folder with:
     * GEO instead of MSI
@@ -351,7 +351,7 @@ The direct location grid will be generated in the GEO_DATA folder, and named:
 At datastrip level grids’ location and naming is:
 * 1 vrt per couple “detector”/”Sentinel-2 band”,
 * Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
-* Grid location will be inside a **GEO_DATA folder** inside **DATASTRIP** folder (at the same level QI_DATA folder)
+* Grid location will be located inside a **GEO_DATA folder**, which resides within the **DATASTRIP** directory, at the same level as the QI_DATA folder.
 * Grids naming conventions will respect the corresponding datastrip metadata convention with:
     * **GEO** instead of **MTD**
     * <strong>_DXX_BYY.vrt</strong> instead of <strong>.xml</strong> extension.
@@ -359,7 +359,7 @@ At datastrip level grids’ location and naming is:
 As example, for an datastrip metadata of the DATASTRIP folder, named:
 * S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>.xml</strong>
 
-A folder named GEO_DATA, beside the QI_DATA folder and datastrip metadata will contain 156 vrt files (12detectorsx13bands) named:
+A folder named GEO_DATA, beside the QI_DATA folder and datastrip metadata will contain 156 vrt files (12 detectors x 13 bands) named:
 * S2B_OPER_**GEO**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.vrt</strong>
 
 Example of product with grid inside it:
@@ -407,7 +407,7 @@ Direct location grids are intended to be used with bilinear interpolation operat
  * Use bilinear interpolation on (_grid row_, _grid col_) to retrieve lon/lat/(alt).
 
 > [!CAUTION]
-> Beware of convention [1,1] is the first pixel of the grid
+> Note that based on the used convention, the [1,1] coordinate is the first pixel of the grid
 
 > [!TIP]
 > If user wants to perform direct location of a position outside the granule footprint, a bilinear extrapolation is possible.
@@ -434,7 +434,7 @@ Outputs will be **written in the folder provided by the user**. For inverse loca
 
 Output grids’ convention will be:
 * 13 grids (1 per Sentinel-2 band) per detector intersecting the area,
-* Grids are in **geotiff format with float32 coding positions** which allow decimal information on **col/row** positions. JP2000 cannot be used at it does not allow float32 encoding, meaning the precision will not be enough,
+* Grids are in **geotiff format with float32 coding positions** which allow decimal information on **col/row** positions. JP2000 is not suitable, as it does not support Float32 encoding, resulting in insufficient precision.
 * Grids naming conventions will respect the corresponding datastrip metadata convention with:
     * **INV** instead of **MTD**,
     * <strong>_DXX_BYY.tif</strong> instead of <strong>.xml</strong> extension.
@@ -451,8 +451,7 @@ Example:
 
 
 #### 3.2.2 Inverse location grids’ specifications
-Inverse location grids **will give the coordinates in the “detector” image**, meaning as if the granules of the same detector were concatenated.
-
+Inverse location grids **will give the coordinates in the “detector” image** reference frame, as if the granules from the same detector were concatenated into a single image.
  * Grid metadata:
     * are written as GDAL GEO information (SRS and geotransform) and Metadata keys, containing ROW_BAND and COL_BAND to specify row col index and PIXEL_ORIGIN which specify granule first pixel center convention, and NoData value.  
    * Metadata keys are:
@@ -464,9 +463,11 @@ Inverse location grids **will give the coordinates in the “detector” image**
        * margins,
        * the GIPP dataset used,
        * the DEM and associated geoid (TBD),
-       * Was refining deactivated
+       * refining activated or not.
+         
+As for direct location grids, the center of the first grid is aligned with the center of the first output boundinig box considering a pixel at resolution of the processed band. The center of the last grid pixel is calculated to ensure that it covers at least the last pixel of the input bounding box.
 
-as for Direct location, the first grid center if syncrhonized with the first center of theoutput boundinig box considering a pixel at resolution of the processed band. THe center of the last pixel will be computed to cover at least the last pixel of the Bounding box provided in input:
+Bounding box provided in input:
 
 ![Inverse Convention](/assets/images/README_InverseConvention.png "Inverse Convention.")
  
@@ -476,7 +477,7 @@ as for Direct location, the first grid center if syncrhonized with the first cen
 
 Grids are intended to be used with bilinear interpolation operation. Inverse locations (i.e image position given a ground position) should be as follow:
 
- * Given an ground position (_lon_/_lat_) or (_x_, _y_) compute grid fractional position (grid row, grid col)using grid geotransform for GRID_ORIGIN and GRID_STEP:
+ * Given an ground position (_lon_/_lat_) or (_x_, _y_) compute grid fractional position (grid row, grid col) using grid geotransform for GRID_ORIGIN and GRID_STEP:
 
      ![Inverse grid handling](/assets/images/README_InverseGridHandling.png "Inverse Grid Handling.")
 
@@ -493,14 +494,14 @@ Grids should at least have 2x2 cells.
 ## 4. Validation
 
 In a nutshell, validation is split into 2 main parts:
- * **Some functional tests**:
-     * Integrated into the CI/CD process:
-     * Validate that Sen2VM takes into account the different input provided, and that output grids are consistent with reference ones,
- * Some quality tests:
-     * Launched manually
+ * **Functional tests**:
+     * Integrated into the CI/CD process,
+     * Validate that Sen2VM takes into account the different input provided, and that output grids are consistent with reference ones.
+ * Quality tests:
+     * Launched manually,
      * Proving, using several TDS, that grids generated by Sen2VM are consistent with the ones generated with the legacy,
-     * Prove that those grids can be used to reach equivalent quality at L1C,
-     * these processings will also be used to assess the processing performances,
+     * Proving that those grids can be used to reach equivalent quality at L1C,
+     * These processings will also be used to assess the processing performances,
 
 Tests are more detailed in:
  * In [/src/test/java/esa/sen2vm/](/src/test/java/esa/sen2vm/) for fucntionnal tests,
