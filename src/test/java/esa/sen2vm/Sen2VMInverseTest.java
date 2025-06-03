@@ -264,7 +264,6 @@ public class Sen2VMInverseTest
         String[] detectors = new String[]{"02"};
         String[] bands = new String[]{"B02"};
 
-
         try
         {
             String nameTest = "testInverseReferentialArea";
@@ -362,6 +361,52 @@ public class Sen2VMInverseTest
             e.printStackTrace();
             assert(false);
         }
-
     }
+
+
+    @Test
+    public void testInverseLatLonArea()
+	{
+		String[] detectors = new String[]{"08"};
+		String[] bands = new String[]{"B02"};
+
+		try
+		{
+			float ul_x = 199980.0f;
+			float ul_y = 3700020.0f;
+			float lr_x = 309780.0f;
+			float lr_y = 3590220.0f;
+			String referential = "EPSG:32628";
+
+			String nameTest = "testInverseLatLonArea";
+			String outputDir = Config.createTestDir(nameTest, "inverse");
+
+			// Init source/target SpatialReference and transformation
+			SpatialReference sourceSRS = new SpatialReference();
+			sourceSRS.ImportFromEPSG(32628);
+			SpatialReference targetSRS = new SpatialReference();
+			targetSRS.ImportFromEPSG(4326);
+			CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
+
+			double[] ul = transformer.TransformPoint(ul_x, ul_y);
+			double[] lr = transformer.TransformPoint(lr_x, lr_y);
+
+			String config = Config.configInverseBBwithStep10m(configTmpInverse,
+			    (float)ul[0], (float)ul[1], (float)lr[0], (float)lr[1],
+			    0.005f, 0.001f, "EPSG:4326", outputDir);
+			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+			String[] args = {"-c", config, "-p", param};
+			Sen2VM.main(args);
+
+
+		} catch (Sen2VMException e) {
+			LOGGER.warning(e.getMessage());
+			e.printStackTrace();
+			assert(false);
+		} catch (Exception e) {
+			LOGGER.warning(e.getMessage());
+			e.printStackTrace();
+			assert(false);
+		}
+	}
 }

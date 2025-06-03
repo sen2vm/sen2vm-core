@@ -144,14 +144,13 @@ public class Config
         return outputConfig;
     }
 
-    public static String configInverseBBwithStep(String filePath,
+    public static String configInverseBBwithStep10m(String filePath,
                                         float ul_y, float ul_x,
                                         float lr_y, float lr_x,
-                                        float step,
+                                        float step10m, float outRes10m,
                                         String referential, String l1b_product) throws FileNotFoundException,
                                          IOException, ParseException
     {
-
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
 
@@ -166,11 +165,11 @@ public class Config
         inverse.put("referential", referential);
         inverse.put("output_folder", l1b_product);
 
+        JSONObject output_image_res = (JSONObject) inverse.get("output_image_res");
+        output_image_res.put("10m_bands", outRes10m);
 
         JSONObject steps = (JSONObject) objJson.get("steps");
-        steps.put("10m_bands", 0.059554205768443);
-        steps.put("20m_bands", 0.059554205768443);
-        steps.put("60m_bands", 0.059554205768443);
+        steps.put("10m_bands", step10m);
 
         String outputConfig = l1b_product + "/configuration.json";
         FileWriter writer = new FileWriter(outputConfig, false);
@@ -183,7 +182,6 @@ public class Config
     public static String changeDem(String filePath, String demPath, String l1b_product) throws FileNotFoundException,
             IOException, ParseException
     {
-
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
 
@@ -285,7 +283,6 @@ public class Config
     {
         if(src.isDirectory())
         {
-
             dest.getParentFile().mkdirs();
 
             if(!dest.exists())
@@ -302,7 +299,6 @@ public class Config
 
                 copyFolder(srcFile,destFile, copy);
             }
-
         }
         else
         {

@@ -119,6 +119,7 @@ public class InverseLocGrid
         float value = start;
         grid.add(value);
 
+        System.out.println(value);
 
         while(testEnd(value, end, signedStep))
         {
@@ -127,7 +128,7 @@ public class InverseLocGrid
         }
 
         grid.add(value + signedStep);
-
+        System.out.println(String.valueOf(grid.size()));
         return grid;
     }
 
@@ -147,16 +148,17 @@ public class InverseLocGrid
         SpatialReference targetSRS = new SpatialReference();
         targetSRS.ImportFromEPSG(4326);
         CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
-
         for (int l = 0; l < nbLines; l ++)
         {
             for (int c = 0; c < nbCols; c ++)
             {
                 double[] res = transformer.TransformPoint(this.gridX.get(c), this.gridY.get(l));
-                grid[l*nbCols + c][0] = res[1];
-                grid[l*nbCols + c][1] = res[0];
+                grid[l*nbCols + c][0] = res[0];
+                grid[l*nbCols + c][1] = res[1];
             }
         }
+        System.out.println("tl");
+
         return grid;
     }
 

@@ -269,7 +269,8 @@ public class Sen2VM
                 if (config.getOperation().equals(Sen2VMConstants.DIRECT))
                 {
                     res = (float) bandInfo.getPixelHeight();
-                } else {
+                } else
+                {
                     res = config.getOutResFromBandInfo(bandInfo) ;
                 }
 
@@ -335,8 +336,6 @@ public class Sen2VM
                         // Correction post build VRT
                         outputFileManager.correctGeoGrid(inputTIFs);
                         outputFileManager.correctVRT(vrtFileName);
-
-
                     }
                     else if (config.getOperation().equals(Sen2VMConstants.INVERSE))
                     {

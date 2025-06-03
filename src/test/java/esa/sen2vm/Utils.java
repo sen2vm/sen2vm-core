@@ -164,7 +164,7 @@ public class Utils {
                 }
                 b = b + 1;
             }
-        }
+         }
      }
 
     public static void verifyInverseLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException

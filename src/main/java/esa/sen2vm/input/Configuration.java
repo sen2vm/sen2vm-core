@@ -228,7 +228,6 @@ public class Configuration extends InputFileManager
                        this.outRes_band10m = outRes.getFloat("10m_bands");
                        this.outRes_band20m = outRes.getFloat("20m_bands");
                        this.outRes_band60m = outRes.getFloat("60m_bands");
-
                    }
                    catch(JSONException e)
                    {
