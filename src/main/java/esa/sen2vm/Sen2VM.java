@@ -265,15 +265,7 @@ public class Sen2VM
                 LOGGER.info("### BAND " + bandInfo.getName() + " ###");
                 LOGGER.info("###############");
 
-                double res ;
-                if (config.getOperation().equals(Sen2VMConstants.DIRECT))
-                {
-                    res = (double) bandInfo.getPixelHeight();
-                } else
-                {
-                    res = config.getOutResFromBandInfo(bandInfo) ;
-                }
-
+                double res = (double) bandInfo.getPixelHeight();
                 double step = config.getStepFromBandInfo(bandInfo);
 
                 LOGGER.info("Grid resolution: " + String.valueOf(config.getStepFromBandInfo(bandInfo)));
@@ -342,7 +334,7 @@ public class Sen2VM
                     {
                         double[] bb =  config.getInverseLocBound();
 
-                        InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), res, step);
+                        InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), step);
                         double[][] groundGrid = invGrid.get2DgridLatLon();
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");

@@ -80,26 +80,6 @@
             "referential": {
               "type": "string"
             },
-            "output_image_res": {
-              "type": "object",
-              "properties": {
-                "10m_bands": {
-                    "type": "number",
-                    "minimum": 0,
-                    "exclusiveMinimum": true
-                },
-                "20m_bands": {
-                    "type": "number",
-                    "minimum": 0,
-                    "exclusiveMinimum": true
-                },
-                "60m_bands": {
-                    "type": "number",
-                    "minimum": 0,
-                    "exclusiveMinimum": true
-                }
-              }
-           },
             "output_folder": {
               "type": "string"
             }

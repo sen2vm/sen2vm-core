@@ -400,7 +400,7 @@ public class Sen2VMInverseTest
 
 			String config = Config.configInverseBBwithStep10m(configTmpInverse,
 			    (double)ul[0], (double)ul[1], (double)lr[0], (double)lr[1],
-			    9.00901E-5f*45f, 9.00901E-5f, "EPSG:4326", outputDir);
+			    9.00901E-5f*45f, "EPSG:4326", outputDir);
 
 			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
 			String[] args = {"-c", config, "-p", param};

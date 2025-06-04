@@ -116,6 +116,4 @@ public class DirectLocGridTest
         assertEquals(lines.get(dirGrid.getGridLines().size() - 1), 2302.25f);
     }
 
-
-
 }

@@ -16,11 +16,6 @@
   "export_alt": true,
   "inverse_location_additional_info": {
       "ul_x": 199980.0, "ul_y": 3700020.0, "lr_x": 309780.0, "lr_y": 3590220.0,
-      "output_image_res": {
-        "10m_bands": 10,
-        "20m_bands": 20,
-        "60m_bands": 60
-      },
       "referential": "EPSG:32628",
       "output_folder": "tmp"
   }

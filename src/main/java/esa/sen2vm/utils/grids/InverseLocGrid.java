@@ -36,42 +36,36 @@ public class InverseLocGrid
      * @param lrY in epsg referencial
      * @param epsg reference
      * @param step in epsg referencial
-     * @param res of the band in meters
      */
     public InverseLocGrid(double ulX, double ulY, double lrX, double lrY,
-                         String epsg, double res, double step)
+                         String epsg, double step)
     {
         this.epsg = Integer.valueOf(epsg.substring(5));
-        double resX = res;
-        double resY = res;
-
         this.stepX = step;
         this.stepY = step;
 
         // test if upper and bottom are reversed
         if (ulY > lrY)
         {
-            resY = -resY;
             this.stepY = -this.stepY;
         }
 
         // test if left and right are reversed
         if (ulX > lrX)
         {
-            resX = -resX;
             this.stepX = -this.stepX;
-       }
+        }
 
-        // Synchro first grid point (center of a grid pixel) with the center of the first
+        // Synchro first grid point (center of a grid pixel) with UL to cover the whole area
         // image pixel (band resolution) of the area
-        this.ulY = ulY - this.stepY / 2 + resY / 2;
-        this.ulX = ulX - this.stepX / 2 + resX / 2;
+        this.ulY = ulY - this.stepY / 2;
+        this.ulX = ulX - this.stepX / 2;
 
         // Compute grid with center pixel convention
         // start to the pixel center
-        // The LowerRight is englobing the last pixel, hence to cover the last pixel, the center of last pixel of the grid shall go over the LR - res / 2
-        this.gridY = grid_1D(this.ulY + this.stepY / 2, lrY - resY / 2, this.stepY); 
-        this.gridX = grid_1D(this.ulX + this.stepX / 2, lrX - resX / 2, this.stepX);
+        // The LowerRight is englobing the last pixel, hence the center of last pixel of the grid shall cover LR
+        this.gridY = grid_1D(this.ulY + this.stepY / 2, lrY, this.stepY); 
+        this.gridX = grid_1D(this.ulX + this.stepX / 2, lrX, this.stepX);
 
         // Compute englobing lower right of the grid after computation
         this.lrY = gridY.get(gridY.size()-1) + this.stepY / 2;

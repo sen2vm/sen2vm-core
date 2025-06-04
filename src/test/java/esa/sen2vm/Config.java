@@ -147,7 +147,7 @@ public class Config
     public static String configInverseBBwithStep10m(String filePath,
                                         double ul_y, double ul_x,
                                         double lr_y, double lr_x,
-                                        double step10m, double outRes10m,
+                                        double step10m,
                                         String referential, String l1b_product) throws FileNotFoundException,
                                          IOException, ParseException
     {
@@ -164,9 +164,6 @@ public class Config
         inverse.put("lr_x", lr_x);
         inverse.put("referential", referential);
         inverse.put("output_folder", l1b_product);
-
-        JSONObject output_image_res = (JSONObject) inverse.get("output_image_res");
-        output_image_res.put("10m_bands", outRes10m);
 
         JSONObject steps = (JSONObject) objJson.get("steps");
         steps.put("10m_bands", step10m);

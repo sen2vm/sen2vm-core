@@ -55,12 +55,11 @@ public class InverseLocGridTest
         double ulY = 3700020.0f;
         double lrX = 309780.0f;
         double lrY = 3590220.0f;
-        double res = 10.0f;
         double step = 45f;
         String epsg = "EPSG:32628";
 
         // new bounding box
-        InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, step);
         ArrayList<Double> gridX = invGrid.getGridX();
         ArrayList<Double> gridY = invGrid.getGridY();
 
@@ -88,25 +87,25 @@ public class InverseLocGridTest
         double stepY = invGrid.getStepY();
         assertEquals(stepX, step);
         assertEquals(stepY, - step);
-        assertEquals(invGrid.getUlX() + invGrid.getStepX() / 2, ulX + res/2);
-        assertEquals(invGrid.getUlY() + invGrid.getStepY() / 2, ulY - res/2);
+        assertEquals(invGrid.getUlX() + invGrid.getStepX() / 2, ulX);
+        assertEquals(invGrid.getUlY() + invGrid.getStepY() / 2, ulY);
 
         // size grids
         assertEquals(gridX.size(), 2441);
         assertEquals(gridY.size(), 2441);
 
         // start grids
-        assertEquals(gridX.get(0), ulX + res/2);
-        assertEquals(gridY.get(0), ulY - res/2);
+        assertEquals(gridX.get(0), ulX);
+        assertEquals(gridY.get(0), ulY);
 
         // last grid pixel equal or exceed last the center of the last
         // image pixel (band resolution) of the area
-        assertTrue(gridX.get(gridX.size()-1) >= ulX - res/2);
-        assertTrue(gridY.get(gridY.size()-1) <= ulY + res/2);;
+        assertTrue(gridX.get(gridX.size()-1) >= ulX);
+        assertTrue(gridY.get(gridY.size()-1) <= ulY);;
         assertEquals(invGrid.getLrX(), gridX.get(gridX.size()-1) + stepX / 2);
-        assertEquals(invGrid.getLrX(), 309807.5);
+        assertEquals(invGrid.getLrX(), 309802.5);
         assertEquals(invGrid.getLrY(), gridY.get(gridY.size()-1) + stepY / 2);
-        assertEquals(invGrid.getLrY(), 3590192.5);
+        assertEquals(invGrid.getLrY(), 3590197.5);
 
 
         int epsg_int = Integer.valueOf(epsg.substring(5));
@@ -128,42 +127,32 @@ public class InverseLocGridTest
         double lrX = 100f;
         double lrY = 100f;
         double step = 10f;
-        double res = 10f;
         String epsg = "EPSG:32628";
-        InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, step);
         ArrayList<Double> gridX = invGrid.getGridX();
-        assertEquals(gridX.get(0), 5);
-        assertEquals(gridX.get(gridX.size()-1), 95);
+        assertEquals(gridX.get(0), 0);
+        assertEquals(gridX.get(gridX.size()-1), 100);
         LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
 
         step = 20f;
-        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, step);
         gridX = invGrid.getGridX();
-        assertEquals(gridX.get(0), 5);
-        assertEquals(gridX.get(gridX.size()-1), 105);
+        assertEquals(gridX.get(0), 0);
+        assertEquals(gridX.get(gridX.size()-1), 100);
         LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
 
         step = 80f;
-        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, step);
         gridX = invGrid.getGridX();
-        assertEquals(gridX.get(0), 5);
-        assertEquals(gridX.get(gridX.size()-1), 165);
+        assertEquals(gridX.get(0), 0);
+        assertEquals(gridX.get(gridX.size()-1), 160);
         LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
 
-        step = 2.0f;
-        res = 2.0f;
-        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
+        step = 3.0f;
+        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, step);
         gridX = invGrid.getGridX();
-        assertEquals(gridX.get(0), 1);
-        assertEquals(gridX.get(gridX.size()-1), 99);
-        LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
-
-        step = 10.0f;
-        res = 20.0f;
-        invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, res, step);
-        gridX = invGrid.getGridX();
-        assertEquals(gridX.get(0), 10);
-        assertEquals(gridX.get(gridX.size()-1), 90);
+        assertEquals(gridX.get(0), 0);
+        assertEquals(gridX.get(gridX.size()-1), 102);
         LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
     }
 
