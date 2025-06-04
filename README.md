@@ -39,14 +39,16 @@ java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configurat
 ### 1.2 Example of use
 
 > [!CAUTION]
-> gdal version shall be compatible with the new Sen2VM grids. Official gdal does not yet include this driver/possibility. A [Pull Request](https://github.com/OSGeo/gdal/pull/12431 ) is currently openned, but in the meantime, this gdal version can be find [here](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c)
+> gdal version shall be compatible with the new Sen2VM grids. Official gdal does not yet include this driver/possibility. A [Pull Request](https://github.com/OSGeo/gdal/pull/12431 ) is currently opened, but in the meantime, this gdal version can be find [here](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c)
 
 
 #### 1.2.1 Resampling using direct locations grids
 
-Direct location grids can be used to preform a resampling. It can be done using gdal or using [OTB](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
+Direct location grids can be used to preform a resampling. It can be done using gdal or using [OTB](https://www.orfeo-toolbox.org/CookBook/Applications/app_GridBasedImageResampling.html) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
 
 ##### 1.2.1.1 Using gdal
+
+L1B with geolocation grids are seamlessly handled by gdal through the development of a dedicated S2 L1B gdal driver.  
 
 ```python
 # If needed, point to the local gdal version handling Sen2VM grids
