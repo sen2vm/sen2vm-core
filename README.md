@@ -158,31 +158,34 @@ It  is a file in  [JSON format](https://en.wikipedia.org/wiki/JSON) and an examp
 
 Each parameter description can be found in the table below:
 
-| Name        | Type     | Required      | Description   |
-| ----------- | :------: | :-----------: | :-----------: |
-| l1b_product | string   | **Mandatory** | Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in § [L1B Product](#211-l1b-product), including DATASTRIP + GRANULE)|
-| gipp_folder | string   | **Mandatory** | Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to § [GIPP](#212-gipp).|
-| gipp_check  | boolean  | Optional      | If true (default), check of GIPP version activated (see GIPP section § [GIPP](#212-gipp)</mark>)|
-|dem          | string   | **Mandatory** | Path to the FOLDER containing a DEM in the right format (cf § [Altitude/DEM](#2131-dem)).|
-|geoid        | string   | **Mandatory** | Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#2132-geoid))|
-| iers        | string   | Optional      | Path to the IERS folder containing the IERS file in the right format (cf § [IERS](#214-iers))|
-| operation    | string   | **Mandatory** | In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>|
-| deactivate_available_refining| boolean  | Optional      | If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in § [L1B Product](#2112-refining-information)|
-| export_alt   | boolean  | Optional      | If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](#31-direct location grids)|
-| steps       | float    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in referential system for inverse location.|
-| inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**| For the inverse location additional information please refer to the dedicated table below|
+| Name        | Type     | Required      |                                                                                                                                           Description                                                                                                                                           |
+| ----------- | :------: | :-----------: |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| l1b_product | string   | **Mandatory** |                                                                     Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in § [L1B Product](#211-l1b-product), including DATASTRIP + GRANULE)                                                                      |
+| gipp_folder | string   | **Mandatory** |                                                                    Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to § [GIPP](#212-gipp).                                                                     |
+| gipp_check  | boolean  | Optional      |                                                                                                If true (default), check of GIPP version activated (see GIPP section § [GIPP](#212-gipp)</mark>)                                                                                                 |
+|dem          | string   | **Mandatory** |                                                                                                    Path to the FOLDER containing a DEM in the right format (cf § [Altitude/DEM](#2131-dem)).                                                                                                    |
+|geoid        | string   | **Mandatory** |                                                                                                  Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#2132-geoid))                                                                                                   |
+| iers        | string   | Optional      |                                                                                                  Path to the IERS folder containing the IERS file in the right format (cf § [IERS](#214-iers))                                                                                                  |
+| operation    | string   | **Mandatory** |                                                    In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>                                                    |
+| deactivate_available_refining| boolean  | Optional      |                                          If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in § [L1B Product](#2112-refining-information)                                          |
+| export_alt   | boolean  | Optional      |  If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](#31-direct location grids)  |
+| steps       | float    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in referential system for inverse location. |
+| inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**|                                                                                                    For the inverse location additional information please refer to the dedicated table below                                                                                                    |
 
 
 The field “inverse_location_additional_info” is not required and will be ignored if direct location grids are asked. However, it is mandatory for inverse location grids generation and **Sen2VM will raise an error** if this information is missing.
 
-| Name          | Type     | Required      | Description   |
-| ------------- | :------: | :-----------: | :-----------: |
-| ul_x          | float    | **Mandatory** | **X** coordinates of the **upper left** point defining the squared area where to compute the grids|
-| ul_y          | float    | **Mandatory** | **Y** coordinates of the **upper left** point defining the squared area where to compute the grids|
-| lr_x          | float    | **Mandatory** | **X** coordinates of the **lower right** point defining the squared area where to compute the grids|
-| lr_y          | float    | **Mandatory** | **Y** coordinates of the **lower right** point defining the squared area where to compute the grids|
-| referential   | string   | **Mandatory** | A string defining the **referential** used. **Please note, ul and lr points’ coordinates** are given in this referential. Example: EPSG:4326|
-| output_folder | string   | **Mandatory**|Path where the inverse location grids are written (see § [Inverse location grids](#32-inverse-location-grids))|
+| Name          | Type     | Required      |                                                                 Description                                                                  |
+| ------------- | :------: | :-----------: |:--------------------------------------------------------------------------------------------------------------------------------------------:|
+| ul_x          | float    | **Mandatory** |                        **X** coordinates of the **upper left** point defining the area of desired resampled product.                         |
+| ul_y          | float    | **Mandatory** |                 **Y** coordinates of the **upper left** point defining the area of desired resampled product.                                |
+| lr_x          | float    | **Mandatory** |                        **X** coordinates of the **lower right** point defining the area of desired resampled product.                        |
+| lr_y          | float    | **Mandatory** |                        **Y** coordinates of the **lower right** pointdefining the area of desired resampled product.                         |
+| referential   | string   | **Mandatory** | A string defining the **referential** used. **Please note, ul and lr points’ coordinates** are given in this referential. Example: EPSG:4326 |
+| output_folder | string   | **Mandatory**|                Path where the inverse location grids are written (see § [Inverse location grids](#32-inverse-location-grids))                |
+
+> [!NOTE]
+> Inverse location grids footprint will enclose desired product footprint [ul_x, ul_y, lr_x, lr_y]. 
 
 #### 2.1.1 L1B Product
 > [!NOTE]
