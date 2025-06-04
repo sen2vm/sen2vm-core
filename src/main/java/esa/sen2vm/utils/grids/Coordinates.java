@@ -2,7 +2,6 @@ package esa.sen2vm.utils.grids;
 
 import org.gdal.osr.CoordinateTransformation;
 import org.gdal.osr.SpatialReference;
-import java.text.DecimalFormat;
 
 public class Coordinates
 {

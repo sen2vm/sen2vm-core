@@ -1,14 +1,5 @@
 package esa.sen2vm;
 
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
@@ -20,23 +11,14 @@ import java.io.File;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.nio.file.Path;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.Configuration;
-
-import esa.sen2vm.enums.DetectorInfo;
-import esa.sen2vm.enums.BandInfo;
-
 
 public class Config
 {
@@ -81,7 +63,6 @@ public class Config
         return outputConfig;
     }
 
-
     /**
      * Configuration of a test with a new or no iers
      *
@@ -114,12 +95,9 @@ public class Config
 
     }
 
-
-    public static String configInverseBB(String filePath,
-                                        double ul_y, double ul_x,
-                                        double lr_y, double lr_x,
-                                        String referential, String l1b_product) throws FileNotFoundException,
-                                         IOException, ParseException
+    public static String configInverseBB(String filePath, double ul_y, double ul_x, double lr_y, double lr_x,
+                                        String referential, String l1b_product)
+        throws FileNotFoundException, IOException, ParseException
     {
 
         JSONParser parser = new JSONParser();
@@ -144,12 +122,9 @@ public class Config
         return outputConfig;
     }
 
-    public static String configInverseBBwithStep10m(String filePath,
-                                        double ul_y, double ul_x,
-                                        double lr_y, double lr_x,
-                                        double step10m,
-                                        String referential, String l1b_product) throws FileNotFoundException,
-                                         IOException, ParseException
+    public static String configInverseBBwithStep10m(String filePath, double ul_y, double ul_x, double lr_y, double lr_x,
+                                        double step10m, String referential, String l1b_product)
+        throws FileNotFoundException, IOException, ParseException
     {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
@@ -176,8 +151,8 @@ public class Config
         return outputConfig;
     }
 
-    public static String changeDem(String filePath, String demPath, String l1b_product) throws FileNotFoundException,
-            IOException, ParseException
+    public static String changeDem(String filePath, String demPath, String l1b_product)
+            throws FileNotFoundException, IOException, ParseException
     {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
@@ -197,10 +172,9 @@ public class Config
         return outputConfig;
     }
 
-    public static String configCheckGipp(String filePath, String gippPath, boolean checkGipp, String l1b_product) throws FileNotFoundException,
-            IOException, ParseException
+    public static String configCheckGipp(String filePath, String gippPath, boolean checkGipp, String l1b_product)
+        throws FileNotFoundException, IOException, ParseException
     {
-
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
 
@@ -232,7 +206,6 @@ public class Config
 
     public static String createTestDir(String nameTest, String type) throws IOException
     {
-
         String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
         String outputDir = "src/test/resources/tests/output/" + nameTest;
         File outputDirFile = new File(outputDir);
@@ -243,12 +216,9 @@ public class Config
         return outputDir;
     }
 
-    public static String changeParams(String filePath, String[] detectors, String[] bands, String outputDir) throws FileNotFoundException,
-                IOException, ParseException
+    public static String changeParams(String filePath, String[] detectors, String[] bands, String outputDir)
+        throws FileNotFoundException, IOException, ParseException
     {
-
-        // String[] detectors, String[] bands
-
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
 

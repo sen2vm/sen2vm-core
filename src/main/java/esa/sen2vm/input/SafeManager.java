@@ -1,11 +1,10 @@
 package esa.sen2vm.input;
 
 import java.util.ArrayList;
-//import java.util.logging.Logger;
+import java.util.logging.Logger;
 import java.io.File;
 import java.util.List;
 
-import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
@@ -14,12 +13,15 @@ import esa.sen2vm.input.datastrip.Datastrip;
 import esa.sen2vm.input.granule.Granule;
 import esa.sen2vm.exception.Sen2VMException;
 
+/**
+ * Manager of the SAFE
+ */
 public class SafeManager
 {
     /**
      * Get sen2VM logger
      */
-    //private static final Logger LOGGER = Logger.getLogger(SafeManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SafeManager.class.getName());
 
     /**
      * Directory of the datastrip
@@ -30,7 +32,6 @@ public class SafeManager
      * List of all the granules found in dirGranules
      */
     private ArrayList<Granule> listGranules;
-
 
     /**
      * Datastrip of the SAFE
@@ -149,7 +150,6 @@ public class SafeManager
 
         int[] bb = {ULpixel[0], ULpixel[1], BRpixel[0] - ULpixel[0], BRpixel[1] - ULpixel[1]};
         return bb;
-
     }
 
     /**
@@ -177,7 +177,6 @@ public class SafeManager
      {
         return this.listGranules;
      }
-
 
     /**
      * Get all inverse grid from an output directory

@@ -2,7 +2,7 @@ package esa.sen2vm.input.granule;
 
 import java.io.File;
 import java.util.List;
-//import java.util.logging.Logger;
+import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -15,15 +15,14 @@ import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_granule_metadata.Le
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.pdgs.dimap.A_GEOMETRIC_INFO;
 
 /**
- * Manager for SAD file
+ * Manager for Datastrip directory
  */
-
 public class GranuleManager
 {
     /**
      * Get sen2VM logger
      */
-    //private static final Logger LOGGER = Logger.getLogger(GranuleManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GranuleManager.class.getName());
 
     /**
      * File path granule file
@@ -110,27 +109,41 @@ public class GranuleManager
         }
     }
 
-
+    /*
+     * Get the pixel origin
+     */
     public int getPixelOrigin()
     {
         return pixelOrigin;
     }
 
+    /*
+     * Get the granule position (start in the datastrip)
+     */
     public int getGranulePosition()
     {
         return granulePosition;
     }
 
+    /*
+     * Get size of the granule for band res = 10
+     */
     public int[] getSizeRes10()
     {
         return sizeRes10;
     }
 
+    /*
+     * Get size of the granule for band res = 20
+     */
     public int[] getSizeRes20()
     {
         return sizeRes20;
     }
 
+    /*
+     * Get size of the granule for band res = 60
+     */
     public int[] getSizeRes60()
     {
         return sizeRes60;

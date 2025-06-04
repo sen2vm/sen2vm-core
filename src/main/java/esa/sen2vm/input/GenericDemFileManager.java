@@ -21,6 +21,10 @@ import org.sxgeo.exception.SXGeoException;
 import esa.sen2vm.exception.Sen2VMException;
 
 //Extend SrtmFileManager and not DemManager, as an check on the type of instanciation is made if isInstance of SrtmFileManager
+
+/**
+ * Read the DEM files
+ */
 public class GenericDemFileManager extends SrtmFileManager
 {
     /**

@@ -12,13 +12,13 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import esa.sen2vm.enums.BandInfo;
+
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.PathUtils;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 /**
  * Read the configuration file
- *
  */
 public class Configuration extends InputFileManager
 {
@@ -130,15 +130,7 @@ public class Configuration extends InputFileManager
             this.lr_x =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
             this.lr_y =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
             this.outputFolder = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_OUTPUT_FOLDER_SHORT));
-<<<<<<< HEAD
-=======
-            Double[] outResValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_OUTPUT_IMAGE_RES_SHORT)).map(Double::valueOf).toArray(Double[]::new);
-            this.outRes_band10m = outResValues[0];
-            this.outRes_band20m = outResValues[1];
-            this.outRes_band60m = outResValues[2];
->>>>>>> 75b09831c61060aba525a25d7a00621ca35fd792
         }
-
     }
 
     /**
@@ -243,7 +235,6 @@ public class Configuration extends InputFileManager
      * @return the datastrip file path
      * @throws Sen2VMException
      */
-
     public String getDatastripFilePath() throws Sen2VMException
     {
         return PathUtils.getDatastripFilePath(l1bProduct);
@@ -418,6 +409,4 @@ public class Configuration extends InputFileManager
     {
         return this.outputFolder;
     }
-
 }
-

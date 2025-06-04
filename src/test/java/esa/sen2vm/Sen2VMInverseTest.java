@@ -2,13 +2,7 @@ package esa.sen2vm;
 
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,22 +16,17 @@ import esa.sen2vm.input.datastrip.Datastrip;
 import org.gdal.osr.CoordinateTransformation;
 import org.gdal.osr.SpatialReference;
 
-import java.io.IOException;
 import org.json.simple.parser.ParseException;
 import esa.sen2vm.exception.Sen2VMException;
-
 
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 
-
 /**
  * Unit test for Sen2VM (inverse loc).
  */
-
 public class Sen2VMInverseTest
 {
-
     String configTmpInverse = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
     String paramTmp = "src/test/resources/params_base.json";
     String refDir = "src/test/resources/tests/ref";
@@ -52,7 +41,6 @@ public class Sen2VMInverseTest
     @Test
     public void testStepInverseLoc()
     {
-
         String[] detectors = new String[]{"05"};
         String[] bands = new String[]{"B01", "B02", "B05"};
         double[] testsStep = new double[]{3000, 6000};
@@ -85,7 +73,6 @@ public class Sen2VMInverseTest
                         assertEquals(transform[1], step);
                         assertEquals(transform[5], -step);
                     }
-
                 }
             } catch (Sen2VMException e) {
                 LOGGER.warning(e.getMessage());
@@ -106,7 +93,6 @@ public class Sen2VMInverseTest
     @Test
     public void testInverseLoc()
     {
-
         String[] detectors = new String[]{"01", "02","03","04","05","06","07","08","09","10","11","12"};
         String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
         int step = 6000;
@@ -156,7 +142,6 @@ public class Sen2VMInverseTest
             e.printStackTrace();
             assert(false);
         }
-
     }
 
     @Test
@@ -190,7 +175,6 @@ public class Sen2VMInverseTest
     @Test
     public void testInverseIers()
     {
-
         String[] detectors = new String[]{"06"};
         String[] bands = new String[]{"B02"};
 
@@ -246,7 +230,6 @@ public class Sen2VMInverseTest
 
             Utils.verifyInverseLoc(config_order_2, outputDir1);
             Utils.verifyInverseLoc(config_order_1, outputDir2);
-
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -291,7 +274,6 @@ public class Sen2VMInverseTest
             assert(false);
         }
     }
-
 
     @Test
     public void testInverseAreaHandling()
@@ -397,7 +379,6 @@ public class Sen2VMInverseTest
 			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
 			String[] args = {"-c", config, "-p", param};
 			Sen2VM.main(args);
-
 		} catch (Sen2VMException e) {
 			LOGGER.warning(e.getMessage());
 			e.printStackTrace();

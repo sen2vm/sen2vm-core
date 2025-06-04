@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 import org.gdal.osr.CoordinateTransformation;
 import org.gdal.osr.SpatialReference;
-import java.text.DecimalFormat;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 import java.util.logging.Logger;
-
 
 public class InverseLocGrid
 {
@@ -64,7 +62,7 @@ public class InverseLocGrid
         // Compute grid with center pixel convention
         // start to the pixel center
         // The LowerRight is englobing the last pixel, hence the center of last pixel of the grid shall cover LR
-        this.gridY = grid_1D(this.ulY + this.stepY / 2, lrY, this.stepY); 
+        this.gridY = grid_1D(this.ulY + this.stepY / 2, lrY, this.stepY);
         this.gridX = grid_1D(this.ulX + this.stepX / 2, lrX, this.stepX);
 
         // Compute englobing lower right of the grid after computation
@@ -77,7 +75,6 @@ public class InverseLocGrid
         log = log + "LR: (" + String.valueOf(this.lrY) + ", " + String.valueOf(this.lrX) + ") ";
         LOGGER.info(log);
     }
-
 
     /**
      * Test if value + step is above end
@@ -98,7 +95,6 @@ public class InverseLocGrid
         }
     }
 
-
     /**
      * Create the list of geo grid values for a specific range
      * @param star of the grid
@@ -112,7 +108,6 @@ public class InverseLocGrid
 
         double value = start;
         grid.add(value);
-
 
         while(testEnd(value, end, signedStep))
         {
@@ -212,7 +207,6 @@ public class InverseLocGrid
                 if (Double.isNaN(grid[1][l][c])) {
                     grid[1][l][c] = Sen2VMConstants.noDataRasterValue;
                 }
-
             }
         }
         return grid;

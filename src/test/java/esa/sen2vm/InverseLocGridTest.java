@@ -1,11 +1,6 @@
 package esa.sen2vm;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -13,25 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import esa.sen2vm.enums.DetectorInfo;
-import esa.sen2vm.enums.BandInfo;
-
-import esa.sen2vm.input.Configuration;
-import esa.sen2vm.input.SafeManager;
-import esa.sen2vm.input.datastrip.DataStripManager;
-import esa.sen2vm.input.datastrip.Datastrip;
 import esa.sen2vm.utils.grids.InverseLocGrid;
 import esa.sen2vm.utils.grids.Coordinates;
-
-
-import java.io.IOException;
-import org.json.simple.parser.ParseException;
-import esa.sen2vm.exception.Sen2VMException;
-
-
-import org.gdal.gdal.Dataset;
-import org.gdal.gdal.gdal;
-
 
 /**
  * Unit test for InverseLocGridTest.
@@ -50,7 +28,6 @@ public class InverseLocGridTest
     @Test
     public void createGrid()
     {
-
         double ulX = 199980.0f;
         double ulY = 3700020.0f;
         double lrX = 309780.0f;
@@ -62,7 +39,6 @@ public class InverseLocGridTest
         InverseLocGrid invGrid = new InverseLocGrid(ulX, ulY, lrX, lrY, epsg, step);
         ArrayList<Double> gridX = invGrid.getGridX();
         ArrayList<Double> gridY = invGrid.getGridY();
-
 
         LOGGER.info("SIZE_GRIDX = " + String.valueOf(gridX.size()));
         LOGGER.info("UL_X_input= " + String.valueOf(ulX));
@@ -107,7 +83,6 @@ public class InverseLocGridTest
         assertEquals(invGrid.getLrY(), gridY.get(gridY.size()-1) + stepY / 2);
         assertEquals(invGrid.getLrY(), 3590197.5);
 
-
         int epsg_int = Integer.valueOf(epsg.substring(5));
         Coordinates ul = new Coordinates(ulX, ulY, epsg_int);
         ul.transform();
@@ -115,7 +90,6 @@ public class InverseLocGridTest
         lr.transform();
         LOGGER.info("UL XY(" + String.valueOf(ul.getLongitude()) + ", " + String.valueOf(ul.getLatitude()) + ")");
         LOGGER.info("LR XY(" + String.valueOf(lr.getLongitude()) + ", " + String.valueOf(lr.getLatitude()) + ")");
-
     }
 
     @Test
@@ -155,7 +129,4 @@ public class InverseLocGridTest
         assertEquals(gridX.get(gridX.size()-1), 102);
         LOGGER.info(String.valueOf(gridX.get(0)) + " => " + String.valueOf(gridX.get(gridX.size()-1)));
     }
-
 }
-
-

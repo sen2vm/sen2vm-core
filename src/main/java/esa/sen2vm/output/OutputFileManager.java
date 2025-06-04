@@ -2,8 +2,17 @@ package esa.sen2vm.output;
 
 import java.util.Vector;
 
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.*;
+import java.nio.file.Files;
+import java.io.FileReader;
+import java.io.FileWriter;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import java.util.Date;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 
 import org.gdal.gdal.Band;
 import org.gdal.gdal.Dataset;
@@ -11,7 +20,9 @@ import org.gdal.gdal.Driver;
 import org.gdal.gdal.gdal;
 import org.gdal.gdalconst.gdalconst;
 import org.gdal.gdal.BuildVRTOptions;
+
 import esa.sen2vm.utils.Sen2VMConstants;
+import esa.sen2vm.input.SafeManager;
 
 import java.util.logging.Logger;
 
@@ -249,5 +260,27 @@ public class OutputFileManager
         file.delete();
 
         LOGGER.info("VRT saved in: " + vrtFilePath);
+    }
+
+    public void copyConfig(String configPath, String outputConfigPath) throws IOException
+    {
+        // Copy configuration path into DATASTRIP/GEO_DATA dir for direct loc
+        // and OUTPUT dir for inverse loc
+
+        // Get date (string format)
+        Format formatterDay = new SimpleDateFormat("YYYYMMdd");
+        Format formatterTime = new SimpleDateFormat("HHmmss");
+        String date = formatterDay.format(new Date()) + "T" + formatterTime.format(new Date());
+
+        // Construct file path
+        File toCopy = new File(configPath);
+        String configNameSave = toCopy.getName().toString();
+        configNameSave = configNameSave.substring(0, configNameSave.lastIndexOf(".")) + "_" + date;
+        configNameSave = configNameSave + Sen2VMConstants.JSON_EXTENSION;
+        configNameSave = outputConfigPath + File.separator + configNameSave;
+        File copy = new File(configNameSave);
+
+        // Copy the file
+        Files.copy(toCopy.toPath(), copy.toPath(), REPLACE_EXISTING);
     }
 }

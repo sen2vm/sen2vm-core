@@ -12,7 +12,6 @@ import org.apache.commons.cli.ParseException;
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.Sen2VMConstants;
 
-
 /**
  * Definition of all command line arguments 
  * @author Guylaine Prat

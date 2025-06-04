@@ -16,8 +16,7 @@ import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 /**
- * Manager for gipp files
- *
+ * Manager for GIPP files
  */
 public class GIPPFileManager
 {

@@ -1,27 +1,14 @@
 package esa.sen2vm;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 
-import org.json.simple.parser.ParseException;
-
 import java.util.logging.Logger;
-import java.io.IOException;
 
-import esa.sen2vm.input.Configuration;
 import esa.sen2vm.exception.Sen2VMException;
 
 /**
  * Unit test for Sen2VM (direct loc).
  */
-
 public class Sen2VMDirectTest
 {
     private static final Logger LOGGER = Logger.getLogger(Sen2VMDirectTest.class.getName());
@@ -93,8 +80,8 @@ public class Sen2VMDirectTest
         String[] bands = new String[]{"B01"};
         String GIPP_2 = "src/test/resources/tests/data/GIPP/";
 
-       try
-       {
+        try
+        {
             String nameTest = "testDirectGipp";
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.configCheckGipp(configTmpDirect, GIPP_2, false, outputDir);
@@ -120,8 +107,8 @@ public class Sen2VMDirectTest
         String[] bands = new String[]{"B01"};
         String GIPP_2 = "src/test/resources/tests/data/GIPP/";
 
-       try
-       {
+        try
+        {
             String nameTest = "testDirectGipp";
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.configCheckGipp(configTmpDirect, GIPP_2, true, outputDir);
@@ -204,7 +191,6 @@ public class Sen2VMDirectTest
     @Test
     public void testDirectParallelisation()
     {
-
         try
         {
             String outputDir1 = Config.createTestDir("testDirectParallelisation_1", "direct");
@@ -271,6 +257,5 @@ public class Sen2VMDirectTest
             e.printStackTrace();
             assert(false);
         }
-
     }
 }

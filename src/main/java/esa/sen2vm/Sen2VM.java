@@ -2,10 +2,8 @@ package esa.sen2vm;
 
 import org.apache.commons.cli.*;
 
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.Double;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.HashMap;
@@ -14,12 +12,6 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.io.File;
 import java.nio.file.Files;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import java.util.Date;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-
-import org.orekit.rugged.linesensor.LineDatation;
 
 import org.sxgeo.engine.SimpleLocEngine;
 import org.sxgeo.input.datamodels.sensor.Sensor;
@@ -28,6 +20,7 @@ import org.sxgeo.input.datamodels.sensor.SpaceCraftModelTransformation;
 import org.sxgeo.input.dem.DemManager;
 import org.sxgeo.input.dem.GeoidManager;
 import org.sxgeo.rugged.RuggedManager;
+import org.orekit.rugged.linesensor.LineDatation;
 import org.sxgeo.exception.SXGeoException;
 
 import esa.sen2vm.enums.BandInfo;
@@ -47,11 +40,8 @@ import esa.sen2vm.utils.grids.DirectLocGrid;
 import esa.sen2vm.utils.grids.InverseLocGrid;
 import esa.sen2vm.utils.Sen2VMConstants;
 
-
-
 /**
  * Main class
- *
  */
 public class Sen2VM
 {
@@ -91,7 +81,7 @@ public class Sen2VM
 
             Configuration config;
             Params params = null;
-            
+
             // Initialize the configuration and the parameters
             // ------------------
             // Check whether the initialization shall be done from file or from command line arguments
@@ -101,7 +91,7 @@ public class Sen2VM
                 String configFilepath = commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT);
                 // Read configuration file
                 config = new Configuration(configFilepath);
-                
+
                 // Verify if the parameter file is available in command line
                 if (commandLine.hasOption(OptionManager.OPT_PARAM_SHORT))
                 {
@@ -113,13 +103,13 @@ public class Sen2VM
                     {
                         params = new Params(sensorParamsFile);
                     }
-                } 
+                }
             }
             else
             { // not areFiles
                 // Initialize the configuration with the command line
                 config = new Configuration(commandLine);
-                
+
                 // Initialize the parameters with the command line
                 params = new Params(commandLine);
 
@@ -135,7 +125,7 @@ public class Sen2VM
                 // Information missing, by default we prosse all
                 detectors = DetectorInfo.getAllDetectorInfo();
             }
-            
+
             if (params != null && params.getBandsList().size() > 0)
             {
                 bands = params.getBandsList();
@@ -144,7 +134,7 @@ public class Sen2VM
             {
                 // Information missing, by default we prosse all
                 bands = BandInfo.getAllBandInfo();
-            } 
+            }
 
             LOGGER.info("Detectors list: " + detectors);
             LOGGER.info("Bands list: " + bands);
@@ -160,7 +150,7 @@ public class Sen2VM
             // Init demManager
             // ---------------
             Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
-            
+
             //Using SXGEO FileManager
             /*SrtmFileManager demFileManager = new SrtmFileManager(config.getDem());
             if (!demFileManager.findRasterFile())
@@ -252,14 +242,13 @@ public class Sen2VM
             {
                 safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands) ;
             }
-            else if (config.getOperation().equals(Sen2VMConstants.INVERSE))
+            else
             {
                 safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder()) ;
             }
 
             for (BandInfo bandInfo: bands)
             {
-
                 LOGGER.info("");
                 LOGGER.info("###############");
                 LOGGER.info("### BAND " + bandInfo.getName() + " ###");
@@ -276,6 +265,8 @@ public class Sen2VM
                     LOGGER.info("");
                     LOGGER.info("### DET " + detectorInfo.getName() + " (BAND " + bandInfo.getName() + ") ###");
 
+                    // Direct Loc case
+                    // --------------------
                     if (config.getOperation().equals(Sen2VMConstants.DIRECT))
                     {
                         int[] bbox = safeManager.getFullSize(dataStripManager, bandInfo, detectorInfo);
@@ -330,7 +321,10 @@ public class Sen2VM
                         outputFileManager.correctVRT(vrtFileName);
 
                     }
-                    else if (config.getOperation().equals(Sen2VMConstants.INVERSE))
+
+                    // Inverse Loc case
+                    // --------------------
+                    else
                     {
                         double[] bb =  config.getInverseLocBound();
 
@@ -343,38 +337,20 @@ public class Sen2VM
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());
                         outputFileManager.createGeoTiff(invFileName, invGrid.getUlX(), invGrid.getUlY(), invGrid.getStepX(), invGrid.getStepY(), grid3D, config.getInverseLocReferential(), "", 0.0f, 0.0f, false);
                     }
-                    else
-                    {
-                        LOGGER.info("Operation " + config.getOperation() + " does not exist.");
-                    }
                 }
             }
 
-            // Copy configuration path into DATASTRIP/GEO_DATA dir for direct loc
-            // and OUTPUT dir for inverse loc
-
-            // Get date (string format)
-            Format formatterDay = new SimpleDateFormat("YYYYMMdd");
-            Format formatterTime = new SimpleDateFormat("hhmmss");
-            String date = formatterDay.format(new Date()) + "T" + formatterTime.format(new Date());
-
-            // Construct file path
-            File toCopy = new File(commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT));
-            String configNameSave = toCopy.getName().toString();
-            configNameSave = configNameSave.substring(0, configNameSave.lastIndexOf(".")) + "_" + date;
-            configNameSave = configNameSave + Sen2VMConstants.JSON_EXTENSION;
+            String outputConfigPath ;
             if (config.getOperation().equals(Sen2VMConstants.DIRECT))
             {
-                configNameSave = datastrip.getPath() + File.separator + Sen2VMConstants.GEO_DATA_DS + File.separator + configNameSave;
+                outputConfigPath = datastrip.getPath() + File.separator + Sen2VMConstants.GEO_DATA_DS;
             }
-            else if (config.getOperation().equals(Sen2VMConstants.INVERSE))
+            else
             {
-                configNameSave = config.getInverseLocOutputFolder() + File.separator + configNameSave;
+                outputConfigPath = config.getInverseLocOutputFolder();
             }
-            File copy = new File(configNameSave);
+            outputFileManager.copyConfig(commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT), outputConfigPath);
 
-            // Copy the file
-            Files.copy(toCopy.toPath(), copy.toPath(), REPLACE_EXISTING);
 
         }
         catch ( IOException exception )
@@ -386,4 +362,8 @@ public class Sen2VM
             throw new Sen2VMException(exception);
         }
     }
+
+
 }
+
+
