@@ -11,7 +11,7 @@ This documentation is split into 4 parts:
 
 ## 1 Quickstart
 
-### 1.1 How to run or compile sen2vm-core
+### 1.1 How to run sen2vm-core
 
 First, download the jar of Sen2VM core, then run the following commad to launch it:
 ```
@@ -21,22 +21,21 @@ java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configurat
 Where:
 * <NN.NN.NN> is the version number of Sen2VM launched,
 * configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please note that this input is **Mandatory**. 
-* parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §XXX for further information).This input is **Optional**.
+* parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §[2.2 Parameters file](#22-parameters-file) for further information).This input is **Optional**.
 
 Example from current repository:
 ```
 java -jar target/sen2vm-core-0.0.1-jar-with-dependencies.jar -c src/test/resources/configuration_example.json -p src/test/resources/params.json
 ```
 
-Sen2VM core can also be rebuild from sources:
-Before compiling/installing sen2vm-core, make sure to install the required dependencies. To do so, please refer to [https://github.com/sen2vm/sen2vm-build-env/tree/main](https://github.com/sen2vm/sen2vm-build-env/tree/main)
+> [!NOTE]
+> To understand the configuration, please refer to §[2 Inputs](#2-inputs)
 
-Then, inside `sen2vm-core` folder, run the next commands:
-```
-mvn clean install
-java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
-```
-### 1.2 Example of use
+> [!NOTE]
+> Sen2VM core can also be rebuild from sources. Please refer to §[1.3 How to compile sen2vm-core](#13-how-to-compile-sen2vm-core)
+
+
+### 1.2 Example of grids usage
 
 > [!CAUTION]
 > gdal version shall be compatible with the new Sen2VM grids. Official gdal does not yet include this driver/possibility. A [Pull Request](https://github.com/OSGeo/gdal/pull/12431 ) is currently opened, but in the meantime, this gdal version can be find [here](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c)
@@ -140,6 +139,15 @@ otbcli_GridBasedImageResampling -io.in  /PATH_TO_DATA/working/madeire_D09_B01.ti
 gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PATH_TO_DATA/working/warp_otb_D09_B01_georef.tif
 ```
 
+### 1.3 How to compile sen2vm-core
+
+Before compiling/installing sen2vm-core, make sure to install the required dependencies. To do so, please refer to [https://github.com/sen2vm/sen2vm-build-env/tree/main](https://github.com/sen2vm/sen2vm-build-env/tree/main)
+
+Then, inside `sen2vm-core` folder, run the next commands:
+```
+mvn clean install
+java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
+```
 
 ## 2. Inputs
 Inputs required by Sen2VM are:
