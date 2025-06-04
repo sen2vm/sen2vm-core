@@ -5,7 +5,7 @@ import org.apache.commons.cli.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.Float;
+import java.lang.Double;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.HashMap;
@@ -234,8 +234,8 @@ public class Sen2VM
             //ds.checkNoVRT(detectors, bands);
 
             // GIPP
-            float georefConventionOffsetPixel = +0.5f;
-            float georefConventionOffsetLine = +0.5f;
+            double georefConventionOffsetPixel = +0.5f;
+            double georefConventionOffsetLine = +0.5f;
 
             OutputFileManager outputFileManager = new OutputFileManager();
 
@@ -265,7 +265,7 @@ public class Sen2VM
                 LOGGER.info("### BAND " + bandInfo.getName() + " ###");
                 LOGGER.info("###############");
 
-                double res = (double) bandInfo.getPixelHeight();
+                double res = bandInfo.getPixelHeight();
                 double step = config.getStepFromBandInfo(bandInfo);
 
                 LOGGER.info("Grid resolution: " + String.valueOf(config.getStepFromBandInfo(bandInfo)));

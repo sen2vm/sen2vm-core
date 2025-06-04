@@ -121,7 +121,6 @@ public class InverseLocGrid
         }
 
         grid.add(value + signedStep);
-        System.out.println(String.valueOf(grid.size()));
         return grid;
     }
 
@@ -166,7 +165,6 @@ public class InverseLocGrid
                 grid[l*nbCols + c][1] = res[0];
             }
         }
-        System.out.println("tl");
 
         return grid;
     }
@@ -185,8 +183,8 @@ public class InverseLocGrid
         {
             for (int c = 0; c < nbCols; c ++)
             {
-                grid[l*nbCols + c][0] = (double) this.gridX.get(c);
-                grid[l*nbCols + c][1] = (double) this.gridY.get(l);
+                grid[l*nbCols + c][0] = this.gridX.get(c);
+                grid[l*nbCols + c][1] = this.gridY.get(l);
             }
         }
         return grid;

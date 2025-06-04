@@ -125,11 +125,18 @@ public class Configuration extends InputFileManager
         {
             // at this stage the inverse loc options exist
             this.referential = commandLine.getOptionValue(OptionManager.OPT_REFERENTIAL_SHORT);
-            this.ul_x =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_ULX_SHORT));
-            this.ul_y =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_ULY_SHORT));
-            this.lr_x =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
-            this.lr_y =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
+            this.ul_x =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_ULX_SHORT));
+            this.ul_y =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_ULY_SHORT));
+            this.lr_x =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
+            this.lr_y =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
             this.outputFolder = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_OUTPUT_FOLDER_SHORT));
+<<<<<<< HEAD
+=======
+            Double[] outResValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_OUTPUT_IMAGE_RES_SHORT)).map(Double::valueOf).toArray(Double[]::new);
+            this.outRes_band10m = outResValues[0];
+            this.outRes_band20m = outResValues[1];
+            this.outRes_band60m = outResValues[2];
+>>>>>>> 75b09831c61060aba525a25d7a00621ca35fd792
         }
 
     }
@@ -177,9 +184,9 @@ public class Configuration extends InputFileManager
             this.operation = jsonObject.getString("operation");
 
             JSONObject steps = jsonObject.getJSONObject("steps");
-            this.step_band10m = steps.getFloat("10m_bands");
-            this.step_band20m = steps.getFloat("20m_bands");
-            this.step_band60m = steps.getFloat("60m_bands");
+            this.step_band10m = steps.getDouble("10m_bands");
+            this.step_band20m = steps.getDouble("20m_bands");
+            this.step_band60m = steps.getDouble("60m_bands");
 
             this.exportAlt = jsonObject.getBoolean("export_alt");
 
@@ -211,10 +218,10 @@ public class Configuration extends InputFileManager
                    try
                    {
                        JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
-                       this.ul_x = inverseLoc.getFloat("ul_x");
-                       this.ul_y = inverseLoc.getFloat("ul_y");
-                       this.lr_x = inverseLoc.getFloat("lr_x");
-                       this.lr_y = inverseLoc.getFloat("lr_y");
+                       this.ul_x = inverseLoc.getDouble("ul_x");
+                       this.ul_y = inverseLoc.getDouble("ul_y");
+                       this.lr_x = inverseLoc.getDouble("lr_x");
+                       this.lr_y = inverseLoc.getDouble("lr_y");
                        this.referential = inverseLoc.getString("referential");
                        this.outputFolder = inverseLoc.getString("output_folder");
                    }
