@@ -185,7 +185,7 @@ public class Utils {
             for(int b = 0; b < Sen2VMConstants.NB_BANDS; b++)
             {
                 BandInfo bandInfo = BandInfo.getBandInfoFromIndex(b);
-                float res = (float) bandInfo.getPixelHeight();
+                double res = bandInfo.getPixelHeight();
                 if (outputGrids[d][b] != null) {
                     File outputGrid = outputGrids[d][b];
                     File refGrid = refGrids[d][b];
@@ -239,7 +239,7 @@ public class Utils {
         return false;
      }
 
-     public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, Float res) throws IOException{
+     public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, double res) throws IOException{
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
 

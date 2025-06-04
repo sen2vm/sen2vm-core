@@ -390,22 +390,14 @@ public class Sen2VMInverseTest
 
 			double[] ul = transformer.TransformPoint(ul_x, ul_y);
 			double[] lr = transformer.TransformPoint(lr_x, lr_y);
-            System.out.println(String.valueOf(ul[0]));
-            System.out.println(String.valueOf((double)ul[0]));
-            System.out.println(String.valueOf((double)ul[0]) + " " +String.valueOf((double)ul[1]) + " " + String.valueOf((double)lr[0]) + " " + String.valueOf((double)lr[1]));
-            System.out.println(String.valueOf(0.05f));
-            System.out.println(String.valueOf(9.00901E-5f));
-            System.out.println(String.valueOf(9.00901E-5f*4.5));
-
 
 			String config = Config.configInverseBBwithStep10m(configTmpInverse,
-			    (double)ul[0], (double)ul[1], (double)lr[0], (double)lr[1],
-			    9.00901E-5f*45f, 9.00901E-5f, "EPSG:4326", outputDir);
+			    ul[0], ul[1], lr[0], lr[1],
+			    9.00901E-5f*90f, 9.00901E-5f, "EPSG:4326", outputDir);
 
 			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
 			String[] args = {"-c", config, "-p", param};
 			Sen2VM.main(args);
-
 
 		} catch (Sen2VMException e) {
 			LOGGER.warning(e.getMessage());
