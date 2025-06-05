@@ -250,7 +250,7 @@ The versions of the GIPP used in operation are listed in the L1B Datastrip Metad
 ![GIPP list in L1B Datastrip metadata](/assets/images/README_GIPPListInL1BDatastripMetadata.png "GIPP list in L1B Datastrip metadata.")
 
 > [!CAUTION]
-> Please note that the GIPP are not directly available in L1B products; they must be downloaded beforehand by the user at <mark>**XXX**</mark>.
+> Please note that the GIPP are not directly available in L1B products; they must be downloaded beforehand by users on  [this dedicated repository](https://github.com/sen2vm/sen2vm-gipp-database).
 
 The GIPP required are the following ones:
 * **GIP_VIEDIR**: contains Viewing Direction required by Rugged to create viewing model based on TAN_PSI_X/Y_LIST tags. There is one GIP_VIEDIR file **per band** and each file contains information per **detector** (in the following tags: _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_X_LIST]_ and _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_Y_LIST]_)
@@ -335,7 +335,9 @@ Sen2VM direct location grid computation takes as input the L1B product, the auxi
 
 As output:
 * At granule level: geolocation grids will be written (per granules/bands).
-* At datastrip level: several .vrt (virtual dataset) will be written (per detectors/bands).
+* At datastrip level:
+    * several .vrt (virtual dataset) will be written (per detectors/bands).
+    * The configuration file used in input with the date/time will be added in with the vrt files
 
 #### 3.1.1 Direct locations grids' outputs
 Output grids will be integrated directly in the input product.
@@ -359,6 +361,9 @@ As example, for an image of the IMG_DATA folder, named:
 
 The direct location grid will be generated in the GEO_DATA folder, and named:
 * S2B_OPER_**GEO**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.<strong>tif</strong>
+
+> [!NOTE]
+> The configuration file used in input with the date/time will be added in with the vrt files
 
 ##### 3.1.1.2 Datastrip level
 At datastrip level grids’ location and naming is:
@@ -442,7 +447,9 @@ To define the extend of the inverse location grid, parameters are described in s
 * An output folder.
 
 As output, a geolocation grid will be created **for each band and detector** to process.
+
 #### 3.2.1 Inverse location grids’ outputs
+
 Outputs will be **written in the folder provided by the user**. For inverse location grids, granule level is not foreseen, since granule footprint can result in large margins in projected data.
 
 Output grids’ convention will be:
@@ -462,8 +469,11 @@ Example:
 
 ![Output example of inverse location grids](/assets/images/README_OutputInv.PNG "Output example of inverse location grids.")
 
+> [!NOTE]
+> The configuration file used in input with the date/time will be added in with the vrt files
 
 #### 3.2.2 Inverse location grids’ specifications
+
 Inverse location grids **will give the coordinates in the “detector” image** reference frame, as if the granules from the same detector were concatenated into a single image.
  * Grid metadata:
     * are written as GDAL GEO information (SRS and geotransform) and Metadata keys, containing ROW_BAND and COL_BAND to specify row col index and PIXEL_ORIGIN which specify granule first pixel center convention, and NoData value.  
@@ -474,13 +484,12 @@ Inverse location grids **will give the coordinates in the “detector” image**
        * the size of the grid,
        * the step of the grid,
        * margins,
-       * the GIPP dataset used,
-       * the DEM and associated geoid (TBD),
-       * whether was refining deactivated or not.
          
-As for direct location grids, the center of the first grid point is aligned with the center of the first output pixel of the bounding box considering a pixel at resolution of the processed band. The center of the last grid pixel is calculated to ensure that it covers at least the last pixel center of the input bounding box.
+To ensure input bounding box coverage:
+ * Center of the first grid point is aligned with UL of the bounding box,
+* Center of the last grid pixel is computed to ensure that it covers at least LR of the input bounding box.
 
-Bounding box provided in input:
+As for example:
 
 ![Inverse Convention](/assets/images/README_InverseConvention.png "Inverse Convention.")
  
@@ -518,5 +527,5 @@ In a nutshell, validation is split into 2 main parts:
 
 Tests are more detailed in:
  * In [/src/test/java/esa/sen2vm/](/src/test/java/esa/sen2vm/) for fucntionnal tests,
- * In dediceted <mark>**Document**</mark>, for quality tests (which also includes functionnal tests description)
+ * In dedicated <mark>**Document**</mark>, for quality tests (which also includes functionnal tests description)
 
