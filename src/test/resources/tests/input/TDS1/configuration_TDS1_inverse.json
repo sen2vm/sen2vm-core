@@ -10,8 +10,8 @@
   "deactivate_available_refining": false,
   "steps":  {
     "10m_bands": 6000,
-    "20m_bands": 6000,
-    "60m_bands": 6000
+    "20m_bands": 3000,
+    "60m_bands": 1000
   },
   "export_alt": true,
   "inverse_location_additional_info": {

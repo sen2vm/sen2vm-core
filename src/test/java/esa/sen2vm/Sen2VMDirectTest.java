@@ -22,19 +22,20 @@ public class Sen2VMDirectTest
     {
         String[] detectors = new String[]{"02"};
         String[] bands = new String[]{"B01", "B02", "B05"};
-        int[] testsStep = new int[]{3000, 6000};
+        int[] testsStepBand10m = new int[]{300, 600}; // corresponding to 3 and 6 kms
 
-        for (int step : testsStep)
+
+        for (int stepBand10m : testsStepBand10m)
         {
             try
             {
-                String nameTest = "testStepDirectLoc_" +  Integer.toString(step);
+                String nameTest = "testStepDirectLoc_" +  Integer.toString(stepBand10m);
                 String outputDir = Config.createTestDir(nameTest, "direct");
-                String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
+                String config = Config.config(configTmpDirect, outputDir, stepBand10m, "direct", false);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
-                Utils.verifyStepDirectLoc(config, step);
+                Utils.verifyStepDirectLoc(config, stepBand10m);
             } catch (Sen2VMException e) {
                 LOGGER.warning(e.getMessage());
                 e.printStackTrace();
@@ -52,12 +53,13 @@ public class Sen2VMDirectTest
     {
         String[] detectors = new String[]{"01", "02","03","04","05","06","07","08","09","10","11","12"};
         String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
-        int step = 6000;
+        int stepBand10m = 600; // corresponding to 6 kms
+
         try
         {
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(nameTest, "direct");
-            String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
+            String config = Config.config(configTmpDirect, outputDir, stepBand10m, "direct", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
@@ -132,12 +134,13 @@ public class Sen2VMDirectTest
 
         String[] detectors = new String[]{"01"};
         String[] bands = new String[]{"B02"};
+        int stepBand10m = 600; // corresponding to 6 kms
 
         try
         {
             String nameTest = "testDirectNoRefining";
             String outputDir = Config.createTestDir(nameTest, "direct");
-            String config = Config.config(configTmpDirect, outputDir, 6000, "direct", false);
+            String config = Config.config(configTmpDirect, outputDir, stepBand10m, "direct", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
@@ -191,12 +194,14 @@ public class Sen2VMDirectTest
     @Test
     public void testDirectParallelisation()
     {
+        int stepBand10m = 600; // corresponding to 6 kms
+
         try
         {
             String outputDir1 = Config.createTestDir("testDirectParallelisation_1", "direct");
             String[] detectors_order_1 = new String[]{"01", "02"};
             String[] bands_order_1 = new String[]{"B01", "B02"};
-            String config_order_1 = Config.config(configTmpDirect, outputDir1, 6000, "direct", false);
+            String config_order_1 = Config.config(configTmpDirect, outputDir1, stepBand10m, "direct", false);
             String param_order_1 = Config.changeParams(paramTmp, detectors_order_1, bands_order_1, outputDir1);
             String[] args_order_1 = {"-c", config_order_1, "-p", param_order_1};
             Sen2VM.main(args_order_1);
@@ -204,7 +209,7 @@ public class Sen2VMDirectTest
             String outputDir2 = Config.createTestDir("testDirectParallelisation_2", "direct");
             String[] detectors_order_2 = new String[]{"02", "01"};
             String[] bands_order_2 = new String[]{"B02", "B01"};
-            String config_order_2 = Config.config(configTmpDirect, outputDir2, 6000, "direct", false);
+            String config_order_2 = Config.config(configTmpDirect, outputDir2, stepBand10m, "direct", false);
             String param_order_2 = Config.changeParams(paramTmp, detectors_order_2, bands_order_2, outputDir2);
             String[] args_order_2 = {"-c", config_order_2, "-p", param_order_2};
             Sen2VM.main(args_order_2);
@@ -228,12 +233,13 @@ public class Sen2VMDirectTest
         String[] detectors = new String[]{"01"};
         String[] bands = new String[]{"B01"};
         String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
+        int stepBand10m = 600; // corresponding to 6 kms
 
         try
         {
             String nameTest_ref = "testDirectDem_ref";
             String outputDir_ref = Config.createTestDir(nameTest_ref, "direct");
-            String config_ref = Config.config(configTmpDirect, outputDir_ref, 6000, "direct", false);
+            String config_ref = Config.config(configTmpDirect, outputDir_ref, stepBand10m, "direct", false);
             String params_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
             String[] args_ref = {"-c", config_ref, "-p", params_ref};
             Sen2VM.main(args_ref);

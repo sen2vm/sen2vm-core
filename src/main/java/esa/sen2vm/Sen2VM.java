@@ -340,6 +340,7 @@ public class Sen2VM
                 }
             }
 
+            // Export parameters used in a json file
             String outputConfigPath ;
             if (config.getOperation().equals(Sen2VMConstants.DIRECT))
             {
@@ -349,9 +350,7 @@ public class Sen2VM
             {
                 outputConfigPath = config.getInverseLocOutputFolder();
             }
-            outputFileManager.copyConfig(commandLine.getOptionValue(OptionManager.OPT_CONFIG_SHORT), outputConfigPath);
-
-
+            outputFileManager.writeInfoJson(config, params, outputConfigPath);
         }
         catch ( IOException exception )
         {

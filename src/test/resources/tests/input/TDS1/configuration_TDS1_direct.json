@@ -11,7 +11,7 @@
   "steps": {
     "10m_bands": 600,
     "20m_bands": 300,
-    "60m_bands": 100
+    "60m_bands": 100,
   },
   "export_alt": true,
   "inverse_location_additional_info": {

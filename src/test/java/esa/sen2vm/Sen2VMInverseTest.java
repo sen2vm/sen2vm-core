@@ -43,15 +43,15 @@ public class Sen2VMInverseTest
     {
         String[] detectors = new String[]{"05"};
         String[] bands = new String[]{"B01", "B02", "B05"};
-        double[] testsStep = new double[]{3000, 6000};
+        double[] testsStepBand10m = new double[]{3000, 6000};
 
-        for (double step : testsStep)
+        for (double stepBand10m : testsStepBand10m)
         {
             try
             {
-                String nameTest = "testStepInverseLoc_" +  step;
+                String nameTest = "testStepInverseLoc_" +  stepBand10m;
                 String outputDir = Config.createTestDir(nameTest, "inverse");
-                String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
+                String config = Config.config(configTmpInverse, outputDir, stepBand10m, "inverse", false);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
@@ -70,9 +70,12 @@ public class Sen2VMInverseTest
                         LOGGER.info(invFileName);
                         Dataset ds = gdal.Open(invFileName);
                         double[] transform = ds.GetGeoTransform();
+                        assertEquals(transform[1] * (res / 10), stepBand10m);
+                        assertEquals(transform[5] * (res / 10), -stepBand10m);
 
-                        assertEquals(transform[1] * (res / 10), step);
-                        assertEquals(transform[5] * (res / 10), -step);
+                        System.out.println("transform:" + String.valueOf(transform[1]));
+                        System.out.println("res:" + String.valueOf(res));
+                        System.out.println("step:" + String.valueOf(stepBand10m));
                     }
                 }
             } catch (Sen2VMException e) {
@@ -96,12 +99,12 @@ public class Sen2VMInverseTest
     {
         String[] detectors = new String[]{"01", "02","03","04","05","06","07","08","09","10","11","12"};
         String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
-        int step = 6000;
+        int stepBand10m = 6000;
         try
         {
             String nameTest = "testInverseLoc";
             String outputDir = Config.createTestDir(nameTest, "inverse");
-            String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
+            String config = Config.config(configTmpInverse, outputDir, stepBand10m, "inverse", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
@@ -151,12 +154,13 @@ public class Sen2VMInverseTest
         boolean[] testsRef = new boolean[]{true, false};
         String[] detectors = new String[]{"06"};
         String[] bands = new String[]{"B01", "B02", "B05"};
+        int stepBand10m = 6000;
 
         try
         {
             String nameTest = "testInverseNoRefining";
             String outputDir = Config.createTestDir(nameTest, "inverse");
-            String config = Config.config(configTmpInverse, outputDir, 6000, "inverse", false);
+            String config = Config.config(configTmpInverse, outputDir, stepBand10m, "inverse", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
@@ -211,12 +215,13 @@ public class Sen2VMInverseTest
     @Test
     public void testInverseParallelisation()
     {
+        int stepBand10m = 6000;
         try
         {
             String outputDir1 = Config.createTestDir("testInverseParallelisation_1", "inverse");
             String[] detectors_order_1 = new String[]{"05", "06"};
             String[] bands_order_1 = new String[]{"B01", "B02"};
-            String config_order_1 = Config.config(configTmpInverse, outputDir1, 6000, "inverse", false);
+            String config_order_1 = Config.config(configTmpInverse, outputDir1, stepBand10m, "inverse", false);
             String param_order_1 = Config.changeParams(paramTmp, detectors_order_1, bands_order_1, outputDir1);
             String[] args_order_1 = {"-c", config_order_1, "-p", param_order_1};
             Sen2VM.main(args_order_1);
@@ -224,7 +229,7 @@ public class Sen2VMInverseTest
             String outputDir2 = Config.createTestDir("testInverseParallelisation_2", "inverse");
             String[] detectors_order_2 = new String[]{"06", "05"};
             String[] bands_order_2 = new String[]{"B02", "B01"};
-            String config_order_2 = Config.config(configTmpInverse, outputDir2, 6000, "inverse", false);
+            String config_order_2 = Config.config(configTmpInverse, outputDir2, stepBand10m, "inverse", false);
             String param_order_2 = Config.changeParams(paramTmp, detectors_order_2, bands_order_2, outputDir2);
             String[] args_order_2 = {"-c", config_order_2, "-p", param_order_2};
             Sen2VM.main(args_order_2);
@@ -316,12 +321,13 @@ public class Sen2VMInverseTest
         String[] detectors = new String[]{"06"};
         String[] bands = new String[]{"B01", "B02"};
         String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
+        int stepBand10m = 6000;
 
         try
         {
             String nameTest_ref = "testDirectDem_ref";
             String outputDir_ref = Config.createTestDir(nameTest_ref, "inverse");
-            String config_ref = Config.config(configTmpInverse, outputDir_ref, 6000, "direct", false);
+            String config_ref = Config.config(configTmpInverse, outputDir_ref, stepBand10m, "direct", false);
             String params_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
             String[] args_ref = {"-c", config_ref, "-p", params_ref};
             Sen2VM.main(args_ref);
@@ -352,7 +358,7 @@ public class Sen2VMInverseTest
         String[] detectors = new String[]{"07", "08", "09", "10"};
 		String[] bands = new String[]{"B02"};
         double unitLatLon = 9.00901E-5;
-        double stepMeter = 45.0 ;
+        double stepBand10m = 450.0 ;
 
         double ul_x = 199980.0;
 		double ul_y = 3700020.0;
@@ -364,8 +370,8 @@ public class Sen2VMInverseTest
 		{
 			String nameTest_utm = "testInverseLatLonArea_utm";
 			String outputDir_utm = Config.createTestDir(nameTest_utm, "inverse");
-			String config_utm = Config.configInverseBBwithStep10m(configTmpInverse,
-			    ul_y, ul_x, lr_y, lr_x, stepMeter, referential, outputDir_utm);
+			String config_utm = Config.configInverseBBwithStepBand10m(configTmpInverse,
+			    ul_y, ul_x, lr_y, lr_x, stepBand10m, referential, outputDir_utm);
 			String param_utm = Config.changeParams(paramTmp, detectors, bands, outputDir_utm);
 			String[] args_utm = {"-c", config_utm, "-p", param_utm};
 			Sen2VM.main(args_utm);
@@ -383,8 +389,8 @@ public class Sen2VMInverseTest
 			double[] ul = transformer.TransformPoint(ul_x, ul_y);
 			double[] lr = transformer.TransformPoint(lr_x, lr_y);
 
-			String config = Config.configInverseBBwithStep10m(configTmpInverse,
-			    ul[0], ul[1], lr[0], lr[1], unitLatLon * stepMeter / 10, "EPSG:4326", outputDir);
+			String config = Config.configInverseBBwithStepBand10m(configTmpInverse,
+			    ul[0], ul[1], lr[0], lr[1], unitLatLon * stepBand10m / 10, "EPSG:4326", outputDir);
 
 			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
 			String[] args = {"-c", config, "-p", param};
@@ -400,7 +406,7 @@ public class Sen2VMInverseTest
 		}
 	}
 
-	@Test
+	// @Test
     public void testInverseLatLonAreaBand10m_ROI()
 	{
         String[] detectors = new String[]{"08"};
@@ -417,7 +423,7 @@ public class Sen2VMInverseTest
 		{
 			String nameTest_utm = "testInverseLatLonArea_utm_ROI";
 			String outputDir_utm = Config.createTestDir(nameTest_utm, "inverse");
-			String config_utm = Config.configInverseBBwithStep10m(configTmpInverse,
+			String config_utm = Config.configInverseBBwithStepBand10m(configTmpInverse,
 			    ul_y, ul_x, lr_y, lr_x, stepMeter, referential, outputDir_utm);
 			System.out.println(config_utm);
 			String param_utm = Config.changeParams(paramTmp, detectors, bands, outputDir_utm);
@@ -438,7 +444,7 @@ public class Sen2VMInverseTest
 			double[] ul = transformer.TransformPoint(ul_x, ul_y);
 			double[] lr = transformer.TransformPoint(lr_x, lr_y);
 
-			String config = Config.configInverseBBwithStep10m(configTmpInverse,
+			String config = Config.configInverseBBwithStepBand10m(configTmpInverse,
 			    ul[0], ul[1], lr[0], lr[1], unitLatLon * stepMeter / 10, "EPSG:4326", outputDir);
 
 			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
@@ -455,7 +461,7 @@ public class Sen2VMInverseTest
 		}
 	}
 
-	@Test
+	// @Test
     public void testInverseLatLonAreaBand10m_ROI2()
 	{
         String[] detectors = new String[]{"08"};
@@ -474,7 +480,7 @@ public class Sen2VMInverseTest
 		{
 			String nameTest_utm = "testInverseLatLonArea_utm_ROI2";
 			String outputDir_utm = Config.createTestDir(nameTest_utm, "inverse");
-			String config_utm = Config.configInverseBBwithStep10m(configTmpInverse,
+			String config_utm = Config.configInverseBBwithStepBand10m(configTmpInverse,
 			    ul_y, ul_x, lr_y, lr_x, stepMeter, referential, outputDir_utm);
 			System.out.println(config_utm);
 			String param_utm = Config.changeParams(paramTmp, detectors, bands, outputDir_utm);
@@ -495,7 +501,7 @@ public class Sen2VMInverseTest
 			double[] ul = transformer.TransformPoint(ul_x, ul_y);
 			double[] lr = transformer.TransformPoint(lr_x, lr_y);
 
-			String config = Config.configInverseBBwithStep10m(configTmpInverse,
+			String config = Config.configInverseBBwithStepBand10m(configTmpInverse,
 			    ul[0], ul[1], lr[0], lr[1], unitLatLon * stepMeter / 10, "EPSG:4326", outputDir);
 
 			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);

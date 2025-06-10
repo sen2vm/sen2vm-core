@@ -5,6 +5,8 @@ import java.util.Vector;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.File;
 import java.nio.file.Files;
 import java.io.FileReader;
@@ -21,8 +23,16 @@ import org.gdal.gdal.gdal;
 import org.gdal.gdalconst.gdalconst;
 import org.gdal.gdal.BuildVRTOptions;
 
-import esa.sen2vm.utils.Sen2VMConstants;
+import esa.sen2vm.enums.BandInfo;
+import esa.sen2vm.enums.DetectorInfo;
+import esa.sen2vm.input.Configuration;
+import esa.sen2vm.input.Params;
 import esa.sen2vm.input.SafeManager;
+import esa.sen2vm.utils.Sen2VMConstants;
+import esa.sen2vm.exception.Sen2VMException;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.util.logging.Logger;
 
@@ -262,25 +272,92 @@ public class OutputFileManager
         LOGGER.info("VRT saved in: " + vrtFilePath);
     }
 
-    public void copyConfig(String configPath, String outputConfigPath) throws IOException
+    /**
+     * Export all information used (from config and params) in a new json object
+     * @param config object
+     * @param params object
+     * @return jsonobject
+     */
+    public JSONObject createConfig(Configuration config, Params params) throws IOException, Sen2VMException
     {
-        // Copy configuration path into DATASTRIP/GEO_DATA dir for direct loc
-        // and OUTPUT dir for inverse loc
+        JSONObject objJson = new JSONObject();
+
+        // add info from config parameters
+        objJson.put("l1b_product", config.getDatastripFilePath());
+        objJson.put("gipp_folder", config.getGippFolder());
+        objJson.put("gipp_version_check", config.getGippVersionCheck());
+        objJson.put("dem", config.getDem());
+        objJson.put("geoid", config.getGeoid());
+        objJson.put("iers", config.getIers());
+        objJson.put("operation", config.getOperation());
+        objJson.put("deactivate_available_refining", config.getDeactivateRefining());
+
+        JSONObject steps = new JSONObject();
+        steps.put("10m_bands", config.getStepFromBandInfo(BandInfo.getBandInfoFromNameWithB("B02")));
+        steps.put("20m_bands", config.getStepFromBandInfo(BandInfo.getBandInfoFromNameWithB("B05")));
+        steps.put("60m_bands", config.getStepFromBandInfo(BandInfo.getBandInfoFromNameWithB("B01")));
+        objJson.put("steps", steps);
+
+        if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+        {
+            objJson.put("export_alt", config.getExportAlt());
+        }
+        else
+        {
+            JSONObject inverse = new JSONObject();
+            inverse.put("ul_x", config.getInverseLocBound()[0]);
+            inverse.put("ul_y", config.getInverseLocBound()[1]);
+            inverse.put("lr_x", config.getInverseLocBound()[2]);
+            inverse.put("lr_y", config.getInverseLocBound()[3]);
+            inverse.put("referential", config.getInverseLocReferential());
+            inverse.put("output_folder", config.getInverseLocOutputFolder());
+            objJson.put("inverse_location_additional_info", inverse);
+        }
+
+        // add info from param parameters
+        List<DetectorInfo> detectors = params.getDetectorsList();
+        List<String> detectors_list_json = new ArrayList<String>();
+        for (DetectorInfo detectorInfo: detectors)
+        {
+            detectors_list_json.add(detectorInfo.getNameWithD());
+        }
+
+        List<BandInfo> bands = params.getBandsList();
+        List<String> bands_list_json = new ArrayList<String>();
+        for (BandInfo bandInfo: bands)
+        {
+            bands_list_json.add(bandInfo.getNameWithB());
+        }
+
+        JSONObject params_used = new JSONObject();
+        params_used.put("detectors", detectors_list_json);
+        params_used.put("bands", bands_list_json);
+        objJson.put("params", params_used);
+        return objJson;
+    }
+
+    /**
+     * Write all information used (from config and params) in a json file in
+     * output directory
+     * @param config object
+     * @param params object
+     * @param output path dir
+     */
+    public void writeInfoJson(Configuration config, Params params, String output)  throws IOException, Sen2VMException
+    {
+        JSONObject objJson = createConfig(config, params);
 
         // Get date (string format)
         Format formatterDay = new SimpleDateFormat("YYYYMMdd");
         Format formatterTime = new SimpleDateFormat("HHmmss");
         String date = formatterDay.format(new Date()) + "T" + formatterTime.format(new Date());
 
-        // Construct file path
-        File toCopy = new File(configPath);
-        String configNameSave = toCopy.getName().toString();
-        configNameSave = configNameSave.substring(0, configNameSave.lastIndexOf(".")) + "_" + date;
-        configNameSave = configNameSave + Sen2VMConstants.JSON_EXTENSION;
-        configNameSave = outputConfigPath + File.separator + configNameSave;
-        File copy = new File(configNameSave);
+        String configNameSave = "configuration" + "_" + date + Sen2VMConstants.JSON_EXTENSION;
+        configNameSave = output + File.separator + configNameSave;
 
-        // Copy the file
-        Files.copy(toCopy.toPath(), copy.toPath(), REPLACE_EXISTING);
+        // Write file
+        FileWriter writer = new FileWriter(configNameSave, false);
+        writer.write(objJson.toString());
+        writer.close();
     }
 }

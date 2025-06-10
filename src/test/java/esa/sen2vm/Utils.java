@@ -57,6 +57,10 @@ public class Utils {
                     double res = BandInfo.getBandInfoFromIndex(b).getPixelHeight();
                     Dataset ds = gdal.Open(grid.getPath());
                     double[] transform = ds.GetGeoTransform();
+                    System.out.println("transform:" + String.valueOf(transform[1]));
+                    System.out.println("res:" + String.valueOf(res));
+                    System.out.println("step:" + String.valueOf(step));
+
                     assertEquals(transform[1] * (res / 10), step);
                     assertEquals(transform[5] * (res / 10), step);
                     ds.delete();

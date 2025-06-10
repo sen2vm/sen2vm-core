@@ -84,7 +84,7 @@ public class Granule
 
         String[] name_array = this.name.split("_");
         this.detector = name_array[name_array.length-2];
-        LOGGER.info("Granule " + this.name + " (" + detector + ")");
+        // LOGGER.info("Granule " + this.name + " (" + detector + ")");
 
         this.images = new File[13];
         this.grids = new File[13];

@@ -26,7 +26,7 @@ public class Config
     private static final double THRESHOLD_DIR = 1e-9;
     private static final double THRESHOLD_INV = 1e-8;
 
-    public static String config(String filePath, String l1b_product, double step, String operation, boolean refining) throws FileNotFoundException,
+    public static String config(String filePath, String l1b_product, double stepBand10m, String operation, boolean refining) throws FileNotFoundException,
             IOException, ParseException
     {
         JSONParser parser = new JSONParser();
@@ -38,10 +38,9 @@ public class Config
         objJson.put("deactivate_available_refining", refining);
 
         JSONObject steps = (JSONObject) objJson.get("steps");
-        steps.put("10m_bands", step);
-        steps.put("20m_bands", step / 2);
-        steps.put("60m_bands", step / 6);
-
+        steps.put("10m_bands", stepBand10m);
+        steps.put("20m_bands", stepBand10m / 2);
+        steps.put("60m_bands", stepBand10m / 6);
 
         JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
         inverse.put("output_folder", l1b_product);
@@ -114,8 +113,8 @@ public class Config
         return outputConfig;
     }
 
-    public static String configInverseBBwithStep10m(String filePath, double ul_y, double ul_x, double lr_y, double lr_x,
-                                        double step10m, String referential, String l1b_product)
+    public static String configInverseBBwithStepBand10m(String filePath, double ul_y, double ul_x, double lr_y, double lr_x,
+                                        double stepBand10m, String referential, String l1b_product)
         throws FileNotFoundException, IOException, ParseException
     {
         JSONParser parser = new JSONParser();
@@ -133,7 +132,7 @@ public class Config
         inverse.put("output_folder", l1b_product);
 
         JSONObject steps = (JSONObject) objJson.get("steps");
-        steps.put("10m_bands", step10m);
+        steps.put("10m_bands", stepBand10m);
 
         String outputConfig = l1b_product + "/configuration.json";
         FileWriter writer = new FileWriter(outputConfig, false);
