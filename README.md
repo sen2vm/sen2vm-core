@@ -13,7 +13,7 @@ This documentation is split into 4 parts:
 
 ### 1.1 How to run sen2vm-core
 
-First, download the jar of Sen2VM core, then run the following commad to launch it:
+First, download the jar of Sen2VM core, then run the following command to launch it:
 ```
 java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
 ```
@@ -23,6 +23,9 @@ Where:
 * configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please note that this input is **Mandatory**. 
 * parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §[2.2 Parameters file](#22-parameters-file) for further information).This input is **Optional**.
 
+> [!NOTE]
+> Sen2VM core can also be rebuild from sources. Please refer to §[1.3 How to compile sen2vm-core](#13-how-to-compile-sen2vm-core)
+
 Example from current repository:
 ```
 java -jar target/sen2vm-core-0.0.1-jar-with-dependencies.jar -c src/test/resources/configuration_example.json -p src/test/resources/params.json
@@ -30,9 +33,6 @@ java -jar target/sen2vm-core-0.0.1-jar-with-dependencies.jar -c src/test/resourc
 
 > [!NOTE]
 > To understand the configuration, please refer to §[2 Inputs](#2-inputs)
-
-> [!NOTE]
-> Sen2VM core can also be rebuild from sources. Please refer to §[1.3 How to compile sen2vm-core](#13-how-to-compile-sen2vm-core)
 
 
 ### 1.2 Example of grids usage
@@ -179,7 +179,7 @@ Each parameter description can be found in the table below:
 | operation    | string   | **Mandatory** |                                                    In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>                                                    |
 | deactivate_available_refining| boolean  | Optional      |                                          If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in § [L1B Product](#2112-refining-information)                                          |
 | export_alt   | boolean  | Optional      |  If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](#31-direct location grids)  |
-| steps       | float    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in referential system for inverse location. |
+| steps       | float    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. |
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**|                                                                                                    For the inverse location additional information please refer to the dedicated table below                                                                                                    |
 
 
@@ -516,7 +516,7 @@ Grids should at least have 2x2 cells.
 ## 4. Validation
 
 In a nutshell, validation is split into 2 main parts:
- * **Functional tests**:
+ * Functional tests:
      * Integrated into the CI/CD process,
      * Validate that Sen2VM takes into account the different input provided, and that output grids are consistent with reference ones.
  * Quality tests:
