@@ -49,7 +49,7 @@ public class Sen2VMInverseTest
         {
             try
             {
-                String nameTest = "testStepInverseLoc_" +  Double.toString(step);
+                String nameTest = "testStepInverseLoc_" +  step;
                 String outputDir = Config.createTestDir(nameTest, "inverse");
                 String config = Config.config(configTmpInverse, outputDir, step, "inverse", false);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
@@ -63,6 +63,7 @@ public class Sen2VMInverseTest
 
                 for (String band: bands)
                 {
+                    double res = BandInfo.getBandInfoFromNameWithB(band).getPixelHeight();
                     for (String detector: detectors)
                     {
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(DetectorInfo.getDetectorInfoFromName(detector), BandInfo.getBandInfoFromNameWithB(band), configFile.getInverseLocOutputFolder());
@@ -70,8 +71,8 @@ public class Sen2VMInverseTest
                         Dataset ds = gdal.Open(invFileName);
                         double[] transform = ds.GetGeoTransform();
 
-                        assertEquals(transform[1], step);
-                        assertEquals(transform[5], -step);
+                        assertEquals(transform[1] * (res / 10), step);
+                        assertEquals(transform[5] * (res / 10), -step);
                     }
                 }
             } catch (Sen2VMException e) {
@@ -345,20 +346,29 @@ public class Sen2VMInverseTest
         }
     }
 
-
     @Test
-    public void testInverseLatLonArea()
+    public void testInverseLatLonAreaBand10m()
 	{
-		String[] detectors = new String[]{"08"};
+        String[] detectors = new String[]{"07", "08", "09", "10"};
 		String[] bands = new String[]{"B02"};
+        double unitLatLon = 9.00901E-5;
+        double stepMeter = 45.0 ;
+
+        double ul_x = 199980.0;
+		double ul_y = 3700020.0;
+		double lr_x = 309780.0;
+		double lr_y = 3590220.0;
+		String referential = "EPSG:32628";
 
 		try
 		{
-			double ul_x = 199980.0f;
-			double ul_y = 3700020.0f;
-			double lr_x = 309780.0f;
-			double lr_y = 3590220.0f;
-			String referential = "EPSG:32628";
+			String nameTest_utm = "testInverseLatLonArea_utm";
+			String outputDir_utm = Config.createTestDir(nameTest_utm, "inverse");
+			String config_utm = Config.configInverseBBwithStep10m(configTmpInverse,
+			    ul_y, ul_x, lr_y, lr_x, stepMeter, referential, outputDir_utm);
+			String param_utm = Config.changeParams(paramTmp, detectors, bands, outputDir_utm);
+			String[] args_utm = {"-c", config_utm, "-p", param_utm};
+			Sen2VM.main(args_utm);
 
 			String nameTest = "testInverseLatLonArea";
 			String outputDir = Config.createTestDir(nameTest, "inverse");
@@ -374,7 +384,119 @@ public class Sen2VMInverseTest
 			double[] lr = transformer.TransformPoint(lr_x, lr_y);
 
 			String config = Config.configInverseBBwithStep10m(configTmpInverse,
-			    ul[0], ul[1], lr[0], lr[1], 9.00901E-5f*90f, "EPSG:4326", outputDir);
+			    ul[0], ul[1], lr[0], lr[1], unitLatLon * stepMeter / 10, "EPSG:4326", outputDir);
+
+			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+			String[] args = {"-c", config, "-p", param};
+			Sen2VM.main(args);
+		} catch (Sen2VMException e) {
+			LOGGER.warning(e.getMessage());
+			e.printStackTrace();
+			assert(false);
+		} catch (Exception e) {
+			LOGGER.warning(e.getMessage());
+			e.printStackTrace();
+			assert(false);
+		}
+	}
+
+	@Test
+    public void testInverseLatLonAreaBand10m_ROI()
+	{
+        String[] detectors = new String[]{"08"};
+		String[] bands = new String[]{"B02"};
+        double unitLatLon = 9.00901E-5;
+        double stepMeter = 45.0 ;
+
+        double ul_x = 289800.0;
+		double ul_y = 3634360.0;
+		double lr_x = 298340.0;
+		double lr_y = 3629300.0;
+		String referential = "EPSG:32628";
+		try
+		{
+			String nameTest_utm = "testInverseLatLonArea_utm_ROI";
+			String outputDir_utm = Config.createTestDir(nameTest_utm, "inverse");
+			String config_utm = Config.configInverseBBwithStep10m(configTmpInverse,
+			    ul_y, ul_x, lr_y, lr_x, stepMeter, referential, outputDir_utm);
+			System.out.println(config_utm);
+			String param_utm = Config.changeParams(paramTmp, detectors, bands, outputDir_utm);
+			System.out.println(param_utm);
+			String[] args_utm = {"-c", config_utm, "-p", param_utm};
+			Sen2VM.main(args_utm);
+
+			String nameTest = "testInverseLatLonArea_ROI";
+			String outputDir = Config.createTestDir(nameTest, "inverse");
+
+			// Init source/target SpatialReference and transformation
+			SpatialReference sourceSRS = new SpatialReference();
+			sourceSRS.ImportFromEPSG(32628);
+			SpatialReference targetSRS = new SpatialReference();
+			targetSRS.ImportFromEPSG(4326);
+			CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
+
+			double[] ul = transformer.TransformPoint(ul_x, ul_y);
+			double[] lr = transformer.TransformPoint(lr_x, lr_y);
+
+			String config = Config.configInverseBBwithStep10m(configTmpInverse,
+			    ul[0], ul[1], lr[0], lr[1], unitLatLon * stepMeter / 10, "EPSG:4326", outputDir);
+
+			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+			String[] args = {"-c", config, "-p", param};
+			Sen2VM.main(args);
+		} catch (Sen2VMException e) {
+			LOGGER.warning(e.getMessage());
+			e.printStackTrace();
+			assert(false);
+		} catch (Exception e) {
+			LOGGER.warning(e.getMessage());
+			e.printStackTrace();
+			assert(false);
+		}
+	}
+
+	@Test
+    public void testInverseLatLonAreaBand10m_ROI2()
+	{
+        String[] detectors = new String[]{"08"};
+		String[] bands = new String[]{"B02"};
+        double unitLatLon = 9.00901E-5;
+        double stepMeter = 45.0 ;
+
+
+        double ul_x = 297870.0;
+		double ul_y = 3634980.0;
+		double lr_x = 309570.0;
+		double lr_y = 3623470.0;
+
+		String referential = "EPSG:32628";
+		try
+		{
+			String nameTest_utm = "testInverseLatLonArea_utm_ROI2";
+			String outputDir_utm = Config.createTestDir(nameTest_utm, "inverse");
+			String config_utm = Config.configInverseBBwithStep10m(configTmpInverse,
+			    ul_y, ul_x, lr_y, lr_x, stepMeter, referential, outputDir_utm);
+			System.out.println(config_utm);
+			String param_utm = Config.changeParams(paramTmp, detectors, bands, outputDir_utm);
+			System.out.println(param_utm);
+			String[] args_utm = {"-c", config_utm, "-p", param_utm};
+			Sen2VM.main(args_utm);
+
+			String nameTest = "testInverseLatLonArea_ROI2";
+			String outputDir = Config.createTestDir(nameTest, "inverse");
+
+			// Init source/target SpatialReference and transformation
+			SpatialReference sourceSRS = new SpatialReference();
+			sourceSRS.ImportFromEPSG(32628);
+			SpatialReference targetSRS = new SpatialReference();
+			targetSRS.ImportFromEPSG(4326);
+			CoordinateTransformation transformer = new CoordinateTransformation(sourceSRS, targetSRS);
+
+			double[] ul = transformer.TransformPoint(ul_x, ul_y);
+			double[] lr = transformer.TransformPoint(lr_x, lr_y);
+
+			String config = Config.configInverseBBwithStep10m(configTmpInverse,
+			    ul[0], ul[1], lr[0], lr[1], unitLatLon * stepMeter / 10, "EPSG:4326", outputDir);
 
 			String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
 			String[] args = {"-c", config, "-p", param};

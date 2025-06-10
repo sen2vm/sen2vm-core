@@ -57,8 +57,8 @@ public class Utils {
                     double res = BandInfo.getBandInfoFromIndex(b).getPixelHeight();
                     Dataset ds = gdal.Open(grid.getPath());
                     double[] transform = ds.GetGeoTransform();
-                    assertEquals(transform[1] * res, step);
-                    assertEquals(transform[5] * res, step);
+                    assertEquals(transform[1] * (res / 10), step);
+                    assertEquals(transform[5] * (res / 10), step);
                     ds.delete();
                 }
                 b = b + 1;

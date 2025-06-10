@@ -38,18 +38,10 @@ public class Config
         objJson.put("deactivate_available_refining", refining);
 
         JSONObject steps = (JSONObject) objJson.get("steps");
-        if (operation.equals("direct"))
-        {
-            steps.put("10m_bands", step / 10);
-            steps.put("20m_bands", step / 20);
-            steps.put("60m_bands", step / 60);
-        }
-        else
-        {
-            steps.put("10m_bands", step);
-            steps.put("20m_bands", step);
-            steps.put("60m_bands", step);
-        }
+        steps.put("10m_bands", step);
+        steps.put("20m_bands", step / 2);
+        steps.put("60m_bands", step / 6);
+
 
         JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
         inverse.put("output_folder", l1b_product);
