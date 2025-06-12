@@ -12,7 +12,6 @@ import org.apache.commons.cli.ParseException;
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.Sen2VMConstants;
 
-
 /**
  * Definition of all command line arguments 
  * @author Guylaine Prat
@@ -111,6 +110,12 @@ public class OptionManager
     
     public static final String OPT_OUTPUT_FOLDER_LONG = "output_folder";
     public static final String OPT_OUTPUT_FOLDER_SHORT = "o";
+
+    /**
+     * Option for the output image res (referential)
+     */
+    public static final String OPT_OUTPUT_IMAGE_RES_LONG = "output_image_res";
+    public static final String OPT_OUTPUT_IMAGE_RES_SHORT = "or";
 
     /*******************************
      * Options for the params 
@@ -229,7 +234,7 @@ public class OptionManager
            
             Option steps = new Option(OPT_STEP_SHORT, OPT_STEP_LONG, true, "!!! MANDATORY !!!: Steps (pixels) for bands 10, 20 and 60m \n"
                                         + "(separated with whitespace, respect the order)");
-            steps.setType(Float.class); // TODO  does not seem to work: read as array of String 
+            steps.setType(Double.class); // TODO  does not seem to work: read as array of String
             steps.setArgs(3);
             steps.setRequired(true);
            
@@ -255,7 +260,7 @@ public class OptionManager
 
             // For inverse location: the following options are compulsory
             Option ulxOption = new Option(OPT_ULX_SHORT, true, "(Mandatory for inverse loc) Upper Left X (referential unit)");
-            // TODO ulxOption.setType(Float.class) does not seem to work: read as String 
+            // TODO ulxOption.setType(Double.class) does not seem to work: read as String
             ulxOption.setRequired(false);
             Option ulyOption = new Option(OPT_ULY_SHORT, true, "(Mandatory for inverse loc) Upper Left Y (referential unit)");
             ulyOption.setRequired(false);
@@ -269,16 +274,21 @@ public class OptionManager
             
             Option outputFolderOption = new Option(OPT_OUTPUT_FOLDER_SHORT, OPT_OUTPUT_FOLDER_LONG, true, "(Mandatory for inverse loc) output folder");
             outputFolderOption.setRequired(false);
+
+            Option outputImageRes = new Option(OPT_OUTPUT_IMAGE_RES_SHORT, OPT_OUTPUT_IMAGE_RES_LONG, true, "(Mandatory for inverse loc) output folder");
+            outputImageRes.setType(Double.class); // TODO  does not seem to work: read as array of String
+            outputImageRes.setArgs(3);
+            outputImageRes.setRequired(true);
      
             // params arguments
             // ------------------
             Option detectors = new Option(OPT_DETECTORS_LIST_SHORT, OPT_DETECTORS_LIST_LONG, true, "(optional) List of detectors to process separated by spaces, example: 01 05 06 10 11");
-            detectors.setType(Float.class);
+            detectors.setType(Double.class);
             detectors.setArgs(Option.UNLIMITED_VALUES);
             detectors.setRequired(false);
 
             Option bands = new Option(OPT_BANDS_LIST_SHORT, OPT_BANDS_LIST_LONG, true, "(optional) List of bands to process separated by spaces, example: B01 B08 B8A B10 B11");
-            bands.setType(Float.class);
+            bands.setType(Double.class);
             bands.setArgs(Option.UNLIMITED_VALUES);
             bands.setRequired(false);
 
@@ -301,6 +311,7 @@ public class OptionManager
             optionsNoFile.addOption(lryOption);
             optionsNoFile.addOption(referentialOption);
             optionsNoFile.addOption(outputFolderOption);
+            optionsNoFile.addOption(outputImageRes);
 
             // Add the params arguments
             optionsNoFile.addOption(detectors);

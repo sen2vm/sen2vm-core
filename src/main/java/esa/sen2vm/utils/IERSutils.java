@@ -18,7 +18,6 @@ import org.orekit.utils.IERSConventions;
 /**
  * Class to manage IERS information
  */
-
 public class IERSutils
 {
     /**
@@ -33,7 +32,6 @@ public class IERSutils
     public static List<EOPEntry> buildEOPList(ITRFVersion itrfType,
                                               AbsoluteDate absDate, double dt, double x, double y)
     {
-        
         TimeScale utc = DataContext.getDefault().getTimeScales().getUTC();
         double jd = absDate.getComponents(utc).offsetFrom(DateTimeComponents.JULIAN_EPOCH) / Constants.JULIAN_DAY;
         double mjd = jd - Sen2VMConstants.JD_TO_MJD;

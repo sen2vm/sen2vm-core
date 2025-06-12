@@ -1,6 +1,5 @@
 package esa.sen2vm.input.granule;
 
-
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -9,6 +8,9 @@ import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
 
+/**
+ * Class of the Granule
+ */
 public class Granule
 {
     /**
@@ -82,7 +84,7 @@ public class Granule
 
         String[] name_array = this.name.split("_");
         this.detector = name_array[name_array.length-2];
-        LOGGER.info("Granule " + this.name + " (" + detector + ")");
+        // LOGGER.info("Granule " + this.name + " (" + detector + ")");
 
         this.images = new File[13];
         this.grids = new File[13];
@@ -159,8 +161,6 @@ public class Granule
         sizeRes60 = granuleManager.getSizeRes60();
     }
 
-
-
     /**
      * Load granule image by band in this.images[band]
      */
@@ -219,7 +219,6 @@ public class Granule
         return this.grids[indexBand];
     }
 
-
     /*
      * Get geo grids
      * return List path file
@@ -237,7 +236,6 @@ public class Granule
     {
         File geo_data = new File(this.path + File.separator + "GEO_DATA");
         geo_data.mkdir();
-
         String image = this.images[band.getIndex()].getName();
         String grid = image.replace(Sen2VMConstants.JP2_EXTENSION, Sen2VMConstants.TIFF_EXTENSION).replace("_MSI_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + grid).getPath();

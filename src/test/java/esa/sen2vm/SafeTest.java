@@ -1,83 +1,27 @@
 package esa.sen2vm;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.Float;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.Configuration;
-import esa.sen2vm.utils.Sen2VMConstants;
 
 import esa.sen2vm.input.datastrip.DataStripManager;
 import esa.sen2vm.input.datastrip.Datastrip;
-import esa.sen2vm.input.granule.GranuleManager;
 import esa.sen2vm.input.granule.Granule;
-import esa.sen2vm.input.gipp.GIPPManager;
 import esa.sen2vm.input.SafeManager;
-
-import org.gdal.gdal.Band;
-import org.gdal.gdal.Dataset;
-import org.gdal.gdal.Driver;
-import org.gdal.gdal.gdal;
-import org.gdal.gdalconst.gdalconst;
-import org.gdal.osr.SpatialReference;
-import org.gdal.gdal.BuildVRTOptions;
 
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.enums.BandInfo;
-
-import org.orekit.rugged.linesensor.LineDatation;
-
-import org.sxgeo.engine.SimpleLocEngine;
-import org.sxgeo.input.datamodels.RefiningInfo;
-import org.sxgeo.input.datamodels.sensor.Sensor;
-import org.sxgeo.input.datamodels.sensor.SensorViewingDirection;
-import org.sxgeo.input.datamodels.sensor.SpaceCraftModelTransformation;
-import org.sxgeo.input.dem.DemManager;
-import org.sxgeo.input.dem.DemFileManager;
-import org.sxgeo.input.dem.SrtmFileManager;
-import org.sxgeo.input.dem.GeoidManager;
-import org.sxgeo.rugged.RuggedManager;
-import org.sxgeo.exception.SXGeoException;
-import org.orekit.time.TimeScalesFactory;
-import org.orekit.rugged.linesensor.LineSensor;
-
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-
 
 /**
  * Unit test for SafeTest
@@ -138,8 +82,7 @@ public class SafeTest
         }
     }
 
-
-    // @Test
+    @Test
     public void testSafeInformation()
     {
         try
@@ -166,7 +109,6 @@ public class SafeTest
             assertEquals(BBox[3], 2552); // sizePixel
 
             assertEquals(safeManager.getGranulesToCompute(DetectorInfo.DETECTOR_3, BandInfo.BAND_2).size(), 6);
-
         }  catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -176,106 +118,5 @@ public class SafeTest
             e.printStackTrace();
             assert(false);
         }
-
     }
-
-    // @Test
-    public void testRunAndxistingFile()
-    {
-        try
-        {
-            // Before Test, create environnement
-            String paramTmp = "src/test/resources/params_all.json";
-            String[] detectors = new String[]{"10"};
-            String[] bands = new String[]{"B01", "B02"};
-            String configFile = "";
-            String paramFile = "";
-            String outputDir = "";
-
-            outputDir = Config.createTestDir("run_D10", "direct");
-            configFile = Config.config(configTmp, outputDir, 6000, "direct", false);
-            paramFile = Config.changeParams(paramTmp, detectors, bands, outputDir);
-
-            // Test if no vrt and geogrid found
-            LOGGER.info(configFile);
-
-            Configuration config = new Configuration(configFile);
-            DataStripManager dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
-            SafeManager safeManager = new SafeManager(config.getL1bProduct(), dataStripManager);
-            Datastrip datastrip = safeManager.getDatastrip();
-
-            ArrayList<Granule> listGranules = safeManager.getGranules();
-            for(int g = 0; g < listGranules.size(); g++)
-            {
-                for (BandInfo bandInfo: BandInfo.getAllBandInfo())
-                {
-                    assertEquals(listGranules.get(g).getGrids()[bandInfo.getIndex()], null);
-                }
-            }
-
-            File[][] vrt = datastrip.getVRTs();
-            for(int d = 0; d < vrt.length; d++)
-            {
-                for(int b = 0; b < vrt[d].length; b++)
-                {
-                    assertEquals(vrt[d][b], null);
-                }
-            }
-            LOGGER.info("   ");
-
-            String[] args = {"-c", configFile, "-p", paramFile};
-            Sen2VM.main(args);
-
-            config = new Configuration(configFile);
-            dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
-            safeManager = new SafeManager(config.getL1bProduct(), dataStripManager);
-            datastrip = safeManager.getDatastrip();
-            listGranules = safeManager.getGranules();
-            int nbPresent = 0;
-            for(int g = 0; g < listGranules.size(); g++)
-            {
-                for (BandInfo bandInfo: BandInfo.getAllBandInfo())
-                {
-                    if (listGranules.get(g).getGrids()[bandInfo.getIndex()] != null)
-                    {
-                        nbPresent++;
-                    }
-                }
-            }
-            assertEquals(nbPresent, 12);
-
-            nbPresent = 0;
-            vrt = datastrip.getVRTs();
-            for(int d = 0; d < vrt.length; d++)
-            {
-                for(int b = 0; b < vrt[d].length; b++)
-                {
-                    if(vrt[d][b] != null)
-                    {
-                        nbPresent++;
-                    }
-                }
-            }
-            assertEquals(nbPresent, 2);
-            String ok = "false";
-            // configChangeOverwrite(String filePath, Boolean overwrite) throws FileNotFoundException,
-
-            String[] args2 = {"-c", configFile, "-p", paramFile};
-            Sen2VM.main(args2);
-            ok = "true";
-            LOGGER.info(ok);
-
-        }
-        catch (Sen2VMException e)
-        {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
-        }  catch (Exception e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-            assert(false);
-        }
-    }
-
 }

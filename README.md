@@ -179,7 +179,7 @@ Each parameter description can be found in the table below:
 | operation    | string   | **Mandatory** |                                                    In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>                                                    |
 | deactivate_available_refining| boolean  | Optional      |                                          If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in § [L1B Product](#2112-refining-information)                                          |
 | export_alt   | boolean  | Optional      |  If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](#31-direct location grids)  |
-| steps       | float    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. |
+| steps       | double    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. |
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**|                                                                                                    For the inverse location additional information please refer to the dedicated table below                                                                                                    |
 
 
@@ -187,10 +187,10 @@ The field “inverse_location_additional_info” is not required and will be ign
 
 | Name          | Type     | Required      |                                                                 Description                                                                  |
 | ------------- | :------: | :-----------: |:--------------------------------------------------------------------------------------------------------------------------------------------:|
-| ul_x          | float    | **Mandatory** |                        **X** coordinates of the **upper left** point defining the area of desired resampled product.                         |
-| ul_y          | float    | **Mandatory** |                 **Y** coordinates of the **upper left** point defining the area of desired resampled product.                                |
-| lr_x          | float    | **Mandatory** |                        **X** coordinates of the **lower right** point defining the area of desired resampled product.                        |
-| lr_y          | float    | **Mandatory** |                        **Y** coordinates of the **lower right** pointdefining the area of desired resampled product.                         |
+| ul_x          | double    | **Mandatory** |                        **X** coordinates of the **upper left** point defining the area of desired resampled product.                         |
+| ul_y          | double    | **Mandatory** |                 **Y** coordinates of the **upper left** point defining the area of desired resampled product.                                |
+| lr_x          | double    | **Mandatory** |                        **X** coordinates of the **lower right** point defining the area of desired resampled product.                        |
+| lr_y          | double    | **Mandatory** |                        **Y** coordinates of the **lower right** pointdefining the area of desired resampled product.                         |
 | referential   | string   | **Mandatory** | A string defining the **referential** used. **Please note, ul and lr points’ coordinates** are given in this referential. Example: EPSG:4326 |
 | output_folder | string   | **Mandatory**|                Path where the inverse location grids are written (see § [Inverse location grids](#32-inverse-location-grids))                |
 
@@ -331,7 +331,7 @@ A direct location grid is a grid which maps sensor coordinates with ground ones 
 
 Sen2VM direct location grid computation takes as input the L1B product, the auxiliary information (see [L1B product](#211-l1b-product), [GIPP](#212-gipp), [Altitude](#123-altitude), [IERS](#214-iers)) and the grid parametrization:
 * Bands/detectors to process ([Parameters File](#22-parameters-file)),
-* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (floating number) [Configuration File](#21-configuration-file).
+* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (double) [Configuration File](#21-configuration-file).
 
 As output:
 * At granule level: geolocation grids will be written (per granules/bands).
@@ -523,9 +523,9 @@ In a nutshell, validation is split into 2 main parts:
      * Launched manually,
      * Proving, using several TDS, that grids generated by Sen2VM are consistent with the ones generated with the legacy,
      * Proving that those grids can be used to reach equivalent quality at L1C,
-     * These processings will also be used to assess the processing performances,
+     * These processings will also be used to assess the processing performances.
 
 Tests are more detailed in:
- * In [/src/test/java/esa/sen2vm/](/src/test/java/esa/sen2vm/) for fucntionnal tests,
+ * In [/src/test/java/esa/sen2vm/](/src/test/java/esa/sen2vm/) for functionnal tests,
  * In dedicated <mark>**Document**</mark>, for quality tests (which also includes functionnal tests description)
 

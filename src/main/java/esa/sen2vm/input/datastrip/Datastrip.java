@@ -7,6 +7,9 @@ import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.utils.Sen2VMConstants;
 
+/**
+ * Class of the Datastrip
+ */
 public class Datastrip
 {
     // Get sen2VM logger
@@ -111,13 +114,11 @@ public class Datastrip
     {
         File geo_data = new File(this.path + File.separator + Sen2VMConstants.GEO_DATA_DS);
         geo_data.mkdir();
-
         String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + Sen2VMConstants.VRT_EXTENSION;
         String vrt = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_GEO_");
         return new File(geo_data.getPath() + File.separator + vrt).getPath();
 
     }
-
 
     /**
      * Get corresponding inverse loc grid file name by band/detector in output dir
@@ -128,12 +129,9 @@ public class Datastrip
     {
         File geo_data = new File(outputDir);
         geo_data.mkdir();
-
         String suffix = "_D" + detector.getName() + "_B" + band.getName2Digit() + Sen2VMConstants.TIFF_EXTENSION;
         String name = this.path_mtd.getName().replace(".xml", suffix).replace("_MTD_", "_INV_");
         return new File(geo_data.getPath() + File.separator + name).getPath();
 
     }
-
-
 }

@@ -1,14 +1,5 @@
 package esa.sen2vm;
 
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
@@ -20,23 +11,14 @@ import java.io.File;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.nio.file.Path;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.Configuration;
-
-import esa.sen2vm.enums.DetectorInfo;
-import esa.sen2vm.enums.BandInfo;
-
 
 public class Config
 {
@@ -44,7 +26,7 @@ public class Config
     private static final double THRESHOLD_DIR = 1e-9;
     private static final double THRESHOLD_INV = 1e-8;
 
-    public static String config(String filePath, String l1b_product, int step, String operation, boolean refining) throws FileNotFoundException,
+    public static String config(String filePath, String l1b_product, double stepBand10m, String operation, boolean refining) throws FileNotFoundException,
             IOException, ParseException
     {
         JSONParser parser = new JSONParser();
@@ -56,9 +38,9 @@ public class Config
         objJson.put("deactivate_available_refining", refining);
 
         JSONObject steps = (JSONObject) objJson.get("steps");
-        steps.put("10m_bands", step / 10);
-        steps.put("20m_bands", step / 20);
-        steps.put("60m_bands", step / 60);
+        steps.put("10m_bands", stepBand10m);
+        steps.put("20m_bands", stepBand10m / 2);
+        steps.put("60m_bands", stepBand10m / 6);
 
         JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
         inverse.put("output_folder", l1b_product);
@@ -71,7 +53,6 @@ public class Config
 
         return outputConfig;
     }
-
 
     /**
      * Configuration of a test with a new or no iers
@@ -105,12 +86,9 @@ public class Config
 
     }
 
-
-    public static String configInverseBB(String filePath,
-                                        double ul_y, double ul_x,
-                                        double lr_y, double lr_x,
-                                        String referential, String l1b_product) throws FileNotFoundException,
-                                         IOException, ParseException
+    public static String configInverseBB(String filePath, double ul_y, double ul_x, double lr_y, double lr_x,
+                                        String referential, String l1b_product)
+        throws FileNotFoundException, IOException, ParseException
     {
 
         JSONParser parser = new JSONParser();
@@ -135,10 +113,38 @@ public class Config
         return outputConfig;
     }
 
-    public static String changeDem(String filePath, String demPath, String l1b_product) throws FileNotFoundException,
-            IOException, ParseException
+    public static String configInverseBBwithStepBand10m(String filePath, double ul_y, double ul_x, double lr_y, double lr_x,
+                                        double stepBand10m, String referential, String l1b_product)
+        throws FileNotFoundException, IOException, ParseException
     {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(filePath));
 
+        JSONObject objJson = (JSONObject) obj;
+        objJson.put("l1b_product", l1b_product);
+
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("ul_y", ul_y);
+        inverse.put("ul_x", ul_x);
+        inverse.put("lr_y", lr_y);
+        inverse.put("lr_x", lr_x);
+        inverse.put("referential", referential);
+        inverse.put("output_folder", l1b_product);
+
+        JSONObject steps = (JSONObject) objJson.get("steps");
+        steps.put("10m_bands", stepBand10m);
+
+        String outputConfig = l1b_product + "/configuration.json";
+        FileWriter writer = new FileWriter(outputConfig, false);
+        writer.write(obj.toString());
+        writer.close();
+
+        return outputConfig;
+    }
+
+    public static String changeDem(String filePath, String demPath, String l1b_product)
+            throws FileNotFoundException, IOException, ParseException
+    {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
 
@@ -157,10 +163,9 @@ public class Config
         return outputConfig;
     }
 
-    public static String configCheckGipp(String filePath, String gippPath, boolean checkGipp, String l1b_product) throws FileNotFoundException,
-            IOException, ParseException
+    public static String configCheckGipp(String filePath, String gippPath, boolean checkGipp, String l1b_product)
+        throws FileNotFoundException, IOException, ParseException
     {
-
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
 
@@ -192,7 +197,6 @@ public class Config
 
     public static String createTestDir(String nameTest, String type) throws IOException
     {
-
         String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
         String outputDir = "src/test/resources/tests/output/" + nameTest;
         File outputDirFile = new File(outputDir);
@@ -203,12 +207,9 @@ public class Config
         return outputDir;
     }
 
-    public static String changeParams(String filePath, String[] detectors, String[] bands, String outputDir) throws FileNotFoundException,
-                IOException, ParseException
+    public static String changeParams(String filePath, String[] detectors, String[] bands, String outputDir)
+        throws FileNotFoundException, IOException, ParseException
     {
-
-        // String[] detectors, String[] bands
-
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(filePath));
 
@@ -240,7 +241,6 @@ public class Config
     {
         if(src.isDirectory())
         {
-
             dest.getParentFile().mkdirs();
 
             if(!dest.exists())
@@ -257,7 +257,6 @@ public class Config
 
                 copyFolder(srcFile,destFile, copy);
             }
-
         }
         else
         {

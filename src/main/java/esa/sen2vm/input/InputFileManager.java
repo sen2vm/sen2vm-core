@@ -10,6 +10,9 @@ import org.json.JSONTokener;
 
 import esa.sen2vm.exception.Sen2VMException;
 
+/**
+ * Manager of the input configuration file
+ */
 public class InputFileManager
 {
     /**

@@ -12,13 +12,13 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import esa.sen2vm.enums.BandInfo;
+
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.utils.PathUtils;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 /**
  * Read the configuration file
- *
  */
 public class Configuration extends InputFileManager
 {
@@ -33,14 +33,14 @@ public class Configuration extends InputFileManager
     private String iers = "";
     private String operation;
     private boolean deactivateRefining = Sen2VMConstants.DEACTIVATE_REFINING;
-    private float step_band10m;
-    private float step_band20m;
-    private float step_band60m;
+    private double step_band10m;
+    private double step_band20m;
+    private double step_band60m;
     private boolean exportAlt = Sen2VMConstants.EXPORT_ALT;
-    private float ul_x;
-    private float ul_y;
-    private float lr_x;
-    private float lr_y;
+    private double ul_x;
+    private double ul_y;
+    private double lr_x;
+    private double lr_y;
     private String referential;
     private String outputFolder;
 
@@ -69,8 +69,8 @@ public class Configuration extends InputFileManager
         
         this.geoid = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_GEOID_SHORT));
         
-        // convert the string array to an float array
-        Float[] stepsValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_STEP_SHORT)).map(Float::valueOf).toArray(Float[]::new);
+        // convert the string array to an double array
+        Double[] stepsValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_STEP_SHORT)).map(Double::valueOf).toArray(Double[]::new);
 
         this.step_band10m = stepsValues[0];
         this.step_band20m = stepsValues[1];
@@ -119,10 +119,10 @@ public class Configuration extends InputFileManager
         {
             // at this stage the inverse loc options exist
             this.referential = commandLine.getOptionValue(OptionManager.OPT_REFERENTIAL_SHORT);
-            this.ul_x =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_ULX_SHORT));
-            this.ul_y =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_ULY_SHORT));
-            this.lr_x =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
-            this.lr_y =  Float.parseFloat(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
+            this.ul_x =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_ULX_SHORT));
+            this.ul_y =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_ULY_SHORT));
+            this.lr_x =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
+            this.lr_y =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
             this.outputFolder = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_OUTPUT_FOLDER_SHORT));
         }
     }
@@ -169,9 +169,9 @@ public class Configuration extends InputFileManager
             this.operation = jsonObject.getString("operation");
 
             JSONObject steps = jsonObject.getJSONObject("steps");
-            this.step_band10m = steps.getFloat("10m_bands");
-            this.step_band20m = steps.getFloat("20m_bands");
-            this.step_band60m = steps.getFloat("60m_bands");
+            this.step_band10m = steps.getDouble("10m_bands");
+            this.step_band20m = steps.getDouble("20m_bands");
+            this.step_band60m = steps.getDouble("60m_bands");
 
             this.exportAlt = jsonObject.getBoolean("export_alt");
 
@@ -203,10 +203,10 @@ public class Configuration extends InputFileManager
                    try
                    {
                        JSONObject inverseLoc = jsonObject.getJSONObject("inverse_location_additional_info");
-                       this.ul_x = inverseLoc.getFloat("ul_x");
-                       this.ul_y = inverseLoc.getFloat("ul_y");
-                       this.lr_x = inverseLoc.getFloat("lr_x");
-                       this.lr_y = inverseLoc.getFloat("lr_y");
+                       this.ul_x = inverseLoc.getDouble("ul_x");
+                       this.ul_y = inverseLoc.getDouble("ul_y");
+                       this.lr_x = inverseLoc.getDouble("lr_x");
+                       this.lr_y = inverseLoc.getDouble("lr_y");
                        this.referential = inverseLoc.getString("referential");
                        this.outputFolder = inverseLoc.getString("output_folder");
                    }
@@ -228,7 +228,6 @@ public class Configuration extends InputFileManager
      * @return the datastrip file path
      * @throws Sen2VMException
      */
-
     public String getDatastripFilePath() throws Sen2VMException
     {
         return PathUtils.getDatastripFilePath(l1bProduct);
@@ -321,7 +320,7 @@ public class Configuration extends InputFileManager
      * Get the step of 10m band
      * @return the step for 10m band (pixels)
      */
-    public float getStepBand10m()
+    public double getStepBand10m()
     {
        return this.step_band10m;
     }
@@ -330,7 +329,7 @@ public class Configuration extends InputFileManager
      * Get the step of 20m band
      * @return the step for 20m band (pixels)
      */
-    public float getStepBand20m()
+    public double getStepBand20m()
     {
        return this.step_band20m;
     }
@@ -339,7 +338,7 @@ public class Configuration extends InputFileManager
      * Get the step of 60m band
      * @return the step for 60m band (pixels)
      */
-    public float getStepBand60m()
+    public double getStepBand60m()
     {
        return this.step_band60m;
     }
@@ -349,9 +348,9 @@ public class Configuration extends InputFileManager
      * @param bandInfo
      * @return the step for a given band (pixels)
      */
-    public float getStepFromBandInfo(BandInfo bandInfo)
+    public double getStepFromBandInfo(BandInfo bandInfo)
     {
-        float step;
+        double step;
         switch((int) bandInfo.getPixelHeight())
         {
             case Sen2VMConstants.RESOLUTION_10M:
@@ -371,9 +370,9 @@ public class Configuration extends InputFileManager
      * Get the inverse location bounds
      * @return ulx, uly, lrx, lry (in referential unit)
      */
-    public float[] getInverseLocBound()
+    public double[] getInverseLocBound()
     {
-        float[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
+        double[] bb = {this.ul_x, this.ul_y, this.lr_x, this.lr_y};
         return bb;
     }
 
@@ -395,4 +394,3 @@ public class Configuration extends InputFileManager
         return this.outputFolder;
     }
 }
-

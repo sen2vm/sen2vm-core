@@ -5,7 +5,6 @@ package esa.sen2vm.exception;
  */
 public class Sen2VMException extends Exception
 {
-
     private static final long serialVersionUID = 1L;
 
     public Sen2VMException()

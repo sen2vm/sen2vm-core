@@ -43,15 +43,18 @@
             "properties": {
               "10m_bands": {
                   "type": "number",
-                  "minimum": 1
+                  "minimum": 0,
+                  "exclusiveMinimum": true
               },
               "20m_bands": {
                   "type": "number",
-                  "minimum": 1
+                  "minimum": 0,
+                  "exclusiveMinimum": true
               },
               "60m_bands": {
                   "type": "number",
-                  "minimum": 1
+                  "minimum": 0,
+                  "exclusiveMinimum": true
               }
             }
         },

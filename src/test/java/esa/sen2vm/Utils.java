@@ -1,82 +1,32 @@
 package esa.sen2vm;
 
-
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Iterator;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.Float;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Logger;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.Configuration;
 import esa.sen2vm.utils.Sen2VMConstants;
 
 import esa.sen2vm.input.datastrip.DataStripManager;
-import esa.sen2vm.input.datastrip.Datastrip;
-import esa.sen2vm.input.granule.GranuleManager;
 import esa.sen2vm.input.granule.Granule;
-import esa.sen2vm.input.gipp.GIPPManager;
 import esa.sen2vm.input.SafeManager;
 
 import org.gdal.gdal.Band;
 import org.gdal.gdal.Dataset;
-import org.gdal.gdal.Driver;
 import org.gdal.gdal.gdal;
 import org.gdal.gdalconst.gdalconst;
-import org.gdal.osr.SpatialReference;
-import org.gdal.gdal.BuildVRTOptions;
 
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.enums.BandInfo;
-
-import org.orekit.rugged.linesensor.LineDatation;
-
-import org.sxgeo.engine.SimpleLocEngine;
-import org.sxgeo.input.datamodels.RefiningInfo;
-import org.sxgeo.input.datamodels.sensor.Sensor;
-import org.sxgeo.input.datamodels.sensor.SensorViewingDirection;
-import org.sxgeo.input.datamodels.sensor.SpaceCraftModelTransformation;
-import org.sxgeo.input.dem.DemManager;
-import org.sxgeo.input.dem.DemFileManager;
-import org.sxgeo.input.dem.SrtmFileManager;
-import org.sxgeo.input.dem.GeoidManager;
-import org.sxgeo.rugged.RuggedManager;
-import org.sxgeo.exception.SXGeoException;
-
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-
 
 public class Utils {
 
@@ -87,7 +37,8 @@ public class Utils {
 
     private static final double THRESHOLD_DIR = 1e-8;
     private static final double THRESHOLD_INV = 1e-6;
-    
+
+
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {
 
@@ -106,8 +57,12 @@ public class Utils {
                     double res = BandInfo.getBandInfoFromIndex(b).getPixelHeight();
                     Dataset ds = gdal.Open(grid.getPath());
                     double[] transform = ds.GetGeoTransform();
-                    assertEquals(transform[1] * res, step);
-                    assertEquals(transform[5] * res, step);
+                    System.out.println("transform:" + String.valueOf(transform[1]));
+                    System.out.println("res:" + String.valueOf(res));
+                    System.out.println("step:" + String.valueOf(step));
+
+                    assertEquals(transform[1] * (res / 10), step);
+                    assertEquals(transform[5] * (res / 10), step);
                     ds.delete();
                 }
                 b = b + 1;
@@ -163,7 +118,7 @@ public class Utils {
                 }
                 b = b + 1;
             }
-        }
+         }
      }
 
     public static void verifyInverseLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
@@ -184,7 +139,7 @@ public class Utils {
             for(int b = 0; b < Sen2VMConstants.NB_BANDS; b++)
             {
                 BandInfo bandInfo = BandInfo.getBandInfoFromIndex(b);
-                float res = (float) bandInfo.getPixelHeight();
+                double res = bandInfo.getPixelHeight();
                 if (outputGrids[d][b] != null) {
                     File outputGrid = outputGrids[d][b];
                     File refGrid = refGrids[d][b];
@@ -238,8 +193,7 @@ public class Utils {
         return false;
      }
 
-     public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, Float res) throws IOException{
-
+     public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, double res) throws IOException{
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
 

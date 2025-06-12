@@ -8,15 +8,16 @@
   "operation": "inverse",
   "deactivate_available_refining": false,
   "steps":  {
-    "10m_bands": 600,
-    "20m_bands": 300,
-    "60m_bands": 100
+    "10m_bands": 6000,
+    "20m_bands": 3000,
+    "60m_bands": 1000
   },
   "export_alt": true,
-  "inverse_location_additional_info":
- {"ul_x": 199980.0, "ul_y": 3700020.0, "lr_x": 309780.0, "lr_y": 3590220.0,
-
-   "referential": "EPSG:32628", "output_folder": "tmp"}
+  "inverse_location_additional_info": {
+      "ul_x": 199980.0, "ul_y": 3700020.0, "lr_x": 309780.0, "lr_y": 3590220.0,
+      "referential": "EPSG:32628",
+      "output_folder": "tmp"
+  }
 
 }
 

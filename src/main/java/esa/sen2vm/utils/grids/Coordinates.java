@@ -2,13 +2,12 @@ package esa.sen2vm.utils.grids;
 
 import org.gdal.osr.CoordinateTransformation;
 import org.gdal.osr.SpatialReference;
-import java.text.DecimalFormat;
 
 public class Coordinates
 {
-    private float x;
-    private float y;
-    private float z;
+    private double x;
+    private double y;
+    private double z;
     private SpatialReference sourceSRS;
     private double latitude;
     private double longitude;
@@ -21,7 +20,7 @@ public class Coordinates
      * @param epsg referencial
      * @throws Sen2VMException
      */
-    public Coordinates(float x, float y, int epsg)
+    public Coordinates(double x, double y, int epsg)
     {
         this.x = x;
         this.y = y;
@@ -34,7 +33,7 @@ public class Coordinates
      * Get x
      * @return x in epsg referencial
      */
-    public float getX()
+    public double getX()
     {
         return this.x;
     }
@@ -43,7 +42,7 @@ public class Coordinates
      * Get y
      * @return y in epsg referencial
      */
-    public float getY()
+    public double getY()
     {
         return this.y;
     }

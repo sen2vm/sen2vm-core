@@ -1,36 +1,15 @@
 package esa.sen2vm;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Iterator;
-
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.Float;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -43,23 +22,10 @@ import esa.sen2vm.utils.Sen2VMConstants;
 
 import esa.sen2vm.input.datastrip.DataStripManager;
 import esa.sen2vm.input.datastrip.Datastrip;
-import esa.sen2vm.input.granule.GranuleManager;
-import esa.sen2vm.input.granule.Granule;
 import esa.sen2vm.input.gipp.GIPPManager;
-import esa.sen2vm.input.SafeManager;
-
-import org.gdal.gdal.Band;
-import org.gdal.gdal.Dataset;
-import org.gdal.gdal.Driver;
-import org.gdal.gdal.gdal;
-import org.gdal.gdalconst.gdalconst;
-import org.gdal.osr.SpatialReference;
-import org.gdal.gdal.BuildVRTOptions;
 
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.enums.BandInfo;
-
-import org.orekit.rugged.linesensor.LineDatation;
 
 import org.sxgeo.engine.SimpleLocEngine;
 import org.sxgeo.input.datamodels.RefiningInfo;
@@ -67,17 +33,13 @@ import org.sxgeo.input.datamodels.sensor.Sensor;
 import org.sxgeo.input.datamodels.sensor.SensorViewingDirection;
 import org.sxgeo.input.datamodels.sensor.SpaceCraftModelTransformation;
 import org.sxgeo.input.dem.DemManager;
-import org.sxgeo.input.dem.DemFileManager;
 import org.sxgeo.input.dem.SrtmFileManager;
 import org.sxgeo.input.dem.GeoidManager;
 import org.sxgeo.rugged.RuggedManager;
 import org.sxgeo.exception.SXGeoException;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.rugged.linesensor.LineSensor;
-
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-
+import org.orekit.rugged.linesensor.LineDatation;
 
 /**
  * Unit test for Sen2VM.
@@ -91,8 +53,6 @@ public class Sen2VMCheckPointTest
     String configTmpInverse = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
     String paramTmp = "src/test/resources/params_base.json";
     String refDir = "src/test/resources/tests/ref";
-
-
 
     @Test
     public void geoTimeFirstLine()
@@ -170,7 +130,6 @@ public class Sen2VMCheckPointTest
                 demManager
             );
 
-
             double[][] pixels = {{0., 0.}};
             double[][] grounds = simpleLocEngine.computeDirectLoc(sensorList.get("B01/D01"), pixels);
 
@@ -179,7 +138,6 @@ public class Sen2VMCheckPointTest
             LOGGER.info("date line 0.5:" + date);
 
             assertEquals(date, "2020-08-16T12:02:45.812731");
-
         } catch ( SXGeoException e ) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -193,7 +151,6 @@ public class Sen2VMCheckPointTest
             e.printStackTrace();
             assert(false);
         }
-
     }
 
     @Test
@@ -213,7 +170,6 @@ public class Sen2VMCheckPointTest
             assertEquals(grounds[0][0], -18.490305707482214, delta);
             assertEquals(grounds[0][1], 33.58277655913304, delta);
             assertEquals(grounds[0][2], 43.448338191393816, delta);
-
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -223,7 +179,6 @@ public class Sen2VMCheckPointTest
             e.printStackTrace();
             assert(false);
         }
-
     }
 
     public double[][] geoLocD01B01(String config, double line, double pixel) throws Sen2VMException
@@ -327,7 +282,6 @@ public class Sen2VMCheckPointTest
         }
 
         return grounds;
-
     }
 
      public static HashMap<String, Sensor> getSensorHashMap(List<DetectorInfo> detectors, List<BandInfo> bands,
@@ -401,7 +355,6 @@ public class Sen2VMCheckPointTest
         double[][] sensorCoordinates = {{0., 0.}};
         try
         {
-
             // Read configuration file
             Configuration configFile = new Configuration(config);
 
@@ -497,6 +450,5 @@ public class Sen2VMCheckPointTest
         }
 
         return sensorCoordinates;
-
     }
 }

@@ -66,9 +66,8 @@ import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_ROTATION_TRANSLA
 import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_datastrip_metadata.Level1B_DataStrip;
 
 /**
- * Manager for SAD file
+ * Manager for Datastrip directory
  */
-
 public class DataStripManager
 {
     /**
@@ -256,7 +255,6 @@ public class DataStripManager
             }
             positionGranuleByDetector[Integer.valueOf(det.getDetectorId()) - 1] = granulePosition;
         }
-
     }
 
     /**
@@ -274,7 +272,6 @@ public class DataStripManager
         String[] minmax = { min.getKey(), max.getKey() };
         return minmax;
     }
-
 
     /**
      * Load orekit data and IERS file
