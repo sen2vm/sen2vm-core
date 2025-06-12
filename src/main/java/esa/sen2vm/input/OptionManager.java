@@ -85,12 +85,6 @@ public class OptionManager
     public static final String OPT_IERS_SHORT = "iers";
     
     /**
-     * Option for the POD file/folder (optional)
-     */
-    public static final String OPT_POD_LONG = "pod_path";
-    public static final String OPT_POD_SHORT = "pod";
-
-    /**
      * Option to deactivate the refining or not (optional; no argument)
      */
     public static final String OPT_IGNORE_REFINING_LONG = "ignore_refining";
@@ -249,9 +243,6 @@ public class OptionManager
             Option iersOption = new Option(OPT_IERS_SHORT, OPT_IERS_LONG, true, "(optional) Path to IERS file");
             iersOption.setRequired(false);  
 
-            Option podOption = new Option(OPT_POD_SHORT, OPT_POD_LONG, true, "(optional) Path to POD file/folder");
-            podOption.setRequired(false);
-   
             Option noGippCheckOption = new Option(OPT_DEACTIVATE_GIPP_CHECK_SHORT, OPT_DEACTIVATE_GIPP_CHECK_LONG, false,
                                                     "(optional) Deactivate the check of GIPP version;\n"
                                                     + "if present= \"true\", if not= \"false\". ");
@@ -311,7 +302,6 @@ public class OptionManager
            
             // Add the optional arguments
             optionsNoFile.addOption(iersOption);
-            optionsNoFile.addOption(podOption);
             optionsNoFile.addOption(noGippCheckOption);
             optionsNoFile.addOption(noRefiningOption);
             optionsNoFile.addOption(exportAltOption);

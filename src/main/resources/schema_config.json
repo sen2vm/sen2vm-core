@@ -25,10 +25,6 @@
             "type": "string",
             "description": "(optional) Path to IERS file"
         },
-        "pod": {
-            "type": "string",
-            "description": "Path to POD file/folder"
-        },
         "operation": {
             "type": "string",
             "description": "Type of operation available between direct or inverse operation",
