@@ -199,16 +199,16 @@ public class Sen2VMDirectTest
         try
         {
             String outputDir1 = Config.createTestDir("testDirectParallelisation_1", "direct");
-            String[] detectors_order_1 = new String[]{"01", "02"};
-            String[] bands_order_1 = new String[]{"B01", "B02"};
+            String[] detectors_order_1 = new String[]{"07", "10"};
+            String[] bands_order_1 = new String[]{"B01", "B04"};
             String config_order_1 = Config.config(configTmpDirect, outputDir1, stepBand10m, "direct", false);
             String param_order_1 = Config.changeParams(paramTmp, detectors_order_1, bands_order_1, outputDir1);
             String[] args_order_1 = {"-c", config_order_1, "-p", param_order_1};
             Sen2VM.main(args_order_1);
 
             String outputDir2 = Config.createTestDir("testDirectParallelisation_2", "direct");
-            String[] detectors_order_2 = new String[]{"02", "01"};
-            String[] bands_order_2 = new String[]{"B02", "B01"};
+            String[] detectors_order_2 = new String[]{"10", "07"};
+            String[] bands_order_2 = new String[]{"B04", "B01"};
             String config_order_2 = Config.config(configTmpDirect, outputDir2, stepBand10m, "direct", false);
             String param_order_2 = Config.changeParams(paramTmp, detectors_order_2, bands_order_2, outputDir2);
             String[] args_order_2 = {"-c", config_order_2, "-p", param_order_2};
