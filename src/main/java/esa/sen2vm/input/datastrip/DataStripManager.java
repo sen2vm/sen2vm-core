@@ -318,7 +318,7 @@ public class DataStripManager
             else
             {
                 File iersFile = new File(iersFilePath);
-                FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
+                FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName(), null);
 
                 DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(iersFile.getParentFile()));
 
@@ -570,7 +570,11 @@ public class DataStripManager
                 PVCoordinates pvEME2000 = transform.transformPVCoordinates(pvITRF);
 
                 // Convert PV from ITRF to EME2000
-                TimeStampedPVCoordinates pair = new TimeStampedPVCoordinates(ephemerisDate, pvEME2000.getPosition(), pvEME2000.getVelocity(), Vector3D.ZERO);
+                TimeStampedPVCoordinates pair = new TimeStampedPVCoordinates(
+                                                        ephemerisDate,
+                                                        pvEME2000.getPosition(),
+                                                        pvEME2000.getVelocity(),
+                                                        Vector3D.ZERO);
 
                 if (dateSet.contains(ephemerisDate))
                 {
