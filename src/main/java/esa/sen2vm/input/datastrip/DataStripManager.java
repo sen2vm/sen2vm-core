@@ -1,13 +1,24 @@
 package esa.sen2vm.input.datastrip;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.logging.Logger;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -173,6 +184,22 @@ public class DataStripManager
         loadFile(dsFilePath, iersFilePath, activateAvailableRefining);
     }
 
+    public static void extractDirectoryFromJar(URI jarPath, String sourceDir, String targetDir) throws IOException {
+        try (JarFile jarFile = new JarFile(new File(jarPath))) {
+            jarFile.stream()
+                   .filter(entry -> entry.getName().startsWith(sourceDir) && !entry.isDirectory())
+                   .forEach(entry -> {
+                       File outFile = new File(targetDir.toString(), entry.getName().substring(sourceDir.length()));
+                       outFile.getParentFile().mkdirs();
+                       try (InputStream is = jarFile.getInputStream(entry)) {
+                           Files.copy(is, outFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       }
+                   });
+        }
+    }
+
     /**
      * Load SAD file and necessary data
      * @param dsFilePath path to SAD XML file
@@ -197,7 +224,29 @@ public class DataStripManager
             sensorConfiguration = l1B_datastrip.getImage_Data_Info().getSensor_Configuration();
 
             auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
-            initOrekitRessources(Sen2VMConstants.OREKIT_DATA_DIR, iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
+            String orekit_data_name = Sen2VMConstants.OREKIT_DATA_TEST_DIR;
+            Path orekit_data_path = Paths.get(orekit_data_name);
+            // get jar url to extract orekit data
+            URL jarUrl = DataStripManager.class
+                .getProtectionDomain()
+                .getCodeSource()
+                .getLocation();
+            Path basePath = Paths.get(jarUrl.getPath());
+            Path parentPath = basePath.getParent();
+            Path targetPath = parentPath.resolve(Sen2VMConstants.OREKIT_DATA_DIR);
+            if(!Files.isDirectory(basePath)) 
+            {
+                orekit_data_path=targetPath;
+            }//otherwise is test case use src/main/resource
+            // check orekit data dir exist, otherwise it will extracted from jar
+            if(!Files.isDirectory(orekit_data_path))
+            {
+                // extract orekit-data from jar and save in  Sen2VMConstants.OREKIT_DATA_DIR_SAVE
+                extractDirectoryFromJar(jarUrl.toURI(),Sen2VMConstants.OREKIT_DATA_DIR_IN_JAR,orekit_data_path.toString());
+                LOGGER.info("Initializing: copy of the Orekit-data: "+orekit_data_path.toString());
+            }
+            LOGGER.info("Orekit-data: "+orekit_data_path);
+            initOrekitRessources(orekit_data_path.toString(), iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
 
             // Test if we need to take refining data into account according to the flag
             if (activateAvailableRefining)
@@ -232,6 +281,10 @@ public class DataStripManager
         }  catch (OrekitException e) {
             throw new Sen2VMException(e);
         } catch (SXGeoException e) {
+            throw new Sen2VMException(e);
+        }catch(URISyntaxException e) {
+            throw new Sen2VMException(e);
+        }catch(IOException e) {
             throw new Sen2VMException(e);
         }
     }
@@ -289,7 +342,7 @@ public class DataStripManager
             File orekitDataDir = new File(orekitDataPath);
             if (orekitDataDir == null || (!orekitDataDir.exists()))
             {
-                throw new Sen2VMException("Orekit data dir not found" + orekitDataPath);
+                throw new Sen2VMException("Orekit-data dir not found" + orekitDataPath);
             }
             DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
 

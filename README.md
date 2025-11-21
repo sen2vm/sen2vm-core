@@ -150,6 +150,10 @@ java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configurat
 ```
 
 ## 2. Inputs
+
+> [!NOTE]
+> The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
+
 Inputs required by Sen2VM are:
 * L1B Product,
 * Some GIPP files (parameters files used in operational production),
