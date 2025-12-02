@@ -278,13 +278,13 @@ public class DataStripManager
 
         } catch (JAXBException e) {
             throw new Sen2VMException(e);
-        }  catch (OrekitException e) {
+        } catch (OrekitException e) {
             throw new Sen2VMException(e);
         } catch (SXGeoException e) {
             throw new Sen2VMException(e);
-        }catch(URISyntaxException e) {
+        } catch(URISyntaxException e) {
             throw new Sen2VMException(e);
-        }catch(IOException e) {
+        } catch(IOException e) {
             throw new Sen2VMException(e);
         }
     }
