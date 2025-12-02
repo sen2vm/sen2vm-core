@@ -11,7 +11,25 @@ This documentation is split into 4 parts:
 
 ## 1 Quickstart
 
-### 1.1 How to run sen2vm-core
+### 1.1 How to install sen2vm-core environment
+
+Sen2VM core depends on gdal=3.6.2 with java bindings. An ready for use docker image is available. 
+Please, pull the image from here :
+https://github.com/sen2vm/sen2vm-build-env/pkgs/container/sen2vm-build-env
+
+* Pull the image :
+```
+docker pull ghcr.io/sen2vm/sen2vm-build-env:<tag>
+```
+
+* Launch the container :
+```
+docker run -it --rm --user $UID:$GID -v <sen2vm-core-folder>:/Sen2vm ghcr.io/sen2vm/sen2vm-build-env:latest bash
+```
+
+* Execute the running java commands inside the opening bash.
+
+### 1.2 How to run sen2vm-core
 
 First, download the jar of Sen2VM core, then run the following command to launch it:
 ```
@@ -35,17 +53,17 @@ java -jar target/sen2vm-core-0.0.1-jar-with-dependencies.jar -c src/test/resourc
 > To understand the configuration, please refer to §[2 Inputs](#2-inputs)
 
 
-### 1.2 Example of grids usage
+### 1.3 Example of grids usage
 
 > [!CAUTION]
 > gdal version shall be compatible with the new Sen2VM grids. Official gdal does not yet include this driver/possibility. A [Pull Request](https://github.com/OSGeo/gdal/pull/12431 ) is currently opened, but in the meantime, this gdal version can be find [here](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c)
 
 
-#### 1.2.1 Resampling using direct locations grids
+#### 1.3.1 Resampling using direct locations grids
 
 Direct location grids can be used to preform a resampling. It can be done using gdal or using [OTB](https://www.orfeo-toolbox.org/CookBook/Applications/app_GridBasedImageResampling.html) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
 
-##### 1.2.1.1 Using gdal
+##### 1.3.1.1 Using gdal
 
 L1B with geolocation grids are seamlessly handled by gdal through the development of a dedicated S2 L1B gdal driver.  
 
@@ -65,7 +83,7 @@ gdal_translate  SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_MSIL1B_20241019T120
 gdal_warp SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B04 /PATH_TO_DATA/working/projected_D09_B04.tif -t_srs EPSG:32628 -tr 10 -10
 ```
 
-##### 1.2.1.1 Using otb
+##### 1.3.1.2 Using otb
 This method can be resumed into three main steps:
  * Creation of a mosaic of all images,
  * Convertion of the direct location grid into an inverse location grid using scipy,
@@ -108,7 +126,7 @@ Necessary prerequisites:
  * argparse
  * pathlib
 
-#### 1.2.2 Resampling using inverse locations grids
+#### 1.3.2 Resampling using inverse locations grids
 
 > [!CAUTION]
 > Please note that there is currently an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on the OTB side. Until corrected, **the grid information must be adjusted by half the resolution of the target pixel** (spacing) in both directions, to be synchronised as following:
