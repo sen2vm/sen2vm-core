@@ -33,6 +33,12 @@ public class SafeManager
      */
     private ArrayList<Granule> listGranules;
 
+
+    /**
+     * List of all the granule names found in dirGranules
+     */
+    private ArrayList<String> listGranuleNames;
+
     /**
      * Datastrip of the SAFE
      */
@@ -60,7 +66,7 @@ public class SafeManager
     public void setAndProcessGranules(String path) throws Sen2VMException
     {
         this.listGranules = new ArrayList<Granule>();
-
+        this.listGranuleNames = new ArrayList<String>();
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
         if(listOfFiles != null) {
@@ -69,7 +75,8 @@ public class SafeManager
                 if (listOfFiles[i].isDirectory())
                 {
                     Granule gr = new Granule(listOfFiles[i]);
-                    listGranules.add(gr);
+                    this.listGranules.add(gr);
+                    this.listGranuleNames.add(gr.getName());
                 }
             }
         }
@@ -134,8 +141,7 @@ public class SafeManager
      */
     public int[] getFullSize(DataStripManager dataStripManager, BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException
     {
-        String[] minmax = dataStripManager.getMinMaxGranule(bandInfo, detectorInfo);
-
+        String[] minmax = dataStripManager.getMinMaxGranule(bandInfo, detectorInfo,this.listGranuleNames);
         Granule minGranule = getGranuleByName(minmax[0]);
         Granule maxGranule = getGranuleByName(minmax[1]);
 

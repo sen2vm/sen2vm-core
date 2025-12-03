@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -277,6 +278,7 @@ public class DataStripManager
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
 
         } catch (JAXBException e) {
+            LOGGER.warning("Error reading the file: " + dsFilePath);
             throw new Sen2VMException(e);
         } catch (OrekitException e) {
             throw new Sen2VMException(e);
@@ -317,11 +319,15 @@ public class DataStripManager
      * return {min granule name, max granule name}
      * @throws Sen2VMException
      */
-    public String[] getMinMaxGranule(BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException
+    public String[] getMinMaxGranule(BandInfo bandInfo, DetectorInfo detectorInfo, List<String> granulesList)  throws Sen2VMException
     {
-        Map granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
-        Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
-        Map.Entry<String, Integer> max = Collections.max(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+        Map<String, Integer> granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
+        Map<String, Integer> filteredGranulesDetector = granulesDetector.entrySet().stream()
+                .filter(entry -> granulesList.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Map.Entry<String, Integer> min = Collections.min(filteredGranulesDetector.entrySet(),  Map.Entry.comparingByValue());
+        Map.Entry<String, Integer> max = Collections.max(filteredGranulesDetector.entrySet(),  Map.Entry.comparingByValue());
         String[] minmax = { min.getKey(), max.getKey() };
         return minmax;
     }

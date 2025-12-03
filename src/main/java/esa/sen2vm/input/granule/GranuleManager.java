@@ -104,6 +104,7 @@ public class GranuleManager
         }
         catch (JAXBException e)
         {
+            LOGGER.warning("Error reading the file: " + granuleFilePath);
             Sen2VMException exception = new Sen2VMException(e);
             throw exception;
         }

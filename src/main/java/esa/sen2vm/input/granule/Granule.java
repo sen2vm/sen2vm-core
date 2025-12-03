@@ -2,6 +2,8 @@ package esa.sen2vm.input.granule;
 
 import java.io.File;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import esa.sen2vm.input.SafeManager;
 import esa.sen2vm.exception.Sen2VMException;
@@ -88,10 +90,11 @@ public class Granule
 
         this.images = new File[13];
         this.grids = new File[13];
-
         File[] listOfFiles = this.path.listFiles();
         if(listOfFiles != null)
         {
+            String regex = ".*_MTD_L1[AB]_GR_.*";
+            Pattern pattern = Pattern.compile(regex);
             for (int p = 0; p < listOfFiles.length; p++)
             {
                 if (listOfFiles[p].isDirectory())
@@ -108,8 +111,11 @@ public class Granule
                 }
                 else if (listOfFiles[p].isFile())
                 {
-                    this.path_mtd = listOfFiles[p];
-                    loadMTDinformations();
+                    Matcher matcher = pattern.matcher(listOfFiles[p].getAbsolutePath());
+                    if (matcher.matches()){
+                        this.path_mtd = listOfFiles[p];
+                        loadMTDinformations();
+                    }
                 }
             }
         }
