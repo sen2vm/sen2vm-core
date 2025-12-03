@@ -325,10 +325,10 @@ public class DataStripManager
         Map<String, Integer> filteredGranulesDetector = granulesDetector.entrySet().stream()
                 .filter(entry -> granulesList.contains(entry.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        if(filteredGranulesDetector.isEmpty())
+        if (filteredGranulesDetector.isEmpty())
         {
             throw new Sen2VMException(
-                    "No granule was found for Detector "+detectorInfo.getName()+" according to the Datastrip metadata granules list.\nPlease check the granules in the GRANULE folder and in the Datastrip metadata granules list.");
+                    "No granule was found for Detector " + detectorInfo.getName() + " according to the Datastrip metadata granules list.\nPlease check the granules in the GRANULE folder and in the Datastrip metadata granules list.");
         }
         Map.Entry<String, Integer> min = Collections.min(filteredGranulesDetector.entrySet(),  Map.Entry.comparingByValue());
         Map.Entry<String, Integer> max = Collections.max(filteredGranulesDetector.entrySet(),  Map.Entry.comparingByValue());
