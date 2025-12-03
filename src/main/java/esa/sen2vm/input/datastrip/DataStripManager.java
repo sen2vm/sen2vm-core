@@ -235,9 +235,9 @@ public class DataStripManager
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
 
         } catch (JAXBException e) {
-            LOGGER.warning("Error reading the file: "+dsFilePath);
+            LOGGER.warning("Error reading the file: " + dsFilePath);
             throw new Sen2VMException(e);
-        }  catch (OrekitException e) {
+        } catch (OrekitException e) {
             throw new Sen2VMException(e);
         } catch (SXGeoException e) {
             throw new Sen2VMException(e);
