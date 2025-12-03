@@ -272,7 +272,7 @@ public class DataStripManager
      * return {min granule name, max granule name}
      * @throws Sen2VMException
      */
-    public String[] getMinMaxGranule(BandInfo bandInfo, DetectorInfo detectorInfo,List<String> granulesList)  throws Sen2VMException
+    public String[] getMinMaxGranule(BandInfo bandInfo, DetectorInfo detectorInfo, List<String> granulesList)  throws Sen2VMException
     {
         Map<String, Integer> granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
         Map<String, Integer> filteredGranulesDetector = granulesDetector.entrySet().stream()
