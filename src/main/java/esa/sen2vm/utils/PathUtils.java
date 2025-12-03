@@ -50,7 +50,10 @@ public class PathUtils
             String filename = dir.getName().replaceAll("_N.*", "").replace(Sen2VMConstants.DATASTRIP_MSI_TAG, Sen2VMConstants.DATASTRIP_METADATA_TAG);
             datastripFilePath = dir + "/" + filename + Sen2VMConstants.xml_extention_small;
         }
-
+        if(datastripFilePath==null)
+        {
+            throw new Sen2VMException("No datastrip metadata file found inside folder: " + datastripFolder);
+        }
         File datastripFile = new File(datastripFilePath);
         if (datastripFile.exists())
         {
