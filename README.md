@@ -17,17 +17,15 @@ Sen2VM core depends on gdal=3.6.2 with java bindings. An ready for use docker im
 Please, pull the image from here :
 https://github.com/sen2vm/sen2vm-build-env/pkgs/container/sen2vm-build-env
 
-* Pull the image :
+* Build running image from sen2vm-build-env:
 ```
-docker pull ghcr.io/sen2vm/sen2vm-build-env:<tag>
-```
-
-* Launch the container :
-```
-docker run -it --rm --user $UID:$GID -v <sen2vm-core-folder>:/Sen2vm ghcr.io/sen2vm/sen2vm-build-env:latest bash
+docker build . -t sen2vm
 ```
 
-* Execute the running java commands inside the opening bash.
+* Launch Sen2vm using docker run command and add your desired options.
+```
+docker run -it --rm --user $UID:$GID -v <sen2vm-core-folder>:/Sen2vm sen2vm -c config_example.json -p param_example.json
+```
 
 ### 1.2 How to run sen2vm-core
 
