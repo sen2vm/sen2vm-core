@@ -28,6 +28,7 @@ public class Configuration extends InputFileManager
     private String l1bProduct;
     private String gippFolder;
     private boolean gippVersionCheck = Sen2VMConstants.GIPP_CHECK;
+    private boolean gridsOverwriting = Sen2VMConstants.GRIDS_OVERWRITING;
     private String dem;
     private String geoid;
     private String iers = "";
@@ -92,6 +93,16 @@ public class Configuration extends InputFileManager
         else
         { // We let the check
             this.gippVersionCheck = true;
+        }
+
+        // By default we won't overwrite grids. The option deactivate the overwriting
+        if (commandLine.hasOption(OptionManager.OPT_OVERWRITE_GRIDS_SHORT))
+        {
+            this.gridsOverwriting  = true;
+        }
+        else
+        { // We let the check
+            this.gridsOverwriting = false;
         }
 
         // By default we want the refining. The option deactivate the refining
@@ -179,6 +190,10 @@ public class Configuration extends InputFileManager
             if (jsonObject.has("gipp_version_check"))
             {
                 this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
+            }
+            if (jsonObject.has("grids_overwritings"))
+            {
+                this.gridsOverwriting = jsonObject.getBoolean("grids_overwritings");
             }
             if (jsonObject.has("iers"))
             {
@@ -268,6 +283,16 @@ public class Configuration extends InputFileManager
     public Boolean getGippVersionCheck()
     {
         return gippVersionCheck;
+    }
+
+    /**
+     * Get the boolean which, if set to false, will activate the
+     * grids overwriting
+     * @return activate the grids overwriting (false by default)
+     */
+    public Boolean getGridsOverwriting()
+    {
+        return gridsOverwriting;
     }
 
     /**

@@ -134,6 +134,14 @@ public class OptionManager
     public static final String OPT_BANDS_LIST_LONG = "bands";
     public static final String OPT_BANDS_LIST_SHORT = "b";
 
+    /**
+     * Option to overwrite grid
+     * (optional; no argument = no overwrite)
+     */
+    public static final String OPT_OVERWRITE_GRIDS_LONG= "grids_overwritings";
+    public static final String OPT_OVERWRITE_GRIDS_SHORT = "go";
+
+
     // If configuration file and (optional) parameter file are present: true
     private static boolean areFiles;
    
@@ -246,7 +254,12 @@ public class OptionManager
             Option noGippCheckOption = new Option(OPT_DEACTIVATE_GIPP_CHECK_SHORT, OPT_DEACTIVATE_GIPP_CHECK_LONG, false,
                                                     "(optional) Deactivate the check of GIPP version;\n"
                                                     + "if present= \"true\", if not= \"false\". ");
-            noGippCheckOption.setRequired(false);  
+            noGippCheckOption.setRequired(false);
+
+            Option overwrite_grids = new Option(OPT_OVERWRITE_GRIDS_SHORT, OPT_OVERWRITE_GRIDS_LONG, false,
+                                                    "(optional) Activate grids overwriting;\n"
+                                                    + "if present= \"true\", if not= \"false\". ");
+            overwrite_grids.setRequired(false);
 
             Option noRefiningOption = new Option(OPT_IGNORE_REFINING_SHORT, OPT_IGNORE_REFINING_LONG, false, 
                                                 "(optional) Allows to ignore refining parameters if they are available  in the Datastrip Metadata;\n"
@@ -303,6 +316,7 @@ public class OptionManager
             // Add the optional arguments
             optionsNoFile.addOption(iersOption);
             optionsNoFile.addOption(noGippCheckOption);
+            optionsNoFile.addOption(overwrite_grids);
             optionsNoFile.addOption(noRefiningOption);
             optionsNoFile.addOption(exportAltOption);
             optionsNoFile.addOption(ulxOption);

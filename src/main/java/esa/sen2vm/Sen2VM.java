@@ -217,9 +217,8 @@ public class Sen2VM
                 ruggedManager,
                 demManager
             );
-
             // Safe Manager
-            SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager);
+            SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager, config.getGridsOverwriting());
             Datastrip datastrip = safeManager.getDatastrip();
             //ds.checkNoVRT(detectors, bands);
 
