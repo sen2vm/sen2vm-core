@@ -349,7 +349,7 @@ public class Sen2VM
             {
                 outputConfigPath = config.getInverseLocOutputFolder();
             }
-            outputFileManager.writeInfoJson(config, params, outputConfigPath);
+            outputFileManager.writeInfoJson(config, bands, detectors, outputConfigPath);
         }
         catch ( IOException exception )
         {
@@ -357,7 +357,12 @@ public class Sen2VM
         }
         catch ( SXGeoException exception )
         {
-            throw new Sen2VMException(exception);
+            String newMessage = "";
+            if(exception.toString().contains("Cant find bundle for base name S2GeoMessages"))
+            {
+                newMessage = "Please, check the GEOID data contains .gtx, DBL, HDR and .xml : ";
+            }
+            throw new Sen2VMException(newMessage, exception);
         }
     }
 

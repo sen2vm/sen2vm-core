@@ -241,7 +241,7 @@ public class SafeManager
                 ArrayList<Granule> granulesToCompute = getGranulesToCompute(detectorInfo, bandInfo);
                 for (Granule granuleToCompute: granulesToCompute)
                 {
-                    if (granuleToCompute.getGrid(bandInfo) != null)
+                    if (granuleToCompute.getGrid(bandInfo) != null && !this.overwrite_grids)
                     {
                         String error = "Direct grid(s) already exist(s)";
                         error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
