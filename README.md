@@ -17,7 +17,7 @@ Sen2VM core depends on gdal=3.6.2 with java bindings. An ready for use docker im
 Please, pull the image from here :
 https://github.com/sen2vm/sen2vm-build-env/pkgs/container/sen2vm-build-env
 
-* Build running image from sen2vm-build-env:
+* Build the running image from sen2vm-build-env by downloading the Dockerfile and executing the following command in the same directory as the file:
 ```
 docker build . -t sen2vm
 ```
