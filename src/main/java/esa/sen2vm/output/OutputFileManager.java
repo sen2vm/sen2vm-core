@@ -275,10 +275,11 @@ public class OutputFileManager
     /**
      * Export all information used (from config and params) in a new json object
      * @param config object
-     * @param params object
+     * @param bands object
+     * @param detectors object
      * @return jsonobject
      */
-    public JSONObject createConfig(Configuration config, Params params) throws IOException, Sen2VMException
+    public JSONObject createConfig(Configuration config, List<BandInfo> bands, List<DetectorInfo> detectors) throws IOException, Sen2VMException
     {
         JSONObject objJson = new JSONObject();
 
@@ -315,14 +316,12 @@ public class OutputFileManager
         }
 
         // add info from param parameters
-        List<DetectorInfo> detectors = params.getDetectorsList();
         List<String> detectors_list_json = new ArrayList<String>();
         for (DetectorInfo detectorInfo: detectors)
         {
             detectors_list_json.add(detectorInfo.getNameWithD());
         }
 
-        List<BandInfo> bands = params.getBandsList();
         List<String> bands_list_json = new ArrayList<String>();
         for (BandInfo bandInfo: bands)
         {
@@ -340,12 +339,13 @@ public class OutputFileManager
      * Write all information used (from config and params) in a json file in
      * output directory
      * @param config object
-     * @param params object
+     * @param bands object
+     * @param detectors object
      * @param output path dir
      */
-    public void writeInfoJson(Configuration config, Params params, String output)  throws IOException, Sen2VMException
+    public void writeInfoJson(Configuration config, List<BandInfo> bands, List<DetectorInfo> detectors, String output)  throws IOException, Sen2VMException
     {
-        JSONObject objJson = createConfig(config, params);
+        JSONObject objJson = createConfig(config, bands, detectors);
 
         // Get date (string format)
         Format formatterDay = new SimpleDateFormat("YYYYMMdd");

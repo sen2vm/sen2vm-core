@@ -45,9 +45,14 @@ public class SafeManager
     private Datastrip datastrip;
 
     /**
+     * option to overwrite grids
+     */
+    private Boolean overwrite_grids;
+
+    /**
      * Constructor
      */
-    public SafeManager(String path, DataStripManager dataStripManager) throws Sen2VMException
+    public SafeManager(String path, DataStripManager dataStripManager, boolean overwrite_grids) throws Sen2VMException
     {
          // Inventory of the Datastrip
          String datastrip_path = path  + "/" + Sen2VMConstants.DATASTRIP;
@@ -57,6 +62,12 @@ public class SafeManager
          // Load all images and geo grid already existing (granule x det x band)
          String granules_path = path + "/" + Sen2VMConstants.GRANULE + "/";
          this.setAndProcessGranules(granules_path);
+         this.overwrite_grids=overwrite_grids;
+    }
+
+    public SafeManager(String path, DataStripManager dataStripManager) throws Sen2VMException
+    {
+        this(path, dataStripManager,true);
     }
 
     /**
@@ -145,7 +156,7 @@ public class SafeManager
         Granule minGranule = getGranuleByName(minmax[0]);
         Granule maxGranule = getGranuleByName(minmax[1]);
 
-        if (minGranule == null || minGranule == null)
+        if (minGranule == null || minGranule == null && !this.overwrite_grids)
         {
             Sen2VMException error = new Sen2VMException("Error GRANULE: no first or last granule of the datastrip.");
             throw error;
@@ -230,7 +241,7 @@ public class SafeManager
                 ArrayList<Granule> granulesToCompute = getGranulesToCompute(detectorInfo, bandInfo);
                 for (Granule granuleToCompute: granulesToCompute)
                 {
-                    if (granuleToCompute.getGrid(bandInfo) != null)
+                    if (granuleToCompute.getGrid(bandInfo) != null && !this.overwrite_grids)
                     {
                         String error = "Direct grid(s) already exist(s)";
                         error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
@@ -240,7 +251,7 @@ public class SafeManager
 
                 // Check vrt
                 File vrt = this.datastrip.getVRT(detectorInfo, bandInfo);
-                if (vrt != null)
+                if (vrt != null && !this.overwrite_grids)
                 {
                     String error = "VRT grid(s) already exist(s)";
                     error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
@@ -265,7 +276,7 @@ public class SafeManager
             {
                 String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, outputDirPath);
                 File f = new File(invFileName);
-                if (f.exists())
+                if (f.exists() && !this.overwrite_grids)
                 {
                     String error = "Inverse grid(s) already exist(s)";
                     error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
