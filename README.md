@@ -205,7 +205,7 @@ It  is a file in  [JSON format](https://en.wikipedia.org/wiki/JSON) and an examp
 
 Each parameter description can be found in the table below:
 
-                                                                                                            Description                                                                                                                                           |
+| Name | Type | Required |                                                                                                             Description                                                                                                                                           |
 | ----------- | :------: | :-----------: |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 | l1b_product | string   | **Mandatory** |                                                                     Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in § [L1B Product](#211-l1b-product), including DATASTRIP + GRANULE)                                                                      |
 | gipp_folder | string   | **Mandatory** |                                                                    Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to § [GIPP](#212-gipp).                                                                     |
