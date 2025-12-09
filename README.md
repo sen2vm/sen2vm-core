@@ -19,11 +19,15 @@ docker build . -t sen2vm
 ```
 * Launch Sen2vm using the following command:
 ```
-docker run -it --rm --user $UID:$GID -v [input-data]:/data sen2vm -c [configuration_filepath] [-p [parameters_filepath]]
+docker run -it --rm --user $UID:$GID -v [input-data]:[/mounted-name] sen2vm -c [configuration_filepath] [-p [parameters_filepath]]
 ```
+
+> [!CAUTION]
+> -v /NNN:/NNN can be done several time, for example -v /data:/data -v /home/login/working_dir:/home/login/working_dir. This will mount directories inside the docker. All files (input json and file listed in configuration_file) shall be on a mounted disk, if not, the won't be visible
+
 Where:
 * input-data: the input folder
-* configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please indicate the input paths with absolute path from the docker volume directory (/data in the example above), note that this input is **Mandatory**.
+* configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please indicate the input paths with **absolute path** from the docker volume directory (/data in the example above), note that this input is **Mandatory**.
 * parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §[2.2 Parameters file](#22-parameters-file) for further information).This input is **Optional**.
 > [!NOTE]
 > To understand the configuration, please refer to §[2 Inputs](#2-inputs)
