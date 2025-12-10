@@ -195,9 +195,9 @@ public class Configuration extends InputFileManager
             {
                 this.gridsOverwriting = jsonObject.getBoolean("grids_overwritings");
             }
-            if (jsonObject.has("grids_overwritings"))
+            if (jsonObject.has("grids_overwriting"))
             {
-                this.gridsOverwriting = jsonObject.getBoolean("grids_overwritings");
+                this.gridsOverwriting = jsonObject.getBoolean("grids_overwriting");
             }
             if (jsonObject.has("iers"))
             {
