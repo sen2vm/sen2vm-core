@@ -138,7 +138,7 @@ public class OptionManager
      * Option to overwrite grid
      * (optional; no argument = no overwrite)
      */
-    public static final String OPT_OVERWRITE_GRIDS_LONG= "grids_overwritings";
+    public static final String OPT_OVERWRITE_GRIDS_LONG= "grids_overwriting";
     public static final String OPT_OVERWRITE_GRIDS_SHORT = "go";
 
 
