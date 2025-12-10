@@ -19,6 +19,11 @@ public class Sen2VMConstants
      * To check the GIPP version (by default the GIPP version is checked)
      */
     public static final boolean GIPP_CHECK = true;
+
+    /**
+     * To overwrite grids (by default it is disable)
+     */
+    public static final boolean GRIDS_OVERWRITING = false;
     
     /**
      * To deactivate the refining (by default the refining is set)
