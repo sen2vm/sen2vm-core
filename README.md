@@ -19,11 +19,14 @@ docker build . -t sen2vm
 ```
 * Launch Sen2vm using the following command:
 ```
-docker run -it --rm --user $UID:$GID -v [input-data]:/data sen2vm -c [configuration_filepath] [-p [parameters_filepath]]
+docker run -it --rm --user $UID:$GID -v [input-data]:[/mounted-name] sen2vm -c [configuration_filepath] [-p [parameters_filepath]]
 ```
+> [!CAUTION]
+> -v /NNN:/NNN can be done several time, for example -v /data:/data -v /home/login/working_dir:/home/login/working_dir. This will mount directories inside the docker. All files (input json and file listed in configuration_file) shall be on a mounted disk, if not, the won't be visible
+
 Where:
 * input-data: the input folder
-* configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please indicate the input paths with absolute path from the docker volume directory (/data in the example above), note that this input is **Mandatory**.
+* configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please indicate the input paths with **absolute path** from the docker volume directory (/data in the example above), note that this input is **Mandatory**.
 * parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §[2.2 Parameters file](#22-parameters-file) for further information).This input is **Optional**.
 > [!NOTE]
 > To understand the configuration, please refer to §[2 Inputs](#2-inputs)
@@ -201,7 +204,7 @@ It  is a file in  [JSON format](https://en.wikipedia.org/wiki/JSON) and an examp
 
 Each parameter description can be found in the table below:
 
-                                                                                                            Description                                                                                                                                           |
+| Name | Type | Required |                                                                                                             Description                                                                                                                                           |
 | ----------- | :------: | :-----------: |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 | l1b_product | string   | **Mandatory** |                                                                     Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in § [L1B Product](#211-l1b-product), including DATASTRIP + GRANULE)                                                                      |
 | gipp_folder | string   | **Mandatory** |                                                                    Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to § [GIPP](#212-gipp).                                                                     |
