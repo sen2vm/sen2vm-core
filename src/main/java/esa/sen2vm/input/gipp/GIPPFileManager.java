@@ -78,7 +78,6 @@ public class GIPPFileManager
 
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                LOGGER.info(dir.toString());
                 // Checks that the parent is already in a qualified subtree
                 boolean parentQualified = !qualifiedStack.isEmpty() && qualifiedStack.peek();
 
@@ -145,7 +144,6 @@ public class GIPPFileManager
         }
         else
         {
-            LOGGER.info("GIPP "+dirNameRegex);
             return results.get(0);
         }
     }
