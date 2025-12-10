@@ -22,7 +22,7 @@ docker build . -t sen2vm
 docker run -it --rm --user $UID:$GID -v [input-data]:[/mounted-name] sen2vm -c [configuration_filepath] [-p [parameters_filepath]]
 ```
 > [!CAUTION]
-> -v /NNN:/NNN can be done several time, for example -v /data:/data -v /home/login/working_dir:/home/login/working_dir. This will mount directories inside the docker. All files (input json and file listed in configuration_file) shall be on a mounted disk, if not, the won't be visible
+> -v /NNN:/NNN can be done several time, for example -v /data:/data -v /home/login/working_dir:/home/login/working_dir. This will mount directories inside the docker. All files (input json and folders/files listed in configuration_file) shall be on a mounted disk, if not, the won't be visible
 
 Where:
 * input-data: the input folder

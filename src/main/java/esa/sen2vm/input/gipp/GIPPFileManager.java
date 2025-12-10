@@ -199,6 +199,15 @@ public class GIPPFileManager
             if (matcher.matches()) {
                 filteredGIPList.add(item);
             }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+                // Exiting the directory: we remove the qualification state
+                qualifiedStack.pop();
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        return results;
         }
         return filteredGIPList;
     }

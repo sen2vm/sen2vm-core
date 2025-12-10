@@ -23,7 +23,7 @@ public class Sen2VMConstants
     /**
      * To overwrite grids (by default it is disable)
      */
-    public static final boolean GRIDS_OVERWRITING = true;
+    public static final boolean GRIDS_OVERWRITING = false;
     
     /**
      * To deactivate the refining (by default the refining is set)
