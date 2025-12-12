@@ -14,6 +14,9 @@ This documentation is split into 6 parts:
 * Examples of usage of the ouput grids: § [Usage of output grids](#4-usage-of-output-grids)
 * Validation process, including test procedures and data used: § [Validation](#5-validation)
 
+>[!NOTE]
+> If you want to compile Sen2Vm by yourself, please refer to <mark>TODO</mark>
+
 ## 1. L1B format description
 
 Sentinel-2 L1C products are store by tile, geolocated one ground. One Sentinel-2 acquisition (hereby called **Datastrip**) cover sevral L1C tiles. For each acquisition, several L1C tiles are create (with some not fully covered, with NoData inside). Each tile contains, a Datastrip metadata (duplicated in each L1C tiles generated), a Tile Metadata and all the scientific data (images/mask), stored in a GRANULE folder.

@@ -1,12 +1,25 @@
 # Inputs
 
+> [!NOTE]
+> The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
+
+Inputs required by Sen2VM are:
+* L1B Product, accessible through <mark>TODO</mark>
+* Some GIPP files (parameters files used in operational production), accessible through <mark>TODO</mark>
+* Digital Elevation Model (DEM), accessible through <mark>TODO</mark>
+* GEOID model to measure precise surface elevations,  accessible through <mark>TODO</mark>
+* IERS bulletin that provides data and standards related to Earth rotation and reference frames,  accessible through <mark>TODO</mark>
+* Additional information for configuration.
+
+Please note that Notebooks are available <mark>TODO to ease the configuration </mark>
 
 
-## 1 Configuration file
-The configuration file will contain all information about the product, the auxiliarry data and the operations to be performed.
-It  is a file in  [JSON format](https://en.wikipedia.org/wiki/JSON) and an example is available at: https://github.com/sen2vm/sen2vm-core/blob/main/src/test/resources/configuration_example.json
+## 1. Configuration
+The configuration is related to all information about:
 
-![Configuration file example](/assets/images/README_ConfigurationFileExample.png "Configuration file example.")
+* the product, and the auxiliarry data, 
+* the operations to be performed.
+
 
 Each parameter description can be found in the table below:
 
@@ -39,6 +52,13 @@ The field “inverse_location_additional_info” is not required and will be ign
 
 > [!NOTE]
 > Inverse location grids footprint will enclose desired product footprint [ul_x, ul_y, lr_x, lr_y]. 
+
+Those parameters can be send to Sen2 VM:
+
+* either by setting each argument in a command line <mark> see XXX</mark>
+* either using an input configuration file in  [JSON format](https://en.wikipedia.org/wiki/JSON). An example of configuration file is available at: https://github.com/sen2vm/sen2vm-core/blob/main/src/test/resources/configuration_example.json :
+
+![Configuration file example](/assets/images/README_ConfigurationFileExample.png "Configuration file example.")
 
 ### 1.1 L1B Product
 > [!NOTE]
@@ -143,7 +163,7 @@ Hence an IERS bulletin can be provided in input by users (as optional).
 
 Format of the IERS bulletin that can be provided is [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
 
-## 2 Parameters file
+## 2. Parameters file
 Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent model, user might want to process only parts of the Datastrip per thread. This capability is handled by SXGEO and was propagated to Sen2VM. This way, users can parallelize the process by itself, outside of Sen2VM.
 
 The selection of detectors and bands to process is defined in a JSON parameters file. **If this file is not provided, Sen2VM will process all detectors/bands**.
