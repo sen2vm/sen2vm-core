@@ -1,3 +1,4 @@
+Return to [README](../../README.md)
 
 ### 3.2 Inverse location grids
 An inverse location grid is a grid which maps ground coordinates with sensor ones.
@@ -78,3 +79,5 @@ Grids are intended to be used with bilinear interpolation operation. Inverse loc
 
 #### 3.2.4 Degraded cases
 Grids should at least have 2x2 cells.
+
+Return to [README](../../README.md)

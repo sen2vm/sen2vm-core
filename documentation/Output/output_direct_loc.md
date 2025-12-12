@@ -1,3 +1,5 @@
+Return to [README](../../README.md)
+
 ### 3.1 Direct location grids
 A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular and in sensor reference frame (for one  band/detector couple).
 
@@ -104,3 +106,5 @@ Direct location grids are intended to be used with bilinear interpolation operat
 
 #### 3.1.4 Degraded cases
 Grids should at least have 2x2 cells
+
+Return to [README](../../README.md)
