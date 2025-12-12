@@ -1,6 +1,13 @@
-Return to [README](../../README.md)
+[README](../../README.md)
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](..//Input/input_description.md)
+* Outputs:
 
-### 3.2 Inverse location grids
+  * [direct location grids](../Output/output_direct_loc.md)
+  * [inverse location grids](../Output/output_inverse_loc.md)
+  * [output grids usage](../Output/output_grids_usage.md)
+
+# Inverse location grids
 An inverse location grid is a grid which maps ground coordinates with sensor ones.
 Inverse location grids are georeferenced in **geographic or cartographic reference frame**.
 Inverse location grid is regular in **ground reference frame** (for one band and one detector).
@@ -15,7 +22,7 @@ To define the extend of the inverse location grid, parameters are described in s
 
 As output, a geolocation grid will be created **for each band and detector** to process.
 
-#### 3.2.1 Inverse location grids’ outputs
+## 1 Inverse location grids’ outputs
 
 Outputs will be **written in the folder provided by the user**. For inverse location grids, granule level is not foreseen, since granule footprint can result in large margins in projected data.
 
@@ -39,7 +46,7 @@ Example:
 > [!NOTE]
 > The configuration file used in input with the date/time will be added in with the vrt files
 
-#### 3.2.2 Inverse location grids’ specifications
+## 2 Inverse location grids’ specifications
 
 Inverse location grids **will give the coordinates in the “detector” image** reference frame, as if the granules from the same detector were concatenated into a single image.
  * Grid metadata:
@@ -62,7 +69,7 @@ As for example:
  
 
 
-#### 3.2.3 Grid handling
+## 3 Grid handling
 
 Grids are intended to be used with bilinear interpolation operation. Inverse locations (i.e image position given a ground position) should be as follow:
 
@@ -77,7 +84,16 @@ Grids are intended to be used with bilinear interpolation operation. Inverse loc
 
 
 
-#### 3.2.4 Degraded cases
+## 4 Degraded cases
 Grids should at least have 2x2 cells.
 
-Return to [README](../../README.md)
+#
+
+[README](../../README.md)
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](..//Input/input_description.md)
+* Outputs:
+
+  * [direct location grids](../Output/output_direct_loc.md)
+  * [inverse location grids](../Output/output_inverse_loc.md)
+  * [output grids usage](../Output/output_grids_usage.md)

@@ -1,6 +1,13 @@
-Return to [README](../../README.md)
+[README](../../README.md)
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](..//Input/input_description.md)
+* Outputs:
 
-### 3.1 Direct location grids
+  * [direct location grids](../Output/output_direct_loc.md)
+  * [inverse location grids](../Output/output_inverse_loc.md)
+  * [output grids usage](../Output/output_grids_usage.md)
+
+# Direct location grids
 A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular and in sensor reference frame (for one  band/detector couple).
 
 Sen2VM direct location grid computation takes as input the L1B product, the auxiliary information (see [L1B product](#211-l1b-product), [GIPP](#212-gipp), [Altitude](#123-altitude), [IERS](#214-iers)) and the grid parametrization:
@@ -13,14 +20,14 @@ As output:
     * several .vrt (virtual dataset) will be written (per detectors/bands).
     * The configuration file used in input with the date/time will be added in with the vrt files
 
-#### 3.1.1 Direct locations grids' outputs
+## 1 Direct locations grids' outputs
 Output grids will be integrated directly in the input product.
 >  [!CAUTION]
 > Please note that writing permissions in the L1B input folder are **mandatory**.
 
 Before processing, **a verification will be done** to determine whether direct location grids are already available in the input L1B product folder, for the detectors/bands selected. If at least one is present for one couple detector/band, Sen2VM **will raise an error and stop**. Both granules and datastrip folder will be inspected (see output grids format and location in the following sections).
 
-##### 3.1.1.1 Granule level
+### 1.1 Granule level
 Grids’ location and naming is at granules level:
 * 1 grid per couple “L1B granule”/”Sentinel-2 band”,
 * Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
@@ -39,7 +46,7 @@ The direct location grid will be generated in the GEO_DATA folder, and named:
 > [!NOTE]
 > The configuration file used in input with the date/time will be added in with the vrt files
 
-##### 3.1.1.2 Datastrip level
+### 1.2 Datastrip level
 At datastrip level grids’ location and naming is:
 * 1 vrt per couple “detector”/”Sentinel-2 band”,
 * Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
@@ -58,7 +65,7 @@ Example of product with grid inside it:
 
 ![Output example of Datastrip vrt for direct location grids](/assets/images/README_OutputDatastrip.PNG "Output example of Datastrip vrt for direct location grids.")
 
-#### 3.1.2 Direct location grids’ specifications
+## 2 Direct location grids’ specifications
 > [!NOTE]
 > To be consistent with granules convention with first pixel center, outputs grids have the same first pixel centres.
 
@@ -89,7 +96,7 @@ Example:
  
  
 
-#### 3.1.3 Grid handling
+## 3 Grid handling
 Direct location grids are intended to be used with bilinear interpolation operation. Direct location (i.e lon/lat positions) should be as follow:
 
  * Given an image position (_row_/_col_) compute grid fractional position (grid row, grid col):
@@ -104,7 +111,16 @@ Direct location grids are intended to be used with bilinear interpolation operat
 > [!TIP]
 > If user wants to perform direct location of a position outside the granule footprint, a bilinear extrapolation is possible.
 
-#### 3.1.4 Degraded cases
+## 4 Degraded cases
 Grids should at least have 2x2 cells
 
-Return to [README](../../README.md)
+#
+
+[README](../../README.md)
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](..//Input/input_description.md)
+* Outputs:
+
+  * [direct location grids](../Output/output_direct_loc.md)
+  * [inverse location grids](../Output/output_inverse_loc.md)
+  * [output grids usage](../Output/output_grids_usage.md)

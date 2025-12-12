@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 [README](../../README.md)
 
 * [HOWTO](../Usage/HOWTO.md)
@@ -33,19 +34,39 @@ Direct location grids can be used to perform a resampling. It can be done using 
 ### 1.1 Using gdal
 =======
 Return to [README](../../README.md)
+=======
+[README](../../README.md)
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](..//Input/input_description.md)
+* Outputs:
+>>>>>>> 29d6343 (Continue work on Doc)
 
-### 1.3 Example of grids usage
+  * [direct location grids](../Output/output_direct_loc.md)
+  * [inverse location grids](../Output/output_inverse_loc.md)
+  * [output grids usage](../Output/output_grids_usage.md)
+
+# Example of usage of of the output grids
+
+Please note that:
+
+* thoses examples are also implemented in <mark>Notebooks</marks>
+* gdal is used in those examples, which required a specific version
+* [OTB](https://www.orfeo-toolbox.org/CookBook/Applications/app_GridBasedImageResampling.html) can also be used in parallel, with finer tuning
 
 > [!CAUTION]
-> gdal version shall be compatible with the new Sen2VM grids. Official gdal does not yet include this driver/possibility. A [Pull Request](https://github.com/OSGeo/gdal/pull/12431 ) is currently opened, but in the meantime, this gdal version can be find [here](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c)
+> gdal version shall be compatible with the new Sen2VM grids. GDAL version 3.12 is then required
 
 
-#### 1.3.1 Resampling using direct locations grids
+## 1 Resampling using direct locations grids
 
 Direct location grids can be used to preform a resampling. It can be done using gdal or using [OTB](https://www.orfeo-toolbox.org/CookBook/Applications/app_GridBasedImageResampling.html) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
 
+<<<<<<< HEAD
 ##### 1.3.1.1 Using gdal
 >>>>>>> 13bda4c (Continue work on Documentation)
+=======
+### 1.1 Using gdal
+>>>>>>> 29d6343 (Continue work on Doc)
 
 L1B with geolocation grids are seamlessly handled by gdal through the development of a dedicated S2 L1B gdal driver.  
 
@@ -66,12 +87,16 @@ gdal_warp SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_OPER_MTD_SAFL1B_PDMC_2024
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### 1.2 Using otb
 
 This method can be resumed into three main steps:
 
 =======
 ##### 1.3.1.2 Using otb
+=======
+### 1.2 Using otb
+>>>>>>> 29d6343 (Continue work on Doc)
 This method can be resumed into three main steps:
 >>>>>>> 13bda4c (Continue work on Documentation)
  * Creation of a mosaic of all images,
@@ -125,10 +150,14 @@ Necessary prerequisites:
  * pathlib
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## 2 Resampling using inverse location grids
 =======
 #### 1.3.2 Resampling using inverse locations grids
 >>>>>>> 13bda4c (Continue work on Documentation)
+=======
+## 2 Resampling using inverse locations grids
+>>>>>>> 29d6343 (Continue work on Doc)
 
 > [!CAUTION]
 > Please note that there is currently an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on the OTB side. Until corrected, **the grid information must be adjusted by half the resolution of the target pixel** (spacing) in both directions, to be synchronised as following:
@@ -164,6 +193,7 @@ gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PAT
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # 
 
 [README](../../README.md)
@@ -182,3 +212,15 @@ gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PAT
 =======
 Return to [README](../../README.md)
 >>>>>>> 13bda4c (Continue work on Documentation)
+=======
+# 
+
+[README](../../README.md)
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](..//Input/input_description.md)
+* Outputs:
+
+  * [direct location grids](../Output/output_direct_loc.md)
+  * [inverse location grids](../Output/output_inverse_loc.md)
+  * [output grids usage](../Output/output_grids_usage.md)
+>>>>>>> 29d6343 (Continue work on Doc)
