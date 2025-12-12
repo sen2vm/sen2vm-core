@@ -19,11 +19,11 @@ This documentation is split into 6 parts:
 
 ## 1. L1B format description
 
-Sentinel-2 L1C products are store by tile, geolocated one ground. One Sentinel-2 acquisition (hereby called **Datastrip**) cover sevral L1C tiles. For each acquisition, several L1C tiles are create (with some not fully covered, with NoData inside). Each tile contains, a Datastrip metadata (duplicated in each L1C tiles generated), a Tile Metadata and all the scientific data (images/mask), stored in a GRANULE folder.
+Sentinel-2 L1C products are stored by tiles, geolocated on ground. One Sentinel-2 acquisition (hereby called **Datastrip**) cover several L1C tiles. For each acquisition, several L1C tiles are create (with some not fully covered, with NoData inside). Each tile contains, a Datastrip metadata (duplicated in each L1C tiles generated), a Tile Metadata and all the scientific data (images/mask), stored in a GRANULE folder.
 
 <mark>**TODO describe detectors**</mark>
 
-At L1B, data is not yet split in L1C tile. Instead, data is split per GRANULE. One granule is an Along-Track portion of one Detector acquisition.
+At L1B, data is not yet split in L1C tiles. Instead, data is split per GRANULE. One granule is an Along-Track portion of one Detector acquisition.
 
 <mark>**TODO Finished L1B description**</mark>
 

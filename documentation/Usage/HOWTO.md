@@ -1,4 +1,4 @@
-Return to [README](README.md)
+Return to [README](../../README.md)
 
 # HOWTO
 
@@ -22,6 +22,7 @@ Also available: how to compile <mark>TODO<mark>
 ```
 docker build . -t sen2vm
 ```
+
 * Launch Sen2vm using the following command:
 ```
 docker run -it --rm -v [input-data]:[/mounted-name] sen2vm -c [configuration_filepath] [-p [parameters_filepath]]
