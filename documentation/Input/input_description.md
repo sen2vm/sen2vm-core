@@ -1,4 +1,11 @@
-Return to [README](../../README.md)
+[README](../../README.md)
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](..//Input/input_description.md)
+* Outputs:
+
+  * [direct location grids](../Output/output_direct_loc.md)
+  * [inverse location grids](../Output/output_inverse_loc.md)
+  * [output grids usage](../Output/output_grids_usage.md)
 
 # Inputs
 
@@ -183,4 +190,13 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 > [!TIP]
 > It is to be noted that a small optimization in SXGEO is done not to reload DEM tiles when processing bands of the same resolution for the same detector.
 
-Return to [README](../../README.md)
+#
+
+[README](../../README.md)
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](..//Input/input_description.md)
+* Outputs:
+
+  * [direct location grids](../Output/output_direct_loc.md)
+  * [inverse location grids](../Output/output_inverse_loc.md)
+  * [output grids usage](../Output/output_grids_usage.md)
