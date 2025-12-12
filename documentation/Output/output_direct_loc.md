@@ -1,28 +1,9 @@
-[README](../../README.md)
-
-* [HOWTO](../Usage/HOWTO.md)
-* [Inputs description](../Input/input_description.md)
-
-  * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
-
-* Outputs description:
-
-  * [Direct location grids](../Output/output_direct_loc.md)
-  * [Inverse location grids](../Output/output_inverse_loc.md)
-  * [Output grids usage](../Output/output_grids_usage.md)
-
-
-# Direct location grids
-
+### 3.1 Direct location grids
 A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular and in sensor reference frame (for one  band/detector couple).
 
-Sen2VM direct location grid computation takes as input the L1B product, the auxiliary information, GIPP, Altitude, IERS and the grid parametrization:
-
-* Bands/detectors to process,
-* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (double)
-
-For more details, please refer to [Input Description](../Input/input_description.md).
+Sen2VM direct location grid computation takes as input the L1B product, the auxiliary information (see [L1B product](#211-l1b-product), [GIPP](#212-gipp), [Altitude](#123-altitude), [IERS](#214-iers)) and the grid parametrization:
+* Bands/detectors to process ([Parameters File](#22-parameters-file)),
+* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (double) [Configuration File](#21-configuration-file).
 
 As output:
 * At granule level: geolocation grids will be written (per granules/bands).
@@ -30,64 +11,52 @@ As output:
     * several .vrt (virtual dataset) will be written (per detectors/bands).
     * The configuration file used in input with the date/time will be added in with the vrt files
 
-## 1 Direct locations grids' outputs
-
+#### 3.1.1 Direct locations grids' outputs
 Output grids will be integrated directly in the input product.
 >  [!CAUTION]
 > Please note that writing permissions in the L1B input folder are **mandatory**.
 
 Before processing, **a verification will be done** to determine whether direct location grids are already available in the input L1B product folder, for the detectors/bands selected. If at least one is present for one couple detector/band, Sen2VM **will raise an error and stop**. Both granules and datastrip folder will be inspected (see output grids format and location in the following sections).
 
-### 1.1 Granule level
-
+##### 3.1.1.1 Granule level
 Grids’ location and naming is at granules level:
-
 * 1 grid per couple “L1B granule”/”Sentinel-2 band”,
 * Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
 * Grids are in **geotiff format with float32 coding positions** which allow approximately centimetre precision for lat/lon coordinates. JP2000 is not suitable, as it does not support Float32 encoding, resulting in insufficient precision.
 * Grids location will be inside a **GEO_DATA folder** which will be inside each granules folders (at the same level than IMG_DATA and QI_DATA folders),
 * Grids naming conventions will respect the corresponding image data inside the IMG_DATA folder with:
-
     * GEO instead of MSI
     * .tif instead of .jp2 extension as jp2 encoding is not possible for float32 data.
 
 As example, for an image of the IMG_DATA folder, named:
-
 * S2B_OPER_**MSI**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.<strong>jp2</strong>
 
 The direct location grid will be generated in the GEO_DATA folder, and named:
-
 * S2B_OPER_**GEO**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.<strong>tif</strong>
 
 > [!NOTE]
 > The configuration file used in input with the date/time will be added in with the vrt files
 
-### 1.2 Datastrip level
-
+##### 3.1.1.2 Datastrip level
 At datastrip level grids’ location and naming is:
-
 * 1 vrt per couple “detector”/”Sentinel-2 band”,
 * Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
 * Grid location will be located inside a **GEO_DATA folder**, which resides within the **DATASTRIP** directory, at the same level as the QI_DATA folder.
 * Grids naming conventions will respect the corresponding datastrip metadata convention with:
-
     * **GEO** instead of **MTD**
     * <strong>_DXX_BYY.vrt</strong> instead of <strong>.xml</strong> extension.
 
 As example, for an datastrip metadata of the DATASTRIP folder, named:
-
 * S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>.xml</strong>
 
 A folder named GEO_DATA, beside the QI_DATA folder and datastrip metadata will contain 156 vrt files (12 detectors x 13 bands) named:
-
 * S2B_OPER_**GEO**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.vrt</strong>
 
 Example of product with grid inside it:
 
 ![Output example of Datastrip vrt for direct location grids](/assets/images/README_OutputDatastrip.PNG "Output example of Datastrip vrt for direct location grids.")
 
-## 2 Direct location grids’ specifications
-
+#### 3.1.2 Direct location grids’ specifications
 > [!NOTE]
 > To be consistent with granules convention with first pixel center, outputs grids have the same first pixel centres.
 
@@ -118,8 +87,7 @@ Example:
  
  
 
-## 3 Grid handling
-
+#### 3.1.3 Grid handling
 Direct location grids are intended to be used with bilinear interpolation operation. Direct location (i.e lon/lat positions) should be as follow:
 
  * Given an image position (_row_/_col_) compute grid fractional position (grid row, grid col):
@@ -134,22 +102,5 @@ Direct location grids are intended to be used with bilinear interpolation operat
 > [!TIP]
 > If user wants to perform direct location of a position outside the granule footprint, a bilinear extrapolation is possible.
 
-## 4 Degraded cases
-
+#### 3.1.4 Degraded cases
 Grids should at least have 2x2 cells
-
-#
-
-[README](../../README.md)
-
-* [HOWTO](../Usage/HOWTO.md)
-* [Inputs description](../Input/input_description.md)
-
-  * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
-
-* Outputs description:
-
-  * [Direct location grids](../Output/output_direct_loc.md)
-  * [Inverse location grids](../Output/output_inverse_loc.md)
-  * [Output grids usage](../Output/output_grids_usage.md)
