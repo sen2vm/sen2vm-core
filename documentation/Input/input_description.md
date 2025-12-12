@@ -1,3 +1,5 @@
+Return to [README](../../README.md)
+
 # Inputs
 
 > [!NOTE]
@@ -180,3 +182,5 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 
 > [!TIP]
 > It is to be noted that a small optimization in SXGEO is done not to reload DEM tiles when processing bands of the same resolution for the same detector.
+
+Return to [README](../../README.md)

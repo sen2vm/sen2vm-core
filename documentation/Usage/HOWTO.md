@@ -84,3 +84,5 @@ docker pull ghcr.io/sen2vm/sen2vm-build-env:<tag>
 docker run -it --rm --user $UID:$GID -v <sen2vm-core-folder>:/Sen2vm ghcr.io/sen2vm/sen2vm-build-env:latest bash
 ```
 * Execute the running java commands inside the opening bash.
+
+Return to [README](../../README.md)
