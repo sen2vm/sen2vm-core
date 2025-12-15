@@ -1,6 +1,8 @@
 # Project sen2vm-core
 The Sen2VM core is a standalone tool designed to generate geolocation grids that will be included in the Level-1B (L1B) product. Its primary function is to create direct location grids, mapping the L1B product in sensor geometry down to the ground. Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
 
+Sen2VM is released nder under the Apache License, Version 2.0 (the "License"); its licence file can be accessible in [LICENSE](LINCENSE) file.
+
 Please note that Sen2VM exists implemented as a SNAP plugin, which calls the Sen2VM standalone tool during execution.
 
 This documentation is split into 4 parts:
