@@ -1,6 +1,7 @@
 package esa.sen2vm.input;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 import java.io.File;
 import java.util.List;
@@ -107,6 +108,7 @@ public class SafeManager
             {
                 if (listOfFiles[i].isDirectory())
                 {
+                    LOGGER.info("setAndProcessDataStrip listOfFiles"+listOfFiles[i].toString());
                     this.datastrip = new Datastrip(listOfFiles[i]);
                 }
             }

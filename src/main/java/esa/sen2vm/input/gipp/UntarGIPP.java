@@ -3,11 +3,14 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 import java.io.*;
 import java.nio.file.*;
 
 public class UntarGIPP {
-    
+    private static final Logger LOGGER = Logger.getLogger(GIPPFileManager.class.getName());
     /**
      * Extracts a .tar file into targetDir.
      * Existing files are replaced.
@@ -28,17 +31,18 @@ public class UntarGIPP {
      * Extracts a .tar.gz / .tgz file into targetDir.
      * Existing files are replaced.
      */
-    public static void untarGz(Path tarGzFile, Path targetDir) throws IOException {
+    public static List<Path> untarGz(Path tarGzFile, Path targetDir) throws IOException {
         // Ensure target directory exists
         Files.createDirectories(targetDir);
-
+        List<Path> listPaths = new ArrayList<>();
         try (InputStream fis = Files.newInputStream(tarGzFile);
              BufferedInputStream bis = new BufferedInputStream(fis);
              GzipCompressorInputStream gis = new GzipCompressorInputStream(bis);
              TarArchiveInputStream tis = new TarArchiveInputStream(gis)) {
 
-            extractAllEntries(tis, targetDir);
+            listPaths = extractAllEntries(tis, targetDir);
         }
+        return listPaths;
     }
 
     /**
@@ -47,10 +51,10 @@ public class UntarGIPP {
      * - Replaces existing files
      * - Prevents Zip Slip (path traversal)
      */
-    private static void extractAllEntries(TarArchiveInputStream tis, Path targetDir) throws IOException {
+    private static List<Path> extractAllEntries(TarArchiveInputStream tis, Path targetDir) throws IOException {
         ArchiveEntry entry;
         byte[] buffer = new byte[8192];
-
+        List<Path> listPaths = new ArrayList<>();
         while ((entry = tis.getNextEntry()) != null) {
             // Normalize entry path and prevent writing outside targetDir (Zip Slip protection)
             Path entryPath = targetDir.resolve(entry.getName()).normalize();
@@ -79,9 +83,11 @@ public class UntarGIPP {
                 while ((len = tis.read(buffer)) != -1) {
                     os.write(buffer, 0, len);
                 }
+                listPaths.add(entryPath);
             }
 
         }
+        return listPaths;
     }
 
 }

@@ -1,6 +1,7 @@
 package esa.sen2vm.input.gipp;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -68,6 +69,11 @@ public class GIPPManager
     private Boolean gippVersionCheck;
 
     /**
+     * List of gipp retrieved from the datastrip metadata
+     */
+    private List<String> gippList = new ArrayList<>();
+
+    /**
      * Load GIPP from XML folder
      * @param gippFolder path to a folder that contains all the GIPP required
      * @param bands a list of all the bands that will be (comes from parameter configuration file)
@@ -87,14 +93,19 @@ public class GIPPManager
         {
             throw new Sen2VMException(e);
         }
-
+       
         this.dataStripManager = dataStripManager;
         this.gippVersionCheck = gippVersionCheck;
-        this.gippFileManager = new GIPPFileManager(gippFolder);
+        if(gippVersionCheck)
+        {
+            this.gippList = dataStripManager.getGIPPListFromAux();
+        }
+        this.gippFileManager = new GIPPFileManager(gippFolder,this.gippList);
         this.viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
 
         loadAllGIPP(bands);
     }
+
 
     /*
      * Function to load all GIPP
@@ -103,6 +114,7 @@ public class GIPPManager
      */
     protected void loadAllGIPP(List<BandInfo> bands) throws Sen2VMException
     {
+
         // Load blind pixel gipp
         File fileBlindPixel = null;
         try

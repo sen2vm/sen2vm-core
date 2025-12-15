@@ -27,7 +27,7 @@ public class Configuration extends InputFileManager
     private String configPath;
     private String l1bProduct;
     private String gippFolder;
-    private boolean gippVersionCheck = Sen2VMConstants.GIPP_CHECK;
+    private boolean gippVersionCheck = Sen2VMConstants.AUTO_GIPP_SELECTION;
     private boolean gridsOverwriting = Sen2VMConstants.GRIDS_OVERWRITING;
     private String dem;
     private String geoid;
@@ -86,7 +86,7 @@ public class Configuration extends InputFileManager
         }
         
         // By default we want the check of GIPP version. The option deactivate the check
-        if (commandLine.hasOption(OptionManager.OPT_DEACTIVATE_GIPP_CHECK_SHORT))
+        if (commandLine.hasOption(OptionManager.OPT_DEACTIVATE_AUTO_GIPP_SELECTION_SHORT))
         {
             this.gippVersionCheck  = false;
         }
@@ -187,9 +187,9 @@ public class Configuration extends InputFileManager
             this.exportAlt = jsonObject.getBoolean("export_alt");
 
             // Optional parameters
-            if (jsonObject.has("gipp_version_check"))
+            if (jsonObject.has("auto_gipp_selection"))
             {
-                this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
+                this.gippVersionCheck = jsonObject.getBoolean("auto_gipp_selection");
             }
             if (jsonObject.has("grids_overwritings"))
             {

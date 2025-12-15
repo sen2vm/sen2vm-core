@@ -129,7 +129,7 @@ public class Sen2VMInverseTest
        {
             String nameTest = "testInverseGipp";
             String outputDir = Config.createTestDir(nameTest, "inverse");
-            String config = Config.configCheckGipp(configTmpInverse, GIPP_2, false, outputDir);
+            String config = Config.configAutoGippSelection(configTmpInverse, GIPP_2, false, outputDir);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);

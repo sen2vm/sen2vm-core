@@ -163,7 +163,7 @@ public class Config
         return outputConfig;
     }
 
-    public static String configCheckGipp(String filePath, String gippPath, boolean checkGipp, String l1b_product)
+    public static String configAutoGippSelection(String filePath, String gippPath, boolean autoGippSelection, String l1b_product)
         throws FileNotFoundException, IOException, ParseException
     {
         JSONParser parser = new JSONParser();
@@ -171,7 +171,7 @@ public class Config
 
         JSONObject objJson = (JSONObject) obj;
         objJson.put("gipp_folder", gippPath);
-        objJson.put("gipp_version_check", checkGipp);
+        objJson.put("auto_gipp_selection", autoGippSelection);
         objJson.put("l1b_product", l1b_product);
 
         JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");

@@ -3,6 +3,7 @@ package esa.sen2vm.input.gipp;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -68,8 +70,17 @@ public class GIPPFileManager
      * @return a list that contains all GIPP files that correspond to the input regex
      * @throws Sen2VMException
      */
-    public static List<File> findGippFiles(Path root, String dirNameRegex, String fileNameRegex, List<String> validExtensions) throws IOException {
-        final Pattern dirPattern = Pattern.compile(dirNameRegex);
+    public static List<File> findGippFiles(Path root, String dirNameRegex, List<String> gippList, String fileNameRegex, List<String> validExtensions) throws IOException {
+        if(gippList.isEmpty())
+        {
+            return searchGIPFilesFromRegex(root, dirNameRegex, fileNameRegex, validExtensions);
+        }else{
+            return searchGIPFilesFromList(root, dirNameRegex, gippList, validExtensions);
+        }
+    }
+
+    public static List<File> searchGIPFilesFromRegex(Path root, String dirNameRegex, String fileNameRegex, List<String> validExtensions) throws IOException {
+                final Pattern dirPattern = Pattern.compile(dirNameRegex);
         final Pattern filePattern = Pattern.compile(fileNameRegex);
         final List<File> results = new ArrayList<>();
         // Stack indicating whether we are currently in a qualified subtree
@@ -115,7 +126,82 @@ public class GIPPFileManager
             }
         });
         return results;
+    }
+
+    public static List<File> searchGIPFilesFromList(Path root, String dirNameRegex, List<String> gippList, List<String> validExtensions) throws IOException {
+        final List<File> results = new ArrayList<>();
+        final List<String> fileNames = new ArrayList<>();
+        final List<String> tarExtension = Arrays.asList("TGZ", "tar.gz","tgz");
+        for(String gippName:gippList)
+        {
+            final Pattern filePattern = Pattern.compile(gippName);
+            // Stack indicating whether we are currently in a qualified subtree
+            Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+
+                @Override
+                public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) {
+                    // boolean inQualifiedSubtree = !qualifiedStack.isEmpty() && qualifiedStack.peek();
+                    String fileName = filePath.getFileName() != null ? filePath.getFileName().toString() : filePath.toString();
+                    String fileNameWithoutExtension = fileName;
+                    if(!Files.isDirectory(filePath.toAbsolutePath())){
+                        fileNameWithoutExtension = getFilepathWithoutExtension(new File(fileName));
+                    }
+                    if (filePattern.matcher(fileNameWithoutExtension).matches())
+                    {
+                        File file = filePath.toFile();
+                        String extension = getFileExtension(file);
+                        if(validExtensions.stream().anyMatch(item -> item.contains(extension)))
+                        {
+                            if( !fileNames.contains(file.getName()))
+                            {
+                                results.add(file);
+                                fileNames.add(file.getName());
+                            }
+                        }else if(tarExtension.stream().anyMatch(item -> item.contains(extension)))
+                        {
+                            try{
+                                List<Path> listPath = UntarGIPP.untarGz(file.toPath(), Paths.get(file.getParent()));
+                                for(Path untarPath:listPath){
+                                    File untarFile = untarPath.toFile();
+                                    String untarFileExtension = getFileExtension(untarFile);
+                                    if(validExtensions.stream().anyMatch(item -> item.contains(untarFileExtension)))
+                                    {
+                                        if(!results.contains(untarFile) || !fileNames.contains(untarFile.getName())){
+                                            results.add(untarFile);
+                                            fileNames.add(untarFile.getName());
+                                        }
+                                    }
+                                }
+                                Files.deleteIfExists(file.toPath());
+                                LOGGER.info("Untar GIPP: "+file.toString());
+                            }catch(IOException e)
+                            {
+                                LOGGER.warning("The targz extraction of GIPP has been failed:"+file.toString());
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
         }
+        return results;
+    }
+
+    public static List<String> typedGIPPList(List<String> gippList, String gippType)
+    {
+        Pattern pattern = Pattern.compile(".*"+gippType+".*");
+        List<String> filteredGIPList = new ArrayList<>();
+        for (String item : gippList) {
+            Matcher matcher = pattern.matcher(item);
+            if (matcher.matches()) {
+                filteredGIPList.add(item);
+            }
+        }
+        return filteredGIPList;
+    }
 
      /**
      * Get GIPP files of a specific type by passing a regex
@@ -126,8 +212,8 @@ public class GIPPFileManager
      * @return a GIPP file that correspond to the input regex
      * @throws Sen2VMException
      */
-    public static File findGippFile(Path root, String dirNameRegex, String fileNameRegex, List<String> validExtensions) throws IOException, Sen2VMException {
-        final List<File> results = findGippFiles(root, dirNameRegex, fileNameRegex, validExtensions);
+    public static File findGippFile(Path root, String dirNameRegex, List<String> gippList, String fileNameRegex, List<String> validExtensions) throws IOException, Sen2VMException {
+        final List<File> results = findGippFiles(root, dirNameRegex, gippList, fileNameRegex, validExtensions);
         if(results.size()==0)
         {
             throw new Sen2VMException("The directory must be contains keyword:"+fileNameRegex); 
@@ -179,7 +265,27 @@ public class GIPPFileManager
     {
         String fileName = file.getName();
         int lastDotIndex = fileName.lastIndexOf('.');
+        if(fileName.contains(".tar.gz"))
+        {
+            lastDotIndex = fileName.lastIndexOf(".tar");
+        }
         return (lastDotIndex == -1) ? "": fileName.substring(lastDotIndex + 1);
+    }
+
+    /**
+     * Remove the extension file from the filepath
+     * @param the filepath to parse
+     * @return a string that represents the absolute filepath without the extension file
+     */
+    private static String getFilepathWithoutExtension(File file)
+    {
+        String fileName = file.getPath();
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if(fileName.contains(".tar.gz"))
+        {
+            lastDotIndex = fileName.lastIndexOf(".tar");
+        }
+        return (lastDotIndex == -1) ? fileName: fileName.substring(0, lastDotIndex);
     }
 
     /**
@@ -187,7 +293,7 @@ public class GIPPFileManager
      * @param folder contains the GIPP xml files
      * @throws Sen2VMException
      */
-    public GIPPFileManager(String folder) throws Sen2VMException
+    public GIPPFileManager(String folder, List<String> gippList) throws Sen2VMException
     {
         LOGGER.info("Get through GIPP folder: "+ folder);
         List<String> validExtensions = Arrays.asList(Sen2VMConstants.xml_extention_small,
@@ -196,19 +302,35 @@ public class GIPPFileManager
                                                      Sen2VMConstants.dbl_extention_big);
 
         Path gippFolder = new File(folder).toPath();
-        
-        try{
-            // untar all GIPP files nad remove all tgz files
-            // untarAllGIPP(gippFolder);
-
+        String blindPixelGIPType = "GIP_BLINDP";
+        String spamodGIPType = "GIP_SPAMOD";
+        String viewingDirGIPType = "GIP_VIEDIR";
+        List<String> blindPixelGIPList = new ArrayList();
+        List<String> spamodGIPList = new ArrayList();
+        List<String> viewingDirGIPList = new ArrayList();
+        if(!gippList.isEmpty())
+        {
             // get blind pixel file
-            blindPixelFile = findGippFile(gippFolder, "GIP_BLINDP",Sen2VMConstants.GIPP_BLINDP_PAT, validExtensions);
+            blindPixelGIPList =typedGIPPList(gippList, blindPixelGIPType);
+            blindPixelGIPList.stream().forEach(System.out::println);
+
+            // get spacecraft model file
+            spamodGIPList =typedGIPPList(gippList, spamodGIPType);
+            spamodGIPList.stream().forEach(System.out::println);
+
+            // get viewing direction file
+            viewingDirGIPList =typedGIPPList(gippList, viewingDirGIPType);
+            spamodGIPList.stream().forEach(System.out::println);
+        }
+        try{
+            // get blind pixel file
+            blindPixelFile = findGippFile(gippFolder, blindPixelGIPType, blindPixelGIPList, Sen2VMConstants.GIPP_BLINDP_PAT, validExtensions);
             
             // get spacecraft model file
-            spaModFile = findGippFile(gippFolder, "GIP_SPAMOD",Sen2VMConstants.GIPP_SPAMOD_PAT, validExtensions);
+            spaModFile = findGippFile(gippFolder, spamodGIPType, spamodGIPList, Sen2VMConstants.GIPP_SPAMOD_PAT, validExtensions);
             
             // get viewing direction file
-            viewingDirectionFileList = findGippFiles(gippFolder, "GIP_VIEDIR", Sen2VMConstants.GIPP_VIEWDIR_PAT, validExtensions);
+            viewingDirectionFileList = findGippFiles(gippFolder, viewingDirGIPType, viewingDirGIPList, Sen2VMConstants.GIPP_VIEWDIR_PAT, validExtensions);
         }catch(IOException e)
         {
             throw new Sen2VMException(e);

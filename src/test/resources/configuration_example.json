@@ -1,7 +1,7 @@
 {
   "l1b_product": "/Sen2vm/sen2vm-core/src/test/resources/20240805_24303121_g-GEibNG/S2B_MSIL1B_20240804T080609_N0511_R078_20240805T075818.SAFE",
   "gipp_folder": "/Sen2vm/sen2vm-core/src/test/resources/20240805_24303121_g-GEibNG/GIPP_Sen2VM/",
-  "gipp_version_check": true,
+  "auto_gipp_selection": false,
   "dem": "/Sen2vm/sen2vm-core/tests/resources/DEM_SRTM",
   "geoid": "/Sen2vm/sen2vm-core/tests/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx",
   "iers": "/Sen2vm/sen2vm-core/src/test/resources/20240805_24303121_g-GEibNG/IERS/S2__OPER_AUX_UT1UTC_PDMC_20240801T000000_V20240802T000000_20250801T000000.txt",
