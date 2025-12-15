@@ -32,7 +32,9 @@ This documentation is split into 5 parts:
 >[!NOTE]
 > If you want to compile Sen2VM by yourself, please refer to dedicated [HOWTO section](documentation/Usage/HOWTO.md)
 
-<mark> TODO: Schema of how all Sen2VM projects are linked</mark>
+Regarding the several git repository, here is a schema on how they are linked together:
+![Git links](/assets/images/README_Git_links.png "Git links")
+
 
 ## 1. L1B format description
 

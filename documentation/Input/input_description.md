@@ -13,14 +13,14 @@
 > The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
 Inputs required by Sen2VM are:
-* L1B Product, accessible through <mark>TODO</mark>
-* Some GIPP files (parameters files used in operational production), accessible through <mark>TODO</mark>
+* L1B Product, accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/). *Please note that special access for L1B products might be required by submitting  a request via the FAQ section.*
+* Some GIPP files *(parameters files used in operational production, defining Satellites)*, accessible through [sen2vm-gipp-database](https://github.com/sen2vm/sen2vm-gipp-database)
 * Digital Elevation Model (DEM), accessible through <mark>TODO</mark>
-* GEOID model to measure precise surface elevations,  accessible through <mark>TODO</mark>
-* IERS bulletin that provides data and standards related to Earth rotation and reference frames,  accessible through <mark>TODO</mark>
+* GEOID model to measure precise surface elevations, **it shall be the one used to generate the DEM you are providing**, an example can accessible through [sen2vm-core git](../../src/test/resources/DEM_GEOID/) <mark>TODO-verify that CDSE is providing GEOID</mark>vm-core g
+* IERS bulletin that provides data and standards related to Earth rotation and reference frames,  accessible through [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
 * Additional information for configuration.
 
-Please note that Notebooks are available <mark>TODO to ease the configuration </mark>
+Please note that Notebooks are available to ease configuration and usage <mark>TODO: put links. Does it also ease the download ?</mark>
 
 
 ## 1. Configuration
@@ -70,6 +70,7 @@ Those parameters can be send to Sen2 VM:
 ![Configuration file example](/assets/images/README_ConfigurationFileExample.png "Configuration file example.")
 
 ### 1.1 L1B Product
+
 > [!NOTE]
 > L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). Please note that special access for L1B products might be required by submitting  a request via the FAQ section.
 
@@ -77,6 +78,7 @@ Those parameters can be send to Sen2 VM:
 > The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated in the following sections.
 
 #### 1.1.1 L1B Product input tree structure
+
 The mandatory inputs for Sen2VM are the Datastrip and the Granules metadata. 
 
 These metadata must be organized in a specific directory structure. Within the L1B folder, only the following subdirectories will be considered:
@@ -107,7 +109,9 @@ Refining information can be found in the Datastrip metadata. If refined, the mod
 An optional boolean argument is available in the configuration file (see §[2.1 Configuration file](#21-configuration-file)): deactivate_available_refining.
 > [!WARNING]
 > **By default, it is set at false**, meaning that the refining **information shall be taken into account** if available in the Datastrip Metadata. However, **if set at true**, the datastrip shall be **considered as NOT_REFINED**, meaning ignoring the refining information.
-#### 2.1.2 GIPP
+
+### 1.2 GIPP
+
 GIPP are configuration files used in operation to:
 * represent the stable satellite information,
 * configure calibration parameters of the satellite,
@@ -133,6 +137,7 @@ The GIPP required are the following ones:
 * **GIP_BLINDP**: contains information on blind pixel, contained in BLIND_PIXEL_NUMBER tag: _[DATA/BAND/BLIND_PIXEL_NUMBER]_, available **per band**
 
 ### 1.3 Altitude
+
 The main purpose of the tool is to add geolocation to the L1B product images. Hence to be precise, the altitude shall be taken into account, as its importance is far from neglectable on final geolocation, as illustrated below:
 
 ![Altitude importance on geolocation](/assets/images/README_AltitudeImportanceOnGeolocation.png "Altitude importance on geolocation.")
@@ -140,6 +145,7 @@ The main purpose of the tool is to add geolocation to the L1B product images. He
 For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used. So, path of both shall be provided in input (cf §[2.1 Configuration file](#21-configuration-file)).
 
 #### 1.3.1 DEM
+
 Access to the DEM is provided via a path to a folder containing the dataset. 
 The DEM must meet the following requirements:
  * it should be split into files or folders (dynamically read) per square degrees,
@@ -148,10 +154,12 @@ The DEM must meet the following requirements:
  Examples of DEM structures can be found in [/src/test/resources/DEM/](/src/test/resources/DEM)
 
 #### 1.3.2 GEOID
+
 The GEOID shall be readable by gdal. One example of GEOID is available at [S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx](/src/test/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx)
 
 
 ### 1.4 IERS
+
 The IERS represents the ["International Earth Rotation and Reference Systems"](https://www.iers.org/IERS/EN/Home/home_node.html). It is important to have a valid and precise one to get a precise geolocation. During operational processing of the Sentinel-2 data, IERS information are integrated in the L1B metadata datastrip, hence IERS information are available in the L1B product used in input, in the field _Level-1B_DataStrip_ID/Auxiliary_Data_Info/IERS_Bulletin_ as illustrated below:
 
 ![IERS information in L1B Datastrip metadata](/assets/images/README_IERSInformationInL1BDatastripMetadata.png "IERS information in L1B Datastrip metadata.")
@@ -173,6 +181,7 @@ Hence an IERS bulletin can be provided in input by users (as optional).
 Format of the IERS bulletin that can be provided is [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
 
 ## 2. Parameters file
+
 Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent model, user might want to process only parts of the Datastrip per thread. This capability is handled by SXGEO and was propagated to Sen2VM. This way, users can parallelize the process by itself, outside of Sen2VM.
 
 The selection of detectors and bands to process is defined in a JSON parameters file. **If this file is not provided, Sen2VM will process all detectors/bands**.
