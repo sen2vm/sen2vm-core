@@ -8,7 +8,6 @@
   * [output grids usage](documentation/Output/output_grids_usage.md)
 
 
-
 # Project sen2vm-core
 
 * Its primary function is to create **direct location grids**, mapping the L1B product in sensor geometry down to the ground.
@@ -47,6 +46,8 @@ At L1B (as in L0 and L1A), data is not yet split in L1C tiles. Instead, data is 
 ![Sentinel-2 Format Intro](/assets/images/README_Format_Intro.png "Format Intro")
 
 ![Sentinel-2 Format Intro](/assets/images/README_Format_L1B.png "Format Intro")
+
+For more details, please see <mark>[Official L1B Documentation](TODO)</mark>
 
 ## 2. Quickstart
 
@@ -136,7 +137,6 @@ Tests are more detailed in:
 
 It is to be noted that orthorectification using Sen2VM gave equivalent results than Operationnal orthorectification. In image below, no visual shift can be seen (precise mesured in report above), however, difference between LB radiance and LC reflectance can be observed:
 ![L1B Ortho versus L1C Operationnal Ortho](assets/images/README_Ortho_GIF.gif)
-
 
 # 
 
