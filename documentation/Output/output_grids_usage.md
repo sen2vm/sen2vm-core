@@ -7,7 +7,7 @@
   * [Inverse location grids](../Output/output_inverse_loc.md)
   * [Output grids usage](../Output/output_grids_usage.md)
 
-# Example of usage of of the output grids
+# Example of usage of the output grids
 
 Please note that:
 
@@ -19,9 +19,9 @@ Please note that:
 > gdal version shall be compatible with the new Sen2VM grids. GDAL version 3.12 is then required
 
 
-## 1 Resampling using direct locations grids
+## 1 Resampling using direct location grids
 
-Direct location grids can be used to preform a resampling. It can be done using gdal or using [OTB](https://www.orfeo-toolbox.org/CookBook/Applications/app_GridBasedImageResampling.html) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
+Direct location grids can be used to perform a resampling. It can be done using gdal or using [OTB](https://www.orfeo-toolbox.org/CookBook/Applications/app_GridBasedImageResampling.html) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
 
 ### 1.1 Using gdal
 
@@ -50,7 +50,7 @@ This method can be resumed into three main steps:
  * Computation of the otb resampling using the mosaic and the inverse location grid.
 
 
-```python
+```bash
 # If needed, point to the local gdal version handling Sen2VM grids
 # export PATH=~/code/senv2vm/bin/bin/:$PATH
 # export LD_LIBRARY_PATH=~/code/senv2vm/bin/lib:$LD_LIBRARY_PATH
@@ -86,14 +86,14 @@ Necessary prerequisites:
  * argparse
  * pathlib
 
-## 2 Resampling using inverse locations grids
+## 2 Resampling using inverse location grids
 
 > [!CAUTION]
 > Please note that there is currently an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on the OTB side. Until corrected, **the grid information must be adjusted by half the resolution of the target pixel** (spacing) in both directions, to be synchronised as following:
 >  * out.ulx **shall be updated to 293080** ( = 293050 + 60/2)
 >  * out.uly **shall be updated to 3697870** ( = 3697900 + (-60)/2)
 
-```python
+```bash
 # If needed, point to the local gdal version handling Sen2VM grids
 # export PATH=~/code/senv2vm/bin/bin/:$PATH
 # export LD_LIBRARY_PATH=~/code/senv2vm/bin/lib:$LD_LIBRARY_PATH
