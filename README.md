@@ -47,7 +47,7 @@ At L1B (as in L0 and L1A), data is not yet split in L1C tiles. Instead, data is 
 
 ![Sentinel-2 Format Intro](/assets/images/README_Format_L1B.png "Format Intro")
 
-For more details, please see <mark>[Official L1B Documentation](TODO)</mark>
+For more details, please refer to official [L1B Documentation](https://sentiwiki.copernicus.eu/web/s2-products#S2Products-Level-1BProductsS2-Products-L1Btrue) and [L1B algorithms description](https://sentiwiki.copernicus.eu/web/s2-processing#S2Processing-L1BAlgorithmsS2-Processing-L1B-Algorithmstrue).
 
 ## 2. Quickstart
 
