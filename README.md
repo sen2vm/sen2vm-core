@@ -10,6 +10,7 @@
 
 
 # Project sen2vm-core
+
 The Sen2VM core is a standalone tool designed to generate geolocation grids that will be included in the Level-1B (L1B) product:
 
 * Its primary function is to create **direct location grids**, mapping the L1B product in sensor geometry down to the ground.
@@ -19,15 +20,15 @@ Please note that Sen2VM exists implemented as a SNAP plugin, which calls the Sen
 
 This documentation is split into 5 parts:
 
-* Quick reminder of L1C format and introduction to L1B format: § [L1B format description](#1-l1b-format-description)
-* Instructions to  compile and/or run Sen2VM with some examples: $ [Quickstart](#2-quickstart)
-* Description and format of expected inputs: § [Inputs](#3-inputs)
-* Output § [Outputs](#4-outputs):
+* Quick reminder of L1C format and introduction to L1B format: §[L1B format description](#1-l1b-format-description)
+* Instructions to  compile and/or run Sen2VM with some examples: §[Quickstart](#2-quickstart)
+* Description and format of expected inputs: §[Inputs](#3-inputs)
+* Output §[Outputs](#4-outputs):
 
-  * Details on generated outputs grids: § [Outputs](#41-output-grids-of-Sen2VM)
-  * Examples of usage of the ouput grids: § [Usage of output grids](#42-usage-of-output-grids)
+  * Details on generated outputs grids: §[Outputs](#41-output-grids-of-Sen2VM)
+  * Examples of usage of the ouput grids: §[Usage of output grids](#42-usage-of-output-grids)
 
-* Validation process, including test procedures and data used: § [Validation](#5-validation)
+* Validation process, including test procedures and data used: §[Validation](#5-validation)
 
 >[!NOTE]
 > If you want to compile Sen2VM by yourself, please refer to dedicated [HOWTO section](documentation/Usage/HOWTO.md)
@@ -53,6 +54,8 @@ Inputs are split into 2 groups:
 
 * configuration: all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please note that this input is **Mandatory**. 
 * "parallelisation": the detectors/bands to process. If not available, all detectors/bands will be processed (see §[2.2 Parameters file](#22-parameters-file) for further information).This input is **Optional**.
+
+Sen2VM jar can be downloaded through [Releases](https://github.com/sen2vm/sen2vm-core/releases) or [Packages](https://github.com/orgs/sen2vm/packages?repo_name=sen2vm-core) pages on GitHub.
 
 Sen2VM can be called using the following command:
 > [!CAUTION]
@@ -134,6 +137,6 @@ Tests are more detailed in:
 * [Inputs](documentation/Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](documentation/Output/output_direct_loc.md)
-  * [inverse location grids](documentation/Output/output_inverse_loc.md)
-  * [output grids usage](documentation/Output/output_grids_usage.md)
+  * [Direct location grids](documentation/Output/output_direct_loc.md)
+  * [Inverse location grids](documentation/Output/output_inverse_loc.md)
+  * [Output grids usage](documentation/Output/output_grids_usage.md)

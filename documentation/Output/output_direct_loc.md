@@ -3,16 +3,20 @@
 * [Inputs](..//Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](../Output/output_direct_loc.md)
-  * [inverse location grids](../Output/output_inverse_loc.md)
-  * [output grids usage](../Output/output_grids_usage.md)
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)
 
 # Direct location grids
+
 A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular and in sensor reference frame (for one  band/detector couple).
 
-Sen2VM direct location grid computation takes as input the L1B product, the auxiliary information (see [L1B product](#211-l1b-product), [GIPP](#212-gipp), [Altitude](#123-altitude), [IERS](#214-iers)) and the grid parametrization:
-* Bands/detectors to process ([Parameters File](#22-parameters-file)),
-* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (double) [Configuration File](#21-configuration-file).
+Sen2VM direct location grid computation takes as input the L1B product, the auxiliary information, GIPP, Altitude, IERS and the grid parametrization:
+
+* Bands/detectors to process,
+* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (double)
+
+For more details, please refer to [Input Description](../Input/input_description.md).
 
 As output:
 * At granule level: geolocation grids will be written (per granules/bands).
@@ -121,6 +125,6 @@ Grids should at least have 2x2 cells
 * [Inputs](..//Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](../Output/output_direct_loc.md)
-  * [inverse location grids](../Output/output_inverse_loc.md)
-  * [output grids usage](../Output/output_grids_usage.md)
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)

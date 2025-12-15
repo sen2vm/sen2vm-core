@@ -3,20 +3,24 @@
 * [Inputs](..//Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](../Output/output_direct_loc.md)
-  * [inverse location grids](../Output/output_inverse_loc.md)
-  * [output grids usage](../Output/output_grids_usage.md)
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)
 
 # Inverse location grids
+
 An inverse location grid is a grid which maps ground coordinates with sensor ones.
 Inverse location grids are georeferenced in **geographic or cartographic reference frame**.
 Inverse location grid is regular in **ground reference frame** (for one band and one detector).
 
-To define the extend of the inverse location grid, parameters are described in section §[2.1 Configuration file](#21-configuration-file), but it can be resumed at:
+To define the extend of the inverse location grid, parameters are described in §[Input Description](../Input/input_description.md), but it can be resumed at:
+
 * A referential system,
 * A square defined by:
+
     * One Upper Left point (UL),
     * One Lower Right point (LR),
+
 * 3 steps, one per band resolution (10m, 20m, 60m) in the referential metrics,
 * An output folder.
 
@@ -67,8 +71,6 @@ As for example:
 
 ![Inverse Convention](/assets/images/README_InverseConvention.png "Inverse Convention.")
  
-
-
 ## 3 Grid handling
 
 Grids are intended to be used with bilinear interpolation operation. Inverse locations (i.e image position given a ground position) should be as follow:
@@ -82,8 +84,6 @@ Grids are intended to be used with bilinear interpolation operation. Inverse loc
 > [!CAUTION]
 > Beware of convention [PIXEL ORIGIN,PIXEL ORIGIN] is the first pixel of the grid..
 
-
-
 ## 4 Degraded cases
 Grids should at least have 2x2 cells.
 
@@ -94,6 +94,6 @@ Grids should at least have 2x2 cells.
 * [Inputs](..//Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](../Output/output_direct_loc.md)
-  * [inverse location grids](../Output/output_inverse_loc.md)
-  * [output grids usage](../Output/output_grids_usage.md)
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)

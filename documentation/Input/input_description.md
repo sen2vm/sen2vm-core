@@ -3,20 +3,21 @@
 * [Inputs](..//Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](../Output/output_direct_loc.md)
-  * [inverse location grids](../Output/output_inverse_loc.md)
-  * [output grids usage](../Output/output_grids_usage.md)
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)
 
 # Inputs
 
 > [!NOTE]
 > The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
-Inputs required by Sen2VM are:
+**Inputs required by Sen2VM are:**
+
 * L1B Product, accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/). *Please note that special access for L1B products might be required by submitting  a request via the FAQ section.*
 * Some GIPP files *(parameters files used in operational production, defining Satellites)*, accessible through [sen2vm-gipp-database](https://github.com/sen2vm/sen2vm-gipp-database)
-* Digital Elevation Model (DEM), accessible through <mark>TODO</mark>
-* GEOID model to measure precise surface elevations, **it shall be the one used to generate the DEM you are providing**, an example can accessible through [sen2vm-core git](../../src/test/resources/DEM_GEOID/) <mark>TODO-verify that CDSE is providing GEOID</mark>vm-core g
+* Digital Elevation Model (DEM) (COPERNICUS DEM is accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/))
+* GEOID model to measure precise surface elevations, **it shall be the one used to generate the DEM you are providing**, an example can accessible through [sen2vm-core git](../../src/test/resources/DEM_GEOID/) <mark>TODO-verify that CDSE is providing GEOID</mark>
 * IERS bulletin that provides data and standards related to Earth rotation and reference frames,  accessible through [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
 * Additional information for configuration.
 
@@ -34,16 +35,16 @@ Each parameter description can be found in the table below:
 
 | Name | Type | Required |                                                                                                             Description                                                                                                                                           |
 | ----------- | :------: | :-----------: |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| l1b_product | string   | **Mandatory** |                                                                     Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in § [L1B Product](#11-l1b-product), including DATASTRIP + GRANULE)                                                                      |
-| gipp_folder | string   | **Mandatory** |                                                                    Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to § [GIPP](#12-gipp).                                                                     |
-| gipp_check  | boolean  | Optional      |                                                                                                If true (default), check of GIPP version activated (see GIPP section § [GIPP](#12-gipp)</mark>)      |
+| l1b_product | string   | **Mandatory** |                                                                     Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in §[L1B Product](#11-l1b-product), including DATASTRIP + GRANULE)                                                                      |
+| gipp_folder | string   | **Mandatory** |                                                                    Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to §[GIPP](#12-gipp).                                                                     |
+| gipp_check  | boolean  | Optional      |                                                                                                If true (default), check of GIPP version activated (see GIPP section §[GIPP](#12-gipp)</mark>)      |
 | grids_overwriting | boolean  | Optional      |                                                                                             Activate the grids overwritings if the grids have already or partialy computed. It is false by default.                                                                                             |
-|dem          | string   | **Mandatory** |                                                                                                    Path to the FOLDER containing a DEM in the right format (cf § [Altitude/DEM](#131-dem)).                                                                                                    |
-|geoid        | string   | **Mandatory** |                                                                                                  Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#132-geoid))                                                                                                   |
-| iers        | string   | Optional      |                                                                                                  Path to the IERS folder containing the IERS file in the right format (cf § [IERS](#14-iers))                                                                                                  |
+|dem          | string   | **Mandatory** |                                                                                                    Path to the FOLDER containing a DEM in the right format (cf §[Altitude/DEM](#131-dem)).                                                                                                    |
+|geoid        | string   | **Mandatory** |                                                                                                  Path to the FILE containing a GEOID in the right format (cf §[Altitude/GEOID](#132-geoid))                                                                                                   |
+| iers        | string   | Optional      |                                                                                                  Path to the IERS folder containing the IERS file in the right format (cf §[IERS](#14-iers))                                                                                                  |
 | operation    | string   | **Mandatory** |                                                    In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>                                                    |
-| deactivate_available_refining| boolean  | Optional      |                                          If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in § [L1B Product](#112-refining-information)                                          |
-| export_alt   | boolean  | Optional      |  If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in <mark>§[Direct location grids](#31-direct location grids)</mark>  |
+| deactivate_available_refining| boolean  | Optional      |                                          If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in §[L1B Product](#112-refining-information)                                          |
+| export_alt   | boolean  | Optional      |  If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](../Output/output_direct_loc.md)  |
 | steps       | double    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. |
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**|                                                                                                    For the inverse location additional information please refer to the dedicated table below       |
 
@@ -57,14 +58,14 @@ The field “inverse_location_additional_info” is not required and will be ign
 | lr_x          | double    | **Mandatory** |                        **X** coordinates of the **lower right** point defining the area of desired resampled product.                        |
 | lr_y          | double    | **Mandatory** |                        **Y** coordinates of the **lower right** pointdefining the area of desired resampled product.                         |
 | referential   | string   | **Mandatory** | A string defining the **referential** used. **Please note, ul and lr points’ coordinates** are given in this referential. Example: EPSG:4326 |
-| output_folder | string   | **Mandatory**|                Path where the inverse location grids are written (see <mark>§ [Inverse location grids](#32-inverse-location-grids)</mark>)                |
+| output_folder | string   | **Mandatory**|                Path where the inverse location grids are written (see §[Inverse location grids](../Output/output_inverse_loc.md))                |
 
 > [!NOTE]
 > Inverse location grids footprint will enclose desired product footprint [ul_x, ul_y, lr_x, lr_y]. 
 
 Those parameters can be send to Sen2 VM:
 
-* either by setting each argument in a command line <mark> see XXX</mark>
+* either by setting each argument in a command line see [HOWTO](../Usage/HOWTO.md)
 * either using an input configuration file in  [JSON format](https://en.wikipedia.org/wiki/JSON). An example of configuration file is available at: https://github.com/sen2vm/sen2vm-core/blob/main/src/test/resources/configuration_example.json :
 
 ![Configuration file example](/assets/images/README_ConfigurationFileExample.png "Configuration file example.")
@@ -119,9 +120,9 @@ GIPP are configuration files used in operation to:
 
 By nature, GIPP are versionnable. It is important to process with the version used to generate the L1B product.
 > [!WARNING]
->  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf §[2.1 Configuration file](#21-configuration-file)). **This parameter is optional, and by default, its value is set to true.**.
+>  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf §[1 Configuration](#21-configuration-file)). **This parameter is optional, and by default, its value is set to true.**.
 
-The versions of the GIPP used in operation are listed in the L1B Datastrip Metadata of the L1B product (see §[2.1.1 L1B Product](#211-l1b-product)), in the tag _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
+The versions of the GIPP used in operation are listed in the L1B Datastrip Metadata of the L1B product (see §[1.1 L1B Product](#11-l1b-product)), in the tag _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
 
 ![GIPP list in L1B Datastrip metadata](/assets/images/README_GIPPListInL1BDatastripMetadata.png "GIPP list in L1B Datastrip metadata.")
 
@@ -142,7 +143,7 @@ The main purpose of the tool is to add geolocation to the L1B product images. He
 
 ![Altitude importance on geolocation](/assets/images/README_AltitudeImportanceOnGeolocation.png "Altitude importance on geolocation.")
 
-For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used. So, path of both shall be provided in input (cf §[2.1 Configuration file](#21-configuration-file)).
+For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used. So, path of both shall be provided in input (cf §[1 Configuration file](#1-configuration)).
 
 #### 1.3.1 DEM
 
@@ -206,6 +207,6 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 * [Inputs](..//Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](../Output/output_direct_loc.md)
-  * [inverse location grids](../Output/output_inverse_loc.md)
-  * [output grids usage](../Output/output_grids_usage.md)
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)

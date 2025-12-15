@@ -3,9 +3,9 @@
 * [Inputs](..//Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](../Output/output_direct_loc.md)
-  * [inverse location grids](../Output/output_inverse_loc.md)
-  * [output grids usage](../Output/output_grids_usage.md)
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)
 
 # HOWTO
 
@@ -57,13 +57,14 @@ Where:
 ## 3. How to run using java command
 
 Sen2VM core depends on java 8 and gdal=3.6.2 with java bindings.
-First, download the jar of Sen2VM core, then run the following command to launch it:
+First, download the jar of Sen2VM core (Sen2VM jar can be downloaded through [Releases](https://github.com/sen2vm/sen2vm-core/releases) or [Packages](https://github.com/orgs/sen2vm/packages?repo_name=sen2vm-core) pages on GitHub.), then run the following command to launch it:
 
 ```
 java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
 ```
 
 Where:
+
 * <NN.NN.NN> is the version number of Sen2VM launched
 * configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please note that this input is **Mandatory**. 
 * parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §[2.2 Parameters file](#22-parameters-file) for further information).This input is **Optional**.
@@ -114,6 +115,6 @@ docker run -it --rm --user $UID:$GID -v <sen2vm-core-folder>:/Sen2vm ghcr.io/sen
 * [Inputs](..//Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](../Output/output_direct_loc.md)
-  * [inverse location grids](../Output/output_inverse_loc.md)
-  * [output grids usage](../Output/output_grids_usage.md)
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)
