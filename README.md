@@ -64,7 +64,7 @@ Sen2VM jar can be downloaded through [Releases](https://github.com/sen2vm/sen2vm
 Sen2VM can be called using the following command:
 > [!CAUTION]
 > Sen2VM core depends on java 8 and gdal=3.6.2 with java bindings.
-**Please look below the command line for help in launching Sen2VM-core**</mark>
+**Please find below the command line for launching Sen2VM-core**</mark>
 ```
 java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
 ```
@@ -79,15 +79,12 @@ Where:
 
 > [!IMPORTANT]
 > As Sen2VM requires specific installation, several tools have been made accessible to help users using Sen2VM:
-> * Notebooks, doing generation of grid **AND** examples of usage
+> * Notebooks, doing generation of grid and examples of usage
 > * A Dockerfile that will build a Docker with Sen2VM and all its dependencies installed inside it
-> * A build-environment, that can be used to install Sen2VM inside it or use to build Sen2VM from sources
-> Please refere to [HOWTO](documentation/Usage/HOWTO.md)
+> * A build-environment, that can be used to install Sen2VM inside it or use to build Sen2VM from sources.
+> Please refere to [HOWTO](documentation/Usage/HOWTO.md).
 
 ## 3. Inputs
-
-> [!NOTE]
-> The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
 Inputs required by Sen2VM are:
 
@@ -97,6 +94,9 @@ Inputs required by Sen2VM are:
 * GEOID model to measure precise surface elevations,
 * IERS bulletin that provides data and standards related to Earth rotation and reference frames,
 * Additional information for configuration.
+
+> [!NOTE]
+> The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
 Inputs description can be access at [Inputs](documentation/Input/input_description.md)
 
@@ -140,7 +140,7 @@ Tests are more detailed in:
  * In [/src/test/java/esa/sen2vm/](/src/test/java/esa/sen2vm/) for functionnal tests,
  * In dedicated <mark>**Document**</mark>, for quality tests (which also includes functionnal tests description)
 
-It is to be noted that orthorectification using Sen2VM gave equivalent results than Operationnal orthorectification. In image below, no visual shift can be seen (precise mesured in report above), however, difference between LB radiance and LC reflectance can be observed:
+It is to be noted that orthorectification using Sen2VM gave equivalent results than orthorectification of operational L1C products. In image below, no visual shift can be seen (precise mesured in report above; slight differences between L1B radiance and L1C reflectance can be observed:
 ![L1B Ortho versus L1C Operationnal Ortho](assets/images/README_Ortho_GIF.gif)
 
 # 
