@@ -11,19 +11,19 @@
 # HOWTO
 
 >[!CAUTION]
-> Sen2VM core depends on java 8 and gdal=3.6.2 with java bindings.
+> Sen2VM core depends on java 8 and gdal version 3.6.2 with java bindings.
 
 Sections:
 
 * **Notebooks** are available to users to configure and run Sen2VM in a already installed enviroment §[Notebooks](#1-how-to-run-using-notebooks)
-* These Notebooks are using a **Docker** ("Sen2VM Docker") with full environment and Sen2VM installed inside it §[Sen2VM Docker](#2-how-to-run-within-a-docker)
+* These Notebooks are using a **Docker** ("Sen2VM Docker") with full environment and Sen2VM installed §[Sen2VM Docker](#2-how-to-run-within-a-docker)
 * One that would like to calling Sen2VM in Java could do it (but would be recommended to use the sen2vm-build-end) §[Launching using Java](#3-how-to-run-using-java-command)
 * How to install sen2vm-build-env docker is also available in section [Build env](#5-how-to-install-build-environment)
 
 >[!TIP]
-> Base on your level of knowledge, we recommand you using either §[Notebooks](#1-how-to-run-using-notebooks) or [Sen2VM Docker](#2-how-to-run-within-a-docker). Please note that notebooks are also helping in using output grids.
+> Depending on your level of expertise, we recommend using either §[Notebooks](#1-how-to-run-using-notebooks) or [Sen2VM Docker](#2-how-to-run-within-a-docker). Please note that notebooks are also helping in using output grids.
 
-Thoses levels of usage are linked and can be summaries as below:
+Thoses levels of usage are linked and can be summaried as below:
 ![Environment structure]( ../../assets/images/README_Environment_Structure.png)
 
 Also available: §[How to compile](#4-how-to-compile-sen2vm-core-from-sources)
@@ -58,8 +58,8 @@ Where:
 
 ## 3. How to run using java command
 
-Sen2VM core depends on java 8 and gdal=3.6.2 with java bindings.
-First, download the jar of Sen2VM core (Sen2VM jar can be downloaded through [Releases](https://github.com/sen2vm/sen2vm-core/releases) or [Packages](https://github.com/orgs/sen2vm/packages?repo_name=sen2vm-core) pages on GitHub.), then run the following command to launch it:
+Sen2VM core depends on java 8 and gdal 3.6.2 with java bindings.
+First, download the jar of Sen2VM core (Sen2VM jar can be downloaded through [Releases](https://github.com/sen2vm/sen2vm-core/releases) or [Packages](https://github.com/orgs/sen2vm/packages?repo_name=sen2vm-core) pages on GitHub), then run the following command to launch it:
 
 ```
 java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
@@ -95,7 +95,7 @@ java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configurat
 
 ## 5. How to install build environment
 
-Sen2VM core depends on gdal=3.6.2 with java bindings. An ready for use docker image is available. Please, pull the image from here : https://github.com/sen2vm/sen2vm-build-env/pkgs/container/sen2vm-build-env
+Sen2VM core depends on gdal 3.6.2 with java bindings. A ready to use docker image is available. Please pull the image from here : https://github.com/sen2vm/sen2vm-build-env/pkgs/container/sen2vm-build-env
 
 * Pull the image:
 
