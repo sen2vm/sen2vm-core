@@ -1,11 +1,12 @@
 [README](README.md) (current file)
+
 * [HOWTO](documentation/Usage/HOWTO.md)
 * [Inputs](documentation/Input/input_description.md)
 * Outputs:
 
-  * [direct location grids](documentation/Output/output_direct_loc.md)
-  * [inverse location grids](documentation/Output/output_inverse_loc.md)
-  * [output grids usage](documentation/Output/output_grids_usage.md)
+  * [Direct location grids](documentation/Output/output_direct_loc.md)
+  * [Inverse location grids](documentation/Output/output_inverse_loc.md)
+  * [Output grids usage](documentation/Output/output_grids_usage.md)
 
 
 # Project sen2vm-core
@@ -32,7 +33,7 @@ This documentation is split into 5 parts:
 >[!NOTE]
 > If you want to compile Sen2VM by yourself, please refer to dedicated [HOWTO section](documentation/Usage/HOWTO.md)
 
-Regarding the several git repository, here is a schema on how they are linked together:
+Regarding the several git repositories, here is a schema on how they are linked together:
 ![Git links](/assets/images/README_Git_links.png "Git links")
 
 
@@ -87,6 +88,7 @@ Where:
 > The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
 Inputs required by Sen2VM are:
+
 * L1B Product,
 * Some GIPP files (parameters files used in operational production),
 * Digital Elevation Model (DEM),
@@ -101,6 +103,7 @@ Inputs description can be access at [Inputs](documentation/Input/input_descripti
 ### 4.1 Output grids of Sen2VM
 
 The output of the Sen2VM tool can be either direct location grids or inverse location grids. Their computation depends on the following parameters:
+
 * selected detectors and bands,
 * grid step,
 * computation options (e.g. refining).
@@ -111,7 +114,7 @@ Please note that only the direct location grids will be included in the input pr
 
 Examples are available:
 
-* In §[Example section](documentation/Output/output_grids_usage.md)
+* In [Example section](documentation/Output/output_grids_usage.md)
 * In <mark>Notebooks</mark>
 
 ## 5. Validation
@@ -141,6 +144,7 @@ It is to be noted that orthorectification using Sen2VM gave equivalent results t
 # 
 
 [README](README.md) (current file)
+
 * [HOWTO](documentation/Usage/HOWTO.md)
 * [Inputs](documentation/Input/input_description.md)
 * Outputs:

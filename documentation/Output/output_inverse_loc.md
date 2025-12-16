@@ -1,4 +1,5 @@
 [README](../../README.md)
+
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
 * Outputs:
@@ -31,16 +32,20 @@ As output, a geolocation grid will be created **for each band and detector** to 
 Outputs will be **written in the folder provided by the user**. For inverse location grids, granule level is not foreseen, since granule footprint can result in large margins in projected data.
 
 Output grids’ convention will be:
+
 * 13 grids (1 per Sentinel-2 band) per detector intersecting the area,
 * Grids are in **geotiff format with float32 coding positions** which allow decimal information on **col/row** positions. JP2000 is not suitable, as it does not support Float32 encoding, resulting in insufficient precision.
 * Grids naming conventions will respect the corresponding datastrip metadata convention with:
+
     * **INV** instead of **MTD**,
     * <strong>_DXX_BYY.tif</strong> instead of <strong>.xml</strong> extension.
 
 As example, for a Datastrip metadata of the DATASTRIP folder:
+
 * S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>.xml</strong>
 
 Output will be named:
+
 * S2B_OPER_**INV**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.tif</strong>
 
 Example:
@@ -53,9 +58,12 @@ Example:
 ## 2 Inverse location grids’ specifications
 
 Inverse location grids **will give the coordinates in the “detector” image** reference frame, as if the granules from the same detector were concatenated into a single image.
+
  * Grid metadata:
-    * are written as GDAL GEO information (SRS and geotransform) and Metadata keys, containing ROW_BAND and COL_BAND to specify row col index and PIXEL_ORIGIN which specify granule first pixel center convention, and NoData value.  
+
+   * are written as GDAL GEO information (SRS and geotransform) and Metadata keys, containing ROW_BAND and COL_BAND to specify row col index and PIXEL_ORIGIN which specify granule first pixel center convention, and NoData value.  
    * Metadata keys are:
+
        * the SRS
        * NoData fill value
        * the grid footprint
@@ -64,7 +72,8 @@ Inverse location grids **will give the coordinates in the “detector” image**
        * margins,
          
 To ensure input bounding box coverage:
- * Center of the first grid point is aligned with UL of the bounding box,
+
+* Center of the first grid point is aligned with UL of the bounding box,
 * Center of the last grid pixel is computed to ensure that it covers at least LR of the input bounding box.
 
 As for example:
@@ -85,11 +94,13 @@ Grids are intended to be used with bilinear interpolation operation. Inverse loc
 > Beware of convention [PIXEL ORIGIN,PIXEL ORIGIN] is the first pixel of the grid..
 
 ## 4 Degraded cases
+
 Grids should at least have 2x2 cells.
 
 #
 
 [README](../../README.md)
+
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
 * Outputs:

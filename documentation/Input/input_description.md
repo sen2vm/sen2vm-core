@@ -1,4 +1,5 @@
 [README](../../README.md)
+
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
 * Outputs:
@@ -25,6 +26,7 @@ Please note that Notebooks are available to ease configuration and usage <mark>T
 
 
 ## 1. Configuration
+
 The configuration is related to all information about:
 
 * the product, and the auxiliarry data, 
@@ -63,7 +65,7 @@ The field “inverse_location_additional_info” is not required and will be ign
 > [!NOTE]
 > Inverse location grids footprint will enclose desired product footprint [ul_x, ul_y, lr_x, lr_y]. 
 
-Those parameters can be send to Sen2 VM:
+Those parameters can be sent to Sen2 VM:
 
 * either by setting each argument in a command line see [HOWTO](../Usage/HOWTO.md)
 * either using an input configuration file in  [JSON format](https://en.wikipedia.org/wiki/JSON). An example of configuration file is available at: https://github.com/sen2vm/sen2vm-core/blob/main/src/test/resources/configuration_example.json :
@@ -83,6 +85,7 @@ Those parameters can be send to Sen2 VM:
 The mandatory inputs for Sen2VM are the Datastrip and the Granules metadata. 
 
 These metadata must be organized in a specific directory structure. Within the L1B folder, only the following subdirectories will be considered:
+
  * DATASTRIP
  * GRANULE
 
@@ -114,6 +117,7 @@ An optional boolean argument is available in the configuration file (see §[2.1 
 ### 1.2 GIPP
 
 GIPP are configuration files used in operation to:
+
 * represent the stable satellite information,
 * configure calibration parameters of the satellite,
 * configure several algorithms of the processing chain.
@@ -132,9 +136,11 @@ The versions of the GIPP used in operation are listed in the L1B Datastrip Metad
 The GIPP required are the following ones:
 * **GIP_VIEDIR**: contains Viewing Direction required by Rugged to create viewing model based on TAN_PSI_X/Y_LIST tags. There is one GIP_VIEDIR file **per band** and each file contains information per **detector** (in the following tags: _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_X_LIST]_ and _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_Y_LIST]_)
 * **GIP_SPAMOD**: contains transformations to apply to viewing direction from tags, available in the _[DATA]_ field:
+
     * PILOTING_TO_MSI,
     * MSI_TO_FOCAL_PLANE,
     * FOCAL_PLANE_TO_DETECTOR XML, available **per detector**
+    
 * **GIP_BLINDP**: contains information on blind pixel, contained in BLIND_PIXEL_NUMBER tag: _[DATA/BAND/BLIND_PIXEL_NUMBER]_, available **per band**
 
 ### 1.3 Altitude
@@ -203,6 +209,7 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 #
 
 [README](../../README.md)
+
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
 * Outputs:

@@ -1,4 +1,5 @@
 [README](../../README.md)
+
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
 * Outputs:
@@ -47,6 +48,7 @@ docker run -it --rm -v [input-data]:[/mounted-name] sen2vm -c [configuration_fil
 > -v /NNN:/NNN can be done several time, for example -v /data:/data -v /home/login/working_dir:/home/login/working_dir. This will mount directories inside the docker. All files (input json and folders/files listed in configuration_file) shall be on a mounted disk, if not, the won't be visible
 
 Where:
+
 * input-data: the input folder
 * configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please indicate the input paths with **absolute path** from the docker volume directory (/data in the example above), note that this input is **Mandatory**.
 * parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §[2.2 Parameters file](#22-parameters-file) for further information).This input is **Optional**.
@@ -111,6 +113,7 @@ docker run -it --rm --user $UID:$GID -v <sen2vm-core-folder>:/Sen2vm ghcr.io/sen
 # 
 
 [README](../../README.md)
+
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
 * Outputs:

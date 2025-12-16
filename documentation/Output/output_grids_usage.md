@@ -1,4 +1,5 @@
 [README](../../README.md)
+
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
 * Outputs:
@@ -44,7 +45,9 @@ gdal_warp SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_OPER_MTD_SAFL1B_PDMC_2024
 ```
 
 ### 1.2 Using otb
+
 This method can be resumed into three main steps:
+
  * Creation of a mosaic of all images,
  * Convertion of the direct location grid into an inverse location grid using scipy,
  * Computation of the otb resampling using the mosaic and the inverse location grid.
@@ -78,7 +81,8 @@ gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PAT
 
 Please note that the script ```sen2vm_invloc_from_dir_loc_grid.py``` used by this method is directly available on this git, at this [location](/assets/scripts/sen2vm_invloc_from_dir_loc_grid.py).
 
-Necessary prerequisites: 
+Necessary prerequisites:
+
  * numpy
  * rasterio
  * utm
@@ -120,6 +124,7 @@ gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PAT
 # 
 
 [README](../../README.md)
+
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
 * Outputs:
