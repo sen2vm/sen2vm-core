@@ -131,7 +131,9 @@ public class GIPPFileManager
     public static List<File> searchGIPPFilesFromList(Path root, String dirNameRegex, List<String> gippList, List<String> validExtensions) throws IOException {
         final List<File> results = new ArrayList<>();
         final List<String> fileNames = new ArrayList<>();
+        final List<String> fileNamesWithoutExtension = new ArrayList<>();
         final List<String> tarExtension = Arrays.asList("TGZ", "tar.gz","tgz");
+        // first loop to find the GIPP from untar files and the GIPP list
         for(String gippName:gippList)
         {
             final Pattern filePattern = Pattern.compile(gippName);
@@ -152,40 +154,64 @@ public class GIPPFileManager
                         String extension = getFileExtension(file);
                         if(validExtensions.stream().anyMatch(item -> item.contains(extension)))
                         {
-                            if( !fileNames.contains(file.getName()))
-                            {
-                                results.add(file);
-                                fileNames.add(file.getName());
-                            }
-                        }else if(tarExtension.stream().anyMatch(item -> item.contains(extension)))
-                        {
-                            try{
-                                List<Path> listPath = UntarGIPP.untarGz(file.toPath(), Paths.get(file.getParent()));
-                                for(Path untarPath:listPath){
-                                    File untarFile = untarPath.toFile();
-                                    String untarFileExtension = getFileExtension(untarFile);
-                                    if(validExtensions.stream().anyMatch(item -> item.contains(untarFileExtension)))
-                                    {
-                                        if(!results.contains(untarFile) || !fileNames.contains(untarFile.getName())){
-                                            results.add(untarFile);
-                                            fileNames.add(untarFile.getName());
-                                        }
-                                    }
-                                }
-                                Files.deleteIfExists(file.toPath());
-                                LOGGER.info("Untar GIPP: "+file.toString());
-                            }catch(IOException e)
-                            {
-                                LOGGER.warning("The targz extraction of GIPP has failed:"+file.toString());
-                                e.printStackTrace();
-                            }
-
+                            results.add(file);
+                            fileNames.add(file.getName());
+                            fileNamesWithoutExtension.add(fileNameWithoutExtension);
                         }
                     }
                     return FileVisitResult.CONTINUE;
                 }
             });
+        }
+        // second loop to find the GIPP unfound from tar files and the GIPP list
+        if(results.size()!=gippList.size())
+        {
+            for(String gippName:gippList)
+            {
+                final Pattern filePattern = Pattern.compile(gippName);
+                // Stack indicating whether we are currently in a qualified subtree
+                Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
 
+                    @Override
+                    public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) {
+                        // boolean inQualifiedSubtree = !qualifiedStack.isEmpty() && qualifiedStack.peek();
+                        String fileName = filePath.getFileName() != null ? filePath.getFileName().toString() : filePath.toString();
+                        String fileNameWithoutExtension = fileName;
+                        if(!Files.isDirectory(filePath.toAbsolutePath())){
+                            fileNameWithoutExtension = getFilePathWithoutExtension(new File(fileName));
+                        }
+
+                        if (filePattern.matcher(fileNameWithoutExtension).matches() && !fileNamesWithoutExtension.contains(fileNameWithoutExtension))
+                        {
+                            File file = filePath.toFile();
+                            String extension = getFileExtension(file);
+                            if(tarExtension.stream().anyMatch(item -> item.contains(extension)))
+                            {
+                                try{
+                                    List<Path> listPath = UntarGIPP.untarGz(file.toPath(), Paths.get(file.getParent()));
+                                    for(Path untarPath:listPath){
+                                        File untarFile = untarPath.toFile();
+                                        String untarFileExtension = getFileExtension(untarFile);
+                                        if(validExtensions.stream().anyMatch(item -> item.contains(untarFileExtension)))
+                                        {
+                                            if(!results.contains(untarFile) || !fileNames.contains(untarFile.getName())){
+                                                results.add(untarFile);
+                                                fileNames.add(untarFile.getName());
+                                            }
+                                        }
+                                    }
+                                    LOGGER.info("Untar GIPP: "+file.toString());
+                                }catch(IOException e)
+                                {
+                                    LOGGER.warning("The targz extraction of GIPP has failed:"+file.toString());
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+            }
         }
         return results;
     }
