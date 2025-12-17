@@ -257,7 +257,7 @@ public class Utils {
         return false;
     }
 
-    public static void copyfiles(Path sourceDir, Path targetDir) {
+    public static void copyFiles(Path sourceDir, Path targetDir) {
         try (Stream<Path> files = Files.list(sourceDir)) {
             files.forEach(file -> {
                 try {

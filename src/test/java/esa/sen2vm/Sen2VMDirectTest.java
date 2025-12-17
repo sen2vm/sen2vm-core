@@ -118,7 +118,7 @@ public class Sen2VMDirectTest
             Config.deleteDirectory(gippDir);
         }
         gippDir.mkdir();
-        Utils.copyfiles(sourceArchive.toPath(),gippDir.toPath());
+        Utils.copyFiles(sourceArchive.toPath(),gippDir.toPath());
         try
         {
             String nameTest = "testDirectLoc";
