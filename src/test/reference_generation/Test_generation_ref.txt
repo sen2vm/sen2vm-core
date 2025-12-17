@@ -1,0 +1,30 @@
+ssh 172.26.45.33
+
+docker run -it --rm --name asgard-legacy --user root --network host -v ~/.gitconfig:/root/.gitconfig2 -v ~/.m2:/root/.m2 -v /home/aburie/Sen2VM/:/home/aburie/Sen2VM -v $root_dir:$root_dir -v /DATA:/DATA -v /DATA-MPC2:/DATA-MPC2 -v /DATA-NETAPP-MPC:/DATA-NETAPP-MPC registry.eopf.copernicus.eu/geolib/asgard-build-environment bash
+
+
+export EOPF_PYPI_TOKEN= #TOKEN with access to GEOLIB and especially ASGARD-Legacy and asgard-legacy-drivers
+export PIP_EXTRA_INDEX_URL="https://eopf:${EOPF_PYPI_TOKEN}@gitlab.eopf.copernicus.eu/api/v4/projects/14/packages/pypi/simple \
+                     https://eopf:${EOPF_PYPI_TOKEN}@gitlab.eopf.copernicus.eu/api/v4/projects/67/packages/pypi/simple \
+					 https://eopf:${EOPF_PYPI_TOKEN}@gitlab.eopf.copernicus.eu/api/v4/projects/92/packages/pypi/simple \
+					 https://eopf:${EOPF_PYPI_TOKEN}@gitlab.eopf.copernicus.eu/api/v4/projects/171/packages/pypi/simple"
+
+pip install asgard_legacy==1.2.1
+pip install asgard_legacy_drivers==0.1.1
+
+
+pip install termcolor
+pip install fiona
+pip install rasterio
+
+#  UNTIL ASGARD-LEGACY IS CORRECTED
+ apt-get update
+ apt-get install nano
+ nano /usr/local/lib/python3.11/site-packages/asgard_legacy/sensors/sentinel2/msi.py
+  # TODO ======> remove line 552: 
+  #     assert np.issubdtype(pixels.dtype, np.integer)
+
+
+cd /home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/
+
+python3.11 test_legacy_sen2vm.py # TODO: Add conf file in input after verifying that hard coded path give consistent results

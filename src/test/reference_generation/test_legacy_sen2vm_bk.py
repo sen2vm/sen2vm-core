@@ -36,44 +36,95 @@ from osgeo import gdal, gdalconst
 import json
 import pandas as pd
 import fiona.transform
-from termcolor import colored
 
 from math import sqrt, isnan
 
+import pytest
+import resources.S2MSIdataset.sentinel2_msi_datasets as tds
+from asgard.drivers.s2geo_legacy.s2geo_interface_sen2vm import S2geoInterfaceSen2VM
+from asgard.sensors.sentinel2.msi import S2MSIGeometry
+from asgard_legacy.sensors.sentinel2.msi import S2MSILegacyGeometry
 from asgard.sensors.sentinel2.s2_band import S2Band
 from asgard.sensors.sentinel2.s2_detector import S2Detector
 from asgard.sensors.sentinel2.s2_sensor import S2Sensor
-
-#from helpers.compare import GeodeticComparator, planar_captor_error
-
-from asgard_legacy.sensors.sentinel2.msi import S2MSILegacyGeometry
-
-from asgard_legacy_drivers.drivers.sentinel_2_legacy import S2LegacyDriver
-
+from helpers.compare import GeodeticComparator, planar_captor_error
 from pyrugged.errors.pyrugged_exception import PyRuggedError
+from termcolor import colored
+
+# Resources directory
+TEST_DIR = osp.dirname(__file__)
+
+# ASGARD_DATA directory
+ASGARD_DATA = os.environ.get("ASGARD_DATA", "/data/asgard")
+
+# Generate documentation for the "init_schema" methods
+sys.path.append(osp.join(TEST_DIR, "../doc/scripts/init_schema"))
 
 
-georefConventionOffsetPixel = -0.5
-georefConventionOffsetLine = 0.5
+SEN2VM_TEST_DIR = "/resources/tests"
+SEN2VM_VALID_DIR = "/validation"
+INPUT_DATA_DIR = op.join(SEN2VM_TEST_DIR, "output")
+REF_DIR = op.join(SEN2VM_TEST_DIR, "ref")
 
 THRESHOLDS = {
     "direct": 1e-7,  # degrees
     "inverse": 1e-2  # pixel
 }
 
-#def test_Sen2VM(test_to_generate):
-def test_Sen2VM():
+georefConventionOffsetPixel = -0.5
+georefConventionOffsetLine = 0.5
+
+
+
+@pytest.mark.parametrize(
+    "test_to_generate",
+    [
+        "testDirectLoc",
+        "testInverseLoc",
+        "TDS1_SmallIsland/direct",
+        "TDS1_SmallIsland/inverse",
+        "TDS2_Antemeridian/direct",
+        "TDS2_Antemeridian/inverse",
+        "TDS3_Meridian0/direct",
+        "TDS3_Meridian0/inverse",
+        "TDS4_Equator/direct",
+        "TDS4_Equator/inverse",
+        "TDS5_S2C-MultiTemp/direct",
+        "TDS5_S2C-MultiTemp/inverse"
+    ],
+    ids=[
+        "testDirectLoc",
+        "testInverseLoc",
+        "TDS1_SmallIsland/direct",
+        "TDS1_SmallIsland/inverse",
+        "TDS2_Antemeridian/direct",
+        "TDS2_Antemeridian/inverse",
+        "TDS3_Meridian0/direct",
+        "TDS3_Meridian0/inverse",
+        "TDS4_Equator/direct",
+        "TDS4_Equator/inverse",
+        "TDS5_S2C-MultiTemp/direct",
+        "TDS5_S2C-MultiTemp/inverse"
+    ],
+)
+
+@pytest.mark.slow
+def test_Sen2VM(test_to_generate):
     """
     Run general test to compare direct or inverse grids generated with SEN2VM
 
     :param data: list of test cases
     """
 
-    #print(f"Test: {test_to_generate}")
-    print(f"Start")
+    print(f"Test: {test_to_generate}")
+
+    if test_to_generate.startswith("test") :
+        input_dir = op.join(INPUT_DATA_DIR, test_to_generate)
+    else:
+        input_dir = op.join(SEN2VM_VALID_DIR, test_to_generate)
 
 
-    f"""# Read configuration
+    # Read configuration
     with open(os.path.join(input_dir, "configuration.json")) as json_file:
         json_data = json.load(json_file)
 
@@ -84,36 +135,21 @@ def test_Sen2VM():
     geoid = op.join( json_data["geoid"])
     dem = op.join(json_data["dem"])
     gipp = op.join( json_data["gipp_folder"])
-    refining = not (json_data["deactivate_available_refining"])"""
+    refining = not (json_data["deactivate_available_refining"])
 
     # Init S2geoInterface
-    #config = S2geoInterfaceSen2VM(xml_product, iers, geoid, dem, gipp, refining).read()
-    #config = S2LegacyDriver(xml_product, iers, geoid, dem, gipp).read()
-
-    config = S2LegacyDriver(
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/input/TDS1/L1B_all/DATASTRIP/S2A_OPER_MSI_L1B_DS_DPRM_20140630T140000_S20200816T120220_N05.00/S2A_OPER_MTD_L1B_DS_DPRM_20140630T140000_S20200816T120220.xml", #L1B
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/input/TDS1/inputs/IERS/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000.txt", #IERS
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx", #GEOID
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/DEM/", #DEM
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/input/TDS1/inputs/GIPP/", #GIPP
-        ).read()
-    
+    config = S2geoInterfaceSen2VM(xml_product, iers, geoid, dem, gipp, refining).read()
     product = S2MSILegacyGeometry(**config)  # TOFIX
 
-    """# Init ref dir for asgard outputs
+    # Init ref dir for asgard outputs
     ref_dir = op.join(REF_DIR, test_to_generate)
-    Path(ref_dir).mkdir(parents=True, exist_ok=True)"""
+    Path(ref_dir).mkdir(parents=True, exist_ok=True)
 
     # List detectors and bands to test
-    #detectors, bands = read_params(input_dir)
-    detectors = [S2Detector.from_name("D01")]
-    bands = [S2Band.from_name("B01")]
+    detectors, bands = read_params(input_dir)
 
-    l1b_product = "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/input/TDS1/L1B_all/"
-    ref_dir = "/home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/test_generation/"
 
-    compute_direct_location(config, l1b_product, product, detectors, bands, ref_dir)
-    """# Direct or inverse case
+    # Direct or inverse case
     if "direct" in test_to_generate.lower():
         compute_direct_location(config, l1b_product, product, detectors, bands, ref_dir)
     elif "inverse" in test_to_generate.lower():
@@ -121,10 +157,10 @@ def test_Sen2VM():
         input_dir = json_data["inverse_location_additional_info"]["output_folder"]
         compute_inverse_location(input_dir, product, detectors, bands, ref_dir)
     else:
-        print('No test found: no "direct" or "inverse" found in name test')"""
+        print('No test found: no "direct" or "inverse" found in name test')
 
 
-#def compute_inverse_location(input_dir: str, product, detectors, bands, ref_dir=None):
+def compute_inverse_location(input_dir: str, product, detectors, bands, ref_dir=None):
     """
     Inverse location of a data test from SEN2VM
 
@@ -133,7 +169,7 @@ def test_Sen2VM():
     :param ref_dir: output directory for asgard grids
     :return:
     """
-"""
+
     for band in bands:
         df = pd.DataFrame(columns=['band', 'det', "nb_valeurs not nan", "nb_errors > 10-6 m", "nb_errors > 10-4 m",
                                    "nb_errors > 10-2 m", "mean (m)", "max (m)", "std (m)", "ce95 (m)"])
@@ -238,7 +274,7 @@ def test_Sen2VM():
                                nb_errors_104, nb_errors_102, mean_err, max_err, std_err, ce95_err]
 
             df.to_csv(op.join(ref_dir, sensor[0:3] + "_results.csv"))
-            print (df)"""
+            print (df)
 
 
 
@@ -253,8 +289,8 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
     """
 
     # Init comparator for planar_error
-    #product_asgard = S2MSIGeometry(**config)
-    #comp = GeodeticComparator(product_asgard.propagation_model.body)
+    product_asgard = S2MSIGeometry(**config)
+    comp = GeodeticComparator(product_asgard.propagation_model.body)
 
     for band in bands:
 
@@ -283,9 +319,7 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
 
             # Select corresponding granules
 
-            #list_granules = glob.glob(op.join(input_dir, "GRANULE", "*" + sensor[4:] + "*"))
-            list_granules = glob.glob(op.join("/home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/test_generation/GRANULE/", "*" + sensor[4:] + "*"))
-            
+            list_granules = glob.glob(op.join(input_dir, "GRANULE", "*" + sensor[4:] + "*"))
             # list_granules = glob.glob(op.join(input_dir, "GRANULE", "S2B_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20240116T154306_D06*"))
 
             print(f"# Sensor {sensor}")
@@ -296,6 +330,8 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
             rows_detecteur_band_grid = []
 
             for g, granule in enumerate(list_granules):
+
+
 
                 # Select corresponding geo grid
                 geo_grid = glob.glob(op.join(granule, "GEO_DATA", "*" + sensor[0:3] + ".tif"))[0]
@@ -327,46 +363,18 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
                     print(colored("    ! PyRuggedError: " + str(exp), "red"))
 
                 # Compare results to Sen2vm
-                print("GEO_GRID: ", geo_grid)
                 dataset = gdal.Open(geo_grid, gdalconst.GA_ReadOnly)
-                """
-                print(dataset.GetRasterBand(1))
-                nBands = dataset.RasterCount      # how many bands, to help you loop
-                nRows  = dataset.RasterYSize      # how many rows
-                nCols  = dataset.RasterXSize      # how many columns
-                Band = dataset.GetRasterBand(1)
-                dType = Band.DataType          # the datatype for this band
-                dType = gdal.GDT_Float64
-                 
-                
-                RowRange = range(nRows)
-                for ThisRow in RowRange:
-                    # read a single line from this band
-                    ThisLine = Band.ReadRaster(0,ThisRow,nCols,1,nCols,1,dType)
-                    print("ThisLine", ThisLine)
-                    import struct
-                    print(struct.unpack('>f', ThisLine[:4]))"""
-                    
-                import rasterio
-                image = rasterio.open(geo_grid)
-                
-                band = image.read(1)
-                
-                longitude_test = np.array(image.read(1)).flatten()
-                latitude_test = np.array(image.read(2)).flatten()
+                longitude_test = np.array(dataset.GetRasterBand(1).ReadAsArray()).flatten()
+                latitude_test = np.array(dataset.GetRasterBand(2).ReadAsArray()).flatten()
                 if dataset.RasterCount == 3:
-                    altitude_test = np.array(image.read(3)).flatten()
+                    altitude_test = np.array(dataset.GetRasterBand(3).ReadAsArray()).flatten()
                 else:
                     # if altitude not saved in grid, take direct altitude from ground truth (asgard)
                     altitude_test = grounds[:, 2]
 
 
                 ref = np.stack((longitude_test, latitude_test, altitude_test), axis=1)
-                #error_2d_g = np.array(comp.planar_error(ref, np.array(grounds)))
-                print("ref1:",np.array(ref[:,1]))
-                print("ground1",np.array(grounds[:,1]))
-                error_2d_g = np.array(distance(latitude_test, longitude_test, np.array(grounds[:,1]),np.array(grounds[:,0])))[2]
-                print(error_2d_g)
+                error_2d_g = np.array(comp.planar_error(ref, np.array(grounds)))
                 if error_2d_g[np.nanargmax(error_2d_g)] > 0.0002 :
                     #print ("pixel before direct loc (" + str(pixels[np.nanargmax(error_2d_g)][1])+","+ str([np.nanargmax(error_2d_g)][0]),")")
                     #print("   asgard:", grounds[np.nanargmax(error_2d_g)], "vs sen2vm:", ref[np.nanargmax(error_2d_g)])
@@ -385,15 +393,6 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
                     geo_grid_dir = op.join(ref_dir, "GRANULE", op.basename(granule), "GEO_DATA")
                     Path(geo_grid_dir).mkdir(parents=True, exist_ok=True)
                     output_ref_grid = op.join(geo_grid_dir, op.basename(geo_grid))
-                    
-                    #TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
                     arrays_to_raster(output_ref_grid, grounds)
                     # print(f"Granule {g} save in {output_ref_grid}")
 
@@ -421,7 +420,7 @@ def add_direct_errors_infos_dataframe(band, det, name, errors, pixels, df):
     std_err = np.nanstd(errors)
     argmax_err = np.nanargmax(errors)
     ce95_err = np.nanpercentile(errors, 95)
-    if name != "all" :
+    if name is not "all" :
         coordinates_argmax_c = pixels[np.nanargmax(errors)][0]
         coordinates_argmax_r = pixels[np.nanargmax(errors)][1]
     else :
@@ -517,43 +516,4 @@ def print_error(sensor, error, type):
             print(f"{sensor} ({nb} values): max={max_error} {unit} (ce95={ce95_error})")
     else :
         print(f"{sensor} (no value)")
-        
-WGS84_EARTH_EQUATORIAL_RADIUS = 6378137.0
 
-def distance(s_lat: float, s_lng: float, e_lat: float, e_lng: float, degrees: bool = True):
-    """
-    The function calculates the distance between two points on the Earth's surface given their latitude and longitude
-    coordinates.
-
-    :param s_lat: The starting latitude of the location
-    :param s_lng: The starting longitude coordinate
-    :param e_lat: The latitude of the end point
-    :param e_lng: The longitude of the end point
-    :param degrees: deg2rad conversion needed
-    :return distance (meters)
-    """
-
-    if degrees:
-        s_lat = np.deg2rad(s_lat)
-        s_lng = np.deg2rad(s_lng)
-        e_lat = np.deg2rad(e_lat)
-        e_lng = np.deg2rad(e_lng)
-
-    dlat = np.sin((e_lat - s_lat) / 2)
-    dlat_meters = 2 * WGS84_EARTH_EQUATORIAL_RADIUS * np.arcsin(dlat)
-    dlon = np.cos(s_lat) * np.cos(e_lat) * np.sin((e_lng - s_lng) / 2) ** 2
-    dlon_meters = 2 * WGS84_EARTH_EQUATORIAL_RADIUS * np.arcsin(np.sqrt(dlon))
-    d = np.sin((e_lat - s_lat) / 2) ** 2 + np.cos(s_lat) * np.cos(e_lat) * np.sin((e_lng - s_lng) / 2) ** 2
-    d_meters = 2 * WGS84_EARTH_EQUATORIAL_RADIUS * np.arcsin(np.sqrt(d))
-    if isinstance(dlon_meters, np.float64):
-        if e_lng < s_lng:
-            dlon_meters = -dlon_meters
-
-    else:  # todo
-        for i in range(len(dlon_meters)):
-            if e_lng[i] < s_lng[i]:
-                dlon_meters[i] = -dlon_meters[i]
-
-    return dlat_meters, dlon_meters, d_meters
-
-test_Sen2VM()
