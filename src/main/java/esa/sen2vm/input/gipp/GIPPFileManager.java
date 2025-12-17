@@ -75,7 +75,7 @@ public class GIPPFileManager
         {
             return searchGIPFilesFromRegex(root, dirNameRegex, fileNameRegex, validExtensions);
         }else{
-            return searchGIPFilesFromList(root, dirNameRegex, gippList, validExtensions);
+            return searchGIPPFilesFromList(root, dirNameRegex, gippList, validExtensions);
         }
     }
 
@@ -128,7 +128,7 @@ public class GIPPFileManager
         return results;
     }
 
-    public static List<File> searchGIPFilesFromList(Path root, String dirNameRegex, List<String> gippList, List<String> validExtensions) throws IOException {
+    public static List<File> searchGIPPFilesFromList(Path root, String dirNameRegex, List<String> gippList, List<String> validExtensions) throws IOException {
         final List<File> results = new ArrayList<>();
         final List<String> fileNames = new ArrayList<>();
         final List<String> tarExtension = Arrays.asList("TGZ", "tar.gz","tgz");
@@ -144,7 +144,7 @@ public class GIPPFileManager
                     String fileName = filePath.getFileName() != null ? filePath.getFileName().toString() : filePath.toString();
                     String fileNameWithoutExtension = fileName;
                     if(!Files.isDirectory(filePath.toAbsolutePath())){
-                        fileNameWithoutExtension = getFilepathWithoutExtension(new File(fileName));
+                        fileNameWithoutExtension = getFilePathWithoutExtension(new File(fileName));
                     }
                     if (filePattern.matcher(fileNameWithoutExtension).matches())
                     {
@@ -176,7 +176,7 @@ public class GIPPFileManager
                                 LOGGER.info("Untar GIPP: "+file.toString());
                             }catch(IOException e)
                             {
-                                LOGGER.warning("The targz extraction of GIPP has been failed:"+file.toString());
+                                LOGGER.warning("The targz extraction of GIPP has failed:"+file.toString());
                                 e.printStackTrace();
                             }
 
@@ -286,7 +286,7 @@ public class GIPPFileManager
      * @param the filepath to parse
      * @return a string that represents the absolute filepath without the extension file
      */
-    private static String getFilepathWithoutExtension(File file)
+    private static String getFilePathWithoutExtension(File file)
     {
         String fileName = file.getPath();
         int lastDotIndex = fileName.lastIndexOf('.');
