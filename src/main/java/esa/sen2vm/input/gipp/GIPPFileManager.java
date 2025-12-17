@@ -321,15 +321,12 @@ public class GIPPFileManager
         {
             // get blind pixel file
             blindPixelGIPList =typedGIPPList(gippList, blindPixelGIPType);
-            blindPixelGIPList.stream().forEach(System.out::println);
 
             // get spacecraft model file
             spamodGIPList =typedGIPPList(gippList, spamodGIPType);
-            spamodGIPList.stream().forEach(System.out::println);
 
             // get viewing direction file
             viewingDirGIPList =typedGIPPList(gippList, viewingDirGIPType);
-            spamodGIPList.stream().forEach(System.out::println);
         }
         try{
             // get blind pixel file
