@@ -28,3 +28,12 @@ pip install rasterio
 cd /home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/
 
 python3.11 test_legacy_sen2vm.py # TODO: Add conf file in input after verifying that hard coded path give consistent results
+
+
+
+
+
+
+
+
+docker exec -it 85375cc0ac57  bash

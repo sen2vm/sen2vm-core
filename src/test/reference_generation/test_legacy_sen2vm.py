@@ -89,13 +89,13 @@ def test_Sen2VM():
     # Init S2geoInterface
     #config = S2geoInterfaceSen2VM(xml_product, iers, geoid, dem, gipp, refining).read()
     #config = S2LegacyDriver(xml_product, iers, geoid, dem, gipp).read()
-
+    
     config = S2LegacyDriver(
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/input/TDS1/L1B_all/DATASTRIP/S2A_OPER_MSI_L1B_DS_DPRM_20140630T140000_S20200816T120220_N05.00/S2A_OPER_MTD_L1B_DS_DPRM_20140630T140000_S20200816T120220.xml", #L1B
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/input/TDS1/inputs/IERS/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000.txt", #IERS
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx", #GEOID
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/DEM/", #DEM
-        "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/input/TDS1/inputs/GIPP/", #GIPP
+        "/DATA/Sen2VM/MadeiraSAFE_SXGEO-0.3.1/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/DATASTRIP/S2B_OPER_MSI_L1B_DS_2BPS_20241019T153411_S20241019T120215_N05.11/S2B_OPER_MTD_L1B_DS_2BPS_20241019T153411_S20241019T120215.xml", #L1B
+        "/DATA/Sen2VM/MadeiraSAFE_SXGEO-0.3.1/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/AUX_DATA/IERS/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20241017T000000.txt", #IERS
+        "/DATA/DEM_Legacy/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx", #GEOID
+        "/DATA/DEM_Legacy/DEM_SRTM", #DEM
+        "/DATA/Sen2VM/MadeiraSAFE_SXGEO-0.3.1/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/AUX_DATA/GIPP_restricted/", #GIPP
         ).read()
     
     product = S2MSILegacyGeometry(**config)  # TOFIX
@@ -109,7 +109,7 @@ def test_Sen2VM():
     detectors = [S2Detector.from_name("D01")]
     bands = [S2Band.from_name("B01")]
 
-    l1b_product = "/home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/input/TDS1/L1B_all/"
+    l1b_product = "/DATA/Sen2VM/MadeiraSAFE_SXGEO-0.3.1/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/"
     ref_dir = "/home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/test_generation/"
 
     compute_direct_location(config, l1b_product, product, detectors, bands, ref_dir)
@@ -283,8 +283,8 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
 
             # Select corresponding granules
 
-            #list_granules = glob.glob(op.join(input_dir, "GRANULE", "*" + sensor[4:] + "*"))
-            list_granules = glob.glob(op.join("/home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/test_generation/GRANULE/", "*" + sensor[4:] + "*"))
+            list_granules = glob.glob(op.join(input_dir, "GRANULE", "*" + sensor[4:] + "*"))
+            #list_granules = glob.glob(op.join("/home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/test_generation/GRANULE/", "*" + sensor[4:] + "*"))
             
             # list_granules = glob.glob(op.join(input_dir, "GRANULE", "S2B_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20240116T154306_D06*"))
 
@@ -363,15 +363,16 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
 
                 ref = np.stack((longitude_test, latitude_test, altitude_test), axis=1)
                 #error_2d_g = np.array(comp.planar_error(ref, np.array(grounds)))
-                print("ref1:",np.array(ref[:,1]))
-                print("ground1",np.array(grounds[:,1]))
+                print("ref1: ",np.array(ref[:,1]))
+                print("ground1: ",np.array(grounds[:,1]))
                 error_2d_g = np.array(distance(latitude_test, longitude_test, np.array(grounds[:,1]),np.array(grounds[:,0])))[2]
-                print(error_2d_g)
+                print("error_2d: ",error_2d_g)
                 if error_2d_g[np.nanargmax(error_2d_g)] > 0.0002 :
                     #print ("pixel before direct loc (" + str(pixels[np.nanargmax(error_2d_g)][1])+","+ str([np.nanargmax(error_2d_g)][0]),")")
                     #print("   asgard:", grounds[np.nanargmax(error_2d_g)], "vs sen2vm:", ref[np.nanargmax(error_2d_g)])
                     #print("   avec diff =", error_2d_g[np.nanargmax(error_2d_g)], "m")
-                    print( grounds[np.nanargmax(error_2d_g)], ref[np.nanargmax(error_2d_g)], error_2d_g[np.nanargmax(error_2d_g)])
+                    print("error max: ", grounds[np.nanargmax(error_2d_g)], ref[np.nanargmax(error_2d_g)], error_2d_g[np.nanargmax(error_2d_g)])
+                    print("errors (nb=", len(error_2d_g[error_2d_g > 0.0002]), "/", len(error_2d_g) ,"): ", error_2d_g[error_2d_g > 0.0002][::10])
                 df = add_direct_errors_infos_dataframe(sensor[0:3], sensor[4:], granule, error_2d_g, pixels, df)
 
                 # If ground truth (asgard) need to be saved
@@ -387,6 +388,11 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
                     output_ref_grid = op.join(geo_grid_dir, op.basename(geo_grid))
                     
                     #TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script
+                    print()
+                    print()
+                    print()
+                    print()
+                    print()
                     print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
                     print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
                     print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
@@ -394,7 +400,7 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
                     print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
                     print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
                     print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    arrays_to_raster(output_ref_grid, grounds)
+                    # arrays_to_raster(output_ref_grid, grounds)
                     # print(f"Granule {g} save in {output_ref_grid}")
 
 

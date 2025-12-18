@@ -6,7 +6,7 @@
 
     <groupId>esa.sen2vm</groupId>
     <artifactId>sen2vm-core</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 
     <name>sen2vm-core</name>
     <!-- FIXME change it to the project's website -->
@@ -19,7 +19,7 @@
         <jaxb.plugin.version>2.5.0</jaxb.plugin.version>
         <!-- cots version -->
         <gdal.version>3.6.2</gdal.version>
-        <sxgeo.version>0.3.0</sxgeo.version>
+        <sxgeo.version>0.3.1</sxgeo.version>
         <!-- <sxgeo.orekit-tools.version>1.2</sxgeo.orekit-tools.version> -->
         <!-- <sxgeo.hipparchus.version>4.0.1</sxgeo.hipparchus.version> -->
         <maven.repository.target>sen2vm/sen2vm-core</maven.repository.target>
