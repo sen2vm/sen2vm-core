@@ -11,12 +11,16 @@
   * [Output grids usage](documentation/Output/output_grids_usage.md)
 
 
-# Project sen2vm-core
+# Project Sen2VM (sen2vm-core)
 
-* Its primary function is to create **direct location grids**, mapping the L1B product in sensor geometry down to the ground.
-* Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
+>[!NOTE]
+>Sen2VM is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0); its licence file can be accessible in [LICENSE](LICENSE) file.
 
-Sen2VM is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0); its licence file can be accessible in [LICENSE](LICENSE) file.
+Its primary function is to create **direct location grids**, mapping Sentinel-2 Level-1B products in sensor geometry down to the ground geometry (as in L1C).
+For more details about Sentinel-2 Level-1B format, please refer to [Level-1B format description](#1-level-1b-format-description)
+
+Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
+
 
 Please note that Sen2VM exists implemented as a SNAP plugin, which calls the Sen2VM standalone tool during execution.
 
@@ -33,7 +37,7 @@ This documentation is split into 5 parts:
 * Validation process, including test procedures and data used: §[Validation](#5-validation)
 
 >[!NOTE]
-> If you want to compile Sen2VM by yourself, please refer to dedicated [HOWTO section](documentation/Usage/HOWTO.md)
+>If you want to compile Sen2VM by yourself, please refer to dedicated [HOWTO section](documentation/Usage/HOWTO.md)
 
 Regarding the several git repositories, here is a schema on how they are linked together:
 ![Git links](/assets/images/README_Git_links.png "Git links")
@@ -41,12 +45,13 @@ Regarding the several git repositories, here is a schema on how they are linked 
 
 ## 1. Level-1B format description
 
-The Copernicus Sentinel-2 is a European mission that utilizes wide-swath, high-resolution, multi-spectral imaging data acquisitions. Due to their worldwide regular acquisitions and accurate geolocation (<5m CE90) , Sentinel-2 satellites offers since several years now a massive quantitative and qualitative resource for the Earth observation community.  
+The Copernicus Sentinel-2 is a European mission that acquires wide-swath, high-resolution, multi-spectral imaging data acquisitions. Due to their worldwide regular acquisitions and accurate geolocation (<5m CE90) , Sentinel-2 satellites offers since several years now a massive quantitative and qualitative resource for the Earth observation community.  
 
-A single Sentinel-2 data is generated at multiple levels, with higher levels indicating greater modification or enhancement through scientifical algorithms. Since the beginning of the mission, the only publicly available level was the Level-1C (L1C), which consists of orthorectified images resampled in Top-Of-Atmosphere (TOA) reflectance. 
+A single Sentinel-2 acquisition is generated at multiple levels, with higher levels indicating greater modification or enhancement through scientifical algorithms. Since the beginning of the mission, the only publicly available level was the Level-1C (L1C), which consists of orthorectified images resampled in Top-Of-Atmosphere (TOA) reflectance. 
+
 Sentinel-2 L1C products are stored by tiles and one Sentinel-2 acquisition (hereby called **Datastrip**) cover several L1C tiles. For each acquisition, several L1C tiles are generated, some of which are only partially covered and therefore containg NoData inside. Each tile includes Datastrip metadata (duplicated across all generated L1C tiles), Tile Metadata, and all scientific data (images and masks), all stored within a GRANULE folder.
 
-The previous level, Level-1B (L1B), contains radiance in sensor geometry requiring a high level of expertise, mainly to handle the georeferencing of the product. At L1B (as in L0 and L1A), data is not yet devided in L1C tiles. Instead, data is organised per GRANULE; one granule is an Along-Track portion of one Detector acquisition.
+The previous level, Level-1B (L1B), contains radiance in sensor geometry requiring a high level of expertise, mainly to handle the georeferencing of the product. At L1B (as in L0 and L1A), data is not yet devided in L1C tiles. Instead, data is organised per GRANULE; one granule is an Along-Track portion (including all bands) of one Detector acquisition.
 
 ![Sentinel-2 Format Intro](/assets/images/README_Format_Intro.png "Format Intro")
 

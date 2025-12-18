@@ -15,7 +15,6 @@
 
 **Prerequisite:** Expert User access (Sentinel-2 L1B products are only available to expert users on request):refs[1-2,65]
 
----
 
 ## Introduction
 
@@ -24,7 +23,6 @@ This guide explains how to download **Sentinel-2 L1B** data from the [Copernicus
 > [!IMPORTANT]
 > To access Sentinel-2 L1B data, you must submit a request via the [FAQ section](https://documentation.dataspace.copernicus.eu/FAQ.html) of the Copernicus Data Space Ecosystem.
 
----
 
 ## Step-by-Step Download Process
 

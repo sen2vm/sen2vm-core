@@ -831,6 +831,21 @@ public class DataStripManager
     }
 
     /**
+     * get GIPP name from datastrip
+     * @throws Sen2VMException
+     */
+    public List<String> getGIPPListFromAux() throws Sen2VMException
+    {
+        List<A_GIPP_LIST.GIPP_FILENAME> gippList = auxiliaryDataInfo.getGIPP_List().getGIPP_FILENAME();
+        List<String> gippStringList = new ArrayList<>();
+        for (GIPP_FILENAME gipp_filename : gippList)
+        {
+            gippStringList.add(gipp_filename.getValue());
+        }
+        return gippStringList;
+    }
+
+    /**
      * Check if the GIPP version is supported
      * @param gippType is the type of GIPP, can be GIP_SPAMOD or GIP_BLINDP
      * @param gippVersion is the version of the input GIPP

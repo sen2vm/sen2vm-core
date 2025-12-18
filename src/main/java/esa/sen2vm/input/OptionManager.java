@@ -91,8 +91,8 @@ public class OptionManager
     /**
      * Option for the GIPP version check or not (optional; no argument)
      */
-    public static final String OPT_DEACTIVATE_GIPP_CHECK_LONG = "deactivate_gipp_check";
-    public static final String OPT_DEACTIVATE_GIPP_CHECK_SHORT = "dgc";
+    public static final String OPT_DEACTIVATE_AUTO_GIPP_SELECTION_LONG = "deactivate_auto_gipp_selection";
+    public static final String OPT_DEACTIVATE_AUTO_GIPP_SELECTION_SHORT = "dgc";
 
     /**
      * Option for the IERS file path (optional)
@@ -267,10 +267,10 @@ public class OptionManager
             Option iersOption = new Option(OPT_IERS_SHORT, OPT_IERS_LONG, true, "(optional) Path to IERS file");
             iersOption.setRequired(false);  
 
-            Option noGippCheckOption = new Option(OPT_DEACTIVATE_GIPP_CHECK_SHORT, OPT_DEACTIVATE_GIPP_CHECK_LONG, false,
+            Option noAutoGippSelectionOption = new Option(OPT_DEACTIVATE_AUTO_GIPP_SELECTION_SHORT, OPT_DEACTIVATE_AUTO_GIPP_SELECTION_LONG, false,
                                                     "(optional) Deactivate the check of GIPP version;\n"
                                                     + "if present= \"true\", if not= \"false\". ");
-            noGippCheckOption.setRequired(false);
+            noAutoGippSelectionOption.setRequired(false);
 
             Option overwrite_grids = new Option(OPT_OVERWRITE_GRIDS_SHORT, OPT_OVERWRITE_GRIDS_LONG, false,
                                                     "(optional) Activate grids overwriting;\n"
@@ -331,7 +331,7 @@ public class OptionManager
            
             // Add the optional arguments
             optionsNoFile.addOption(iersOption);
-            optionsNoFile.addOption(noGippCheckOption);
+            optionsNoFile.addOption(noAutoGippSelectionOption);
             optionsNoFile.addOption(overwrite_grids);
             optionsNoFile.addOption(noRefiningOption);
             optionsNoFile.addOption(exportAltOption);

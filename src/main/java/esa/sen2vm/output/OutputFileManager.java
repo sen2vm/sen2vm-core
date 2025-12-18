@@ -302,7 +302,7 @@ public class OutputFileManager
         // add info from config parameters
         objJson.put("l1b_product", config.getDatastripFilePath());
         objJson.put("gipp_folder", config.getGippFolder());
-        objJson.put("gipp_version_check", config.getGippVersionCheck());
+        objJson.put("auto_gipp_selection", config.getGippVersionCheck());
         objJson.put("dem", config.getDem());
         objJson.put("geoid", config.getGeoid());
         objJson.put("iers", config.getIers());
