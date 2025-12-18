@@ -273,20 +273,4 @@ public class Utils {
         return false;
     }
 
-    public static void copyFiles(Path sourceDir, Path targetDir) {
-        try (Stream<Path> files = Files.list(sourceDir)) {
-            files.forEach(file -> {
-                try {
-                    Path targetFile = targetDir.resolve(file.getFileName());
-                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    LOGGER.info("Error during copy of the " + file + ": " + e.getMessage());
-                }
-            });
-        } catch (IOException e) {
-            LOGGER.info("Error during reading of files the : " + e.getMessage());
-        }
-    }
-
-
 }

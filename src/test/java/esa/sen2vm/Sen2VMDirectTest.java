@@ -134,9 +134,9 @@ public class Sen2VMDirectTest
             Config.deleteDirectory(gippDir);
         }
         gippDir.mkdir();
-        Utils.copyFiles(sourceArchive.toPath(),gippDir.toPath());
         try
         {
+            Config.copyFolder(sourceArchive,gippDir,true);
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.configAutoGippSelection(configTmpDirect, GIPP_2, true, outputDir);
@@ -171,12 +171,14 @@ public class Sen2VMDirectTest
             Config.deleteDirectory(gippDir);
         }
         gippDir.mkdir();
-        Utils.copyFiles(sourceArchive.toPath(),gippDir.toPath());
-        File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_VIEDIR_SPS__20150731T092207_V20150703T000000_21000101T000000_B01.tar.gz");
-        LOGGER.info("File to remove:"+fileToRemove.toString());
-        fileToRemove.delete();
-        try
+
+       try
         {
+            Config.copyFolder(sourceArchive,gippDir,true);
+            // remove a listed GIPP to check a test failure
+            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_VIEDIR_SPS__20150731T092207_V20150703T000000_21000101T000000_B01.tar.gz");
+            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove.delete();
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(nameTest, "direct");
             String config = Config.configAutoGippSelection(configTmpDirect, GIPP_2, true, outputDir);
