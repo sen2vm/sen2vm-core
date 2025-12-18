@@ -130,7 +130,6 @@ public class GIPPManager
      */
     protected void loadAllGIPP(List<BandInfo> bands) throws Sen2VMException
     {
-
         // Load blind pixel gipp
         File fileBlindPixel = null;
         try

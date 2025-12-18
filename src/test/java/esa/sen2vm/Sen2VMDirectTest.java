@@ -129,7 +129,8 @@ public class Sen2VMDirectTest
         String GIPP_2 = "src/test/resources/tests/data/test_GIPP/";
         File gippDir= new File(GIPP_2);
         File sourceArchive= new File(GIPP_archive);
-        if(Files.exists(gippDir.toPath())){
+        if(Files.exists(gippDir.toPath()))
+        {
 
             Config.deleteDirectory(gippDir);
         }
@@ -166,13 +167,14 @@ public class Sen2VMDirectTest
         String GIPP_2 = "src/test/resources/tests/data/test_GIPP/";
         File gippDir= new File(GIPP_2);
         File sourceArchive= new File(GIPP_archive);
-        if(Files.exists(gippDir.toPath())){
+        if(Files.exists(gippDir.toPath()))
+        {
 
             Config.deleteDirectory(gippDir);
         }
         gippDir.mkdir();
 
-       try
+        try
         {
             Config.copyFolder(sourceArchive,gippDir,true);
             // remove a listed GIPP to check a test failure

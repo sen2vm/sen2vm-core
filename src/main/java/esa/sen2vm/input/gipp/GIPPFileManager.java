@@ -84,7 +84,9 @@ public class GIPPFileManager
         if(gippList.isEmpty())
         {
             return searchGIPFilesFromRegex(root, dirNameRegex, fileNameRegex, validExtensions);
-        }else{
+        }
+        else
+        {
             return searchGIPPFilesFromList(root, dirNameRegex, gippList, validExtensions);
         }
     }
@@ -154,7 +156,8 @@ public class GIPPFileManager
                 public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) {
                     String fileName = filePath.getFileName() != null ? filePath.getFileName().toString() : filePath.toString();
                     String fileNameWithoutExtension = fileName;
-                    if(!Files.isDirectory(filePath.toAbsolutePath())){
+                    if(!Files.isDirectory(filePath.toAbsolutePath()))
+                    {
                         fileNameWithoutExtension = getFilePathWithoutExtension(new File(fileName));
                     }
                     if (filePattern.matcher(fileNameWithoutExtension).matches())
@@ -179,14 +182,14 @@ public class GIPPFileManager
             {
                 final Pattern filePattern = Pattern.compile(gippName);
                 // Stack indicating whether we are currently in a qualified subtree
-                Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-
+                Files.walkFileTree(root, new SimpleFileVisitor<Path>()
+                {
                     @Override
                     public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) {
-                        // boolean inQualifiedSubtree = !qualifiedStack.isEmpty() && qualifiedStack.peek();
                         String fileName = filePath.getFileName() != null ? filePath.getFileName().toString() : filePath.toString();
                         String fileNameWithoutExtension = fileName;
-                        if(!Files.isDirectory(filePath.toAbsolutePath())){
+                        if(!Files.isDirectory(filePath.toAbsolutePath()))
+                            {
                             fileNameWithoutExtension = getFilePathWithoutExtension(new File(fileName));
                         }
 
@@ -196,21 +199,25 @@ public class GIPPFileManager
                             String extension = getFileExtension(file);
                             if(tarExtension.stream().anyMatch(item -> item.contains(extension)))
                             {
-                                try{
+                                try
+                                {
                                     List<Path> listPath = UntarGIPP.untarGz(file.toPath(), Paths.get(file.getParent()));
-                                    for(Path untarPath:listPath){
+                                    for(Path untarPath:listPath)
+                                        {
                                         File untarFile = untarPath.toFile();
                                         String untarFileExtension = getFileExtension(untarFile);
                                         if(validExtensions.stream().anyMatch(item -> item.contains(untarFileExtension)))
                                         {
-                                            if(!results.contains(untarFile) || !fileNames.contains(untarFile.getName())){
+                                            if(!results.contains(untarFile) || !fileNames.contains(untarFile.getName()))
+                                            {
                                                 results.add(untarFile);
                                                 fileNames.add(untarFile.getName());
                                             }
                                         }
                                     }
                                     LOGGER.info("Untar GIPP: "+file.toString());
-                                }catch(IOException e)
+                                }
+                                catch(IOException e)
                                 {
                                     LOGGER.warning("The targz extraction of GIPP has failed:"+file.toString());
                                     e.printStackTrace();
@@ -229,9 +236,11 @@ public class GIPPFileManager
     {
         Pattern pattern = Pattern.compile(".*"+gippType+".*");
         List<String> filteredGIPList = new ArrayList<>();
-        for (String item : gippList) {
+        for (String item : gippList)
+        {
             Matcher matcher = pattern.matcher(item);
-            if (matcher.matches()) {
+            if (matcher.matches())
+            {
                 filteredGIPList.add(item);
             }
         }
@@ -281,7 +290,8 @@ public class GIPPFileManager
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 String name = file.getFileName().toString().toLowerCase();
-                if (name.endsWith(".TGZ") || name.endsWith(".tar.gz") || name.endsWith(".tgz")) {
+                if (name.endsWith(".TGZ") || name.endsWith(".tar.gz") || name.endsWith(".tgz"))
+                {
                     UntarGIPP.untarGz(file, file.getParent());
                     Files.deleteIfExists(file);
                     LOGGER.info("Untar GIPP: "+file.toString());
@@ -354,7 +364,8 @@ public class GIPPFileManager
             // get viewing direction file
             viewingDirGIPList =typedGIPPList(gippList, viewingDirGIPType);
         }
-        try{
+        try
+        {
             // get blind pixel file
             blindPixelFile = findGippFile(gippFolder, blindPixelGIPType, blindPixelGIPList, Sen2VMConstants.GIPP_BLINDP_PAT, validExtensions);
             
@@ -363,7 +374,8 @@ public class GIPPFileManager
             
             // get viewing direction file
             viewingDirectionFileList = findGippFiles(gippFolder, viewingDirGIPType, viewingDirGIPList, Sen2VMConstants.GIPP_VIEWDIR_PAT, validExtensions);
-        }catch(IOException e)
+        }
+        catch(IOException e)
         {
             throw new Sen2VMException(e);
         }
