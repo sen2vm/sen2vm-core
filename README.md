@@ -12,10 +12,14 @@
 
 # Project Sen2VM (sen2vm-core)
 
-* Its primary function is to create **direct location grids**, mapping the L1B product in sensor geometry down to the ground.
-* Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
+>[!NOTE]
+>Sen2VM is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0); its licence file can be accessible in [LICENSE](LICENSE) file.
 
-Sen2VM is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0); its licence file can be accessible in [LICENSE](LICENSE) file.
+Its primary function is to create **direct location grids**, mapping Sentinel-2 Level-1B products in sensor geometry down to the ground geometry (as in L1C).
+For more details about Sentinel-2 Level-1B format, please refer to [Level-1B format description](#1-level-1b-format-description)
+
+Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
+
 
 Please note that Sen2VM exists implemented as a SNAP plugin, which calls the Sen2VM standalone tool during execution.
 
@@ -32,7 +36,7 @@ This documentation is split into 5 parts:
 * Validation process, including test procedures and data used: §[Validation](#5-validation)
 
 >[!NOTE]
-> If you want to compile Sen2VM by yourself, please refer to dedicated [HOWTO section](documentation/Usage/HOWTO.md)
+>If you want to compile Sen2VM by yourself, please refer to dedicated [HOWTO section](documentation/Usage/HOWTO.md)
 
 Regarding the several git repositories, here is a schema on how they are linked together:
 ![Git links](/assets/images/README_Git_links.png "Git links")
