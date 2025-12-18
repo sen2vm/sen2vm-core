@@ -3,6 +3,7 @@
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
   * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](DEM_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](../Output/output_direct_loc.md)
@@ -15,7 +16,7 @@
 
 * L1B Product, accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/). *Please note that special access for L1B products might be required by submitting  a request via the FAQ section.* For detailed download instructions, see [How to Download L1B Data from CDSE](L1B_CDSE_Download.md).
 * Some GIPP files *(parameters files used in operational production, defining Satellites)*, accessible through [sen2vm-gipp-database](https://github.com/sen2vm/sen2vm-gipp-database)
-* Digital Elevation Model (DEM) (COPERNICUS DEM is accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/))
+* Digital Elevation Model (DEM) (COPERNICUS DEM is accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)). For detailed download instructions, see [How to Download DEM Data from CDSE](DEM_CDSE_Download.md).
 * GEOID model to measure precise surface elevations, **it shall be the one used to generate the DEM you are providing**, an example can accessible through [sen2vm-core git](../../src/test/resources/DEM_GEOID/) <mark>TODO-verify that CDSE is providing GEOID</mark>
 * IERS bulletin that provides data and standards related to Earth rotation and reference frames,  accessible through [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
 * Additional information for configuration.
@@ -154,6 +155,9 @@ For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used.
 
 #### 1.3.1 DEM
 
+> [!NOTE]
+> DEM can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). For detailed step-by-step instructions on how to download DEM data from the Copernicus Data Space Browser, please refer to the [How to Download DEM Data from CDSE](DEM_CDSE_Download.md) guide.
+
 Access to the DEM is provided via a path to a folder containing the dataset. 
 The DEM must meet the following requirements:
  * it should be split into files or folders (dynamically read) per square degrees,
@@ -214,6 +218,7 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
   * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](DEM_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](../Output/output_direct_loc.md)

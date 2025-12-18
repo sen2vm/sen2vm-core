@@ -3,6 +3,7 @@
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](input_description.md)
   * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](DEM_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](../Output/output_direct_loc.md)
@@ -133,6 +134,7 @@ Once the status is **"Completed"**, download the product.
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](input_description.md)
   * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](DEM_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](../Output/output_direct_loc.md)

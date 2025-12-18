@@ -3,6 +3,7 @@
 * [HOWTO](documentation/Usage/HOWTO.md)
 * [Inputs](documentation/Input/input_description.md)
   * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](documentation/Output/output_direct_loc.md)
@@ -151,6 +152,7 @@ It is to be noted that orthorectification using Sen2VM gave equivalent results t
 * [HOWTO](documentation/Usage/HOWTO.md)
 * [Inputs](documentation/Input/input_description.md)
   * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](documentation/Output/output_direct_loc.md)
