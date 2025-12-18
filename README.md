@@ -210,7 +210,7 @@ Each parameter description can be found in the table below:
 | ----------- | :------: | :-----------: |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 | l1b_product | string   | **Mandatory** |                                                                     Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in § [L1B Product](#211-l1b-product), including DATASTRIP + GRANULE)                                                                      |
 | gipp_folder | string   | **Mandatory** |                                                                    Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to § [GIPP](#212-gipp).                                                                     |
-| gipp_check  | boolean  | Optional      |                                                                                                If true (default), check of GIPP version activated (see GIPP section § [GIPP](#212-gipp)</mark>)      |
+| auto_gipp_selection  | boolean  | Optional      |                                                                                                If true (default), the GIPPs are selected automaticaly from the datastrip metadata and an untar extraction is performed if necessary. Otherwise, the GIPPs must have a single, non-multiple version. This option is mainly intended for experimental use to test custom GIPP values (see GIPP section § [GIPP](#212-gipp)</mark>)      |
 | grids_overwriting | boolean  | Optional      |                                                                                             Activate the grids overwritings if the grids have already or partialy computed. It is false by default.                                                                                             |
 |dem          | string   | **Mandatory** |                                                                                                    Path to the FOLDER containing a DEM in the right format (cf § [Altitude/DEM](#2131-dem)).                                                                                                    |
 |geoid        | string   | **Mandatory** |                                                                                                  Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#2132-geoid))                                                                                                   |
@@ -282,7 +282,7 @@ GIPP are configuration files used in operation to:
 
 By nature, GIPP are versionnable. It is important to process with the version used to generate the L1B product.
 > [!WARNING]
->  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "gipp_check" parameter of the configuration file (cf §[2.1 Configuration file](#21-configuration-file)). **This parameter is optional, and by default, its value is set to true.**.
+>  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "auto_gipp_selection" parameter of the configuration file (cf §[2.1 Configuration file](#21-configuration-file)). **This parameter is optional, and by default, its value is set to true.**.
 
 The versions of the GIPP used in operation are listed in the L1B Datastrip Metadata of the L1B product (see §[2.1.1 L1B Product](#211-l1b-product)), in the tag _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
 
@@ -298,6 +298,10 @@ The GIPP required are the following ones:
     * MSI_TO_FOCAL_PLANE,
     * FOCAL_PLANE_TO_DETECTOR XML, available **per detector**
 * **GIP_BLINDP**: contains information on blind pixel, contained in BLIND_PIXEL_NUMBER tag: _[DATA/BAND/BLIND_PIXEL_NUMBER]_, available **per band**
+
+The auto_gipp_selection option enables the automatic retrieval of GIPP files from the datastrip GIPP list, and using a GIPP version check function.
+The GIPP folder does not require a specific structure; the system searches through all subdirectories and selects the first valid GIPP instance according to the listed name.
+If only .tar or .tar.gz archives of the GIPPs are available, the archives are extracted.
 
 #### 2.1.3 Altitude
 The main purpose of the tool is to add geolocation to the L1B product images. Hence to be precise, the altitude shall be taken into account, as its importance is far from neglectable on final geolocation, as illustrated below:

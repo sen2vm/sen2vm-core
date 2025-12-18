@@ -34,7 +34,7 @@ public class Sen2VMConstants
     /**
      * To check the GIPP version (by default the GIPP version is checked)
      */
-    public static final boolean GIPP_CHECK = true;
+    public static final boolean AUTO_GIPP_SELECTION = true;
 
     /**
      * To overwrite grids (by default it is disable)
