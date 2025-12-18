@@ -18,6 +18,8 @@ package esa.sen2vm;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import esa.sen2vm.exception.Sen2VMException;
@@ -102,7 +104,7 @@ public class Sen2VMDirectTest
         {
             String nameTest = "testDirectGipp";
             String outputDir = Config.createTestDir(nameTest, "direct");
-            String config = Config.configCheckGipp(configTmpDirect, GIPP_2, false, outputDir);
+            String config = Config.configAutoGippSelection(configTmpDirect, GIPP_2, false, outputDir);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
@@ -111,6 +113,86 @@ public class Sen2VMDirectTest
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }
+    }
+
+    @Test
+    public void testAutoSelectTarGipp()
+    {
+        String[] detectors = new String[]{"01"};
+        String[] bands = new String[]{"B01"};
+        String GIPP_archive = "src/test/resources/tests/data/archive_GIPP/";
+        String GIPP_2 = "src/test/resources/tests/data/test_GIPP/";
+        File gippDir= new File(GIPP_2);
+        File sourceArchive= new File(GIPP_archive);
+        if(Files.exists(gippDir.toPath()))
+        {
+
+            Config.deleteDirectory(gippDir);
+        }
+        gippDir.mkdir();
+        try
+        {
+            Config.copyFolder(sourceArchive,gippDir,true);
+            String nameTest = "testDirectLoc";
+            String outputDir = Config.createTestDir(nameTest, "direct");
+            String config = Config.configAutoGippSelection(configTmpDirect, GIPP_2, true, outputDir);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            LOGGER.info("config:"+config);
+            Sen2VM.main(args);
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+        } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }
+    }
+
+
+    @Test
+    public void testAutoSelectWithMissingGipp()
+    {
+        String[] detectors = new String[]{"01"};
+        String[] bands = new String[]{"B01"};
+        String GIPP_archive = "src/test/resources/tests/data/archive_GIPP/";
+        String GIPP_2 = "src/test/resources/tests/data/test_GIPP/";
+        File gippDir= new File(GIPP_2);
+        File sourceArchive= new File(GIPP_archive);
+        if(Files.exists(gippDir.toPath()))
+        {
+
+            Config.deleteDirectory(gippDir);
+        }
+        gippDir.mkdir();
+
+        try
+        {
+            Config.copyFolder(sourceArchive,gippDir,true);
+            // remove a listed GIPP to check a test failure
+            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_VIEDIR_SPS__20150731T092207_V20150703T000000_21000101T000000_B01.tar.gz");
+            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove.delete();
+            String nameTest = "testDirectLoc";
+            String outputDir = Config.createTestDir(nameTest, "direct");
+            String config = Config.configAutoGippSelection(configTmpDirect, GIPP_2, true, outputDir);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            LOGGER.info("config:"+config);
+            Sen2VM.main(args);
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+        } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(true);
         } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -129,7 +211,7 @@ public class Sen2VMDirectTest
         {
             String nameTest = "testDirectGipp";
             String outputDir = Config.createTestDir(nameTest, "direct");
-            String config = Config.configCheckGipp(configTmpDirect, GIPP_2, true, outputDir);
+            String config = Config.configAutoGippSelection(configTmpDirect, GIPP_2, true, outputDir);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
