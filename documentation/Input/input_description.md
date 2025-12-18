@@ -2,6 +2,7 @@
 
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
+  * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](../Output/output_direct_loc.md)
@@ -12,7 +13,7 @@
 
 **Inputs required by Sen2VM are:**
 
-* L1B Product, accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/). *Please note that special access for L1B products might be required by submitting  a request via the FAQ section.*
+* L1B Product, accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/). *Please note that special access for L1B products might be required by submitting  a request via the FAQ section.* For detailed download instructions, see [How to Download L1B Data from CDSE](L1B_CDSE_Download.md).
 * Some GIPP files *(parameters files used in operational production, defining Satellites)*, accessible through [sen2vm-gipp-database](https://github.com/sen2vm/sen2vm-gipp-database)
 * Digital Elevation Model (DEM) (COPERNICUS DEM is accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/))
 * GEOID model to measure precise surface elevations, **it shall be the one used to generate the DEM you are providing**, an example can accessible through [sen2vm-core git](../../src/test/resources/DEM_GEOID/) <mark>TODO-verify that CDSE is providing GEOID</mark>
@@ -75,7 +76,7 @@ Those parameters can be sent to Sen2 VM:
 ### 1.1 L1B Product
 
 > [!NOTE]
-> L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). Please note that special access for L1B products might be required by submitting  a request via the FAQ section.
+> L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). Please note that special access for L1B products might be required by submitting  a request via the FAQ section. For detailed step-by-step instructions on how to download L1B data from the Copernicus Data Space Browser, please refer to the [How to Download L1B Data from CDSE](L1B_CDSE_Download.md) guide.
 
 > [!IMPORTANT]
 > The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated in the following sections.
@@ -212,6 +213,7 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 
 * [HOWTO](../Usage/HOWTO.md)
 * [Inputs](..//Input/input_description.md)
+  * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](../Output/output_direct_loc.md)

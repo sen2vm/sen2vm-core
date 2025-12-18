@@ -2,6 +2,7 @@
 
 * [HOWTO](documentation/Usage/HOWTO.md)
 * [Inputs](documentation/Input/input_description.md)
+  * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](documentation/Output/output_direct_loc.md)
@@ -88,7 +89,7 @@ Where:
 
 Inputs required by Sen2VM are:
 
-* L1B Product,
+* L1B Product (see [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md) for download instructions),
 * Some GIPP files (parameters files used in operational production),
 * Digital Elevation Model (DEM),
 * GEOID model to measure precise surface elevations,
@@ -149,6 +150,7 @@ It is to be noted that orthorectification using Sen2VM gave equivalent results t
 
 * [HOWTO](documentation/Usage/HOWTO.md)
 * [Inputs](documentation/Input/input_description.md)
+  * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
 * Outputs:
 
   * [Direct location grids](documentation/Output/output_direct_loc.md)

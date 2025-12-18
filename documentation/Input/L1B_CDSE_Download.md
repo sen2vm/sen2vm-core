@@ -1,3 +1,14 @@
+[README](../../README.md)
+
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](input_description.md)
+  * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
+* Outputs:
+
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)
+
 # How to Download Sentinel-2 L1B Data from Copernicus Data Space Browser
 
 
@@ -116,4 +127,15 @@ Once the status is **"Completed"**, download the product.
 - [Sentinel-2 L1B Product Description](https://documentation.dataspace.copernicus.eu/Data/SentinelMissions/Sentinel2.html)
 
 ---
+
+[README](../../README.md)
+
+* [HOWTO](../Usage/HOWTO.md)
+* [Inputs](input_description.md)
+  * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
+* Outputs:
+
+  * [Direct location grids](../Output/output_direct_loc.md)
+  * [Inverse location grids](../Output/output_inverse_loc.md)
+  * [Output grids usage](../Output/output_grids_usage.md)
 
