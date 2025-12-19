@@ -12,11 +12,15 @@
 
 * Feature:
 
-  * 
+  * Addition of example Notebook
 
 * Doc:
 
-  * 
+  * Doc refactoring
+  * Inclusion of usage of Notebooks
+  * Inclusion of tutorials on how to get required inputs
+  * Updates on orthorectification example to be compatible with PDI/EUP.SAFE/EUP.COMPACT_SAFE
+  * Addition of a CHANGELOG
 
 ## 1.1.1 (2025-12-18)
 
