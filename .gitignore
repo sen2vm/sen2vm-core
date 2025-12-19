@@ -23,5 +23,7 @@
 hs_err_pid*
 replay_pid*
 
-# Build output directory
-target/
+
+#notebook files
+documentation/sen2vm-notebook/src/.venv/
+
