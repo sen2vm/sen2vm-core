@@ -25,5 +25,6 @@ replay_pid*
 
 
 #notebook files
-documentation/sen2vm-notebook/src/.venv/
+sen2vm-notebook/src/.venv/
+target/
 

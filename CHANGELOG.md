@@ -7,7 +7,7 @@
 ### Updates
 
 * Fix:
-  
+
   *
 
 * Feature:
@@ -31,9 +31,8 @@ Fix Dockerfile with updated version number
 ### Updates
 
 * Fix:
-  
-  * Hotfixe Dockerfile to have the same version than pom.xm. Addition of Commentary not to reproduce the issue
 
+  * Hotfixe Dockerfile to have the same version than pom.xm. Addition of Commentary not to reproduce the issue
 
 
 ## 1.1.0 (2025-12-18)
@@ -64,7 +63,7 @@ Optimized GIPP loading and License clarification
 ### Updates
 
 * Fix:
-  
+
   * Hotfix of a `grids_overwriting` with "s" in the code
 
 
