@@ -1,8 +1,10 @@
 # Sen2VM Release history
 
-## Incomming
+## 1.1.2 (2025-12-19)
 
 ### Main feature
+
+Documentation rework and example Notebook provision
 
 ### Updates
 

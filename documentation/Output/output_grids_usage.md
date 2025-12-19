@@ -11,6 +11,7 @@
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
   * [Output grids usage](../Output/output_grids_usage.md)
+  * [Notebooks](../../sen2vm-notebook/README_Notebooks.md)
 
 
 # Example of usage of the output grids
@@ -141,3 +142,4 @@ gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PAT
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
   * [Output grids usage](../Output/output_grids_usage.md)
+  * [Notebooks](../../sen2vm-notebook/README_Notebooks.md)

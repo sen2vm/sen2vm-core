@@ -11,6 +11,7 @@
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
   * [Output grids usage](../Output/output_grids_usage.md)
+  * [Notebooks](../../sen2vm-notebook/README_Notebooks.md)
 
 
 # Direct location grids
@@ -153,3 +154,4 @@ Grids should at least have 2x2 cells
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
   * [Output grids usage](../Output/output_grids_usage.md)
+  * [Notebooks](../../sen2vm-notebook/README_Notebooks.md)

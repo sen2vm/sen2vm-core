@@ -1,20 +1,38 @@
-# sen2vm-notebook Processing Workflow
+[README](../README.md)
 
-This repository provides a complete workflow to run **sen2vm** inside Docker and generate orthorectified and mosaicked outputs from Sentinel-2 L1B data.  
+* [HOWTO](../documentation/Usage/HOWTO.md)
+* [Inputs description](../documentation/Input/input_description.md)
+
+  * [How to Download L1B Data from CDSE](../documentation/Input/L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](../documentation/Input/DEM_CDSE_Download.md)
+
+* Outputs description:
+
+  * [Direct location grids](../documentation/Output/output_direct_loc.md)
+  * [Inverse location grids](../documentation/Output/output_inverse_loc.md)
+  * [Output grids usage](../documentation/Output/output_grids_usage.md)
+  * [Notebooks](../sen2vm-notebook/README_Notebooks.md)
+
+# Sen2VM Notebook Processing Workflow
+
+This repository provides a complete workflow to run **Sen2VM** inside Docker and generate orthorectified and mosaicked outputs from Sentinel-2 L1B data.  
 The project is designed and tested on **Linux**. It may not work reliably on **Windows**.
 Actually, this notebook can generate an inverse grid but can not use it to apply the orthorectification. 
 
----
 ## Prerequisites
 
-- **Docker** installed and running  
-- **Python 3.x**  
-- Required data:
-  - **Sentinel-2 L1B product** : /DATSTRIP and /GRANULE.  
-  - **DEM files** placed in the appropriate directory
+* **Docker** is avaialble on the running machine (installed and running)
+* **Python 3.x** 
+* **the full sen2vm-notebook folder shall be present:**
 
+  * notebook.ipynb
+  * requirements.txt
+  * gdal-latest folder
 
----
+* Required data:
+  
+  * **Sentinel-2 L1B product** : /DATASTRIP and /GRANULE.  
+  * **DEM files** placed in the appropriate directory
 
 ## Mandatory Directory Structure
 
@@ -50,15 +68,15 @@ Select the virtual environment kernel in your Jupyter session.
 In the first cell of the notebook:
 
 1. Set the path to:
-   - The working directory 
-   - The L1B product
-   - The output directory
+
+   * The working directory 
+   * The L1B product
+   * The output directory
 
 2. Adjust configuration parameters for:
-   - sen2vm
-   - Orthorectification settings
 
----
+   * Sen2VM
+   * Orthorectification settings
 
 ## Processing Steps
 
@@ -71,12 +89,11 @@ Execute the notebook cell by cell in the following order:
 5. Generation of `params.json` in: `/WORKDIR/UserConf`
 6. Execution of sen2vm inside Docker  
 7. Generation of a `.sh` script, then execution inside a second Docker container running the latest GDAL:
-     - Orthorectification by band  
-     - Mosaicking  
+
+    * Orthorectification by band  
+    * Mosaicking  
 
 Docker images are automatically cleaned up after each execution.
-
----
 
 ## Execution
 

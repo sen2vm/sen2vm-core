@@ -11,6 +11,7 @@
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
   * [Output grids usage](../Output/output_grids_usage.md)
+  * [Notebooks](../../sen2vm-notebook/README_Notebooks.md)
 
 
 # How to Download Sentinel-2 L1B Data from Copernicus Data Space Browser
@@ -155,3 +156,4 @@ Once the status is **"Completed"**, download the product.
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
   * [Output grids usage](../Output/output_grids_usage.md)
+  * [Notebooks](../../sen2vm-notebook/README_Notebooks.md)

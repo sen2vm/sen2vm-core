@@ -11,6 +11,7 @@
   * [Direct location grids](documentation/Output/output_direct_loc.md)
   * [Inverse location grids](documentation/Output/output_inverse_loc.md)
   * [Output grids usage](documentation/Output/output_grids_usage.md)
+  * [Notebooks](sen2vm-notebook/README_Notebooks.md)
 
 
 # Project Sen2VM (sen2vm-core)
@@ -99,7 +100,7 @@ Inputs required by Sen2VM are:
 
 * L1B Product (see [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md) for download instructions),
 * Some GIPP files (parameters files used in operational production),
-* Digital Elevation Model (DEM),
+* Digital Elevation Model (DEM) (see [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)),
 * GEOID model to measure precise surface elevations,
 * IERS bulletin that provides data and standards related to Earth rotation and reference frames,
 * Additional information for configuration.
@@ -126,7 +127,7 @@ Please note that only the direct location grids will be included in the input pr
 Examples are available:
 
 * In [Example section](documentation/Output/output_grids_usage.md)
-* In <mark>Notebooks</mark>
+* In [Notebooks](sen2vm-notebook/README_Notebooks.md)
 
 ## 5. Validation
 
@@ -167,4 +168,5 @@ It is to be noted that orthorectification using Sen2VM gave equivalent results t
   * [Direct location grids](documentation/Output/output_direct_loc.md)
   * [Inverse location grids](documentation/Output/output_inverse_loc.md)
   * [Output grids usage](documentation/Output/output_grids_usage.md)
+  * [Notebooks](sen2vm-notebook/README_Notebooks.md)
 

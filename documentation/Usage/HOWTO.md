@@ -11,6 +11,7 @@
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
   * [Output grids usage](../Output/output_grids_usage.md)
+  * [Notebooks](../../sen2vm-notebook/README_Notebooks.md)
 
 # HOWTO
 
@@ -110,6 +111,7 @@ docker pull ghcr.io/sen2vm/sen2vm-build-env:<tag>
 ```
 
 * Launch the container:
+
 ```
 docker run -it --rm --user $UID:$GID -v <sen2vm-core-folder>:/Sen2vm ghcr.io/sen2vm/sen2vm-build-env:latest bash
 ```
@@ -131,3 +133,4 @@ docker run -it --rm --user $UID:$GID -v <sen2vm-core-folder>:/Sen2vm ghcr.io/sen
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
   * [Output grids usage](../Output/output_grids_usage.md)
+  * [Notebooks](../../sen2vm-notebook/README_Notebooks.md)
