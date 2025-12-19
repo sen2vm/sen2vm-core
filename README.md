@@ -1,574 +1,172 @@
-# Project sen2vm-core
-The Sen2VM core is a standalone tool designed to generate geolocation grids that will be included in the Level-1B (L1B) product. Its primary function is to create direct location grids, mapping the L1B product in sensor geometry down to the ground. Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
+[README](README.md) (current file)
 
-Sen2VM is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0); its licence file can be accessible in [LICENSE](LICENSE) file.
+* [HOWTO](documentation/Usage/HOWTO.md)
+* [Inputs description](documentation/Input/input_description.md)
+
+  * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)
+
+* Outputs description:
+
+  * [Direct location grids](documentation/Output/output_direct_loc.md)
+  * [Inverse location grids](documentation/Output/output_inverse_loc.md)
+  * [Output grids usage](documentation/Output/output_grids_usage.md)
+  * [Notebooks](sen2vm-notebook/README_Notebooks.md)
+
+
+# Project Sen2VM (sen2vm-core)
+
+>[!NOTE]
+>Sen2VM is released under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0); its licence file can be accessible in [LICENSE](LICENSE) file.
+
+Its primary function is to create **direct location grids**, mapping Sentinel-2 Level-1B products in sensor geometry down to the ground geometry (as in L1C).
+For more details about Sentinel-2 Level-1B format, please refer to [Level-1B format description](#1-level-1b-format-description)
+
+Additionally, the tool supports the generation of inverse location grids, enabling mapping from a specific ground area back to the corresponding area in sensor geometry.
+
 
 Please note that Sen2VM exists implemented as a SNAP plugin, which calls the Sen2VM standalone tool during execution.
 
-This documentation is split into 4 parts:
-* Instructions to  compile and/or run Sen2VM with some examples: $ [Quickstart](#1-quickstart)
-* Description and format of expected inputs: § [Inputs](#2-inputs)
-* Details on generated outputs: § [Outputs](#3-outputs)
-* Validation process, including test procedures and data used: § [Validation](#4-validation)
+This documentation is split into 5 parts:
 
-## 1 Quickstart
+* Quick reminder of L1C format and introduction to L1B format: §[L1B format description](#1-l1b-format-description)
+* Instructions to  compile and/or run Sen2VM with some examples: §[Quickstart](#2-quickstart)
+* Description and format of expected inputs: §[Inputs](#3-inputs)
+* Output §[Outputs](#4-outputs):
 
-### 1.1 How to run with docker
+  * Details on generated outputs grids: §[Outputs](#41-output-grids-of-Sen2VM)
+  * Examples of usage of the ouput grids: §[Usage of output grids](#42-usage-of-output-grids)
 
-* To build the image, download the Dockerfile from the project root directory and run the following command in the same directory:
-```
-docker build . -t sen2vm
-```
-* Launch Sen2vm using the following command:
-```
-docker run -it --rm -v [input-data]:[/mounted-name] sen2vm -c [configuration_filepath] [-p [parameters_filepath]]
-```
+* Validation process, including test procedures and data used: §[Validation](#5-validation)
+
+>[!NOTE]
+>If you want to compile Sen2VM by yourself, please refer to dedicated [HOWTO section](documentation/Usage/HOWTO.md)
+
+Regarding the several git repositories, here is a schema on how they are linked together:
+![Git links](/assets/images/README_Git_links.png "Git links")
+
+
+## 1. Level-1B format description
+
+The Copernicus Sentinel-2 is a European mission that acquires wide-swath, high-resolution, multi-spectral imaging data acquisitions. Due to their worldwide regular acquisitions and accurate geolocation (<5m CE90) , Sentinel-2 satellites offers since several years now a massive quantitative and qualitative resource for the Earth observation community.  
+
+A single Sentinel-2 acquisition is generated at multiple levels, with higher levels indicating greater modification or enhancement through scientifical algorithms. Since the beginning of the mission, the only publicly available level was the Level-1C (L1C), which consists of orthorectified images resampled in Top-Of-Atmosphere (TOA) reflectance. 
+
+Sentinel-2 L1C products are stored by tiles and one Sentinel-2 acquisition (hereby called **Datastrip**) cover several L1C tiles. For each acquisition, several L1C tiles are generated, some of which are only partially covered and therefore containg NoData inside. Each tile includes Datastrip metadata (duplicated across all generated L1C tiles), Tile Metadata, and all scientific data (images and masks), all stored within a GRANULE folder.
+
+The previous level, Level-1B (L1B), contains radiance in sensor geometry requiring a high level of expertise, mainly to handle the georeferencing of the product. At L1B (as in L0 and L1A), data is not yet devided in L1C tiles. Instead, data is organised per GRANULE; one granule is an Along-Track portion (including all bands) of one Detector acquisition.
+
+![Sentinel-2 Format Intro](/assets/images/README_Format_Intro.png "Format Intro")
+
+![Sentinel-2 Format Intro](/assets/images/README_Format_L1B.png "Format Intro")
+
+For more details, please refer to official [L1B Documentation](https://sentiwiki.copernicus.eu/web/s2-products#S2Products-Level-1BProductsS2-Products-L1Btrue) and [L1B algorithms description](https://sentiwiki.copernicus.eu/web/s2-processing#S2Processing-L1BAlgorithmsS2-Processing-L1B-Algorithmstrue).
+
+## 2. Quickstart
+
+Inputs are split into 2 groups (see [Input Description](documentation/Input/input_description.md) for more details):
+
+* configuration: all inputs related to product or grids that are required by Sen2VM. Please note that this input is **Mandatory**. 
+* "parallelisation": the detectors/bands to process. If not available, all detectors/bands will be processed.This input is **Optional**.
+
+Sen2VM jar can be downloaded through [Releases](https://github.com/sen2vm/sen2vm-core/releases) or [Packages](https://github.com/orgs/sen2vm/packages?repo_name=sen2vm-core) pages on GitHub.
+
+Sen2VM can be called using the following command:
 > [!CAUTION]
-> -v /NNN:/NNN can be done several time, for example -v /data:/data -v /home/login/working_dir:/home/login/working_dir. This will mount directories inside the docker. All files (input json and folders/files listed in configuration_file) shall be on a mounted disk, if not, the won't be visible
-
-Where:
-* input-data: the input folder
-* configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please indicate the input paths with **absolute path** from the docker volume directory (/data in the example above), note that this input is **Mandatory**.
-* parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §[2.2 Parameters file](#22-parameters-file) for further information).This input is **Optional**.
-> [!NOTE]
-> To understand the configuration, please refer to §[2 Inputs](#2-inputs)
-
-### 1.2 How to run with java
-
-Sen2VM core depends on java 8 and gdal=3.6.2 with java bindings.
-First, download the jar of Sen2VM core, then run the following command to launch it:
+> Sen2VM core depends on java 8 and gdal=3.6.2 with java bindings.
+**Please find below the command line for launching Sen2VM-core**</mark>
 ```
 java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
 ```
 Where:
+
 * <NN.NN.NN> is the version number of Sen2VM launched
-* configuration_filepath: configuration file containing all inputs related to product or grids that are required by Sen2VM (see §[2.1 Configuration file](#21-configuration-file) for further information). Please note that this input is **Mandatory**. 
-* parameters_filepath:  file to configure the detectors/bands to process. If not available, all detectors/bands will be processed (see §[2.2 Parameters file](#22-parameters-file) for further information).This input is **Optional**.
-
-To install the java environment, it possible to use the docker build environment. Please refer to §[1.5 How to install build environment](#15-how-to-install-build-environment)
+* configuration_filepath: configuration file
+* parameters_filepath:  "parallelisation" input 
 
 > [!NOTE]
-> Sen2VM core can also be rebuild from sources. Please refer to §[1.4 How to compile sen2vm-core](#14-how-to-compile-sen2vm-core)
+> This will only create geolocation grids. Examples of usage can be accessible through §[Usage of output grids](#4-usage-of-output-grids)
 
-Example from current repository:
-```
-java -jar target/sen2vm-core-0.0.1-jar-with-dependencies.jar -c src/test/resources/configuration_example.json -p src/test/resources/params.json
-```
+> [!IMPORTANT]
+> As Sen2VM requires specific installation, several tools have been made accessible to help users using Sen2VM:
+> * Notebooks, doing generation of grid and examples of usage
+> * A Dockerfile that will build a Docker with Sen2VM and all its dependencies installed inside it
+> * A build-environment, that can be used to install Sen2VM inside it or use to build Sen2VM from sources.
+> Please refere to [HOWTO](documentation/Usage/HOWTO.md).
 
-### 1.3 Example of grids usage
-
-> [!CAUTION]
-> gdal version shall be compatible with the new Sen2VM grids. Official gdal does not yet include this driver/possibility. A [Pull Request](https://github.com/OSGeo/gdal/pull/12431 ) is currently opened, but in the meantime, this gdal version can be find [here](https://github.com/rouault/gdal/tree/sen2vm_plus_s2c)
-
-
-#### 1.3.1 Resampling using direct locations grids
-
-Direct location grids can be used to preform a resampling. It can be done using gdal or using [OTB](https://www.orfeo-toolbox.org/CookBook/Applications/app_GridBasedImageResampling.html) resampler. To see the geometric validation of those 2 methods, please refer to the <mark>**Validation Document**</mark>
-
-##### 1.3.1.1 Using gdal
-
-L1B with geolocation grids are seamlessly handled by gdal through the development of a dedicated S2 L1B gdal driver.  
-
-```python
-# If needed, point to the local gdal version handling Sen2VM grids
-# export PATH=~/code/senv2vm/bin/bin/:$PATH
-# export LD_LIBRARY_PATH=~/code/senv2vm/bin/lib:$LD_LIBRARY_PATH
-
-
-#Initialisation of the product for gdal
-gdalinfo  /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml
-
-# Creation of a mosaic for D09_B01 (D - detector; B - band)
-gdal_translate  SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01 /PATH_TO_DATA/working/madeire_D09_B01.tif
-
-# Resampling/orthorectification using gdal
-gdal_warp SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B04 /PATH_TO_DATA/working/projected_D09_B04.tif -t_srs EPSG:32628 -tr 10 -10
-```
-
-##### 1.3.1.2 Using otb
-This method can be resumed into three main steps:
- * Creation of a mosaic of all images,
- * Convertion of the direct location grid into an inverse location grid using scipy,
- * Computation of the otb resampling using the mosaic and the inverse location grid.
-
-
-```python
-# If needed, point to the local gdal version handling Sen2VM grids
-# export PATH=~/code/senv2vm/bin/bin/:$PATH
-# export LD_LIBRARY_PATH=~/code/senv2vm/bin/lib:$LD_LIBRARY_PATH
-
-
-# To get the name of the grid for your band/detector either
-# - look inside teh DATASTRIP/S*/GEO_DATA folder 
-# - launch a gdalinfo to get the list
-gdalinfo  /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml
-
-# Creation of a mosaic of images of all granules (for D09_B01)
-gdal_translate  SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01 /PATH_TO_DATA/working/madeire_D09_B01.tif
-
-# Conversion of Sen2VM direct location grid into an inverse location grid with a 45m step
-python sen2vm_invloc_from_dir_loc_grid.py /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/DATASTRIP/S2B_OPER_MSI_L1B_DS_2BPS_20241019T153411_S20241019T120215_N05.11/GEO_DATA/S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01.vrt --loglevel INFO 45.0  /PATH_TO_DATA/working/grid_D09_B01.tif
-
-# Use OTB for resampling (default BCO interpolator) with
-# - io.in: Mosaic of all images
-# - grid.in: an inverse location grid
-otbcli_GridBasedImageResampling -io.in  /PATH_TO_DATA/working/madeire_D09_B01.tif -io.out /PATH_TO_DATA/working/warp_otb_D09_B01.tif -grid.in  /PATH_TO_DATA/working/grid_D09_B01.tif -grid.type loc -out.ulx 293050  -out.uly 3697900 -out.spacingx 60 -out.spacingy -60 -out.sizex 933   -out.sizey   2040
-
-# Add georeferencing to the image
-gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PATH_TO_DATA/working/warp_otb_D09_B01_georef.tif
-```
-
-Please note that the script ```sen2vm_invloc_from_dir_loc_grid.py``` used by this method is directly available on this git, at this [location](/assets/scripts/sen2vm_invloc_from_dir_loc_grid.py).
-
-Necessary prerequisites: 
- * numpy
- * rasterio
- * utm
- * scipy
- * argparse
- * pathlib
-
-#### 1.3.2 Resampling using inverse locations grids
-
-> [!CAUTION]
-> Please note that there is currently an [issue]((https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2317)) on the OTB side. Until corrected, **the grid information must be adjusted by half the resolution of the target pixel** (spacing) in both directions, to be synchronised as following:
->  * out.ulx **shall be updated to 293080** ( = 293050 + 60/2)
->  * out.uly **shall be updated to 3697870** ( = 3697900 + (-60)/2)
-
-```python
-# If needed, point to the local gdal version handling Sen2VM grids
-# export PATH=~/code/senv2vm/bin/bin/:$PATH
-# export LD_LIBRARY_PATH=~/code/senv2vm/bin/lib:$LD_LIBRARY_PATH
-
-
-# To get the name of the grid for your band/detector either:
-# - look inside the DATASTRIP/S*/GEO_DATA folder 
-# - launch a gdalinfo to get the list
-gdalinfo  /PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml
-
-# Creation of a mosaic of images of all granules (for D09_B01)
-gdal_translate  SENTINEL2_L1B_WITH_GEOLOC:"/PATH_TO_DATA/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/S2B_OPER_MTD_SAFL1B_PDMC_20241022T154709_R023_V20241019T120217_20241019T120235.xml":S2B_OPER_GEO_L1B_DS_2BPS_20241019T153411_S20241019T120215_D09_B01 /PATH_TO_DATA/working/madeire_D09_B01.tif
-
-
-# Use OTB for resampling (default BCO interpolator) with:
-# - io.in: Mosaic of all images
-# - grid.in: an inverse location grid
-otbcli_GridBasedImageResampling -io.in  /PATH_TO_DATA/working/madeire_D09_B01.tif -io.out /PATH_TO_DATA/working/warp_otb_D09_B01.tif -grid.in  /PATH_TO_DATA/OUTPUT_INV_GRID/XXX.tif -grid.type loc -out.ulx 293050  -out.uly 3697900 -out.spacingx 60 -out.spacingy -60 -out.sizex 933   -out.sizey   2040
-
-# Add georeferencing to the image
-gdal_translate -a_srs EPSG:32628 /PATH_TO_DATA/working/warp_otb_D09_B01.tif /PATH_TO_DATA/working/warp_otb_D09_B01_georef.tif
-```
-
-### 1.4 How to compile sen2vm-core
-
-Before compiling/installing sen2vm-core, make sure to install the required dependencies. To do so, please refer to [https://github.com/sen2vm/sen2vm-build-env/tree/main](https://github.com/sen2vm/sen2vm-build-env/tree/main)
-
-Then, inside `sen2vm-core` folder, run the next commands:
-```
-mvn clean install
-java -jar target/sen2vm-core-<NN.NN.NN>-jar-with-dependencies.jar -c [configuration_filepath] [-p [parameters_filepath]]
-```
-
-### 1.5 How to install build environment
-
-Sen2VM core depends on gdal=3.6.2 with java bindings. An ready for use docker image is available. Please, pull the image from here : https://github.com/sen2vm/sen2vm-build-env/pkgs/container/sen2vm-build-env
-
-* Pull the image :
-```
-docker pull ghcr.io/sen2vm/sen2vm-build-env:<tag>
-```
-* Launch the container :
-```
-docker run -it --rm --user $UID:$GID -v <sen2vm-core-folder>:/Sen2vm ghcr.io/sen2vm/sen2vm-build-env:latest bash
-```
-* Execute the running java commands inside the opening bash.
-
-## 2. Inputs
-
-> [!NOTE]
-> The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
+## 3. Inputs
 
 Inputs required by Sen2VM are:
-* L1B Product,
+
+* L1B Product (see [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md) for download instructions),
 * Some GIPP files (parameters files used in operational production),
-* Digital Elevation Model (DEM),
+* Digital Elevation Model (DEM) (see [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)),
 * GEOID model to measure precise surface elevations,
 * IERS bulletin that provides data and standards related to Earth rotation and reference frames,
 * Additional information for configuration.
 
-All inputs are described in this section.
-
-### 2.1 Configuration file
-The configuration file will contain all information about the product, the auxiliarry data and the operations to be performed.
-It  is a file in  [JSON format](https://en.wikipedia.org/wiki/JSON) and an example is available at: https://github.com/sen2vm/sen2vm-core/blob/main/src/test/resources/configuration_example.json
-
-![Configuration file example](/assets/images/README_ConfigurationFileExample.png "Configuration file example.")
-
-Each parameter description can be found in the table below:
-
-| Name | Type | Required |                                                                                                             Description                                                                                                                                           |
-| ----------- | :------: | :-----------: |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| l1b_product | string   | **Mandatory** |                                                                     Path to L1B_PRODUCT folder, where L1B_Product format is in SAFE format (described in § [L1B Product](#211-l1b-product), including DATASTRIP + GRANULE)                                                                      |
-| gipp_folder | string   | **Mandatory** |                                                                    Path to a folder containing at least the 3 types of GIPP required by Sen2VM (other will be ignored). For more information, refer to § [GIPP](#212-gipp).                                                                     |
-| auto_gipp_selection  | boolean  | Optional      |                                                                                                If true (default), the GIPPs are selected automaticaly from the datastrip metadata and an untar extraction is performed if necessary. Otherwise, the GIPPs must have a single, non-multiple version. This option is mainly intended for experimental use to test custom GIPP values (see GIPP section § [GIPP](#212-gipp)</mark>)      |
-| grids_overwriting | boolean  | Optional      |                                                                                             Activate the grids overwritings if the grids have already or partialy computed. It is false by default.                                                                                             |
-|dem          | string   | **Mandatory** |                                                                                                    Path to the FOLDER containing a DEM in the right format (cf § [Altitude/DEM](#2131-dem)).                                                                                                    |
-|geoid        | string   | **Mandatory** |                                                                                                  Path to the FILE containing a GEOID in the right format (cf § [Altitude/GEOID](#2132-geoid))                                                                                                   |
-| iers        | string   | Optional      |                                                                                                  Path to the IERS folder containing the IERS file in the right format (cf § [IERS](#214-iers))                                                                                                  |
-| operation    | string   | **Mandatory** |                                                    In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>                                                    |
-| deactivate_available_refining| boolean  | Optional      |                                          If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in § [L1B Product](#2112-refining-information)                                          |
-| export_alt   | boolean  | Optional      |  If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](#31-direct location grids)  |
-| steps       | double    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. |
-| inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**|                                                                                                    For the inverse location additional information please refer to the dedicated table below       |
-
-
-The field “inverse_location_additional_info” is not required and will be ignored if direct location grids are asked. However, it is mandatory for inverse location grids generation and **Sen2VM will raise an error** if this information is missing.
-
-| Name          | Type     | Required      |                                                                 Description                                                                  |
-| ------------- | :------: | :-----------: |:--------------------------------------------------------------------------------------------------------------------------------------------:|
-| ul_x          | double    | **Mandatory** |                        **X** coordinates of the **upper left** point defining the area of desired resampled product.                         |
-| ul_y          | double    | **Mandatory** |                 **Y** coordinates of the **upper left** point defining the area of desired resampled product.                                |
-| lr_x          | double    | **Mandatory** |                        **X** coordinates of the **lower right** point defining the area of desired resampled product.                        |
-| lr_y          | double    | **Mandatory** |                        **Y** coordinates of the **lower right** pointdefining the area of desired resampled product.                         |
-| referential   | string   | **Mandatory** | A string defining the **referential** used. **Please note, ul and lr points’ coordinates** are given in this referential. Example: EPSG:4326 |
-| output_folder | string   | **Mandatory**|                Path where the inverse location grids are written (see § [Inverse location grids](#32-inverse-location-grids))                |
-
 > [!NOTE]
-> Inverse location grids footprint will enclose desired product footprint [ul_x, ul_y, lr_x, lr_y]. 
+> The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
-#### 2.1.1 L1B Product
-> [!NOTE]
-> L1B products can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). Please note that special access for L1B products might be required by submitting  a request via the FAQ section.
+Inputs description can be access at [Inputs](documentation/Input/input_description.md)
 
-> [!IMPORTANT]
-> The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated in the following sections.
+## 4. Outputs
 
-##### 2.1.1.1 L1B Product input tree structure
-The mandatory inputs for Sen2VM are the Datastrip and the Granules metadata. 
+### 4.1 Output grids of Sen2VM
 
-These metadata must be organized in a specific directory structure. Within the L1B folder, only the following subdirectories will be considered:
- * DATASTRIP
- * GRANULES
-
-![L1B Folder](/assets/images/README_L1BProduct.png "Necessary folders.")
-
-Additional files (as in the SAFE format) may be present in the folders, but they will simply be ignored by Sen2VM core.
-
-As for the DATASTRIP folder, it must contain a subfolder named after the Datastrip reference and inside this subfolder, the Datastrip Metadata (also named after the Datastrip reference). This structure is compatible with the SAFE format and others files/folders will be ignored:
-
-![DATASTRIP Folder](/assets/images/README_DatastripFolder.png "tree structure example of DATASTRIP folder.")
-
-Finally the GRANULE folder shall contain one folder per granule, each with the GRANULE naming convention, and each containing the GRANULE metadata. This format is compatible with SAFE and others files/folders will be ignored:
-
-![GRANULE Folder](/assets/images/README_GranuleFolder.png "tree structure example of GRANULE folder.")
-\[...\]
-
-
-##### 2.1.1.2 Refining information
- 
-Refining for Sentinel-2 refers to geolocation refinement that aims at correcting the satellite geometric models relative to the [**G**lobal **R**eference **I**mage](https://s2gri.csgroup.space).
-
-Refining information can be found in the Datastrip metadata. If refined, the model of the satellite shall be adjusted accordingly. This information is stored in the field “Level-1B_DataStrip_ID/Image_Data_Info//Geometric_Info/Refined_Corrections_List/Refined_Corrections/MSI_State”. It is present only if the flag “Image_Refining” is set to “REFINED” and absent if set to “NOT_REFINED”.
-![Refining information inside Datastrip metadata](/assets/images/README_RefiningInformationInsideDatastripMetadata.png "Refining information inside Datastrip metadata.")
-
-An optional boolean argument is available in the configuration file (see §[2.1 Configuration file](#21-configuration-file)): deactivate_available_refining.
-> [!WARNING]
-> **By default, it is set at false**, meaning that the refining **information shall be taken into account** if available in the Datastrip Metadata. However, **if set at true**, the datastrip shall be **considered as NOT_REFINED**, meaning ignoring the refining information.
-#### 2.1.2 GIPP
-GIPP are configuration files used in operation to:
-* represent the stable satellite information,
-* configure calibration parameters of the satellite,
-* configure several algorithms of the processing chain.
-
-By nature, GIPP are versionnable. It is important to process with the version used to generate the L1B product.
-> [!WARNING]
->  **A check is implemented** to verify that the version used is the same than the one listed in the Datastrip metadata (**check on the name**). This check can be deactivated through "auto_gipp_selection" parameter of the configuration file (cf §[2.1 Configuration file](#21-configuration-file)). **This parameter is optional, and by default, its value is set to true.**.
-
-The versions of the GIPP used in operation are listed in the L1B Datastrip Metadata of the L1B product (see §[2.1.1 L1B Product](#211-l1b-product)), in the tag _Level-1B_DataStrip_ID/Auxiliary_Data_Info/GIPP_LIST_, as illustrated below:
-
-![GIPP list in L1B Datastrip metadata](/assets/images/README_GIPPListInL1BDatastripMetadata.png "GIPP list in L1B Datastrip metadata.")
-
-> [!CAUTION]
-> Please note that the GIPP are not directly available in L1B products; they must be downloaded beforehand by users on  [this dedicated repository](https://github.com/sen2vm/sen2vm-gipp-database).
-
-The GIPP required are the following ones:
-* **GIP_VIEDIR**: contains Viewing Direction required by Rugged to create viewing model based on TAN_PSI_X/Y_LIST tags. There is one GIP_VIEDIR file **per band** and each file contains information per **detector** (in the following tags: _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_X_LIST]_ and _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_Y_LIST]_)
-* **GIP_SPAMOD**: contains transformations to apply to viewing direction from tags, available in the _[DATA]_ field:
-    * PILOTING_TO_MSI,
-    * MSI_TO_FOCAL_PLANE,
-    * FOCAL_PLANE_TO_DETECTOR XML, available **per detector**
-* **GIP_BLINDP**: contains information on blind pixel, contained in BLIND_PIXEL_NUMBER tag: _[DATA/BAND/BLIND_PIXEL_NUMBER]_, available **per band**
-
-The auto_gipp_selection option enables the automatic retrieval of GIPP files from the datastrip GIPP list, and using a GIPP version check function.
-The GIPP folder does not require a specific structure; the system searches through all subdirectories and selects the first valid GIPP instance according to the listed name.
-If only .tar or .tar.gz archives of the GIPPs are available, the archives are extracted.
-
-#### 2.1.3 Altitude
-The main purpose of the tool is to add geolocation to the L1B product images. Hence to be precise, the altitude shall be taken into account, as its importance is far from neglectable on final geolocation, as illustrated below:
-
-![Altitude importance on geolocation](/assets/images/README_AltitudeImportanceOnGeolocation.png "Altitude importance on geolocation.")
-
-For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used. So, path of both shall be provided in input (cf §[2.1 Configuration file](#21-configuration-file)).
-
-##### 2.1.3.1 DEM
-Access to the DEM is provided via a path to a folder containing the dataset. 
-The DEM must meet the following requirements:
- * it should be split into files or folders (dynamically read) per square degrees,
- * each DEM file (per square degree) shall be readable by gdal.  
-
- Examples of DEM structures can be found in [/src/test/resources/DEM/](/src/test/resources/DEM)
-
-##### 2.1.3.2 GEOID
-The GEOID shall be readable by gdal. One example of GEOID is available at [S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx](/src/test/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx)
-
-
-#### 2.1.4 IERS
-The IERS represents the ["International Earth Rotation and Reference Systems"](https://www.iers.org/IERS/EN/Home/home_node.html). It is important to have a valid and precise one to get a precise geolocation. During operational processing of the Sentinel-2 data, IERS information are integrated in the L1B metadata datastrip, hence IERS information are available in the L1B product used in input, in the field _Level-1B_DataStrip_ID/Auxiliary_Data_Info/IERS_Bulletin_ as illustrated below:
-
-![IERS information in L1B Datastrip metadata](/assets/images/README_IERSInformationInL1BDatastripMetadata.png "IERS information in L1B Datastrip metadata.")
-
-
-IERS bulletins are used seamlessly with OREKIT, leading in very precise EOP (Earth Orientation Parameters) handling. However, the IERS available in the L1B Datastrip metadata is not in the right format, hence EOP entries are initialized directly with the information, as “custom EOP”, skipping the IERS bulletins reader parts.
-
-However, a very slight (neglectable) difference will be observed in geolocation compared to operational processing which uses the full IERS bulletin for its ortho-rectification process.
-
-Hence an IERS bulletin can be provided in input by users (as optional).
-> [!IMPORTANT]
-> **Sen2VM behaviour regarding IERS will then be**:
-> * If an IERS bulletin is provided in input:
->    * Verify the date of the IERS bulletin compared to the Datastrip acquisition dates (using _DATASTRIP_SENSING_START_ and _DATASTRIP_SENSING_STOP_ in _“Level-1B_DataStrip_ID/General_Info/Datastrip_Time_Info"_
->    * Go in error if the IERS does not contains the full datastrip duration,
->    * Use the IERS bulletin if it contains the full datastrip duration,
->* If not, use the information available in the L1B Datastrip Metadata.
-
-Format of the IERS bulletin that can be provided is [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
-
-### 2.2 Parameters file
-Sen2VM calls SXGEO which is a mono-thread software. **Sen2VM is also designed to be a mono-threaded software.** However, as computations can be long, and because each couple detector/band is an independent model, user might want to process only parts of the Datastrip per thread. This capability is handled by SXGEO and was propagated to Sen2VM. This way, users can parallelize the process by itself, outside of Sen2VM.
-
-The selection of detectors and bands to process is defined in a JSON parameters file. **If this file is not provided, Sen2VM will process all detectors/bands**.
-
-The parameters file contains 2 fields:
-* “detectors”: detectors are passed through string representing Sentinel-2 detectors encoded in **2 digits**, **separated by “-”.** Detectors indexes are from **“01” to “12”.**
-* “bands”: bands are passed through string representing Sentinel-2 bands encoded in **2 digits with a “B”** before and **separated from “-”**. Bands are going from **“B01” to “B12”, including a “B8A”.**
-
-
-![Parameters file example](/assets/images/README_ParametersFileExample.png "Parameters file example.")
-
-If a field (“detectors” or “bands”) **is missing in** the params.json file, **all items of the missing field** will be processed. For example, if “bands” if absent from the previous example in figure above, Sen2VM will process all bands of detectors 1, 3 and 4.
-
-
-> [!TIP]
-> It is to be noted that a small optimization in SXGEO is done not to reload DEM tiles when processing bands of the same resolution for the same detector.
-
-## 3. Outputs
 The output of the Sen2VM tool can be either direct location grids or inverse location grids. Their computation depends on the following parameters:
+
 * selected detectors and bands,
 * grid step,
 * computation options (e.g. refining).
 
 Please note that only the direct location grids will be included in the input product and handled by gdal. Inverse location grids, as they represent a particulat area on the ground will be exported outside the product, in a folder selected by the user (which can be inside the input product if wanted).
 
-### 3.1 Direct location grids
-A direct location grid is a grid which maps sensor coordinates with ground ones in WGS84 coordinates (EPSG:4326). Direct location grid is regular and in sensor reference frame (for one  band/detector couple).
+### 4.2 Usage of output grids
 
-Sen2VM direct location grid computation takes as input the L1B product, the auxiliary information (see [L1B product](#211-l1b-product), [GIPP](#212-gipp), [Altitude](#123-altitude), [IERS](#214-iers)) and the grid parametrization:
-* Bands/detectors to process ([Parameters File](#22-parameters-file)),
-* 3 steps, one per band resolution (10m, 20m, 60m) in pixels (double) [Configuration File](#21-configuration-file).
+Examples are available:
 
-As output:
-* At granule level: geolocation grids will be written (per granules/bands).
-* At datastrip level:
-    * several .vrt (virtual dataset) will be written (per detectors/bands).
-    * The configuration file used in input with the date/time will be added in with the vrt files
+* In [Example section](documentation/Output/output_grids_usage.md)
+* In [Notebooks](sen2vm-notebook/README_Notebooks.md)
 
-#### 3.1.1 Direct locations grids' outputs
-Output grids will be integrated directly in the input product.
->  [!CAUTION]
-> Please note that writing permissions in the L1B input folder are **mandatory**.
-
-Before processing, **a verification will be done** to determine whether direct location grids are already available in the input L1B product folder, for the detectors/bands selected. If at least one is present for one couple detector/band, Sen2VM **will raise an error and stop**. Both granules and datastrip folder will be inspected (see output grids format and location in the following sections).
-
-##### 3.1.1.1 Granule level
-Grids’ location and naming is at granules level:
-* 1 grid per couple “L1B granule”/”Sentinel-2 band”,
-* Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
-* Grids are in **geotiff format with float32 coding positions** which allow approximately centimetre precision for lat/lon coordinates. JP2000 is not suitable, as it does not support Float32 encoding, resulting in insufficient precision.
-* Grids location will be inside a **GEO_DATA folder** which will be inside each granules folders (at the same level than IMG_DATA and QI_DATA folders),
-* Grids naming conventions will respect the corresponding image data inside the IMG_DATA folder with:
-    * GEO instead of MSI
-    * .tif instead of .jp2 extension as jp2 encoding is not possible for float32 data.
-
-As example, for an image of the IMG_DATA folder, named:
-* S2B_OPER_**MSI**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.<strong>jp2</strong>
-
-The direct location grid will be generated in the GEO_DATA folder, and named:
-* S2B_OPER_**GEO**_L1B_GR_DPRM_20140630T140000_S20230428T151505_D02_B01.<strong>tif</strong>
-
-> [!NOTE]
-> The configuration file used in input with the date/time will be added in with the vrt files
-
-##### 3.1.1.2 Datastrip level
-At datastrip level grids’ location and naming is:
-* 1 vrt per couple “detector”/”Sentinel-2 band”,
-* Grids **include 2 (_optionally 3_) bands (Long/Lat/_alt_)**
-* Grid location will be located inside a **GEO_DATA folder**, which resides within the **DATASTRIP** directory, at the same level as the QI_DATA folder.
-* Grids naming conventions will respect the corresponding datastrip metadata convention with:
-    * **GEO** instead of **MTD**
-    * <strong>_DXX_BYY.vrt</strong> instead of <strong>.xml</strong> extension.
-
-As example, for an datastrip metadata of the DATASTRIP folder, named:
-* S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>.xml</strong>
-
-A folder named GEO_DATA, beside the QI_DATA folder and datastrip metadata will contain 156 vrt files (12 detectors x 13 bands) named:
-* S2B_OPER_**GEO**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.vrt</strong>
-
-Example of product with grid inside it:
-
-![Output example of Datastrip vrt for direct location grids](/assets/images/README_OutputDatastrip.PNG "Output example of Datastrip vrt for direct location grids.")
-
-#### 3.1.2 Direct location grids’ specifications
-> [!NOTE]
-> To be consistent with granules convention with first pixel center, outputs grids have the same first pixel centres.
-
-Grids characteristics are:
- 
- * Convention: grid raster type is "point" with first grid cell centre at first pixel centre of the first granule (referred by PIXEL_ORIGIN in granule geometric info). Grid position given an image position (_row_, _col_), is
-
-   ![Direct grid handling](/assets/images/README_DirectGridHandling.png "Direct Grid Handling.")
-   
-with (_grid row_,_grid col_) = (_Pixel Origin_, _Pixel Origin_) = (_1_,_1_) at center of first grid cell
-
-Example:
-
- ![Direct convention](/assets/images/README_DirectConvention.png "Direct convention.")
-
- * Grid Metadata: Grids will contain Metadata information of [GDAL geolocation grids](https://gdal.org/development/rfc/rfc4_geolocate.html):
-
-     * SRS: WGS84 WKT format
-     * PIXEL_OFFSET
-     * LINE_OFFSET
-     * PIXEL_STEP: GRID STEP
-     * LINE_STEP: GRID STEP
-     * GEOREFERENCING_CONVENTION: PIXEL_CENTER
-
- * Overlap: to ensure grid granule continuity, one pixel overlap will be added. Taking advantage of this overlap, one granule can be individually resampled, or multiple granules (whole Datastrip for example) using the vrt grid concatenation without extra disk cost). Thus _PIXEL/LINE OFFSET_ of the Grid Metadata will vary for each grid.
-
-  ![Direct overlpas](/assets/images/README_DirectOverlaps.png "Direct overlaps.")
- 
- 
-
-#### 3.1.3 Grid handling
-Direct location grids are intended to be used with bilinear interpolation operation. Direct location (i.e lon/lat positions) should be as follow:
-
- * Given an image position (_row_/_col_) compute grid fractional position (grid row, grid col):
-
-   ![Direct grid handling](/assets/images/README_DirectGridHandling.png "Direct Grid Handling.")
-
- * Use bilinear interpolation on (_grid row_, _grid col_) to retrieve lon/lat/(alt).
-
-> [!CAUTION]
-> Note that based on the used convention, the [1,1] coordinate is the first pixel of the grid
-
-> [!TIP]
-> If user wants to perform direct location of a position outside the granule footprint, a bilinear extrapolation is possible.
-
-#### 3.1.4 Degraded cases
-Grids should at least have 2x2 cells
-
-### 3.2 Inverse location grids
-An inverse location grid is a grid which maps ground coordinates with sensor ones.
-Inverse location grids are georeferenced in **geographic or cartographic reference frame**.
-Inverse location grid is regular in **ground reference frame** (for one band and one detector).
-
-To define the extend of the inverse location grid, parameters are described in section §[2.1 Configuration file](#21-configuration-file), but it can be resumed at:
-* A referential system,
-* A square defined by:
-    * One Upper Left point (UL),
-    * One Lower Right point (LR),
-* 3 steps, one per band resolution (10m, 20m, 60m) in the referential metrics,
-* An output folder.
-
-As output, a geolocation grid will be created **for each band and detector** to process.
-
-#### 3.2.1 Inverse location grids’ outputs
-
-Outputs will be **written in the folder provided by the user**. For inverse location grids, granule level is not foreseen, since granule footprint can result in large margins in projected data.
-
-Output grids’ convention will be:
-* 13 grids (1 per Sentinel-2 band) per detector intersecting the area,
-* Grids are in **geotiff format with float32 coding positions** which allow decimal information on **col/row** positions. JP2000 is not suitable, as it does not support Float32 encoding, resulting in insufficient precision.
-* Grids naming conventions will respect the corresponding datastrip metadata convention with:
-    * **INV** instead of **MTD**,
-    * <strong>_DXX_BYY.tif</strong> instead of <strong>.xml</strong> extension.
-
-As example, for a Datastrip metadata of the DATASTRIP folder:
-* S2B_OPER_**MTD**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>.xml</strong>
-
-Output will be named:
-* S2B_OPER_**INV**_L1B_DS_DPRM_20140630T140000_S20230428T150801<strong>_DXX_BYY.tif</strong>
-
-Example:
-
-![Output example of inverse location grids](/assets/images/README_OutputInv.PNG "Output example of inverse location grids.")
-
-> [!NOTE]
-> The configuration file used in input with the date/time will be added in with the vrt files
-
-#### 3.2.2 Inverse location grids’ specifications
-
-Inverse location grids **will give the coordinates in the “detector” image** reference frame, as if the granules from the same detector were concatenated into a single image.
- * Grid metadata:
-    * are written as GDAL GEO information (SRS and geotransform) and Metadata keys, containing ROW_BAND and COL_BAND to specify row col index and PIXEL_ORIGIN which specify granule first pixel center convention, and NoData value.  
-   * Metadata keys are:
-       * the SRS
-       * NoData fill value
-       * the grid footprint
-       * the size of the grid,
-       * the step of the grid,
-       * margins,
-         
-To ensure input bounding box coverage:
- * Center of the first grid point is aligned with UL of the bounding box,
-* Center of the last grid pixel is computed to ensure that it covers at least LR of the input bounding box.
-
-As for example:
-
-![Inverse Convention](/assets/images/README_InverseConvention.png "Inverse Convention.")
- 
-
-
-#### 3.2.3 Grid handling
-
-Grids are intended to be used with bilinear interpolation operation. Inverse locations (i.e image position given a ground position) should be as follow:
-
- * Given an ground position (_lon_/_lat_) or (_x_, _y_) compute grid fractional position (grid row, grid col) using grid geotransform for GRID_ORIGIN and GRID_STEP:
-
-     ![Inverse grid handling](/assets/images/README_InverseGridHandling.png "Inverse Grid Handling.")
-
- * Use bilinear interpolation on (_grid row_, _grid col_) to retrieve _row_/_col_.
- 
-> [!CAUTION]
-> Beware of convention [PIXEL ORIGIN,PIXEL ORIGIN] is the first pixel of the grid..
-
-
-
-#### 3.2.4 Degraded cases
-Grids should at least have 2x2 cells.
-
-## 4. Validation
+## 5. Validation
 
 In a nutshell, validation is split into 2 main parts:
+
  * Functional tests:
+
      * Integrated into the CI/CD process,
      * Validate that Sen2VM takes into account the different input provided, and that output grids are consistent with reference ones.
+
  * Quality tests:
+
      * Launched manually,
      * Proving, using several TDS, that grids generated by Sen2VM are consistent with the ones generated with the legacy,
      * Proving that those grids can be used to reach equivalent quality at L1C,
      * These processings will also be used to assess the processing performances.
 
 Tests are more detailed in:
+
  * In [/src/test/java/esa/sen2vm/](/src/test/java/esa/sen2vm/) for functionnal tests,
  * In dedicated <mark>**Document**</mark>, for quality tests (which also includes functionnal tests description)
+
+It is to be noted that orthorectification using Sen2VM gave equivalent results than orthorectification of operational L1C products. In image below, no visual shift can be seen (precise mesured in report above; slight differences between L1B radiance and L1C reflectance can be observed:
+![L1B Ortho versus L1C Operationnal Ortho](assets/images/README_Ortho_GIF.gif)
+
+# 
+
+[README](README.md) (current file)
+
+* [HOWTO](documentation/Usage/HOWTO.md)
+* [Inputs description](documentation/Input/input_description.md)
+
+  * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)
+
+* Outputs description:
+
+  * [Direct location grids](documentation/Output/output_direct_loc.md)
+  * [Inverse location grids](documentation/Output/output_inverse_loc.md)
+  * [Output grids usage](documentation/Output/output_grids_usage.md)
+  * [Notebooks](sen2vm-notebook/README_Notebooks.md)
 

@@ -189,7 +189,7 @@ public class GIPPFileManager
                         String fileName = filePath.getFileName() != null ? filePath.getFileName().toString() : filePath.toString();
                         String fileNameWithoutExtension = fileName;
                         if(!Files.isDirectory(filePath.toAbsolutePath()))
-                            {
+                        {
                             fileNameWithoutExtension = getFilePathWithoutExtension(new File(fileName));
                         }
 
