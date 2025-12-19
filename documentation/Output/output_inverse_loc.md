@@ -1,8 +1,12 @@
 [README](../../README.md)
 
 * [HOWTO](../Usage/HOWTO.md)
-* [Inputs](..//Input/input_description.md)
-* Outputs:
+* [Inputs description](../Input/input_description.md)
+
+  * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+
+* Outputs description:
 
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
@@ -102,8 +106,12 @@ Grids should at least have 2x2 cells.
 [README](../../README.md)
 
 * [HOWTO](../Usage/HOWTO.md)
-* [Inputs](..//Input/input_description.md)
-* Outputs:
+* [Inputs description](../Input/input_description.md)
+
+  * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+
+* Outputs description:
 
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)

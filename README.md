@@ -1,10 +1,12 @@
 [README](README.md) (current file)
 
 * [HOWTO](documentation/Usage/HOWTO.md)
-* [Inputs](documentation/Input/input_description.md)
+* [Inputs description](documentation/Input/input_description.md)
+
   * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
   * [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)
-* Outputs:
+
+* Outputs description:
 
   * [Direct location grids](documentation/Output/output_direct_loc.md)
   * [Inverse location grids](documentation/Output/output_inverse_loc.md)
@@ -155,11 +157,14 @@ It is to be noted that orthorectification using Sen2VM gave equivalent results t
 [README](README.md) (current file)
 
 * [HOWTO](documentation/Usage/HOWTO.md)
-* [Inputs](documentation/Input/input_description.md)
+* [Inputs description](documentation/Input/input_description.md)
+
   * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
   * [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)
-* Outputs:
+
+* Outputs description:
 
   * [Direct location grids](documentation/Output/output_direct_loc.md)
   * [Inverse location grids](documentation/Output/output_inverse_loc.md)
   * [Output grids usage](documentation/Output/output_grids_usage.md)
+

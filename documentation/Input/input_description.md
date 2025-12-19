@@ -1,10 +1,12 @@
 [README](../../README.md)
 
 * [HOWTO](../Usage/HOWTO.md)
-* [Inputs](..//Input/input_description.md)
-  * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](DEM_CDSE_Download.md)
-* Outputs:
+* [Inputs description](../Input/input_description.md)
+
+  * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+
+* Outputs description:
 
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
@@ -14,17 +16,17 @@
 
 **Inputs required by Sen2VM are:**
 
-* L1B Product, accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/). *Please note that special access for L1B products might be required by submitting  a request via the FAQ section.* For detailed download instructions, see [How to Download L1B Data from CDSE](L1B_CDSE_Download.md).
-* Some GIPP files *(parameters files used in operational production, defining Satellites)*, accessible through [sen2vm-gipp-database](https://github.com/sen2vm/sen2vm-gipp-database)
-* Digital Elevation Model (DEM) (COPERNICUS DEM is accessible through [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)). For detailed download instructions, see [How to Download DEM Data from CDSE](DEM_CDSE_Download.md).
-* GEOID model to measure precise surface elevations, **it shall be the one used to generate the DEM you are providing**, an example can accessible through [sen2vm-core git](../../src/test/resources/DEM_GEOID/) <mark>TODO-verify that CDSE is providing GEOID</mark>
-* IERS bulletin that provides data and standards related to Earth rotation and reference frames,  accessible through [Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)
+* L1B Product, accessible through **[Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)**. *Please note that special access for L1B products might be required by submitting  a request via the [FAQ section](https://documentation.dataspace.copernicus.eu/FAQ.html).* For detailed download instructions, see **[How to Download L1B Data from CDSE](L1B_CDSE_Download.md)**.
+* Some GIPP files *(parameters files used in operational production, defining Satellites)*, accessible through **[sen2vm-gipp-database](https://github.com/sen2vm/sen2vm-gipp-database)**
+* Digital Elevation Model (DEM) (COPERNICUS DEM is accessible through **[Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)**). For detailed download instructions, see **[How to Download DEM Data from CDSE](DEM_CDSE_Download.md)**.
+* GEOID model to measure precise surface elevations, **it shall be the one used to generate the DEM you are providing**, an example can accessible through **[sen2vm-core git](../../src/test/resources/DEM_GEOID/)**
+* IERS bulletin that provides data and standards related to Earth rotation and reference frames,  accessible through **[Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)**
 * Additional information for configuration.
 
 > [!NOTE]
 > The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
-Please note that Notebooks are available to ease configuration and usage <mark>TODO: put links. Does it also ease the download ?</mark>
+Please note that <mark>[Notebooks](TODO)</mark> are available to ease configuration and usage.
 
 
 ## 1. Configuration
@@ -33,7 +35,6 @@ The configuration is related to all information about:
 
 * the product, and the auxiliarry data, 
 * the operations to be performed.
-
 
 Each parameter description can be found in the table below:
 
@@ -221,10 +222,12 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 [README](../../README.md)
 
 * [HOWTO](../Usage/HOWTO.md)
-* [Inputs](..//Input/input_description.md)
-  * [How to Download L1B Data from CDSE](L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](DEM_CDSE_Download.md)
-* Outputs:
+* [Inputs description](../Input/input_description.md)
+
+  * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
+  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+
+* Outputs description:
 
   * [Direct location grids](../Output/output_direct_loc.md)
   * [Inverse location grids](../Output/output_inverse_loc.md)
