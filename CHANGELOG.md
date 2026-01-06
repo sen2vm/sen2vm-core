@@ -1,5 +1,21 @@
 # Sen2VM Release history
 
+## 1.1.3 (2026-01-06)
+
+### Updates
+
+* Fix:
+
+  * Incorrect relative paths between notebook, DEM directory, and Dockerfile
+
+* Feature:
+
+  * 
+
+* Doc:
+
+  * 
+
 ## 1.1.2 (2025-12-19)
 
 ### Main feature
