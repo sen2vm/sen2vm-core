@@ -7,7 +7,7 @@
     <groupId>esa.sen2vm</groupId>
     <artifactId>sen2vm-core</artifactId>
     <!-- NOTE: remind to change also the SEN2VM_VERSION in the Dokerfile-->
-    <version>1.1.2</version>
+    <version>1.1.3</version>
 
     <name>sen2vm-core</name>
     <url>https://github.com/sen2vm/sen2vm-core</url>
