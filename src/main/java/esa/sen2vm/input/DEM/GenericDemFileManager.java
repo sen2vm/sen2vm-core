@@ -66,6 +66,7 @@ public class GenericDemFileManager extends SrtmFileManager
     public GenericDemFileManager(String demRootDir) throws Sen2VMException
     {
         super(demRootDir);
+        LOGGER.info("Loading DEM from  : " + demRootDir);
         buildMap(demRootDir);
     }
 
@@ -84,7 +85,7 @@ public class GenericDemFileManager extends SrtmFileManager
 
         for (int x = xMin; x <= xMax; x++)
         {
-            for (int y = yMin; x <= yMax; y++)
+            for (int y = yMin; y <= yMax; y++)
             {
                 long key = mapKey(x, y);
                 demGridMap.computeIfAbsent(key, k -> new ArrayList<>()).add(d);
@@ -111,7 +112,11 @@ public class GenericDemFileManager extends SrtmFileManager
                 else
                 {
                     String filePath = currentFile.getAbsolutePath();
+                    // LOGGER.finer("Loading DEM Tile  : " + filePath);
+                    LOGGER.info("Loading DEM Tile  : " + filePath);
                     DemTile newDemTile = getDemTileFromFile(filePath);
+                    // LOGGER.finer("DEM Tile loaded : " + newDemTile.toString());
+                    LOGGER.info("DEM Tile loaded : " + newDemTile.toString());
                     if (newDemTile != null)
                     {
                         addDemTile(newDemTile);
