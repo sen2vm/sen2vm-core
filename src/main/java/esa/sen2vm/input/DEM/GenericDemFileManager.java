@@ -112,11 +112,11 @@ public class GenericDemFileManager extends SrtmFileManager
                 else
                 {
                     String filePath = currentFile.getAbsolutePath();
-                    // LOGGER.finer("Loading DEM Tile  : " + filePath);
-                    LOGGER.info("Loading DEM Tile  : " + filePath);
+                    LOGGER.finer("Loading DEM Tile  : " + filePath);
+                    // LOGGER.info("Loading DEM Tile  : " + filePath);
                     DemTile newDemTile = getDemTileFromFile(filePath);
-                    // LOGGER.finer("DEM Tile loaded : " + newDemTile.toString());
-                    LOGGER.info("DEM Tile loaded : " + newDemTile.toString());
+                    LOGGER.finer("DEM Tile loaded : " + newDemTile.toString());
+                    // LOGGER.info("DEM Tile loaded : " + newDemTile.toString());
                     if (newDemTile != null)
                     {
                         addDemTile(newDemTile);
@@ -156,7 +156,7 @@ public class GenericDemFileManager extends SrtmFileManager
         int latFloor = (int)FastMath.floor(FastMath.toDegrees(latitude));
         int lonFloor = (int)FastMath.floor(FastMath.toDegrees(longitude));
 
-        LOGGER.info("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
+        LOGGER.finer("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
 
         // when close to the anti-meridian
         if (lonFloor >= 180)
@@ -175,20 +175,10 @@ public class GenericDemFileManager extends SrtmFileManager
         {
             for (DemTile d: candidates)
             {
-                LOGGER.info(d.toString());
                 if(d.containPoint(FastMath.toDegrees(longitude), FastMath.toDegrees(latitude)))
                 {
-                    LOGGER.info("======> Contains ");
-                }
-            }
-        }
-
-        if (candidates != null)
-        {
-            for (DemTile d: candidates)
-            {
-                if(d.containPoint(FastMath.toDegrees(longitude), FastMath.toDegrees(latitude)))
-                {
+                    LOGGER.finer("DEM TILE FOUND FOR THIS LAT/LON");
+                    LOGGER.finer(d.toString());
                     return d.filePath;
                 }
             }
