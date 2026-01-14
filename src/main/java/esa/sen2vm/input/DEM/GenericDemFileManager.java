@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.*/
 
-package esa.sen2vm.input;
+package esa.sen2vm.input.DEM;
 
 import org.hipparchus.util.FastMath;
 import java.io.File;
@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -34,7 +35,7 @@ import org.gdal.gdalconst.gdalconstConstants;
 
 import org.sxgeo.input.dem.SrtmFileManager;
 
-import com.sun.tools.javac.util.List;
+// import com.sun.tools.javac.util.List;
 
 import org.sxgeo.exception.SXGeoException;
 
@@ -62,7 +63,7 @@ public class GenericDemFileManager extends SrtmFileManager
     /**
      * {@inheritDoc}
      */
-    public GenericDemFileManager(String demRootDir)
+    public GenericDemFileManager(String demRootDir) throws Sen2VMException
     {
         super(demRootDir);
         buildMap(demRootDir);
@@ -76,10 +77,10 @@ public class GenericDemFileManager extends SrtmFileManager
 
     private void addDemTile(DemTile d)
     {
-        int xMin = FastMath.floor(d.minX);
-        int xMax = FastMath.floor(d.maxX);
-        int yMin = FastMath.floor(d.minY);
-        int yMax = FastMath.floor(d.maxY);
+        int xMin = (int)FastMath.floor(d.minX);
+        int xMax = (int)FastMath.floor(d.maxX);
+        int yMin = (int)FastMath.floor(d.minY);
+        int yMax = (int)FastMath.floor(d.maxY);
 
         for (int x = xMin; x <= xMax; x++)
         {
@@ -134,7 +135,6 @@ public class GenericDemFileManager extends SrtmFileManager
         try
         {
             return (demGridMap.size() != 0);
-            throw new SXGeoException("NO_RASTER_FILE_FOUND_IN_DEM");
         }
         catch (Exception e)
         {
@@ -174,10 +174,8 @@ public class GenericDemFileManager extends SrtmFileManager
                 }
             }
         }
-        else
-        {
-            return "";
-        }
+
+        return "";
     }
 
     /**

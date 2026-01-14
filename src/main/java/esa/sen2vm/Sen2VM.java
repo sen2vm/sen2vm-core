@@ -177,7 +177,6 @@ public class Sen2VM
 
             //Using Sen2VM FileManager
             GenericDemFileManager demFileManager = new GenericDemFileManager(config.getDem());
-            demFileManager.buildMap(config.getDem());
 
             GeoidManager geoidManager = new GeoidManager(config.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
