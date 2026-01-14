@@ -8,7 +8,8 @@
 
   * Incorrect relative paths between notebook, DEM directory, and Dockerfile
   * Issue #61: Avoid double resampling in mosaic creation - Replaced `gdalwarp` with `gdal_merge.py` for mosaic assembly, added explicit resolution per band (10m, 20m, 60m) for orthorectification, and corrected grid step values (4.5, 2.25, 1 pixels) for sen2vm grid generation
-
+  * GDAL S2 driver handle DATASTRIP with missing granules #64
+  
 * Feature:
 
   * 
