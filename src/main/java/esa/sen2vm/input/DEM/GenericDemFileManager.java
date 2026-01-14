@@ -156,6 +156,8 @@ public class GenericDemFileManager extends SrtmFileManager
         int latFloor = (int)FastMath.floor(FastMath.toDegrees(latitude));
         int lonFloor = (int)FastMath.floor(FastMath.toDegrees(longitude));
 
+        LOGGER.info("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
+
         // when close to the anti-meridian
         if (lonFloor >= 180)
         {
@@ -173,7 +175,19 @@ public class GenericDemFileManager extends SrtmFileManager
         {
             for (DemTile d: candidates)
             {
-                if(d.containPoint(lonFloor, latFloor))
+                LOGGER.info(d.toString());
+                if(d.containPoint(FastMath.toDegrees(longitude), FastMath.toDegrees(latitude)))
+                {
+                    LOGGER.info("======> Contains ");
+                }
+            }
+        }
+
+        if (candidates != null)
+        {
+            for (DemTile d: candidates)
+            {
+                if(d.containPoint(FastMath.toDegrees(longitude), FastMath.toDegrees(latitude)))
                 {
                     return d.filePath;
                 }
