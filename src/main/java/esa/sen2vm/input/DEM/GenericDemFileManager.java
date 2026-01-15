@@ -115,10 +115,10 @@ public class GenericDemFileManager extends SrtmFileManager
                     LOGGER.finer("Loading DEM Tile  : " + filePath);
                     // LOGGER.info("Loading DEM Tile  : " + filePath);
                     DemTile newDemTile = getDemTileFromFile(filePath);
-                    LOGGER.finer("DEM Tile loaded : " + newDemTile.toString());
-                    // LOGGER.info("DEM Tile loaded : " + newDemTile.toString());
                     if (newDemTile != null)
                     {
+                        LOGGER.finer("DEM Tile loaded : " + newDemTile.toString());
+                        // LOGGER.info("DEM Tile loaded : " + newDemTile.toString());
                         addDemTile(newDemTile);
                     }
                 }
@@ -157,6 +157,7 @@ public class GenericDemFileManager extends SrtmFileManager
         int lonFloor = (int)FastMath.floor(FastMath.toDegrees(longitude));
 
         LOGGER.finer("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
+        // LOGGER.info("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
 
         // when close to the anti-meridian
         if (lonFloor >= 180)
@@ -179,6 +180,8 @@ public class GenericDemFileManager extends SrtmFileManager
                 {
                     LOGGER.finer("DEM TILE FOUND FOR THIS LAT/LON");
                     LOGGER.finer(d.toString());
+                    // LOGGER.info("DEM TILE FOUND FOR THIS LAT/LON");
+                    // LOGGER.info(d.toString());
                     return d.filePath;
                 }
             }
@@ -197,7 +200,7 @@ public class GenericDemFileManager extends SrtmFileManager
         Dataset dataset = gdal.Open(filePath, gdalconstConstants.GA_ReadOnly);
         if (dataset == null)
         {
-            LOGGER.severe("Error when reading  : " + gdal.GetLastErrorMsg());
+            LOGGER.severe("Error when reading : " + gdal.GetLastErrorMsg());
             //System.err.println("Error when reading  : " + gdal.GetLastErrorMsg());
             return null;
         }
