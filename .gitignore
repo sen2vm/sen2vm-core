@@ -30,4 +30,6 @@ target/
 venv/
 UserConf/
 DATA/
+.venv/
 
+src/gdal_ortho.sh
