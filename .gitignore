@@ -27,4 +27,9 @@ replay_pid*
 #notebook files
 sen2vm-notebook/src/.venv/
 target/
+venv/
+UserConf/
+DATA/
+.venv/
 
+src/gdal_ortho.sh

@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     python3-dev \
+    python3-numpy \
+    swig \
     ninja-build \
     libhdf5-dev \
     libnetcdf-dev \
@@ -47,7 +49,7 @@ RUN cd /gdal/build && \
     cmake .. \
     -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_PYTHON_BINDINGS=OFF \
+    -DBUILD_PYTHON_BINDINGS=ON \
     -DGDAL_USE_OPENJPEG=ON \
     -DGDAL_USE_TIFF_INTERNAL=ON \
     -DGDAL_USE_GEOTIFF_INTERNAL=ON \

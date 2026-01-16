@@ -1,12 +1,13 @@
 # Sen2VM Release history
 
-## 1.1.3 (2026-01-06)
+## 1.1.3 (2026-01-16)
 
 ### Updates
 
 * Fix:
 
   * Incorrect relative paths between notebook, DEM directory, and Dockerfile
+  * Issue #61: Avoid double resampling in mosaic creation - Replaced `gdalwarp` with `gdal_merge.py` for mosaic assembly, added explicit resolution per band (10m, 20m, 60m) for orthorectification, and corrected grid step values (4.5, 2.25, 1 pixels) for sen2vm grid generation
 
 * Feature:
 
