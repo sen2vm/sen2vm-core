@@ -113,12 +113,12 @@ public class GenericDemFileManager extends SrtmFileManager
                 {
                     String filePath = currentFile.getAbsolutePath();
                     LOGGER.finer("Loading DEM Tile  : " + filePath);
-                    // LOGGER.info("Loading DEM Tile  : " + filePath);
+                    LOGGER.info("Loading DEM Tile  : " + filePath);
                     DemTile newDemTile = getDemTileFromFile(filePath);
                     if (newDemTile != null)
                     {
                         LOGGER.finer("DEM Tile loaded : " + newDemTile.toString());
-                        // LOGGER.info("DEM Tile loaded : " + newDemTile.toString());
+                        LOGGER.info("DEM Tile loaded : " + newDemTile.toString());
                         addDemTile(newDemTile);
                     }
                 }
@@ -156,8 +156,8 @@ public class GenericDemFileManager extends SrtmFileManager
         int latFloor = (int)FastMath.floor(FastMath.toDegrees(latitude));
         int lonFloor = (int)FastMath.floor(FastMath.toDegrees(longitude));
 
-        LOGGER.finer("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
-        // LOGGER.info("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
+        // LOGGER.finer("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
+        LOGGER.info("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
 
         // when close to the anti-meridian
         if (lonFloor >= 180)
@@ -178,10 +178,10 @@ public class GenericDemFileManager extends SrtmFileManager
             {
                 if(d.containPoint(FastMath.toDegrees(longitude), FastMath.toDegrees(latitude)))
                 {
-                    LOGGER.finer("DEM TILE FOUND FOR THIS LAT/LON");
-                    LOGGER.finer(d.toString());
-                    // LOGGER.info("DEM TILE FOUND FOR THIS LAT/LON");
-                    // LOGGER.info(d.toString());
+                    // LOGGER.finer("DEM TILE FOUND FOR THIS LAT/LON");
+                    // LOGGER.finer(d.toString());
+                    LOGGER.info("DEM TILE FOUND FOR THIS LAT/LON");
+                    LOGGER.info(d.toString());
                     return d.filePath;
                 }
             }

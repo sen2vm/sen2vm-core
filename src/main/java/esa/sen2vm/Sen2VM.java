@@ -255,11 +255,11 @@ public class Sen2VM
             // Test if no grids exists already
             if (config.getOperation().equals(Sen2VMConstants.DIRECT))
             {
-                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands) ;
+                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
             }
             else
             {
-                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder()) ;
+                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
             }
 
             for (BandInfo bandInfo: bands)
@@ -334,7 +334,6 @@ public class Sen2VM
                         // Correction post build VRT
                         outputFileManager.correctGeoGrid(inputTIFs);
                         outputFileManager.correctVRT(vrtFileName);
-
                     }
 
                     // Inverse Loc case
@@ -367,11 +366,11 @@ public class Sen2VM
             }
             outputFileManager.writeInfoJson(config, bands, detectors, outputConfigPath);
         }
-        catch ( IOException exception )
+        catch (IOException exception)
         {
             throw new Sen2VMException(exception);
         }
-        catch ( SXGeoException exception )
+        catch (SXGeoException exception)
         {
             String newMessage = "";
             if(exception.toString().contains("Cant find bundle for base name S2GeoMessages"))

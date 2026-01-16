@@ -4,7 +4,7 @@
   <VRTRasterBand dataType="Int16" band="1">
     <NoDataValue>-32767</NoDataValue>
     <ComplexSource>
-      <SourceFilename relativeToVRT="1">../dem_4/n30_w016.dt1</SourceFilename>
+      <SourceFilename relativeToVRT="0">/home/aburie/Projets/S2_MPC/Sen2VM/sen2vm-core/src/test/resources/tests/data/dem_tests/dem_4/n30_w016.dt1</SourceFilename>
       <SourceBand>1</SourceBand>
       <SourceProperties RasterXSize="1201" RasterYSize="1201" DataType="Int16" BlockXSize="1" BlockYSize="1201" />
       <SrcRect xOff="0" yOff="0" xSize="1201" ySize="1201" />
@@ -12,7 +12,7 @@
       <NODATA>-32767</NODATA>
     </ComplexSource>
     <ComplexSource>
-      <SourceFilename relativeToVRT="1">../dem_4/n32_w017.dt1</SourceFilename>
+      <SourceFilename relativeToVRT="0">/home/aburie/Projets/S2_MPC/Sen2VM/sen2vm-core/src/test/resources/tests/data/dem_tests/dem_4/n32_w017.dt1</SourceFilename>
       <SourceBand>1</SourceBand>
       <SourceProperties RasterXSize="1201" RasterYSize="1201" DataType="Int16" BlockXSize="1" BlockYSize="1201" />
       <SrcRect xOff="0" yOff="0" xSize="1201" ySize="1201" />
@@ -20,7 +20,7 @@
       <NODATA>-32767</NODATA>
     </ComplexSource>
     <ComplexSource>
-      <SourceFilename relativeToVRT="1">../dem_4/n32_w018.dt1</SourceFilename>
+      <SourceFilename relativeToVRT="0">/home/aburie/Projets/S2_MPC/Sen2VM/sen2vm-core/src/test/resources/tests/data/dem_tests/dem_4/n32_w018.dt1</SourceFilename>
       <SourceBand>1</SourceBand>
       <SourceProperties RasterXSize="1201" RasterYSize="1201" DataType="Int16" BlockXSize="1" BlockYSize="1201" />
       <SrcRect xOff="0" yOff="0" xSize="1201" ySize="1201" />
@@ -28,7 +28,7 @@
       <NODATA>-32767</NODATA>
     </ComplexSource>
     <ComplexSource>
-      <SourceFilename relativeToVRT="1">../dem_4/n33_w017.dt1</SourceFilename>
+      <SourceFilename relativeToVRT="0">/home/aburie/Projets/S2_MPC/Sen2VM/sen2vm-core/src/test/resources/tests/data/dem_tests/dem_4/n33_w017.dt1</SourceFilename>
       <SourceBand>1</SourceBand>
       <SourceProperties RasterXSize="1201" RasterYSize="1201" DataType="Int16" BlockXSize="1" BlockYSize="1201" />
       <SrcRect xOff="0" yOff="0" xSize="1201" ySize="1201" />
