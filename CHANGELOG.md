@@ -1,6 +1,6 @@
 # Sen2VM Release history
 
-## 1.1.3 (2026-01-13)
+## 1.1.3 (2026-01-16)
 
 ### Updates
 
