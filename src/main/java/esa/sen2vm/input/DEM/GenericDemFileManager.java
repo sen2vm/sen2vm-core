@@ -56,7 +56,7 @@ public class GenericDemFileManager extends SrtmFileManager
 
     // Map dem filepath with a string that represents longitude/latitude
     // Example: with a SRTM tile on Madeira island located at longitude -16 and latitude 30
-    // the correponding map entry will be ("-16/30"="/DEMDIR/DEM_SRTM/w016/n30.dt1")
+    // the corresponding map entry will be ("-16/30"="/DEMDIR/DEM_SRTM/w016/n30.dt1")
     // Key corresponding to "longitude/latitude" and value corresponding to the dem filepath.
     Map<Long, List<DemTile>> demGridMap = new HashMap<>();
 
@@ -83,10 +83,11 @@ public class GenericDemFileManager extends SrtmFileManager
         int yMin = (int)FastMath.floor(d.minY);
         int yMax = (int)FastMath.floor(d.maxY);
 
-        for (int x = xMin; x <= xMax; x++)
+        for (int x = xMin; x < xMax; x++)
         {
-            for (int y = yMin; y <= yMax; y++)
+            for (int y = yMin; y < yMax; y++)
             {
+                LOGGER.finer("Loading DEM from  : " + x + " " + y);
                 long key = mapKey(x, y);
                 demGridMap.computeIfAbsent(key, k -> new ArrayList<>()).add(d);
             }
@@ -209,17 +210,22 @@ public class GenericDemFileManager extends SrtmFileManager
 
         double minX = geoTransform[0];
         double maxY = geoTransform[3];
-        double pixelWidth = geoTransform[1];
-        double pixelHeight = geoTransform[5];
-
+        final double pixelWidth = geoTransform[1];
+        final double pixelHeight = geoTransform[5];
+        // DEM convention int Lat/Lon at center
+        minX += pixelWidth/2;
+        maxY += pixelHeight/2;
         int imageWidth = dataset.getRasterXSize();
         int imageHeight = dataset.getRasterYSize();
 
-        double maxX = minX + imageWidth * pixelWidth;
-        double minY = maxY + imageHeight * pixelHeight;
+        double maxX = minX + (imageWidth - 1) * pixelWidth;
+        double minY = maxY + (imageHeight - 1) * pixelHeight;
         dataset.delete();
-
-        String lonlat = Math.round(minX) + "/" + Math.round(minY);
+        minX = Math.round(minX);
+        maxX = Math.round(maxX);
+        minY = Math.round(minY);
+        maxY = Math.round(maxY);
+        String lonlat = minX + "/" + minY;
         return new DemTile(minX, maxX, minY, maxY, filePath);
     }
 
