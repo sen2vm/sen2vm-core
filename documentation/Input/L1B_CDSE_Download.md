@@ -144,6 +144,9 @@ The number of folders in **GRANULE** must equal the number of `<Granule>` entrie
 > [!NOTE]
 > Sentinel-2 L1B products are only available to **expert users** and require a specific request:refs[25-2,65].
 
+> [!NOTE]
+> The notebook does not work with products in PDI format. For more information, see the Sentinel-2 Product specification document: [S2-PDGS-CS-DI-PSD-V15.0](https://sentinels.copernicus.eu/documents/d/sentinel/s2-pdgs-cs-di-psd-v15-0).
+
 > [!WARNING]
 > Ensure you have the necessary permissions and expertise to handle L1B data.
 
