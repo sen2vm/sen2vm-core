@@ -27,7 +27,7 @@
 > [!NOTE]
 > The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
-Please note that <mark>[Notebooks](TODO)</mark> are available to ease configuration and usage.
+Please note that the <mark>[orthorectification notebook](../../sen2vm-notebook/README_Notebooks.md)</mark> is available to ease configuration and usage.
 
 
 ## 1. Configuration
@@ -85,7 +85,7 @@ Those parameters can be sent to Sen2 VM:
 > The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated in the following sections.
 
 > [!NOTE]
-> The notebook does not work with products in PDI format. For more information, see the Sentinel-2 Product specification document: [S2-PDGS-CS-DI-PSD-V15.0](https://sentinels.copernicus.eu/documents/d/sentinel/s2-pdgs-cs-di-psd-v15-0).
+> The [orthorectification notebook](../../sen2vm-notebook/README_Notebooks.md) does not work with products in PDI format. For more information, see the Sentinel-2 Product specification document: [S2-PDGS-CS-DI-PSD-V15.0](https://sentinels.copernicus.eu/documents/d/sentinel/s2-pdgs-cs-di-psd-v15-0).
 
 #### 1.1.1 L1B Product input tree structure
 
