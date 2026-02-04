@@ -123,6 +123,22 @@ Once the status is **"Completed"**, download the product.
 
 ---
 
+### 11. Verify Product Completeness
+
+After downloading, check that the product is **complete**: the number of granules actually present in the product must match the number of granules announced in the datastrip metadata.
+
+* **In the product:** count the number of subfolders in the **GRANULE** folder (each subfolder is one granule).
+* **In the datastrip:** open the datastrip metadata file  
+  `DATASTRIP/<Datastrip_reference>/<Datastrip_metadata>.xml`  
+  (e.g. `DATASTRIP/S2A_OPER_MSI_L1B_DS_DPRM_..._N05.00/S2A_OPER_MTD_L1B_DS_DPRM_....xml`).  
+  The list of granules is under  
+  **`Level-1B_DataStrip_ID` → `Image_Data_Info` → `Granules_Information` → `Detector_List` → `Detector` → `Granule_List`**.  
+  Each `<Granule>` element (with attribute `granuleId`) corresponds to one expected granule. You can take the count from any one detector’s `Granule_List`, as all detectors reference the same set of granules.
+
+The number of folders in **GRANULE** must equal the number of `<Granule>` entries in the datastrip. If not, the product may be incomplete (e.g. partial download or workflow issue).
+
+---
+
 ## Notes and Warnings
 
 > [!NOTE]
@@ -133,6 +149,9 @@ Once the status is **"Completed"**, download the product.
 
 > [!TIP]
 > For more details, refer to the [official documentation](https://documentation.dataspace.copernicus.eu/Data/SentinelMissions/Sentinel2.html) :refs[27-2].
+
+> [!CAUTION]
+> In case of problems or difficulties downloading L1B products with the Sentinel2:L1B workflow (e.g. incomplete product, failed order, access issues), **open a support ticket with the Copernicus Data Space Ecosystem (CDSE)** via the [Support portal](https://documentation.dataspace.copernicus.eu/Support.html) or by submitting a request at [CDSE Help Centre](https://helpcenter.dataspace.copernicus.eu/hc/en-gb/requests/new).
 
 ---
 

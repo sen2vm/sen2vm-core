@@ -23,7 +23,7 @@ Sen2VM direct location grid computation takes as input the L1B product, the auxi
 * Bands/detectors to process,
 * 3 steps, one per band resolution (10m, 20m, 60m) in pixels (double)
 
-For more details, please refer to [Input Description](../Input/input_description.md).
+For more details on these inputs (including the step value constraint for direct location grids), please refer to [Input Description](../Input/input_description.md).
 
 As output:
 * At granule level: geolocation grids will be written (per granules/bands).
