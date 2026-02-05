@@ -330,7 +330,7 @@ public class Sen2VMDirectTest
     {
         String[] detectors = new String[]{"01"};
         String[] bands = new String[]{"B01"};
-        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
+        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4", "dem_5"};
         int stepBand10m = 600; // corresponding to 6 kms
 
         try

@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.*/
 
-package esa.sen2vm.input;
+package esa.sen2vm.input.DEM;
 
 import org.hipparchus.util.FastMath;
 import java.io.File;
@@ -24,6 +24,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -32,9 +34,13 @@ import org.gdal.gdal.Dataset;
 import org.gdal.gdalconst.gdalconstConstants;
 
 import org.sxgeo.input.dem.SrtmFileManager;
+
+// import com.sun.tools.javac.util.List;
+
 import org.sxgeo.exception.SXGeoException;
 
 import esa.sen2vm.exception.Sen2VMException;
+import esa.sen2vm.input.DEM.DemTile;
 
 //Extend SrtmFileManager and not DemManager, as an check on the type of instanciation is made if isInstance of SrtmFileManager
 
@@ -50,22 +56,48 @@ public class GenericDemFileManager extends SrtmFileManager
 
     // Map dem filepath with a string that represents longitude/latitude
     // Example: with a SRTM tile on Madeira island located at longitude -16 and latitude 30
-    // the correponding map entry will be ("-16/30"="/DEMDIR/DEM_SRTM/w016/n30.dt1")
+    // the corresponding map entry will be ("-16/30"="/DEMDIR/DEM_SRTM/w016/n30.dt1")
     // Key corresponding to "longitude/latitude" and value corresponding to the dem filepath.
-    Map<String, String> demFilePathMap = new HashMap<>();
+    Map<Long, List<DemTile>> demGridMap = new HashMap<>();
 
     /**
      * {@inheritDoc}
      */
-    public GenericDemFileManager(String demRootDir)
+    public GenericDemFileManager(String demRootDir) throws Sen2VMException
     {
         super(demRootDir);
+        LOGGER.info("Loading DEM from  : " + demRootDir);
+        buildMap(demRootDir);
+    }
+
+
+    private long mapKey(int x, int y)
+    {
+        return (((long) x) << 32) | (y & 0xffffffffL);
+    }
+
+    private void addDemTile(DemTile d)
+    {
+        int xMin = (int)FastMath.floor(d.minX);
+        int xMax = (int)FastMath.floor(d.maxX);
+        int yMin = (int)FastMath.floor(d.minY);
+        int yMax = (int)FastMath.floor(d.maxY);
+
+        for (int x = xMin; x < xMax; x++)
+        {
+            for (int y = yMin; y < yMax; y++)
+            {
+                LOGGER.finer("Loading DEM from  : " + x + " " + y);
+                long key = mapKey(x, y);
+                demGridMap.computeIfAbsent(key, k -> new ArrayList<>()).add(d);
+            }
+        }
     }
 
     /**
      * Build a map that contains dem files
      */
-    public void buildMap(String directory) throws Sen2VMException
+    private void buildMap(String directory) throws Sen2VMException
     {
         try
         {
@@ -81,10 +113,14 @@ public class GenericDemFileManager extends SrtmFileManager
                 else
                 {
                     String filePath = currentFile.getAbsolutePath();
-                    String lonlat = getLonLatFromFile(filePath);
-                    if (lonlat != null)
+                    LOGGER.finer("Loading DEM Tile  : " + filePath);
+                    // LOGGER.info("Loading DEM Tile  : " + filePath);
+                    DemTile newDemTile = getDemTileFromFile(filePath);
+                    if (newDemTile != null)
                     {
-                        demFilePathMap.put(lonlat, filePath);
+                        LOGGER.finer("DEM Tile loaded : " + newDemTile.toString());
+                        // LOGGER.info("DEM Tile loaded : " + newDemTile.toString());
+                        addDemTile(newDemTile);
                     }
                 }
             }
@@ -104,34 +140,7 @@ public class GenericDemFileManager extends SrtmFileManager
     {
         try
         {
-            Path dir = FileSystems.getDefault().getPath(directory);
-            DirectoryStream<Path> stream = Files.newDirectoryStream(dir);
-            boolean found = false;
-            for (Path path : stream)
-            {
-                if (!found)
-                {
-                    File currentFile = path.toFile();
-                    if (currentFile.isDirectory())
-                    {
-                        found = findRasterFile(currentFile.getAbsolutePath());
-                    }
-                    else
-                    {
-                        String filePath = currentFile.getAbsolutePath();
-                        if ( ( filePath.matches(".*.dt1") ) || ( filePath.matches(".*.dt2") )) {
-                            found = true;
-                        }
-                    }
-                    if (found)
-                    {
-                        stream.close();
-                        return true;
-                    }
-                }
-            }
-            stream.close();
-            throw new SXGeoException("NO_RASTER_FILE_FOUND_IN_DEM");
+            return (demGridMap.size() != 0);
         }
         catch (Exception e)
         {
@@ -145,8 +154,11 @@ public class GenericDemFileManager extends SrtmFileManager
     @Override
     protected String getRasterFilePath(double latitude, double longitude)
     {
-        double latFloor = FastMath.floor(FastMath.toDegrees(latitude));
-        double lonFloor = FastMath.floor(FastMath.toDegrees(longitude));
+        int latFloor = (int)FastMath.floor(FastMath.toDegrees(latitude));
+        int lonFloor = (int)FastMath.floor(FastMath.toDegrees(longitude));
+
+        LOGGER.finer("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
+        // LOGGER.info("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
 
         // when close to the anti-meridian
         if (lonFloor >= 180)
@@ -158,26 +170,38 @@ public class GenericDemFileManager extends SrtmFileManager
             lonFloor += 360;
         }
 
-        String lonlat = (int) lonFloor + "/" + (int) latFloor;
-        String filePath = this.demFilePathMap.get(lonlat);
-        if (filePath == null)
+        long key = mapKey(lonFloor, latFloor);
+        List<DemTile> candidates = demGridMap.get(key);
+
+        if (candidates != null)
         {
-            filePath = "";
+            for (DemTile d: candidates)
+            {
+                if(d.containPoint(FastMath.toDegrees(longitude), FastMath.toDegrees(latitude)))
+                {
+                    LOGGER.finer("DEM TILE FOUND FOR THIS LAT/LON");
+                    LOGGER.finer(d.toString());
+                    // LOGGER.info("DEM TILE FOUND FOR THIS LAT/LON");
+                    // LOGGER.info(d.toString());
+                    return d.filePath;
+                }
+            }
         }
-        return filePath;
+
+        return "";
     }
 
     /**
-     * Get footprint information from file
+     * Get footprint information and create a DemTile object from file
      */
-    public String getLonLatFromFile(String filePath)
+    public DemTile getDemTileFromFile(String filePath)
     {
         gdal.AllRegister();
 
         Dataset dataset = gdal.Open(filePath, gdalconstConstants.GA_ReadOnly);
         if (dataset == null)
         {
-            LOGGER.severe("Error when reading  : " + gdal.GetLastErrorMsg());
+            LOGGER.severe("Error when reading : " + gdal.GetLastErrorMsg());
             //System.err.println("Error when reading  : " + gdal.GetLastErrorMsg());
             return null;
         }
@@ -186,17 +210,23 @@ public class GenericDemFileManager extends SrtmFileManager
 
         double minX = geoTransform[0];
         double maxY = geoTransform[3];
-        double pixelWidth = geoTransform[1];
-        double pixelHeight = geoTransform[5];
-
+        final double pixelWidth = geoTransform[1];
+        final double pixelHeight = geoTransform[5];
+        // DEM convention int Lat/Lon at center
+        minX += pixelWidth/2;
+        maxY += pixelHeight/2;
         int imageWidth = dataset.getRasterXSize();
         int imageHeight = dataset.getRasterYSize();
 
-        double maxX = minX + imageWidth * pixelWidth;
-        double minY = maxY + imageHeight * pixelHeight;
+        double maxX = minX + (imageWidth - 1) * pixelWidth;
+        double minY = maxY + (imageHeight - 1) * pixelHeight;
         dataset.delete();
-
-        String lonlat = Math.round(minX) + "/" + Math.round(minY);
-        return lonlat;
+        minX = Math.round(minX);
+        maxX = Math.round(maxX);
+        minY = Math.round(minY);
+        maxY = Math.round(maxY);
+        String lonlat = minX + "/" + minY;
+        return new DemTile(minX, maxX, minY, maxY, filePath);
     }
+
 }

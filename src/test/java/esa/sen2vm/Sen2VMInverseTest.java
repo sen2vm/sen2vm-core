@@ -338,7 +338,7 @@ public class Sen2VMInverseTest
     {
         String[] detectors = new String[]{"06"};
         String[] bands = new String[]{"B01", "B02"};
-        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
+        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4", "dem_5"};
         int stepBand10m = 6000;
 
         try

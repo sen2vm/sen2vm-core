@@ -44,7 +44,7 @@ import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.Configuration;
-import esa.sen2vm.input.GenericDemFileManager;
+import esa.sen2vm.input.DEM.GenericDemFileManager;
 import esa.sen2vm.input.OptionManager;
 import esa.sen2vm.input.Params;
 import esa.sen2vm.input.datastrip.DataStripManager;
@@ -177,7 +177,6 @@ public class Sen2VM
 
             //Using Sen2VM FileManager
             GenericDemFileManager demFileManager = new GenericDemFileManager(config.getDem());
-            demFileManager.buildMap(config.getDem());
 
             GeoidManager geoidManager = new GeoidManager(config.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
