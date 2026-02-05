@@ -261,6 +261,8 @@ public class Utils {
                             error = error + " vs (" + String.valueOf(data2b2[c]) + ", " + String.valueOf(data2b1[c]) + ")";
                             error = error + " = " + String.valueOf(diff);
                             LOGGER.warning("Coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
+                            LOGGER.warning("Row total number :" + String.valueOf(ds1.getRasterYSize()) + ", Columns" + String.valueOf(ds1.getRasterXSize()) + ".");
+                            LOGGER.warning("Files(" + img1Path + " versus " + img2Path + ".");
                             return false;
                         }
                     }

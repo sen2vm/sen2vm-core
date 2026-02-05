@@ -22,6 +22,9 @@ import org.apache.commons.cli.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import java.util.Arrays;
+
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.List;
@@ -346,6 +349,103 @@ public class Sen2VM
                         double[][] groundGrid = invGrid.get2DgridLatLon();
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
+
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+
+                        // DD 06
+                        // double[][] coords = new double[4][3];
+                        // coords[0][1] = 32.99235766783721; //lat
+                        // coords[0][0] = -18.210695132287352; //lon
+                        // coords[1][1] = 32.99456809413312; //lat  
+                        // coords[1][0] = -17.740052645288863; //lon
+                        // coords[2][1] = 33.01; //lat
+                        // coords[2][0] = -17.740052645288863; //lon
+                        // coords[3][1] = 32.98456809413312; //lat  
+                        // coords[3][0] = -17.740052645288863; //lon
+
+                        // double[][] inverseLocGrid_2 = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  coords, "EPSG:4326");
+                        // LOGGER.info(String.valueOf(coords[0][0]) + "," + String.valueOf(coords[0][1]));
+                        // LOGGER.info(String.valueOf(inverseLocGrid_2[0][0]) + "," + String.valueOf(inverseLocGrid_2[0][1]));
+                        // LOGGER.info(String.valueOf(coords[1][0]) + "," + String.valueOf(coords[1][1]));
+                        // LOGGER.info(String.valueOf(inverseLocGrid_2[1][0]) + "," + String.valueOf(inverseLocGrid_2[1][1]));
+                        // LOGGER.info(String.valueOf(coords[2][0]) + "," + String.valueOf(coords[2][1]));
+                        // LOGGER.info(String.valueOf(inverseLocGrid_2[2][0]) + "," + String.valueOf(inverseLocGrid_2[2][1]));
+                        // LOGGER.info(String.valueOf(coords[3][0]) + "," + String.valueOf(coords[3][1]));
+                        // LOGGER.info(String.valueOf(inverseLocGrid_2[3][0]) + "," + String.valueOf(inverseLocGrid_2[3][1]));
+
+                        // double[][] directs = new double[2][2];
+                        // directs[0][0] = 1041; directs[0][1] = 75; 
+                        // directs[1][0] = 1014; directs[1][1] = 68;
+                        // double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), directs);
+                        // LOGGER.info(String.valueOf(directs[0][0]) + "," + String.valueOf(directs[0][1]));
+                        // LOGGER.info(String.valueOf(directLocGrid[0][0]) + "," + String.valueOf(directLocGrid[0][1])+ "," + String.valueOf(directLocGrid[0][2]));
+                        // LOGGER.info(String.valueOf(directs[1][0]) + "," + String.valueOf(directs[1][1]));
+                        // LOGGER.info(String.valueOf(directLocGrid[1][0]) + "," + String.valueOf(directLocGrid[1][1])+ "," + String.valueOf(directLocGrid[1][2]));
+
+
+
+
+
+                        int size = 5;
+                        // DD 08
+                        double[][] coords = new double[size][3];
+                        coords[0][1] = 33.277; //lat
+                        coords[0][0] = -17.146; //lon
+                        coords[1][1] = 33.342; //lat  
+                        coords[1][0] = -16.931; //lon
+                        coords[2][1] = 32.941; //lat
+                        coords[2][0] = -17.158; //lon
+                        coords[3][1] = 32.746; //lat  
+                        coords[3][0] = -17.083; //lon
+                        coords[4][1] = 32.345; //lat  
+                        coords[4][0] = -17.273; //lon
+
+                        double[][] inverseLocGrid_2 = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  coords, "EPSG:4326");
+
+                        for (int i = 0; i<size; i++)
+                        {
+                            LOGGER.info(String.valueOf(coords[i][0]) + "," + String.valueOf(coords[i][1]));
+                            LOGGER.info(String.valueOf(inverseLocGrid_2[i][0]) + "," + String.valueOf(inverseLocGrid_2[i][1]));
+                        }
+
+                        double[][] directs = new double[5][2];
+                        directs[0][0] = 352; directs[0][1] = 54; 
+                        directs[1][0] = 162; directs[1][1] = 350;
+                        directs[2][0] = 926; directs[2][1] = 183;
+                        directs[3][0] = 1232; directs[3][1] = 383;
+                        directs[4][0] = 1984; directs[4][1] = 270;
+                        double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), directs);
+
+                        for (int i = 0; i<size; i++)
+                        {
+                            LOGGER.info(String.valueOf(directs[i][0]) + "," + String.valueOf(directs[i][1]));
+                            LOGGER.info(String.valueOf(directLocGrid[i][0]) + "," + String.valueOf(directLocGrid[i][1])+ "," + String.valueOf(directLocGrid[i][2]));
+                        }
+                        
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+                        LOGGER.info("DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG");
+
                         double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, georefConventionOffsetPixel, -georefConventionOffsetLine);
 
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());

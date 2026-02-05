@@ -217,15 +217,15 @@ public class GenericDemFileManager extends SrtmFileManager
         maxY += pixelHeight/2;
         int imageWidth = dataset.getRasterXSize();
         int imageHeight = dataset.getRasterYSize();
-
         double maxX = minX + (imageWidth - 1) * pixelWidth;
         double minY = maxY + (imageHeight - 1) * pixelHeight;
         dataset.delete();
+
         minX = Math.round(minX);
         maxX = Math.round(maxX);
         minY = Math.round(minY);
         maxY = Math.round(maxY);
-        String lonlat = minX + "/" + minY;
+        
         return new DemTile(minX, maxX, minY, maxY, filePath);
     }
 
