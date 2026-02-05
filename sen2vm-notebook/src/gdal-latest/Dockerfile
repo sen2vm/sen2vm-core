@@ -35,12 +35,12 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev
 
 
-RUN git clone https://github.com/OSGeo/gdal.git /gdal && \
+RUN git clone https://github.com/rouault/gdal.git /gdal && \
     cd /gdal && \
     git fetch --tags && \
     LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`) && \
-    echo "Using GDAL version: $LATEST_TAG" && \
-    git checkout $LATEST_TAG
+    echo "Using GDAL sentinel2_geoloc_missing_granules" && \
+    git checkout sentinel2_geoloc_missing_granules
 
 
 RUN mkdir /gdal/build
