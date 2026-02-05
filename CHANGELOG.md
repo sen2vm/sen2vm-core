@@ -1,5 +1,22 @@
 # Sen2VM Release history
 
+## 1.1.4 (2026-02-05)
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * Notebook using new GDAL handling missing granules, but PDI format no more handled by GDAL for orthorectification
+
+* Doc:
+
+  * Precision added
+  * Precision to use Compact.SAFE format (using CDSE L1B workflow for example) when using Orthorectification Notebook
+
 ## 1.1.3 (2026-01-16)
 
 ### Updates

@@ -1,6 +1,6 @@
 FROM ghcr.io/sen2vm/sen2vm-build-env:latest AS launcher
 
-ENV SEN2VM_VERSION=1.1.3
+ENV SEN2VM_VERSION=1.1.4
 
 WORKDIR /Sen2vm
 

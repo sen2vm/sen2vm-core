@@ -27,7 +27,7 @@
 > [!NOTE]
 > The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
-Please note that <mark>[Notebooks](TODO)</mark> are available to ease configuration and usage.
+Please note that the <mark>[orthorectification notebook](../../sen2vm-notebook/README_Notebooks.md)</mark> is available to ease configuration and usage.
 
 
 ## 1. Configuration
@@ -51,7 +51,7 @@ Each parameter description can be found in the table below:
 | operation    | string   | **Mandatory** |                                                    In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>                                                    |
 | deactivate_available_refining| boolean  | Optional      |                                          If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in §[L1B Product](#112-refining-information)                                          |
 | export_alt   | boolean  | Optional      |  If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](../Output/output_direct_loc.md)  |
-| steps       | double    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. |
+| steps       | double    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. **For direct location grids, the GRID step value cannot be under 1.** |
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**|                                                                                                    For the inverse location additional information please refer to the dedicated table below       |
 
 
@@ -83,6 +83,9 @@ Those parameters can be sent to Sen2 VM:
 
 > [!IMPORTANT]
 > The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated in the following sections.
+
+> [!NOTE]
+> The [orthorectification notebook](../../sen2vm-notebook/README_Notebooks.md) does not work with products in PDI format. For more information, see the Sentinel-2 Product specification document: [S2-PDGS-CS-DI-PSD-V15.0](https://sentinels.copernicus.eu/documents/d/sentinel/s2-pdgs-cs-di-psd-v15-0).
 
 #### 1.1.1 L1B Product input tree structure
 
@@ -141,6 +144,9 @@ The auto_gipp_selection option enables the automatic retrieval of GIPP files fro
 The GIPP folder does not require a specific structure; the system searches through all subdirectories and selects the first valid GIPP instance according to the listed name.
 
 If only .tar or .tar.gz archives of the GIPPs are available, the archives are extracted.
+
+> [!CAUTION]
+> Without automatic GIPP selection, the GIPP folder should contain only the required GIPP files. No archive extraction is performed in this mode.
 
 The GIPP required are the following ones:
 * **GIP_VIEDIR**: contains Viewing Direction required by Rugged to create viewing model based on TAN_PSI_X/Y_LIST tags. There is one GIP_VIEDIR file **per band** and each file contains information per **detector** (in the following tags: _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_X_LIST]_ and _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_Y_LIST]_)
