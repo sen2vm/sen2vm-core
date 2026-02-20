@@ -1,5 +1,21 @@
 # Sen2VM Release history
 
+## 1.1.5 (2026-02-20)
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * 
+
+* Doc:
+
+  * Point to new CDSE official DEM download
+
 ## 1.1.4 (2026-02-05)
 
 ### Updates
