@@ -4,7 +4,7 @@
 * [Inputs description](documentation/Input/input_description.md)
 
   * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)
+  * [How to Download Copernicus DEM for Sen2VM](documentation/Input/DEM_CDSE_Download.md)
 
 * Outputs description:
 
@@ -100,7 +100,7 @@ Inputs required by Sen2VM are:
 
 * L1B Product (see [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md) for download instructions),
 * Some GIPP files (parameters files used in operational production),
-* Digital Elevation Model (DEM) (see [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)),
+* Digital Elevation Model (DEM) (see [How to Download Copernicus DEM for Sen2VM](documentation/Input/DEM_CDSE_Download.md)),
 * GEOID model to measure precise surface elevations,
 * IERS bulletin that provides data and standards related to Earth rotation and reference frames,
 * Additional information for configuration.
@@ -161,7 +161,7 @@ It is to be noted that orthorectification using Sen2VM gave equivalent results t
 * [Inputs description](documentation/Input/input_description.md)
 
   * [How to Download L1B Data from CDSE](documentation/Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](documentation/Input/DEM_CDSE_Download.md)
+  * [How to Download Copernicus DEM for Sen2VM](documentation/Input/DEM_CDSE_Download.md)
 
 * Outputs description:
 

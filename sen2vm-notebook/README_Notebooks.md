@@ -4,7 +4,7 @@
 * [Inputs description](../documentation/Input/input_description.md)
 
   * [How to Download L1B Data from CDSE](../documentation/Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](../documentation/Input/DEM_CDSE_Download.md)
+  * [How to Download Copernicus DEM for Sen2VM](../documentation/Input/DEM_CDSE_Download.md)
 
 * Outputs description:
 

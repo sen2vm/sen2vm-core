@@ -4,7 +4,7 @@
 * [Inputs description](../Input/input_description.md)
 
   * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+  * [How to Download Copernicus DEM for Sen2VM](../Input/DEM_CDSE_Download.md)
 
 * Outputs description:
 
@@ -171,7 +171,7 @@ The number of folders in **GRANULE** must equal the number of `<Granule>` entrie
 * [Inputs description](../Input/input_description.md)
 
   * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+  * [How to Download Copernicus DEM for Sen2VM](../Input/DEM_CDSE_Download.md)
 
 * Outputs description:
 

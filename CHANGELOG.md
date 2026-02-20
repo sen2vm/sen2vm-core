@@ -1,6 +1,28 @@
 # Sen2VM Release history
 
+## Merged in main
+
+### Main feature
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * 
+
+* Doc:
+
+  * Point to new CDSE official DEM download
+
 ## 1.1.4 (2026-02-05)
+
+### Main feature
+
+Notebook using new GDAL handling missing granules, but PDI format no more handled by GDAL for orthorectification
 
 ### Updates
 
@@ -18,6 +40,10 @@
   * Precision to use Compact.SAFE format (using CDSE L1B workflow for example) when using Orthorectification Notebook
 
 ## 1.1.3 (2026-01-16)
+
+### Main feature
+
+Improvments of Notebook (cf Fix above)
 
 ### Updates
 
