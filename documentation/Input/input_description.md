@@ -4,7 +4,7 @@
 * [Inputs description](../Input/input_description.md)
 
   * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+  * [How to Download Copernicus DEM for Sen2VM](../Input/DEM_CDSE_Download.md)
 
 * Outputs description:
 
@@ -19,7 +19,7 @@
 
 * L1B Product, accessible through **[Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)**. *Please note that special access for L1B products might be required by submitting  a request via the [FAQ section](https://documentation.dataspace.copernicus.eu/FAQ.html).* For detailed download instructions, see **[How to Download L1B Data from CDSE](L1B_CDSE_Download.md)**.
 * Some GIPP files *(parameters files used in operational production, defining Satellites)*, accessible through **[sen2vm-gipp-database](https://github.com/sen2vm/sen2vm-gipp-database)**
-* Digital Elevation Model (DEM) (COPERNICUS DEM is accessible through **[Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)**). For detailed download instructions, see **[How to Download DEM Data from CDSE](DEM_CDSE_Download.md)**.
+* Digital Elevation Model (DEM). The recommended source is **[CDSE-Copernicus-DEM-downloader](https://github.com/senbox-org/CDSE-Copernicus-DEM-downloader)**, which provides DEM in the per-square-degree format required by Sen2VM. For detailed download instructions, see **[How to Download Copernicus DEM for Sen2VM](DEM_CDSE_Download.md)**.
 * GEOID model to measure precise surface elevations, **it shall be the one used to generate the DEM you are providing**, an example can accessible through **[sen2vm-core git](../../src/test/resources/DEM_GEOID/)**
 * IERS bulletin that provides data and standards related to Earth rotation and reference frames,  accessible through **[Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)**
 * Additional information for configuration.
@@ -169,7 +169,7 @@ For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used.
 #### 1.3.1 DEM
 
 > [!NOTE]
-> DEM can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). For detailed step-by-step instructions on how to download DEM data from the Copernicus Data Space Browser, please refer to the [How to Download DEM Data from CDSE](DEM_CDSE_Download.md) guide.
+> The recommended way to obtain Copernicus DEM for Sen2VM is the [CDSE-Copernicus-DEM-downloader](https://github.com/senbox-org/CDSE-Copernicus-DEM-downloader) tool, which downloads 1°×1° geocells compatible with Sen2VM. For detailed instructions, see [How to Download Copernicus DEM for Sen2VM](DEM_CDSE_Download.md).
 
 Access to the DEM is provided via a path to a folder containing the dataset. 
 The DEM must meet the following requirements:
@@ -232,7 +232,7 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 * [Inputs description](../Input/input_description.md)
 
   * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+  * [How to Download Copernicus DEM for Sen2VM](../Input/DEM_CDSE_Download.md)
 
 * Outputs description:
 
