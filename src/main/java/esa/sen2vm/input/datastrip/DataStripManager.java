@@ -382,6 +382,9 @@ public class DataStripManager
                 A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleVAngle = iersBulletin.getPOLE_V_ANGLE();
 
                 XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
+
+
+
                 AbsoluteDate datastripStartDateUTC = new AbsoluteDate(datastripStartDateGregorian.toString(), TimeScalesFactory.getUTC());
                 int year = datastripStartDateUTC.getComponents(TimeScalesFactory.getUTC()).getDate().getYear();
 
@@ -931,6 +934,27 @@ public class DataStripManager
                                     referenceDate = new AbsoluteDate(referenceDateXML.toString(), gps);
                                     // We shift the date of a half line period to be in the middle of the line
                                     referenceDate = referenceDate.shiftedBy(halfLinePeriod / 1000d);
+
+                                    //Addition of 33 lines to test the shift
+                                    switch ((int)bandInfo.getPixelHeight()) {
+                                        case Sen2VMConstants.RESOLUTION_10M:
+                                            referenceDate = referenceDate.shiftedBy( 48 * 2 * halfLinePeriod / 1000d);
+                                            break;
+                                        case Sen2VMConstants.RESOLUTION_20M:
+                                            referenceDate = referenceDate.shiftedBy( 32 * 2 * halfLinePeriod / 1000d);
+                                            // 2260  2372/2339 => +33
+                                //             						      <DETECTOR detector_id="07">
+                                // 	      <BEGIN_NB_LINES_TO_CUT>2073</BEGIN_NB_LINES_TO_CUT>
+                                // 	      <END_NB_LINES_TO_CUT>463</END_NB_LINES_TO_CUT>
+                                // </DETECTOR>                                            
+                                            break;
+                                        case Sen2VMConstants.RESOLUTION_60M:
+                                            referenceDate = referenceDate.shiftedBy( 16 * 2 * halfLinePeriod / 1000d);
+                                            break;
+                                        default:
+                                            //TODO Raise error
+                                            break;
+                                    }
                                 }
                                 else
                                 {
