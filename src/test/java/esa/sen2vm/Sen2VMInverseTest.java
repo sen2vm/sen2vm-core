@@ -66,7 +66,7 @@ public class Sen2VMInverseTest
             try
             {
                 String nameTest = "testStepInverseLoc_" +  stepBand10m;
-                String outputDir = Config.createTestDir(nameTest, "inverse");
+                String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
                 String config = Config.config(configTmpInverse, outputDir, stepBand10m, "inverse", false);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
@@ -115,7 +115,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest = "testInverseLoc";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
             String config = Config.config(configTmpInverse, outputDir, stepBand10m, "inverse", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
@@ -144,7 +144,7 @@ public class Sen2VMInverseTest
        try
        {
             String nameTest = "testInverseGipp";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
             String config = Config.configAutoGippSelection(configTmpInverse, GIPP_2, false, outputDir);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
@@ -174,7 +174,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest = "testInverseNoRefining";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
             String config = Config.config(configTmpInverse, outputDir, stepBand10m, "inverse", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
@@ -202,7 +202,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest_ref = "testInverseIers_ref";
-            String outputDir_ref = Config.createTestDir(nameTest_ref, "inverse");
+            String outputDir_ref = Config.createTestDir(Config.TDS.TDS1, nameTest_ref, "inverse");
             String iers_ref = "src/test/resources/tests/data/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000.txt";
             String config_ref = Config.configIERS(configTmpInverse, outputDir_ref, iers_ref);
             String param_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
@@ -210,7 +210,7 @@ public class Sen2VMInverseTest
             Sen2VM.main(args_ref);
 
             String nameTest = "testInverseIers_test";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
             String config = Config.configIERS(configTmpInverse, outputDir, null);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
@@ -234,7 +234,7 @@ public class Sen2VMInverseTest
         int stepBand10m = 6000;
         try
         {
-            String outputDir1 = Config.createTestDir("testInverseParallelisation_1", "inverse");
+            String outputDir1 = Config.createTestDir(Config.TDS.TDS1, "testInverseParallelisation_1", "inverse");
             String[] detectors_order_1 = new String[]{"05", "06"};
             String[] bands_order_1 = new String[]{"B01", "B02"};
             String config_order_1 = Config.config(configTmpInverse, outputDir1, stepBand10m, "inverse", false);
@@ -242,7 +242,7 @@ public class Sen2VMInverseTest
             String[] args_order_1 = {"-c", config_order_1, "-p", param_order_1};
             Sen2VM.main(args_order_1);
 
-            String outputDir2 = Config.createTestDir("testInverseParallelisation_2", "inverse");
+            String outputDir2 = Config.createTestDir(Config.TDS.TDS1, "testInverseParallelisation_2", "inverse");
             String[] detectors_order_2 = new String[]{"06", "05"};
             String[] bands_order_2 = new String[]{"B02", "B01"};
             String config_order_2 = Config.config(configTmpInverse, outputDir2, stepBand10m, "inverse", false);
@@ -272,7 +272,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest = "testInverseReferentialArea";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
 
             // T27SYT
             double ul_x = 699960.0f;
@@ -307,7 +307,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest = "testInverseAreaHandling";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
 
             // T28SBA
             double ul_x = 199980.0f;
@@ -344,7 +344,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest_ref = "testInverseDem_ref";
-            String outputDir_ref = Config.createTestDir(nameTest_ref, "inverse");
+            String outputDir_ref = Config.createTestDir(Config.TDS.TDS1, nameTest_ref, "inverse");
             String config_ref = Config.config(configTmpInverse, outputDir_ref, stepBand10m, "inverse", false);
             String params_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
             String[] args_ref = {"-c", config_ref, "-p", params_ref};
@@ -352,7 +352,7 @@ public class Sen2VMInverseTest
 
             for (String testDem : testsDem) {
                 String nameTest = "testInverseDem_" + testDem;
-                String outputDir = Config.createTestDir(nameTest, "inverse");
+                String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
                 String config = Config.changeDem(configTmpInverse, "src/test/resources/tests/data/dem_tests/" + testDem, outputDir);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
@@ -388,7 +388,7 @@ public class Sen2VMInverseTest
 		try
 		{
 			String nameTest = "testInverseLatLonArea";
-			String outputDir = Config.createTestDir(nameTest, "inverse");
+			String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
 
 			// Init source/target SpatialReference and transformation
 			SpatialReference sourceSRS = new SpatialReference();

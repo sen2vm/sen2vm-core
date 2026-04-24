@@ -78,7 +78,7 @@ public class Sen2VMCheckPointTest
         try
         {
             String nameTest = "direct_first_line_" + Integer.toString(step);
-            String outputDir = Config.createTestDir(nameTest, "direct");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
             String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
             String param = Config.changeParams(paramTmp, new String[]{"01"}, new String[]{"B01"}, outputDir);
 

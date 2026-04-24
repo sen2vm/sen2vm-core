@@ -1061,4 +1061,12 @@ public class DataStripManager
     {
         return refiningInfo;
     }
+
+    /**
+     * @return isRaw
+     */
+    public boolean getIsRaw()
+    {
+        return isRaw;
+    }
 }

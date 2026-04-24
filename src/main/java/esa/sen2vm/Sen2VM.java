@@ -163,6 +163,11 @@ public class Sen2VM
                                                     !config.getDeactivateRefining(),
                                                     config.getInsRawShifts());
 
+            if (dataStripManager.getIsRaw() && ! config.getInsRawShiftsAreDefined())
+            {
+                throw new Sen2VMException("DATATAKE_TYPE is INS_RAW. Official Products are impacted by an issue causing a shift.\nPlease defined shifts in the configuration. If input product doesn't have shifts anymore, please put shifts (10m,20m,60m) at 0");
+            }
+
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
 

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Earth_Explorer_File xmlns="http://gs2.esa.int/DATA_STRUCTURE/olqcReport">
+    <Earth_Explorer_Header>
+        <Fixed_Header>
+            <File_Name>S2A_OPER_MSI_L1B_DS_2APS_20251215T175440_S20251215T153341_RADIOMETRIC_QUALITY_report.xml</File_Name>
+            <File_Description>Report produced by OLQC-SC</File_Description>
+            <Notes></Notes>
+            <Mission>S2A</Mission>
+            <File_Class>OPER</File_Class>
+            <File_Type>REP_OLQCPA</File_Type>
+            <Validity_Period>
+                <Validity_Start>UTC=2025-02-11T00:00:00</Validity_Start>
+                <Validity_Stop>UTC=2100-01-01T00:00:00</Validity_Stop>
+            </Validity_Period>
+            <File_Version>2</File_Version>
+            <Source>
+                <System>OLQC-SC</System>
+                <Creator>OLQC-SC</Creator>
+                <Creator_Version>06.04.00</Creator_Version>
+                <Creation_Date>UTC=2025-12-15T18:15:05</Creation_Date>
+            </Source>
+        </Fixed_Header>
+    </Earth_Explorer_Header>
+    <Data_Block type="xml">
+        <report gippVersion="1.0" globalStatus="FAILED" date="2025-12-15T18:15:05.894Z">
+            <checkList>
+                <parentID>S2A_OPER_GIP_OLQCPA_MPC__20250210T000044_V20250211T000000</parentID>
+                <name>RADIOMETRIC_QUALITY</name>
+                <version>1.0</version>
+                <item url="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_DS_L1B/output/PDI_DS/S2A_OPER_MSI_L1B_DS_2APS_20251215T175440_S20251215T153341_N05.11/" className="PDI Level 1B Datastrip Folder" name="S2A_OPER_MSI_L1B_DS_2APS_20251215T175440_S20251215T153341_N05.11" class="http://www.esa.int/s2#pdi_level_1b_datastrip_container"/>
+                <check>
+                    <inspection creation="2025-12-15T18:15:05.844Z" duration="1" execution="2025-12-15T18:15:05.883Z" id="Radiometric_Quality_Indicators_Multi_Temporal" item="S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_DS_L1B/output/PDI_DS/S2A_OPER_MSI_L1B_DS_2APS_20251215T175440_S20251215T153341_N05.11/S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" name="Check on the Radiometric Quality Indicators : Multi-Temporal Calibration Accuracy. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">Multi-temporal calibration accuracy is correct.</message>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:05.894Z" duration="7" execution="2025-12-15T18:15:05.924Z" id="Radiometric_Quality_Indicators_Absolute" item="S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_DS_L1B/output/PDI_DS/S2A_OPER_MSI_L1B_DS_2APS_20251215T175440_S20251215T153341_N05.11/S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" name="Check on the Radiometric Quality Indicators : Absolute Calibration Accuracy. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">Absolute calibration accuracy is correct.</message>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:06.055Z" duration="0" execution="2025-12-15T18:15:06.090Z" id="EqualizationOffset" item="S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_DS_L1B/output/PDI_DS/S2A_OPER_MSI_L1B_DS_2APS_20251215T175440_S20251215T153341_N05.11/S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" name="Check OFFSET_PROC " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">Equalization band OFFSETS flags are set to TRUE</message>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:06.388Z" duration="0" execution="2025-12-15T18:15:06.426Z" id="EqualizationFlag" item="S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_DS_L1B/output/PDI_DS/S2A_OPER_MSI_L1B_DS_2APS_20251215T175440_S20251215T153341_N05.11/S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" name="Check EQUALIZATION_MODE " priority="5" processingStatus="done" status="FAILED"/>
+                    <message contentType="text/plain">Equalization Mode is set to FALSE</message>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:06.465Z" duration="1" execution="2025-12-15T18:15:06.495Z" id="Radiometric_Quality_Indicators_Cross_Band" item="S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_DS_L1B/output/PDI_DS/S2A_OPER_MSI_L1B_DS_2APS_20251215T175440_S20251215T153341_N05.11/S2A_OPER_MTD_L1B_DS_2APS_20251215T175440_S20251215T153341.xml" name="Check on the Radiometric Quality Indicators : Cross Band Calibration Accuracy. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">Cross band calibration accuracy is correct.</message>
+                </check>
+            </checkList>
+        </report>
+    </Data_Block>
+</Earth_Explorer_File>

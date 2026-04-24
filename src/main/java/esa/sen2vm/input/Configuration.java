@@ -62,6 +62,7 @@ public class Configuration extends InputFileManager
     private String referential;
     private String outputFolder;
     //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074
+    private boolean ins_raw_shift_defined = false;
     private int ins_raw_shift_band10m = Sen2VMConstants.INS_RAW_SHIFT_10_M;
     private int ins_raw_shift_band20m = Sen2VMConstants.INS_RAW_SHIFT_20_M;
     private int ins_raw_shift_band60m = Sen2VMConstants.INS_RAW_SHIFT_60_M;
@@ -164,6 +165,7 @@ public class Configuration extends InputFileManager
             // convert the string array to an double array
             Integer[] shiftValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_INS_RAW_SHIFT_SHORT)).map(Integer::valueOf).toArray(Integer[]::new);
 
+            this.ins_raw_shift_defined = true;
             this.ins_raw_shift_band10m = shiftValues[0];
             this.ins_raw_shift_band20m = shiftValues[1];
             this.ins_raw_shift_band60m = shiftValues[2];
@@ -281,6 +283,7 @@ public class Configuration extends InputFileManager
                     this.ins_raw_shift_band10m = ins_raw_shift.getInt("10m_bands");
                     this.ins_raw_shift_band20m = ins_raw_shift.getInt("20m_bands");
                     this.ins_raw_shift_band60m = ins_raw_shift.getInt("60m_bands");
+                    this.ins_raw_shift_defined = true;
                 }
                 catch(JSONException e)
                 {
@@ -473,6 +476,15 @@ public class Configuration extends InputFileManager
     public String getInverseLocOutputFolder()
     {
         return this.outputFolder;
+    }
+
+    /**
+     * Get boolean if shifts for INS-RAW are defined
+     * @return boolean if shifts for INS-RAW are defined
+     */
+    public boolean getInsRawShiftsAreDefined()
+    {
+       return this.ins_raw_shift_defined;
     }
 
     /**

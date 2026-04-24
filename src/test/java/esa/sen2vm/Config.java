@@ -38,6 +38,21 @@ import esa.sen2vm.input.Configuration;
 
 public class Config
 {
+    protected enum TDS
+    {
+        TDS1("src/test/resources/tests/input/TDS1/L1B_all/"),
+        TDS2("src/test/resources/tests/input/TDS2-INS-RAW/S2A_OPER_PRD_MSIL1B_PDMC_20251216T084518_R097_V20251215T153343_20251215T153354.SAFE/");
+
+        private final String path;
+
+        TDS(String path){
+            this.path = path;
+        }
+
+        public String getPath(){
+            return this.path;
+        }
+    }
 
     private static final double THRESHOLD_DIR = 1e-9;
     private static final double THRESHOLD_INV = 1e-8;
@@ -60,6 +75,41 @@ public class Config
 
         JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
         inverse.put("output_folder", l1b_product);
+
+        String outputConfig = l1b_product + "/configuration.json";
+        FileWriter writer = new FileWriter(outputConfig); //overwrites the content of file
+        writer.write(objJson.toString());
+        writer.flush();
+        writer.close();
+
+        return outputConfig;
+    }
+
+    public static String configRawShifts(String filePath, String l1b_product,
+        double stepBand10m, String operation, boolean refining,
+        int shiftRawBand10m, int shiftRawBand20m, int shiftRawBand60m ) throws FileNotFoundException,
+            IOException, ParseException
+    {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(filePath));
+
+        JSONObject objJson = (JSONObject) obj;
+        objJson.put("l1b_product", l1b_product);
+        objJson.put("operation", operation);
+        objJson.put("deactivate_available_refining", refining);
+
+        JSONObject steps = (JSONObject) objJson.get("steps");
+        steps.put("10m_bands", stepBand10m);
+        steps.put("20m_bands", stepBand10m / 2);
+        steps.put("60m_bands", stepBand10m / 6);
+
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("output_folder", l1b_product);
+
+        JSONObject shifts = (JSONObject) objJson.get("ins_raw_shift");
+        shifts.put("10m_bands", shiftRawBand10m);
+        shifts.put("20m_bands", shiftRawBand20m);
+        shifts.put("60m_bands", shiftRawBand60m);
 
         String outputConfig = l1b_product + "/configuration.json";
         FileWriter writer = new FileWriter(outputConfig); //overwrites the content of file
@@ -211,15 +261,14 @@ public class Config
         return directory.delete();
     }
 
-    public static String createTestDir(String nameTest, String type) throws IOException
+    public static String createTestDir(TDS inputTDS, String nameTest, String type) throws IOException
     {
-        String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
         String outputDir = "src/test/resources/tests/output/" + nameTest;
         File outputDirFile = new File(outputDir);
         if(outputDirFile.exists()) {
             deleteDirectory(outputDirFile);
         }
-        copyFolder(new File(inputRef), new File(outputDir), true);
+        copyFolder(new File(inputTDS.getPath()), new File(outputDir), true);
         return outputDir;
     }
 
