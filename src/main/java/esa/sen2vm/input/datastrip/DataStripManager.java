@@ -93,6 +93,7 @@ import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_POLYNOMIAL_MODEL
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_ROTATION_TRANSLATION_HOMOTHETY_UNCERTAINTIES_TYPE_LOWER_CASE;
 import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_datastrip_metadata.Level1B_DataStrip;
 
+
 /**
  * Manager for Datastrip directory
  */
@@ -112,6 +113,11 @@ public class DataStripManager
      * Datastrip for L1B
      */
     protected Level1B_DataStrip l1B_datastrip = null;
+
+    /**
+     * Sensor configuration
+     */
+    protected boolean isRaw = false;
 
     /**
      * Sensor configuration
@@ -237,6 +243,14 @@ public class DataStripManager
             File datastripFile = new File(dsFilePath);
             JAXBElement<Level1B_DataStrip> jaxbElement = (JAXBElement<Level1B_DataStrip>) jaxbUnmarshaller.unmarshal(datastripFile);
             l1B_datastrip = jaxbElement.getValue();
+
+            isRaw = (l1B_datastrip.getGeneral_Info().getDatatake_Info().getDATATAKE_TYPE().value() == "INS-RAW");
+            if (isRaw)
+            {
+                LOGGER.info("DATATAKE_TYPE is INS-RAW");
+            }else{
+                LOGGER.info("DATATAKE_TYPE is NOT INS-RAW");
+            }
 
             sensorConfiguration = l1B_datastrip.getImage_Data_Info().getSensor_Configuration();
 
@@ -895,7 +909,7 @@ public class DataStripManager
      * @param detectorIndex the detector index
      * @return
      */
-    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo)
+    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo) throws Sen2VMException
     {
         AbsoluteDate referenceDate = null;
         double referenceLineDouble = 1d;
@@ -935,25 +949,25 @@ public class DataStripManager
                                     // We shift the date of a half line period to be in the middle of the line
                                     referenceDate = referenceDate.shiftedBy(halfLinePeriod / 1000d);
 
-                                    //Addition of 33 lines to test the shift
-                                    switch ((int)bandInfo.getPixelHeight()) {
-                                        case Sen2VMConstants.RESOLUTION_10M:
-                                            referenceDate = referenceDate.shiftedBy( 48 * 2 * halfLinePeriod / 1000d);
-                                            break;
-                                        case Sen2VMConstants.RESOLUTION_20M:
-                                            referenceDate = referenceDate.shiftedBy( 32 * 2 * halfLinePeriod / 1000d);
-                                            // 2260  2372/2339 => +33
-                                //             						      <DETECTOR detector_id="07">
-                                // 	      <BEGIN_NB_LINES_TO_CUT>2073</BEGIN_NB_LINES_TO_CUT>
-                                // 	      <END_NB_LINES_TO_CUT>463</END_NB_LINES_TO_CUT>
-                                // </DETECTOR>                                            
-                                            break;
-                                        case Sen2VMConstants.RESOLUTION_60M:
-                                            referenceDate = referenceDate.shiftedBy( 16 * 2 * halfLinePeriod / 1000d);
-                                            break;
-                                        default:
-                                            //TODO Raise error
-                                            break;
+                                    // Apply shift workaround due to https://esa-cams.atlassian.net/browse/GSANOM-22074 for INS-RAW
+                                    if(isRaw)
+                                    {
+                                        LOGGER.info("Applying shift as DATATAKE_TYPE is INS-RAW");
+                                        //Addition of 33 lines to test the shift
+                                        switch ((int)bandInfo.getPixelHeight())
+                                        {
+                                            case Sen2VMConstants.RESOLUTION_10M:
+                                                referenceDate = referenceDate.shiftedBy( 48 * 2 * halfLinePeriod / 1000d);
+                                                break;
+                                            case Sen2VMConstants.RESOLUTION_20M:
+                                                referenceDate = referenceDate.shiftedBy( 32 * 2 * halfLinePeriod / 1000d);
+                                                break;
+                                            case Sen2VMConstants.RESOLUTION_60M:
+                                                referenceDate = referenceDate.shiftedBy( 16 * 2 * halfLinePeriod / 1000d);
+                                                break;
+                                            default:
+                                                throw new Sen2VMException("Resolution not found to aplly RAW SHIFT workaround");
+                                        }
                                     }
                                 }
                                 else
