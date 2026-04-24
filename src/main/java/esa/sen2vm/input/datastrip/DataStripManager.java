@@ -118,6 +118,9 @@ public class DataStripManager
      * Sensor configuration
      */
     protected boolean isRaw = false;
+    protected int ins_raw_shift_band10m;
+    protected int ins_raw_shift_band20m;
+    protected int ins_raw_shift_band60m;
 
     /**
      * Sensor configuration
@@ -200,9 +203,13 @@ public class DataStripManager
      * @throws Sen2VMException
      */
     public DataStripManager(String dsFilePath, String iersFilePath,
-                            Boolean activateAvailableRefining) throws Sen2VMException
+                            Boolean activateAvailableRefining, int[] ins_shift_raw) throws Sen2VMException
     {
         this.dsFile = new File(dsFilePath);
+        this.ins_raw_shift_band10m = ins_shift_raw[0];
+        this.ins_raw_shift_band20m = ins_shift_raw[1];
+        this.ins_raw_shift_band60m = ins_shift_raw[2];
+
         gps = TimeScalesFactory.getGPS();
         loadFile(dsFilePath, iersFilePath, activateAvailableRefining);
     }
@@ -957,13 +964,13 @@ public class DataStripManager
                                         switch ((int)bandInfo.getPixelHeight())
                                         {
                                             case Sen2VMConstants.RESOLUTION_10M:
-                                                referenceDate = referenceDate.shiftedBy( 48 * 2 * halfLinePeriod / 1000d);
+                                                referenceDate = referenceDate.shiftedBy( this.ins_raw_shift_band10m * 2 * halfLinePeriod / 1000d);
                                                 break;
                                             case Sen2VMConstants.RESOLUTION_20M:
-                                                referenceDate = referenceDate.shiftedBy( 32 * 2 * halfLinePeriod / 1000d);
+                                                referenceDate = referenceDate.shiftedBy( this.ins_raw_shift_band20m  * 2 * halfLinePeriod / 1000d);
                                                 break;
                                             case Sen2VMConstants.RESOLUTION_60M:
-                                                referenceDate = referenceDate.shiftedBy( 16 * 2 * halfLinePeriod / 1000d);
+                                                referenceDate = referenceDate.shiftedBy( this.ins_raw_shift_band60m  * 2 * halfLinePeriod / 1000d);
                                                 break;
                                             default:
                                                 throw new Sen2VMException("Resolution not found to aplly RAW SHIFT workaround");

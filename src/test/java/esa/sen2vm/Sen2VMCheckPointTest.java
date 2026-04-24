@@ -87,7 +87,7 @@ public class Sen2VMCheckPointTest
             detectors.add(DetectorInfo.getDetectorInfoFromName("01"));
             List<BandInfo> bands = new ArrayList<BandInfo>();
             bands.add(BandInfo.getBandInfoFromNameWithB("B01"));
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
 
             // Build sensor list
@@ -212,7 +212,7 @@ public class Sen2VMCheckPointTest
             bands.add(BandInfo.getBandInfoFromNameWithB("B01"));
 
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
@@ -381,7 +381,7 @@ public class Sen2VMCheckPointTest
             bands.add(BandInfo.getBandInfoFromNameWithB(band));
 
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());

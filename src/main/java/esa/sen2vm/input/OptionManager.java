@@ -133,6 +133,13 @@ public class OptionManager
     public static final String OPT_OUTPUT_IMAGE_RES_LONG = "output_image_res";
     public static final String OPT_OUTPUT_IMAGE_RES_SHORT = "or";
 
+    /**
+     * Option for ins raw shifts (pixels)
+     * For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074 
+     */
+    public static final String OPT_INS_RAW_SHIFT_LONG = "ins_raw_shifts";
+    public static final String OPT_INS_RAW_SHIFT_SHORT = "rs";
+
     /*******************************
      * Options for the params 
      *******************************/
@@ -308,7 +315,14 @@ public class OptionManager
             outputImageRes.setType(Double.class); // TODO  does not seem to work: read as array of String
             outputImageRes.setArgs(3);
             outputImageRes.setRequired(true);
-     
+
+            Option raw_shifts = new Option(OPT_INS_RAW_SHIFT_SHORT, OPT_INS_RAW_SHIFT_LONG, true, "Shift (pixels) for INS-RAW bands 10, 20 and 60m, workaround for https://esa-cams.atlassian.net/browse/GSANOM-22074\n"
+                                        + "(separated with whitespace, respect the order)\n"
+                                        + " Default values: " );
+            raw_shifts.setType(Integer.class); // TODO  does not seem to work: read as array of String
+            raw_shifts.setArgs(3);
+            raw_shifts.setRequired(false);
+
             // params arguments
             // ------------------
             Option detectors = new Option(OPT_DETECTORS_LIST_SHORT, OPT_DETECTORS_LIST_LONG, true, "(optional) List of detectors to process separated by spaces, example: 01 05 06 10 11");

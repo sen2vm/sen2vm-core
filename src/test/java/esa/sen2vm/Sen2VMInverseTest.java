@@ -73,7 +73,7 @@ public class Sen2VMInverseTest
                 Sen2VM.main(args);
 
                 Configuration configFile = new Configuration(config);
-                DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+                DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
                 SafeManager safeManager = new SafeManager(configFile.getL1bProduct(), dataStripManager);
                 Datastrip datastrip = safeManager.getDatastrip();
 

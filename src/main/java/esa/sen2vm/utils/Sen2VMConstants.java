@@ -144,4 +144,9 @@ public class Sen2VMConstants
     // Compute margin according to the band pixel size
     public static final double BAND_PIXEL_SIZE = RESOLUTION_10M_DOUBLE;
     public static final double MARGIN = GRANULE_NB_LINE_60_M * RESOLUTION_10M_DOUBLE / BAND_PIXEL_SIZE;
+
+    //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074
+    public static final int INS_RAW_SHIFT_10_M = 48; // Value get from DECOM DEBUG log on S2C_OPER_MTD_L1B_DS_2BPS_20251022T131154_S20241123T085032.xml
+    public static final int INS_RAW_SHIFT_20_M = 32; // Value get from DECOM DEBUG log on S2C_OPER_MTD_L1B_DS_2BPS_20251022T131154_S20241123T085032.xml
+    public static final int INS_RAW_SHIFT_60_M = 16; // Value get from DECOM DEBUG log on S2C_OPER_MTD_L1B_DS_2BPS_20251022T131154_S20241123T085032.xml
 }

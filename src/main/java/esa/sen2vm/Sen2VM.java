@@ -157,7 +157,11 @@ public class Sen2VM
             LOGGER.info("Bands list: " + bands);
 
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
+            DataStripManager dataStripManager = new DataStripManager(
+                                                    config.getDatastripFilePath(),
+                                                    config.getIers(),
+                                                    !config.getDeactivateRefining(),
+                                                    config.getInsRawShifts());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());

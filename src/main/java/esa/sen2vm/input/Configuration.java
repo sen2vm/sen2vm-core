@@ -54,12 +54,17 @@ public class Configuration extends InputFileManager
     private double step_band20m;
     private double step_band60m;
     private boolean exportAlt = Sen2VMConstants.EXPORT_ALT;
+    //Only for inverse location
     private double ul_x;
     private double ul_y;
     private double lr_x;
     private double lr_y;
     private String referential;
     private String outputFolder;
+    //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074
+    private int ins_raw_shift_band10m = Sen2VMConstants.INS_RAW_SHIFT_10_M;
+    private int ins_raw_shift_band20m = Sen2VMConstants.INS_RAW_SHIFT_20_M;
+    private int ins_raw_shift_band60m = Sen2VMConstants.INS_RAW_SHIFT_60_M;
 
 
     /**
@@ -151,6 +156,17 @@ public class Configuration extends InputFileManager
             this.lr_x =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
             this.lr_y =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
             this.outputFolder = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_OUTPUT_FOLDER_SHORT));
+        }
+
+        //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074 
+        if (commandLine.hasOption(OptionManager.OPT_INS_RAW_SHIFT_SHORT))
+        {
+            // convert the string array to an double array
+            Integer[] shiftValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_INS_RAW_SHIFT_SHORT)).map(Integer::valueOf).toArray(Integer[]::new);
+
+            this.ins_raw_shift_band10m = shiftValues[0];
+            this.ins_raw_shift_band20m = shiftValues[1];
+            this.ins_raw_shift_band60m = shiftValues[2];
         }
     }
 
@@ -253,6 +269,22 @@ public class Configuration extends InputFileManager
                    {
                        throw new Sen2VMException("Error when initializing inverse_location_additional_info", e);
                    }
+                }
+            }
+
+            // Check the type of location: direct or inverse
+            if (jsonObject.has("ins_raw_shift"))
+            {
+                try
+                {
+                    JSONObject ins_raw_shift = jsonObject.getJSONObject("ins_raw_shift");
+                    this.ins_raw_shift_band10m = ins_raw_shift.getInt("10m_bands");
+                    this.ins_raw_shift_band20m = ins_raw_shift.getInt("20m_bands");
+                    this.ins_raw_shift_band60m = ins_raw_shift.getInt("60m_bands");
+                }
+                catch(JSONException e)
+                {
+                    throw new Sen2VMException("Error when initializing ins_raw_shift", e);
                 }
             }
         }
@@ -441,5 +473,41 @@ public class Configuration extends InputFileManager
     public String getInverseLocOutputFolder()
     {
         return this.outputFolder;
+    }
+
+    /**
+     * Get the shift for INS-RAW 10m band
+     * @return the shift for INS-RAW 10m band (pixels)
+     */
+    public int getInsRawShiftBand10m()
+    {
+       return this.ins_raw_shift_band10m;
+    }
+
+    /**
+     * Get the shift for INS-RAW 20m band
+     * @return the shift for INS-RAW 20m band (pixels)
+     */
+    public int getInsRawShiftBand20m()
+    {
+       return this.ins_raw_shift_band20m;
+    }
+
+    /**
+     * Get the shift for INS-RAW 10m band
+     * @return the shift for INS-RAW 10m band (pixels)
+     */
+    public int getInsRawShiftBand60m()
+    {
+       return this.ins_raw_shift_band60m;
+    }
+
+    /**
+     * Get the shift for INS-RAW 10m band
+     * @return the shift for INS-RAW 10m band (pixels)
+     */
+    public int[] getInsRawShifts()
+    {
+       return new int[]{this.ins_raw_shift_band10m, this.ins_raw_shift_band20m, this.ins_raw_shift_band60m};
     }
 }
