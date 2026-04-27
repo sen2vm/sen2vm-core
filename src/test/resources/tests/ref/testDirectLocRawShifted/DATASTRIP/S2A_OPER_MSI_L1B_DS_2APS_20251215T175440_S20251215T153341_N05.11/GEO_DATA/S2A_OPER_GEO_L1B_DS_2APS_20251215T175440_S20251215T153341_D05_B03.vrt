@@ -1,0 +1,96 @@
+<VRTDataset rasterXSize="5" rasterYSize="13">
+  <GeoTransform> -2.9950000000000000e+02,  6.0000000000000000e+02,  0.0000000000000000e+00,-299.5,  0.0000000000000000e+00,600.0 </GeoTransform>
+  <Metadata>
+    <MDI key="GEOREFERENCING_CONVENTION">CENTER_PIXEL</MDI>
+    <MDI key="LINE_OFFSET">-299.5</MDI>
+    <MDI key="LINE_STEP">600.0</MDI>
+    <MDI key="PIXEL_OFFSET">-299.5</MDI>
+    <MDI key="PIXEL_STEP">600.0</MDI>
+    <MDI key="SRS">EPSG:4326</MDI>
+    <MDI key="X_BAND">1</MDI>
+    <MDI key="Y_BAND">2</MDI>
+    <MDI key="Z_BAND">3</MDI>
+  </Metadata>
+  <VRTRasterBand dataType="Float64" band="1">
+    <NoDataValue>-32768</NoDataValue>
+    <ColorInterp>Gray</ColorInterp>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">../../../GRANULE/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/GEO_DATA/S2A_OPER_GEO_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_B03.tif</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="5" RasterYSize="5" DataType="Float64" BlockXSize="5" BlockYSize="5" />
+      <SrcRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <DstRect xOff="0" yOff="8" xSize="5" ySize="5" />
+      <NODATA>-32768</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">../../../GRANULE/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153347_D05_N05.11/GEO_DATA/S2A_OPER_GEO_L1B_GR_2APS_20251215T175440_S20251215T153347_D05_B03.tif</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="5" RasterYSize="5" DataType="Float64" BlockXSize="5" BlockYSize="5" />
+      <SrcRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <DstRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <NODATA>-32768</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">../../../GRANULE/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153351_D05_N05.11/GEO_DATA/S2A_OPER_GEO_L1B_GR_2APS_20251215T175440_S20251215T153351_D05_B03.tif</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="5" RasterYSize="5" DataType="Float64" BlockXSize="5" BlockYSize="5" />
+      <SrcRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <DstRect xOff="0" yOff="4" xSize="5" ySize="5" />
+      <NODATA>-32768</NODATA>
+    </ComplexSource>
+  </VRTRasterBand>
+  <VRTRasterBand dataType="Float64" band="2">
+    <NoDataValue>-32768</NoDataValue>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">../../../GRANULE/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/GEO_DATA/S2A_OPER_GEO_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_B03.tif</SourceFilename>
+      <SourceBand>2</SourceBand>
+      <SourceProperties RasterXSize="5" RasterYSize="5" DataType="Float64" BlockXSize="5" BlockYSize="5" />
+      <SrcRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <DstRect xOff="0" yOff="8" xSize="5" ySize="5" />
+      <NODATA>-32768</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">../../../GRANULE/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153347_D05_N05.11/GEO_DATA/S2A_OPER_GEO_L1B_GR_2APS_20251215T175440_S20251215T153347_D05_B03.tif</SourceFilename>
+      <SourceBand>2</SourceBand>
+      <SourceProperties RasterXSize="5" RasterYSize="5" DataType="Float64" BlockXSize="5" BlockYSize="5" />
+      <SrcRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <DstRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <NODATA>-32768</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">../../../GRANULE/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153351_D05_N05.11/GEO_DATA/S2A_OPER_GEO_L1B_GR_2APS_20251215T175440_S20251215T153351_D05_B03.tif</SourceFilename>
+      <SourceBand>2</SourceBand>
+      <SourceProperties RasterXSize="5" RasterYSize="5" DataType="Float64" BlockXSize="5" BlockYSize="5" />
+      <SrcRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <DstRect xOff="0" yOff="4" xSize="5" ySize="5" />
+      <NODATA>-32768</NODATA>
+    </ComplexSource>
+  </VRTRasterBand>
+  <VRTRasterBand dataType="Float64" band="3">
+    <NoDataValue>-32768</NoDataValue>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">../../../GRANULE/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/GEO_DATA/S2A_OPER_GEO_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_B03.tif</SourceFilename>
+      <SourceBand>3</SourceBand>
+      <SourceProperties RasterXSize="5" RasterYSize="5" DataType="Float64" BlockXSize="5" BlockYSize="5" />
+      <SrcRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <DstRect xOff="0" yOff="8" xSize="5" ySize="5" />
+      <NODATA>-32768</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">../../../GRANULE/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153347_D05_N05.11/GEO_DATA/S2A_OPER_GEO_L1B_GR_2APS_20251215T175440_S20251215T153347_D05_B03.tif</SourceFilename>
+      <SourceBand>3</SourceBand>
+      <SourceProperties RasterXSize="5" RasterYSize="5" DataType="Float64" BlockXSize="5" BlockYSize="5" />
+      <SrcRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <DstRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <NODATA>-32768</NODATA>
+    </ComplexSource>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">../../../GRANULE/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153351_D05_N05.11/GEO_DATA/S2A_OPER_GEO_L1B_GR_2APS_20251215T175440_S20251215T153351_D05_B03.tif</SourceFilename>
+      <SourceBand>3</SourceBand>
+      <SourceProperties RasterXSize="5" RasterYSize="5" DataType="Float64" BlockXSize="5" BlockYSize="5" />
+      <SrcRect xOff="0" yOff="0" xSize="5" ySize="5" />
+      <DstRect xOff="0" yOff="4" xSize="5" ySize="5" />
+      <NODATA>-32768</NODATA>
+    </ComplexSource>
+  </VRTRasterBand>
+</VRTDataset>

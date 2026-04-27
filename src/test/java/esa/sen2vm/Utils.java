@@ -120,6 +120,11 @@ public class Utils {
 
     public static void verifyDirectLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
     {
+        verifyDirectLoc(configFilepath, outputRef, THRESHOLD_DIR);
+    }
+
+    public static void verifyDirectLoc(String configFilepath, String outputRef, double threshold) throws Sen2VMException, IOException
+    {
         Configuration configFile = new Configuration(configFilepath);
         DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
@@ -134,12 +139,12 @@ public class Utils {
                 if (grid != null) {
                     int len = grid.toPath().getNameCount();
                     String refGrid = outputRef + File.separator + grid.toPath().subpath(len - 4, len);
-                    assertEquals(imagesEqualDirect(grid.toString(), refGrid,THRESHOLD_DIR), true);
+                    assertEquals(imagesEqualDirect(grid.toString(), refGrid, threshold), true);
                 }
                 b = b + 1;
             }
-         }
-     }
+        }
+    }
 
     public static void verifyInverseLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
     {
@@ -173,6 +178,7 @@ public class Utils {
 
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
+        LOGGER.info("Comparing: " +  img1Path + " with " + img2Path);
         if (ds1.GetRasterCount() == ds2.GetRasterCount() && ds1.getRasterXSize() == ds2.getRasterXSize() && ds1.getRasterYSize() == ds2.getRasterYSize()) {
 
             for(int b = 1; b <= ds1.GetRasterCount(); b++)
@@ -271,6 +277,33 @@ public class Utils {
             return true;
         }
         return false;
+    }
+
+    public static double geodistance(double lat1Deg, double lon1Deg,
+                                     double lat2Deg, double lon2Deg)
+    {
+        //Haversine method
+        double lat1 = Math.toRadians(lat1Deg);
+        double lat2 = Math.toRadians(lat2Deg);
+
+        double dLat = lat2 - lat1;
+        double dLonDeg = lon2Deg - lon1Deg;
+        //Normalize DLon for antemeridian handling
+        dLonDeg = (dLonDeg + 180.0) % 360.0;
+        if (dLonDeg < 0) dLonDeg += 360.0;
+        dLonDeg -= 180.0;
+        double dLon = Math.toRadians(dLonDeg);
+
+        double sinDLat = Math.sin(dLat/2.0);
+        double sinDLon = Math.sin(dLon/2.0);
+
+        double a = sinDLat * sinDLat 
+                   + Math.cos(lat1) * Math.cos(lat2) * sinDLon * sinDLon;
+
+        double c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+
+        // Return EarthRadius * c
+        return 6_371_000.0 * c;
     }
 
 }
