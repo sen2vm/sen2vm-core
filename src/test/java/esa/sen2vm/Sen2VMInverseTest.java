@@ -44,6 +44,8 @@ import org.gdal.gdal.gdal;
 public class Sen2VMInverseTest
 {
     String configTmpInverse = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
+    String configTmpInverseShifted = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse_shift_raw.json";
+    String configTmpInverseTDS2 = "src/test/resources/tests/input/TDS2-INS-RAW/configuration_TDS2_inverse.json";
     String paramTmp = "src/test/resources/params_base.json";
     String refDir = "src/test/resources/tests/ref";
 
@@ -120,9 +122,18 @@ public class Sen2VMInverseTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-
             LOGGER.warning("Threshold released at: " + THRESHOLD_INV_HIGH); // TODO
             Utils.verifyInverseLoc(config, refDir + "/" + nameTest, THRESHOLD_INV_HIGH);
+
+            // Test that a shift is not product when using 0 as configuration
+            String nameTest2 = "testInverseLocWithNominalRawShiftIgnored";
+            String outputDir2 = Config.createTestDir(Config.TDS.TDS1, nameTest2, "inverse");
+            String config2 = Config.configRawShifts(configTmpInverseShifted, outputDir2, stepBand10m, "inverse", false,48, 32, 16);
+            String param2 = Config.changeParams(paramTmp, detectors, bands, outputDir2);
+            String[] args2 = {"-c", config2, "-p", param2};
+            Sen2VM.main(args2);
+            // Compare to original run
+            Utils.verifyInverseLoc(config2, outputDir);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -418,4 +429,47 @@ public class Sen2VMInverseTest
 			assert(false);
 		}
 	}
+
+    // Raw testing limited to functional tests as stronger are done in Direct  (On test also added in testInverseLoc of this file)
+    @Test
+    public void testInverseLocRawShifted()
+    {
+        String[] detectors = new String[]{"05","06","11","12"};
+        String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
+        int stepBand10m = 6000;
+        try
+        {
+            String nameTest = "testInverseLocRawNotShifted";
+            String outputDir = Config.createTestDir(Config.TDS.TDS2, nameTest, "inverse");
+            String config = Config.configRawShifts(configTmpInverseTDS2, outputDir, stepBand10m, "inverse", false,0, 0, 0);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+
+            String nameTest2 = "testInverseLocRawShifted";
+            String outputDir2 = Config.createTestDir(Config.TDS.TDS2, nameTest2, "inverse");
+            String config2 = Config.configRawShifts(configTmpInverseTDS2, outputDir2, stepBand10m, "inverse", false,48, 32, 16);
+            String param2 = Config.changeParams(paramTmp, detectors, bands, outputDir2);
+            String[] args2 = {"-c", config2, "-p", param2};
+            Sen2VM.main(args2);
+
+            // Compare to original run
+            Utils.verifyInverseLoc(config2, outputDir, false);
+
+            // Verify that shift is under the shift applied
+            //  48 * 10m => 480m
+            //  32 * 20m => 640m
+            //  16 * 60m => 960m
+            Utils.verifyInverseLoc(config2, outputDir,961, true);
+
+        } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }
+    }
 }

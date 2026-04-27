@@ -12,7 +12,7 @@
     "20m_bands": 300,
     "60m_bands": 100
   },
-  "export_alt": true,
+  "export_alt": false,
   "inverse_location_additional_info": {
     "ul_x": 213205,
     "ul_y": 201441,
