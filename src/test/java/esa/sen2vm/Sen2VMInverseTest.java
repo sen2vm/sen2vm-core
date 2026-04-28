@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.enums.BandInfo;
@@ -37,6 +38,9 @@ import esa.sen2vm.exception.Sen2VMException;
 
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
+
+import org.orekit.data.DataContext;
+import org.orekit.data.LazyLoadedDataContext;
 
 /**
  * Unit test for Sen2VM (inverse loc).
@@ -55,6 +59,16 @@ public class Sen2VMInverseTest
      * Get sen2VM logger
      */
     private static final Logger LOGGER = Logger.getLogger(Sen2VMInverseTest.class.getName());
+
+    @AfterEach
+    void resetGlobalState(){
+        // Orekit
+        DataContext.getDefault()
+                   .getDataProvidersManager()
+                   .clearProviders();
+
+        DataContext.setDefault(new LazyLoadedDataContext());
+    }
 
     @Test
     public void testStepInverseLoc()
