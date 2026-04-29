@@ -53,6 +53,9 @@ public class Sen2VMInverseTest
     String paramTmp = "src/test/resources/params_base.json";
     String refDir = "src/test/resources/tests/ref";
 
+    // [ERROR]   Sen2VMInverseTest.testInverseGipp:180 expected: <false> but was: <true>
+    // [ERROR]   Sen2VMInverseTest.testInverseLoc:141 expected: <false> but was: <true>
+    // [ERROR]   Sen2VMInverseTest.testInverseNoRefining:210 expected: <false> but was: <true>
     private static final double THRESHOLD_INV_HIGH = 6e-1; // Shall be high due to the cache mechanism for inverse location in SXGEO/RUGGED/OREKIT
     
     /**

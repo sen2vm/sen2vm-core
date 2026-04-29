@@ -53,6 +53,8 @@ Each parameter description can be found in the table below:
 | export_alt   | boolean  | Optional      |  If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](../Output/output_direct_loc.md)  |
 | steps       | double    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. **For direct location grids, the GRID step value cannot be under 1.** |
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**|                                                                                                    For the inverse location additional information please refer to the dedicated table below       |
+| ins_raw_shift | | **Mandatory if DATATAKE_TYPE is INS-RAW (inside L1B DATASTRIP metadata (xml), else useless.**| RAW Products are impacted by an issue creating a shift. Those coefficient are to workaround this shift. Please refer to section below|
+
 
 
 The field “inverse_location_additional_info” is not required and will be ignored if direct location grids are asked. However, it is mandatory for inverse location grids generation and **Sen2VM will raise an error** if this information is missing.
@@ -69,7 +71,17 @@ The field “inverse_location_additional_info” is not required and will be ign
 > [!NOTE]
 > Inverse location grids footprint will enclose desired product footprint [ul_x, ul_y, lr_x, lr_y]. 
 
-Those parameters can be sent to Sen2 VM:
+
+The field ins_raw_shift is not required and will be ignored if DATATAKE_TYPE is not INS-RAW (inside DATASTRIP Metadata, xml). However, it is mandatory if DATATAKE_TYPE is INS-RAW and **Sen2VM will raise an error** if this information is missing. It is to be noted that a shift of 0 can be set for INS-RAW if no shift is wanted (for example if original L1B products are now corrected).
+
+| Name          | Type     | Required      |                                                                 Description                                                                  |
+| ------------- | :------: | :-----------: |:--------------------------------------------------------------------------------------------------------------------------------------------:|
+| 10m_bands          | integer    | **Mandatory** | Shift for 10m bands. It is recommanded to set it at 48 for S2C |
+| 20m_bands          | integer    | **Mandatory** | Shift for 20m bands. It is recommanded to set it at 32 for S2C |
+| 60m_bands          | integer    | **Mandatory** | Shift for 60m bands. It is recommanded to set it at 16 for S2C |
+
+
+Those parameters can be sent to Sen2VM:
 
 * either by setting each argument in a command line see [HOWTO](../Usage/HOWTO.md)
 * either using an input configuration file in  [JSON format](https://en.wikipedia.org/wiki/JSON). An example of configuration file is available at: https://github.com/sen2vm/sen2vm-core/blob/main/src/test/resources/configuration_example.json :
