@@ -38,6 +38,7 @@ import generated.GS2_VIEWING_DIRECTIONS;
 import generated.GS2_VIEWING_DIRECTIONS.DATA;
 import generated.GS2_VIEWING_DIRECTIONS.DATA.VIEWING_DIRECTIONS_LIST;
 import generated.GS2_VIEWING_DIRECTIONS.DATA.VIEWING_DIRECTIONS_LIST.VIEWING_DIRECTIONS;
+import generated.GS2_INIT_LOC_PROD_PARAMETERS;
 
 /**
  * Manager for GIPP
@@ -68,6 +69,11 @@ public class GIPPManager
      * SPAMOD
      */
     protected SpaModManager spaModMgr = null;
+
+    /**
+     * GIP_PRDLOC, for shifts if DAtATAKE_TYPE is INS-RAW
+     */
+    protected PrdlocManager prdlocMgr = null;
 
     /**
      * Jaxb unmarshaller
@@ -116,7 +122,7 @@ public class GIPPManager
         {
             this.gippList = dataStripManager.getGIPPListFromAux();
         }
-        this.gippFileManager = new GIPPFileManager(gippFolder,this.gippList);
+        this.gippFileManager = new GIPPFileManager(gippFolder,this.gippList, dataStripManager.getIsRaw());
         this.viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
 
         loadAllGIPP(bands);
@@ -206,6 +212,37 @@ public class GIPPManager
         catch (Exception e)
         {
             throw new Sen2VMException("Error when reading viewing directions GIPP files from", e);
+        }
+
+        // Load prdloc model gipp, only for RAW mode
+        if (this.dataStripManager.getIsRaw())
+        {
+            File filePrdLoc = null;
+            try
+            {
+                filePrdLoc = gippFileManager.getPrdlocFile();
+                if (filePrdLoc != null)
+                {
+                    LOGGER.info("INS-RAW: Read PRDLOC_GIP file: "+ filePrdLoc);
+                    GS2_INIT_LOC_PROD_PARAMETERS prdlocInfo = (GS2_INIT_LOC_PROD_PARAMETERS) jaxbUnmarshaller.unmarshal(filePrdLoc);
+
+                    if (gippVersionCheck)
+                    {
+                        String gippVersion = prdlocInfo.getSPECIFIC_HEADER().getVERSION_NUMBER();
+                        dataStripManager.checkGIPPVersion(filePrdLoc.getName(), gippVersion);
+                    }
+
+                    this.prdlocMgr = new PrdlocManager(prdlocInfo);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Sen2VMException("Error when reading PRDLOC GIPP file: " + filePrdLoc, e);
+            }
+        }
+        else
+        {
+            this.prdlocMgr = null;
         }
     }
 
@@ -355,5 +392,21 @@ public class GIPPManager
             returned = spaModMgr.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
         }
         return returned;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getRawShifts(BandInfo bandInfo, DetectorInfo detectorInfo)
+    {
+        if (dataStripManager.getIsRaw())
+        {
+            return prdlocMgr.getRawShift(detectorInfo, bandInfo);
+        }
+        else
+        {
+            return 0;
+        }
     }
 }

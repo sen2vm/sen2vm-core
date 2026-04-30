@@ -115,12 +115,9 @@ public class DataStripManager
     protected Level1B_DataStrip l1B_datastrip = null;
 
     /**
-     * Sensor configuration
+     * DATATAKE_TYPE
      */
     protected boolean isRaw = false;
-    protected int ins_raw_shift_band10m;
-    protected int ins_raw_shift_band20m;
-    protected int ins_raw_shift_band60m;
 
     /**
      * Sensor configuration
@@ -203,14 +200,12 @@ public class DataStripManager
      * @throws Sen2VMException
      */
     public DataStripManager(String dsFilePath, String iersFilePath,
-                            Boolean activateAvailableRefining, int[] ins_shift_raw) throws Sen2VMException
+                            Boolean activateAvailableRefining, Boolean deactivateRawShift) throws Sen2VMException
     {
         this.dsFile = new File(dsFilePath);
-        this.ins_raw_shift_band10m = ins_shift_raw[0];
-        this.ins_raw_shift_band20m = ins_shift_raw[1];
-        this.ins_raw_shift_band60m = ins_shift_raw[2];
 
         gps = TimeScalesFactory.getGPS();
+        this.isRaw = deactivateRawShift;
         loadFile(dsFilePath, iersFilePath, activateAvailableRefining);
     }
 
@@ -251,13 +246,17 @@ public class DataStripManager
             JAXBElement<Level1B_DataStrip> jaxbElement = (JAXBElement<Level1B_DataStrip>) jaxbUnmarshaller.unmarshal(datastripFile);
             l1B_datastrip = jaxbElement.getValue();
 
-            isRaw = (l1B_datastrip.getGeneral_Info().getDatatake_Info().getDATATAKE_TYPE().value() == "INS-RAW");
-            if (isRaw)
+            Boolean isRawDatastrip = (l1B_datastrip.getGeneral_Info().getDatatake_Info().getDATATAKE_TYPE().value() == "INS-RAW");
+            if (isRawDatastrip)
             {
                 LOGGER.info("DATATAKE_TYPE is INS-RAW");
             }else{
                 LOGGER.info("DATATAKE_TYPE is NOT INS-RAW");
             }
+            //this.isRaw is containing deactivate raw shifts
+            if (this.isRaw & isRawDatastrip)
+                LOGGER.info("Deactivation of INS-RAW shifts");
+            this.isRaw = (isRawDatastrip && !this.isRaw);
 
             sensorConfiguration = l1B_datastrip.getImage_Data_Info().getSensor_Configuration();
 
@@ -916,7 +915,7 @@ public class DataStripManager
      * @param detectorIndex the detector index
      * @return
      */
-    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo) throws Sen2VMException
+    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo, int rawshift) throws Sen2VMException
     {
         AbsoluteDate referenceDate = null;
         double referenceLineDouble = 1d;
@@ -959,22 +958,8 @@ public class DataStripManager
                                     // Apply shift workaround due to https://esa-cams.atlassian.net/browse/GSANOM-22074 for INS-RAW
                                     if(isRaw)
                                     {
-                                        LOGGER.info("Applying shift as DATATAKE_TYPE is INS-RAW");
-                                        //Addition of 33 lines to test the shift
-                                        switch ((int)bandInfo.getPixelHeight())
-                                        {
-                                            case Sen2VMConstants.RESOLUTION_10M:
-                                                referenceDate = referenceDate.shiftedBy( this.ins_raw_shift_band10m * 2 * halfLinePeriod / 1000d);
-                                                break;
-                                            case Sen2VMConstants.RESOLUTION_20M:
-                                                referenceDate = referenceDate.shiftedBy( this.ins_raw_shift_band20m  * 2 * halfLinePeriod / 1000d);
-                                                break;
-                                            case Sen2VMConstants.RESOLUTION_60M:
-                                                referenceDate = referenceDate.shiftedBy( this.ins_raw_shift_band60m  * 2 * halfLinePeriod / 1000d);
-                                                break;
-                                            default:
-                                                throw new Sen2VMException("Resolution not found to aplly RAW SHIFT workaround");
-                                        }
+                                        LOGGER.info("Applying shift as DATATAKE_TYPE is INS-RAW:" + rawshift + " for " + detectorInfo.getNameWithD() + "-" + bandInfo.getNameWithB());
+                                        referenceDate = referenceDate.shiftedBy( rawshift * (bandInfo.getPixelHeight()/10) * 2 *halfLinePeriod / 1000d);
                                     }
                                 }
                                 else

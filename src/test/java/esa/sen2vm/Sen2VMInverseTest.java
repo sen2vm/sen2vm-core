@@ -92,7 +92,11 @@ public class Sen2VMInverseTest
                 Sen2VM.main(args);
 
                 Configuration configFile = new Configuration(config);
-                DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
+                DataStripManager dataStripManager = new DataStripManager(
+                                                        configFile.getDatastripFilePath(),
+                                                        configFile.getIers(),
+                                                        !configFile.getDeactivateRefining(),
+                                                        configFile.getIgnoreInsRawShifts());
                 SafeManager safeManager = new SafeManager(configFile.getL1bProduct(), dataStripManager);
                 Datastrip datastrip = safeManager.getDatastrip();
 
@@ -145,7 +149,7 @@ public class Sen2VMInverseTest
             // Test that a shift is not product when using 0 as configuration
             String nameTest2 = "testInverseLocWithNominalRawShiftIgnored";
             String outputDir2 = Config.createTestDir(Config.TDS.TDS1, nameTest2, "inverse");
-            String config2 = Config.configRawShifts(configTmpInverseShifted, outputDir2, stepBand10m, "inverse", false,48, 32, 16);
+            String config2 = Config.configRawShifts(configTmpInverseShifted, outputDir2, stepBand10m, "inverse", false,false);
             String param2 = Config.changeParams(paramTmp, detectors, bands, outputDir2);
             String[] args2 = {"-c", config2, "-p", param2};
             Sen2VM.main(args2);
@@ -458,14 +462,14 @@ public class Sen2VMInverseTest
         {
             String nameTest = "testInverseLocRawNotShifted";
             String outputDir = Config.createTestDir(Config.TDS.TDS2, nameTest, "inverse");
-            String config = Config.configRawShifts(configTmpInverseTDS2, outputDir, stepBand10m, "inverse", false,0, 0, 0);
+            String config = Config.configRawShifts(configTmpInverseTDS2, outputDir, stepBand10m, "inverse", false, true);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
 
             String nameTest2 = "testInverseLocRawShifted";
             String outputDir2 = Config.createTestDir(Config.TDS.TDS2, nameTest2, "inverse");
-            String config2 = Config.configRawShifts(configTmpInverseTDS2, outputDir2, stepBand10m, "inverse", false,48, 32, 16);
+            String config2 = Config.configRawShifts(configTmpInverseTDS2, outputDir2, stepBand10m, "inverse", false, false);
             String param2 = Config.changeParams(paramTmp, detectors, bands, outputDir2);
             String[] args2 = {"-c", config2, "-p", param2};
             Sen2VM.main(args2);

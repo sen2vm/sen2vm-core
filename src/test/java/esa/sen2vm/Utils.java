@@ -63,7 +63,11 @@ public class Utils {
     {
 
         Configuration configFile = new Configuration(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
         ArrayList<Granule> granules = sm.getGranules();
@@ -94,7 +98,11 @@ public class Utils {
     {
 
         Configuration configFile = new Configuration(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
         ArrayList<Granule> granules = sm.getGranules();
@@ -131,7 +139,11 @@ public class Utils {
     public static void verifyDirectLoc(String configFilepath, String outputRef, double threshold, boolean expected) throws Sen2VMException, IOException
     {
         Configuration configFile = new Configuration(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
         ArrayList<Granule> granules = sm.getGranules();
@@ -169,7 +181,11 @@ public class Utils {
     public static void verifyInverseLoc(String configFilepath, String outputRef, double threshold, boolean expected) throws Sen2VMException, IOException
     {
         Configuration configFile = new Configuration(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining(), configFile.getInsRawShifts());
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
         File[][] outputGrids = sm.getInverseGrids(configFile.getInverseLocOutputFolder());
         File[][] refGrids = sm.getInverseGrids(outputRef);

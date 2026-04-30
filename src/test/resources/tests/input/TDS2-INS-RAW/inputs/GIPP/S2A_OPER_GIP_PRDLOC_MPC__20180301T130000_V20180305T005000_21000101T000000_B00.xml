@@ -1,0 +1,711 @@
+<GS2_INIT_LOC_PROD_PARAMETERS ns0:noNamespaceSchemaLocation="T:\SENTINEL-2\04-SEGMENT_SOL\02-Spec-SSI-S2\03-GS\03-Schemas_Image_S2\GS2_GIPP\gs2_init_loc_prod_parameters.xsd" xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance">
+	<HEADER>
+		  <SATELLITE>S2A</SATELLITE>
+		  <SCHEME_VERSION>String</SCHEME_VERSION>
+		  <PRODUCTION_DATE>2018-03-01T13:00:00.0Z</PRODUCTION_DATE>
+		  <PROVIDER>String</PROVIDER>
+		  <CONSUMER>GPP-Light</CONSUMER>
+	</HEADER>
+	<SPECIFIC_HEADER>
+		  <TYPE>S2A_INIT_LOC_PROD_PARAMETERS_FILE</TYPE>
+		  <APPLICABILITY_DATE>2018-03-05T00:50:00.0Z</APPLICABILITY_DATE>
+		  <APPLICABILITY_END_DATE>2100-01-01T00:00:00.0Z</APPLICABILITY_END_DATE>
+		  <VERSION_NUMBER>0012</VERSION_NUMBER>
+		  <PARAMETER_ID>String</PARAMETER_ID>
+	</SPECIFIC_HEADER>
+	<DATA>
+			<TRACE_MODE>true</TRACE_MODE>
+		  <SEGMENT_CUTTING>
+			  <REFERENCE_BAND>3</REFERENCE_BAND>
+			  <REFERENCE_DETECTOR>06</REFERENCE_DETECTOR>			
+			  <BAND_LIST>
+				    <BAND band_id="0">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>783</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>63</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>64</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>782</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>778</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>68</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>68</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>778</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>776</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>70</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>70</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>776</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>775</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>71</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>70</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>776</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>777</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>69</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>68</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>778</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>781</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>65</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>64</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>782</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="1">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>3189</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1874</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>1878</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3185</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>3180</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1883</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>1887</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3176</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>3176</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1887</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>1890</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3173</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>3176</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1887</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>1890</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3173</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>3179</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1884</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>1888</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3175</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>3188</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1875</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>1882</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3181</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="2">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>3530</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1537</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>1541</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3526</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>3517</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1550</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>1554</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3513</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>3510</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1557</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>1560</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3507</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>3509</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1558</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>1560</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3507</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>3514</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1553</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>1556</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3511</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>3526</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1541</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>1545</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3522</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="3">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>3841</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1228</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>1229</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3840</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>3824</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1245</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>1245</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3824</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>3815</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1254</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>1253</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3816</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>3814</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1255</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>1253</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3816</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>3820</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1249</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>1247</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3822</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>3836</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1233</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>1233</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3836</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="4">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>2006</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>529</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>530</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2005</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>1996</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>539</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>539</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1996</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>1992</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>543</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>543</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1992</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>1990</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>545</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>543</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1992</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>1994</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>541</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>540</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1995</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>2002</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>533</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>532</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2003</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="5">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>2090</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>446</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>445</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2091</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>2080</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>456</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>454</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2082</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>2075</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>461</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>459</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2077</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>2073</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>463</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>459</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2077</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>2076</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>460</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>456</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2080</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>2086</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>450</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>446</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2090</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="6">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>2176</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>361</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>360</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2177</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>2164</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>373</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>370</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2167</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>2158</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>379</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>376</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2161</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>2157</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>380</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>376</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2161</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>2160</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>377</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>372</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2165</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>2171</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>366</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>362</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2175</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="7">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>3359</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1705</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>1710</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3354</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>3348</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1716</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>1720</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3344</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>3342</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1722</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>1725</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3339</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>3342</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1722</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>1724</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3340</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>3345</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1719</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>1722</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3342</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>3356</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>1708</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>1713</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>3351</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="8">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>2260</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>278</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>274</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2264</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>2247</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>291</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>286</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2252</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>2241</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>297</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>292</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2246</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>2239</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>299</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>292</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2246</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>2243</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>295</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>287</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2251</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>2254</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>284</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>276</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2262</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="9">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>812</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>34</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>34</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>812</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>806</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>40</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>39</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>807</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>803</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>43</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>41</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>805</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>804</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>42</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>41</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>805</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>805</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>41</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>39</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>807</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>809</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>37</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>35</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>811</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+					  <BAND band_id="10">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>625</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>220</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>222</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>623</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>623</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>222</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>224</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>621</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>622</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>223</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>226</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>619</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>621</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>224</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>226</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>619</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>623</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>222</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>225</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>620</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>625</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>220</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>224</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>621</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+					  <BAND band_id="11">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>2081</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>455</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>460</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2076</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>2070</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>466</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>470</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2066</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>2065</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>471</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>476</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2060</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>2064</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>472</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>476</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2060</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>2069</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>467</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>472</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2064</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>2077</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>459</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>464</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2072</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+				    <BAND band_id="12">
+					    <DETECTOR_LIST>
+						      <DETECTOR detector_id="01">
+							      <BEGIN_NB_LINES_TO_CUT>2282</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>256</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="02">
+							      <BEGIN_NB_LINES_TO_CUT>257</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2281</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="03">
+							      <BEGIN_NB_LINES_TO_CUT>2270</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>268</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="04">
+							      <BEGIN_NB_LINES_TO_CUT>269</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2269</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="05">
+							      <BEGIN_NB_LINES_TO_CUT>2264</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>274</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="06">
+							      <BEGIN_NB_LINES_TO_CUT>277</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2261</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="07">
+							      <BEGIN_NB_LINES_TO_CUT>2262</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>276</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="08">
+							      <BEGIN_NB_LINES_TO_CUT>276</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2262</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="09">
+							      <BEGIN_NB_LINES_TO_CUT>2267</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>271</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="10">
+							      <BEGIN_NB_LINES_TO_CUT>271</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2267</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="11">
+							      <BEGIN_NB_LINES_TO_CUT>2278</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>260</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+						      <DETECTOR detector_id="12">
+							      <BEGIN_NB_LINES_TO_CUT>261</BEGIN_NB_LINES_TO_CUT>
+							      <END_NB_LINES_TO_CUT>2277</END_NB_LINES_TO_CUT>
+						</DETECTOR>
+					</DETECTOR_LIST>
+				</BAND>
+			</BAND_LIST>
+			  <INTEREST_AREA_MARGIN unit="m">60</INTEREST_AREA_MARGIN>
+			  <COMPRESSION_MARGIN unit="pixel">32</COMPRESSION_MARGIN>
+			  <RADIOMETRIC_MARGIN unit="pixel">100</RADIOMETRIC_MARGIN>
+			  <CROSSTALK_FLAG>true</CROSSTALK_FLAG>
+		</SEGMENT_CUTTING>
+		  <AUXILIARY_DATA>
+			  <FOOTPRINT_STEP unit="m">16000</FOOTPRINT_STEP>
+			  <AUX_DATA_STEP unit="m">25000</AUX_DATA_STEP>
+			  <H_CLOUD>3000</H_CLOUD>
+		</AUXILIARY_DATA>
+		  <DATATION_SCENARIO>EXOGENEOUS</DATATION_SCENARIO>
+	</DATA>
+</GS2_INIT_LOC_PROD_PARAMETERS>

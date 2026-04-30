@@ -137,8 +137,8 @@ public class OptionManager
      * Option for ins raw shifts (pixels)
      * For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074 
      */
-    public static final String OPT_INS_RAW_SHIFT_LONG = "ins_raw_shifts";
-    public static final String OPT_INS_RAW_SHIFT_SHORT = "rs";
+    public static final String OPT_DEACTIVATE_INS_RAW_SHIFT_LONG = "ignore_ins_raw_shifts_compensation";
+    public static final String OPT_DEACTIVATE_INS_RAW_SHIFT_SHORT = "is";
 
     /*******************************
      * Options for the params 
@@ -316,12 +316,10 @@ public class OptionManager
             outputImageRes.setArgs(3);
             outputImageRes.setRequired(true);
 
-            Option raw_shifts = new Option(OPT_INS_RAW_SHIFT_SHORT, OPT_INS_RAW_SHIFT_LONG, true, "Shift (pixels) for INS-RAW bands 10, 20 and 60m, workaround for https://esa-cams.atlassian.net/browse/GSANOM-22074\n"
-                                        + "(separated with whitespace, respect the order)\n"
-                                        + " Default values: " );
-            raw_shifts.setType(Integer.class); // TODO  does not seem to work: read as array of String
-            raw_shifts.setArgs(3);
-            raw_shifts.setRequired(false);
+            Option ignore_raw_shifts = new Option(OPT_DEACTIVATE_INS_RAW_SHIFT_SHORT, OPT_DEACTIVATE_INS_RAW_SHIFT_LONG, false,
+                 "(Optional) Deactivate workaround for INS_RAW DATATAKE_TYPE due to https://esa-cams.atlassian.net/browse/GSANOM-22074\n"
+                                          + "if present= \"true\", if not= \"false\".");
+            ignore_raw_shifts.setRequired(false);
 
             // params arguments
             // ------------------
@@ -348,6 +346,7 @@ public class OptionManager
             optionsNoFile.addOption(noAutoGippSelectionOption);
             optionsNoFile.addOption(overwrite_grids);
             optionsNoFile.addOption(noRefiningOption);
+            optionsNoFile.addOption(ignore_raw_shifts);
             optionsNoFile.addOption(exportAltOption);
             optionsNoFile.addOption(ulxOption);
             optionsNoFile.addOption(ulyOption);

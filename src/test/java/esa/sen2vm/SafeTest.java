@@ -58,7 +58,11 @@ public class SafeTest
         {
             // Read configuration file
             Configuration config = new Configuration(configTmp);
-            DataStripManager dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining(),config.getInsRawShifts());
+            DataStripManager dataStripManager = new DataStripManager(
+                                                    config.getDatastripFilePath(),
+                                                    config.getIers(),
+                                                    !config.getDeactivateRefining(),
+                                                    config.getIgnoreInsRawShifts());
             SafeManager safeManager = new SafeManager(config.getL1bProduct(), dataStripManager);
 
             // Test granule selection
@@ -105,7 +109,11 @@ public class SafeTest
         {
             // Read configuration file
             Configuration config = new Configuration(configTmp);
-            DataStripManager dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining(), config.getInsRawShifts());
+            DataStripManager dataStripManager = new DataStripManager(
+                                                    config.getDatastripFilePath(),
+                                                    config.getIers(),
+                                                    !config.getDeactivateRefining(),
+                                                    config.getIgnoreInsRawShifts());
             SafeManager safeManager = new SafeManager(config.getL1bProduct(), dataStripManager);
 
             // Test granules number

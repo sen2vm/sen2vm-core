@@ -161,12 +161,7 @@ public class Sen2VM
                                                     config.getDatastripFilePath(),
                                                     config.getIers(),
                                                     !config.getDeactivateRefining(),
-                                                    config.getInsRawShifts());
-
-            if (dataStripManager.getIsRaw() && ! config.getInsRawShiftsAreDefined())
-            {
-                throw new Sen2VMException("DATATAKE_TYPE is INS_RAW. Official Products are impacted by an issue causing a shift.\nPlease defined shifts in the configuration. If input product doesn't have shifts anymore, please put shifts (10m,20m,60m) at 0");
-            }
+                                                    config.getIgnoreInsRawShifts());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
@@ -203,7 +198,7 @@ public class Sen2VM
                 for (BandInfo bandInfo: bands)
                 {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
+                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo,gippManager.getRawShifts(bandInfo, detectorInfo));
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
                     SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);

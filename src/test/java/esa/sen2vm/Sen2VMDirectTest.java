@@ -397,7 +397,7 @@ public class Sen2VMDirectTest
         {
             String nameTest = "testDirectLocWithNominalRawShiftIgnored";
             String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
-            String config = Config.configRawShifts(configTmpDirectTDS1ShiftRaw, outputDir, stepBand10m, "direct", false, 48, 32, 16);
+            String config = Config.configRawShifts(configTmpDirectTDS1ShiftRaw, outputDir, stepBand10m, "direct", false, false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
@@ -458,7 +458,7 @@ public class Sen2VMDirectTest
         {
             String nameTest = "testDirectLocRawShiftedZero";
             String outputDir = Config.createTestDir(Config.TDS.TDS2, nameTest, "direct");
-            String config = Config.configRawShifts(configTmpDirectTDS2, outputDir, stepBand10m, "direct", true, 0, 0, 0);
+            String config = Config.configRawShifts(configTmpDirectTDS2, outputDir, stepBand10m, "direct", true, true);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
@@ -466,7 +466,7 @@ public class Sen2VMDirectTest
 
             String nameTest2 = "testDirectLocRawShifted";
             String outputDir2 = Config.createTestDir(Config.TDS.TDS2, nameTest2, "direct");
-            String config2 = Config.configRawShifts(configTmpDirectTDS2, outputDir2, stepBand10m, "direct", false, 48, 32, 16);
+            String config2 = Config.configRawShifts(configTmpDirectTDS2, outputDir2, stepBand10m, "direct", false, false);
             String param2 = Config.changeParams(paramTmp, detectors, bands, outputDir2);
             String[] args2 = {"-c", config2, "-p", param2};
             Sen2VM.main(args2);

@@ -87,7 +87,7 @@ public class Config
 
     public static String configRawShifts(String filePath, String l1b_product,
         double stepBand10m, String operation, boolean refining,
-        int shiftRawBand10m, int shiftRawBand20m, int shiftRawBand60m ) throws FileNotFoundException,
+        boolean deactivateRawShift ) throws FileNotFoundException,
             IOException, ParseException
     {
         JSONParser parser = new JSONParser();
@@ -97,6 +97,7 @@ public class Config
         objJson.put("l1b_product", l1b_product);
         objJson.put("operation", operation);
         objJson.put("deactivate_available_refining", refining);
+        objJson.put("deactivate_ins_raw_shift", deactivateRawShift);
 
         JSONObject steps = (JSONObject) objJson.get("steps");
         steps.put("10m_bands", stepBand10m);
@@ -105,11 +106,6 @@ public class Config
 
         JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
         inverse.put("output_folder", l1b_product);
-
-        JSONObject shifts = (JSONObject) objJson.get("ins_raw_shift");
-        shifts.put("10m_bands", shiftRawBand10m);
-        shifts.put("20m_bands", shiftRawBand20m);
-        shifts.put("60m_bands", shiftRawBand60m);
 
         String outputConfig = l1b_product + "/configuration.json";
         FileWriter writer = new FileWriter(outputConfig); //overwrites the content of file

@@ -21,11 +21,7 @@
     "referential": "EPSG:32628",
     "output_folder": "tmp"
   },
-  "ins_raw_shift": {
-    "10m_bands":48,
-    "20m_bands":32,
-    "60m_bands":16
-  }
+  "deactivate_ins_raw_shift": false,
 }
 
 

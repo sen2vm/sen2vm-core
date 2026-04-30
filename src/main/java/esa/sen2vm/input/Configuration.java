@@ -62,11 +62,7 @@ public class Configuration extends InputFileManager
     private String referential;
     private String outputFolder;
     //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074
-    private boolean ins_raw_shift_defined = false;
-    private int ins_raw_shift_band10m = Sen2VMConstants.INS_RAW_SHIFT_10_M;
-    private int ins_raw_shift_band20m = Sen2VMConstants.INS_RAW_SHIFT_20_M;
-    private int ins_raw_shift_band60m = Sen2VMConstants.INS_RAW_SHIFT_60_M;
-
+    private boolean ignoreInsRawShifts = false;
 
     /**
      * Constructor
@@ -160,15 +156,14 @@ public class Configuration extends InputFileManager
         }
 
         //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074 
-        if (commandLine.hasOption(OptionManager.OPT_INS_RAW_SHIFT_SHORT))
+        // By default we want to keep the shifts.
+        if (commandLine.hasOption(OptionManager.OPT_DEACTIVATE_INS_RAW_SHIFT_SHORT))
         {
-            // convert the string array to an double array
-            Integer[] shiftValues = Arrays.stream(commandLine.getOptionValues(OptionManager.OPT_INS_RAW_SHIFT_SHORT)).map(Integer::valueOf).toArray(Integer[]::new);
-
-            this.ins_raw_shift_defined = true;
-            this.ins_raw_shift_band10m = shiftValues[0];
-            this.ins_raw_shift_band20m = shiftValues[1];
-            this.ins_raw_shift_band60m = shiftValues[2];
+            this.ignoreInsRawShifts = true;
+        }
+        else
+        { // We keep the shifts
+            this.ignoreInsRawShifts = false;
         }
     }
 
@@ -275,20 +270,9 @@ public class Configuration extends InputFileManager
             }
 
             // Check the type of location: direct or inverse
-            if (jsonObject.has("ins_raw_shift"))
+            if (jsonObject.has("deactivate_ins_raw_shift"))
             {
-                try
-                {
-                    JSONObject ins_raw_shift = jsonObject.getJSONObject("ins_raw_shift");
-                    this.ins_raw_shift_band10m = ins_raw_shift.getInt("10m_bands");
-                    this.ins_raw_shift_band20m = ins_raw_shift.getInt("20m_bands");
-                    this.ins_raw_shift_band60m = ins_raw_shift.getInt("60m_bands");
-                    this.ins_raw_shift_defined = true;
-                }
-                catch(JSONException e)
-                {
-                    throw new Sen2VMException("Error when initializing ins_raw_shift", e);
-                }
+                this.ignoreInsRawShifts = jsonObject.getBoolean("deactivate_ins_raw_shift");
             }
         }
         catch (JSONException | IOException e)
@@ -482,44 +466,8 @@ public class Configuration extends InputFileManager
      * Get boolean if shifts for INS-RAW are defined
      * @return boolean if shifts for INS-RAW are defined
      */
-    public boolean getInsRawShiftsAreDefined()
+    public boolean getIgnoreInsRawShifts()
     {
-       return this.ins_raw_shift_defined;
-    }
-
-    /**
-     * Get the shift for INS-RAW 10m band
-     * @return the shift for INS-RAW 10m band (pixels)
-     */
-    public int getInsRawShiftBand10m()
-    {
-       return this.ins_raw_shift_band10m;
-    }
-
-    /**
-     * Get the shift for INS-RAW 20m band
-     * @return the shift for INS-RAW 20m band (pixels)
-     */
-    public int getInsRawShiftBand20m()
-    {
-       return this.ins_raw_shift_band20m;
-    }
-
-    /**
-     * Get the shift for INS-RAW 10m band
-     * @return the shift for INS-RAW 10m band (pixels)
-     */
-    public int getInsRawShiftBand60m()
-    {
-       return this.ins_raw_shift_band60m;
-    }
-
-    /**
-     * Get the shift for INS-RAW 10m band
-     * @return the shift for INS-RAW 10m band (pixels)
-     */
-    public int[] getInsRawShifts()
-    {
-       return new int[]{this.ins_raw_shift_band10m, this.ins_raw_shift_band20m, this.ins_raw_shift_band60m};
+       return this.ignoreInsRawShifts;
     }
 }

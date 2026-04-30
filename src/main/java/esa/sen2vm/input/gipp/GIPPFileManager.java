@@ -63,6 +63,12 @@ public class GIPPFileManager
      */
     protected File spaModFile = null;
 
+    protected  boolean isRaw;
+    /**
+     * GIPP spa mod XML files
+     */
+    protected File prdlocFile = null;
+    
     /**
      * Default constructor
      */
@@ -338,8 +344,9 @@ public class GIPPFileManager
      * @param folder contains the GIPP xml files
      * @throws Sen2VMException
      */
-    public GIPPFileManager(String folder, List<String> gippList) throws Sen2VMException
+    public GIPPFileManager(String folder, List<String> gippList, boolean isRaw) throws Sen2VMException
     {
+        this.isRaw = isRaw;
         LOGGER.info("Get through GIPP folder: "+ folder);
         List<String> validExtensions = Arrays.asList(Sen2VMConstants.xml_extention_small,
                                                      Sen2VMConstants.xml_extention_big,
@@ -350,9 +357,11 @@ public class GIPPFileManager
         String blindPixelGIPType = "GIP_BLINDP";
         String spamodGIPType = "GIP_SPAMOD";
         String viewingDirGIPType = "GIP_VIEDIR";
+        String prdlocGIPType = "GIP_PRDLOC";
         List<String> blindPixelGIPList = new ArrayList();
         List<String> spamodGIPList = new ArrayList();
         List<String> viewingDirGIPList = new ArrayList();
+        List<String> prdlocGIPList = new ArrayList();
         if(!gippList.isEmpty())
         {
             // get blind pixel file
@@ -363,6 +372,9 @@ public class GIPPFileManager
 
             // get viewing direction file
             viewingDirGIPList =typedGIPPList(gippList, viewingDirGIPType);
+
+            // get prdloc file (only for INS-RAW type)
+            if (this.isRaw) prdlocGIPList =typedGIPPList(gippList, prdlocGIPType);
         }
         try
         {
@@ -374,6 +386,9 @@ public class GIPPFileManager
             
             // get viewing direction file
             viewingDirectionFileList = findGippFiles(gippFolder, viewingDirGIPType, viewingDirGIPList, Sen2VMConstants.GIPP_VIEWDIR_PAT, validExtensions);
+
+            // get prdloc file (for INS-RAW only)
+            if (this.isRaw) prdlocFile = findGippFile(gippFolder, prdlocGIPType, prdlocGIPList, Sen2VMConstants.GIPP_PRDLOC_PAT, validExtensions);
         }
         catch(IOException e)
         {
@@ -434,5 +449,21 @@ public class GIPPFileManager
     public void setSpaModFile(File spaModFile)
     {
         this.spaModFile = spaModFile;
+    }
+
+    /**
+     * @return the prdlocFile
+     */
+    public File getPrdlocFile()
+    {
+        return prdlocFile;
+    }
+
+    /**
+     * @param blindPixelFile the prdlocFile to set
+     */
+    public void setgetPrdlocFile(File prdlocFile)
+    {
+        this.prdlocFile = prdlocFile;
     }
 }
