@@ -458,7 +458,7 @@ public class Sen2VMDirectTest
         {
             String nameTest = "testDirectLocRawShiftedZero";
             String outputDir = Config.createTestDir(Config.TDS.TDS2, nameTest, "direct");
-            String config = Config.configRawShifts(configTmpDirectTDS2, outputDir, stepBand10m, "direct", true, true);
+            String config = Config.configRawShifts(configTmpDirectTDS2, outputDir, stepBand10m, "direct", false, true);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
@@ -475,9 +475,9 @@ public class Sen2VMDirectTest
             // Rough conversion of pixel in Lat/Lon at equator
             //   48p * 10m / 110 000m => 0.00436
             //   32p * 20m / 110 000m => 0.00582
-            //   16p * 60m / 110 000m => 0.00873
+            //   18p * 60m / 110 000m => 0.00982
             // We expect roughly a maximum shift of 0.009
-            Utils.verifyDirectLoc(config2, refDir + "/" + "testDirectLocRawShiftedZero", 0.009); 
+            Utils.verifyDirectLoc(config2, refDir + "/" + "testDirectLocRawShiftedZero", 0.0101); 
             // We are expecting a shift larger that 0.004 (We are expecting a failure of the comparison)
             Utils.verifyDirectLoc(config2, refDir + "/" + "testDirectLocRawShiftedZero", 0.004,false);
             LOGGER.info("We are expecting differences, as we are checking if the shift is applyied compared to the original run");

@@ -148,6 +148,7 @@
                     <sources>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_blind_pixels.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_spacecraft_model_parameters.xsd</source>
+                        <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_init_loc_prod_parameters.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_viewing_directions.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/Datastrip/S2_PDI_Level-1B_Datastrip_Metadata.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/Datastrip/S2_PDI_Level-1B_Granule_Metadata.xsd</source>

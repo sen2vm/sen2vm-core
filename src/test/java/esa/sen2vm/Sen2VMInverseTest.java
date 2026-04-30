@@ -480,8 +480,8 @@ public class Sen2VMInverseTest
             // Verify that shift is under the shift applied
             //  48 * 10m => 480m
             //  32 * 20m => 640m
-            //  16 * 60m => 960m
-            Utils.verifyInverseLoc(config2, outputDir,961, true);
+            //  18 * 60m => 1080m
+            Utils.verifyInverseLoc(config2, outputDir, 1081, true);
 
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());

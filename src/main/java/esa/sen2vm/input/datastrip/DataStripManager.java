@@ -959,7 +959,8 @@ public class DataStripManager
                                     if(isRaw)
                                     {
                                         LOGGER.info("Applying shift as DATATAKE_TYPE is INS-RAW:" + rawshift + " for " + detectorInfo.getNameWithD() + "-" + bandInfo.getNameWithB());
-                                        referenceDate = referenceDate.shiftedBy( rawshift * (bandInfo.getPixelHeight()/10) * 2 *halfLinePeriod / 1000d);
+                                        // referenceDate = referenceDate.shiftedBy( rawshift * (bandInfo.getPixelHeight()/10) * 2 * halfLinePeriod / 1000d);
+                                        referenceDate = referenceDate.shiftedBy( rawshift * 2 * halfLinePeriod / 1000d);
                                     }
                                 }
                                 else
