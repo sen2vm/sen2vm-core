@@ -416,6 +416,63 @@ public class Sen2VMDirectTest
     }
 
     @Test
+    public void testDirectGippPrdlocError()
+    {
+        String[] detectors = new String[]{"05"};
+        String[] bands = new String[]{"B01"};
+        String GIPP_2 = "src/test/resources/tests/data/GIPP_noPRDLOC/";
+
+        try
+        {
+            String nameTest = "testDirectGippNoPrdlocError";
+            String outputDir = Config.createTestDir(Config.TDS.TDS2, nameTest, "direct");
+            String config = Config.configAutoGippSelectionWithRawShift(configTmpDirectTDS2, GIPP_2, true, outputDir, false);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+            LOGGER.warning("Expecting an error.");
+            assert(false);
+        } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            LOGGER.info("An error is expected due to missing PRDLOC GIPP");
+            assert(true); //An error is expected due to the GIPP
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }
+    }
+
+    @Test
+    public void testDirectGippPrdlocNoErrorWhenDeactivated()
+    {
+        String[] detectors = new String[]{"05"};
+        String[] bands = new String[]{"B01"};
+        String GIPP_2 = "src/test/resources/tests/data/GIPP_noPRDLOC/";
+
+        try
+        {
+            String nameTest = "testDirectGippNoPrdlocNoError";
+            String outputDir = Config.createTestDir(Config.TDS.TDS2, nameTest, "direct");
+            String config = Config.configAutoGippSelectionWithRawShift(configTmpDirectTDS2, GIPP_2, true, outputDir, true);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+            LOGGER.info("Not in Error as expected.");
+        } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            LOGGER.info("An error is expected due to the GIPP");
+            assert(true); //An error is expected due to the GIPP
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }
+    }
+
+    @Test
     public void testDirectLocRawNotShifted()
     {
         // String[] detectors = new String[]{"01", "02","03","04","05","06","07","08","09","10","11","12"};

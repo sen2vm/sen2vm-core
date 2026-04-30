@@ -247,6 +247,30 @@ public class Config
         return outputConfig;
     }
 
+    public static String configAutoGippSelectionWithRawShift(String filePath, String gippPath,
+         boolean autoGippSelection, String l1b_product, boolean deactivateRawShift)
+        throws FileNotFoundException, IOException, ParseException
+    {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(filePath));
+
+        JSONObject objJson = (JSONObject) obj;
+        objJson.put("gipp_folder", gippPath);
+        objJson.put("auto_gipp_selection", autoGippSelection);
+        objJson.put("l1b_product", l1b_product);
+        objJson.put("deactivate_ins_raw_shift", deactivateRawShift);
+
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("output_folder", l1b_product);
+
+        String outputConfig = l1b_product + "/configuration.json";
+        FileWriter writer = new FileWriter(outputConfig, false);
+        writer.write(obj.toString());
+        writer.close();
+
+        return outputConfig;
+    }
+
     public static boolean deleteDirectory(File directory) {
         File[] listOfFiles = directory.listFiles();
         if (listOfFiles != null) {
