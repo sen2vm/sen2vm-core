@@ -81,6 +81,7 @@ public class Sen2VMConstants
     public static final String GIPP_VIEWDIR_PAT = ".*GIP_VIEDIR.*";
     public static final String GIPP_BLINDP_PAT = ".*GIP_BLINDP.*";
     public static final String GIPP_SPAMOD_PAT = ".*GIP_SPAMOD.*";
+    public static final String GIPP_PRDLOC_PAT = ".*GIP_PRDLOC.*"; // FOr INS-RAW only
     public static final int NB_GIPP_MAX_FILE = 13;
 
     /**

@@ -157,7 +157,11 @@ public class Sen2VM
             LOGGER.info("Bands list: " + bands);
 
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
+            DataStripManager dataStripManager = new DataStripManager(
+                                                    config.getDatastripFilePath(),
+                                                    config.getIers(),
+                                                    !config.getDeactivateRefining(),
+                                                    config.getIgnoreInsRawShifts());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
@@ -194,7 +198,7 @@ public class Sen2VM
                 for (BandInfo bandInfo: bands)
                 {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
+                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo,gippManager.getRawShifts(bandInfo, detectorInfo));
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
                     SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);

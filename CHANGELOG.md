@@ -16,6 +16,26 @@
 
 * Doc:
 
+  * 
+
+## 1.2.0 (2026-05-04)
+
+### Main feature
+
+Include a shift compensation for acquisition with DATATAKE_TYPE at INS-RAW to compensate https://esa-cams.atlassian.net/browse/GSANOM-22074
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * Issue #73: Include a shift compensation for acquisition with DATATAKE_TYPE at INS-RAW to compensate https://esa-cams.atlassian.net/browse/GSANOM-22074
+
+* Doc:
+
   * Point to new CDSE official DEM download
 
 ## 1.1.4 (2026-02-05)

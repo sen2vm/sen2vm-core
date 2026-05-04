@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Earth_Explorer_File xmlns="http://gs2.esa.int/DATA_STRUCTURE/olqcReport">
+    <Earth_Explorer_Header>
+        <Fixed_Header>
+            <File_Name>S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_GEOMETRIC_QUALITY_report.xml</File_Name>
+            <File_Description>Report produced by OLQC-SC</File_Description>
+            <Notes></Notes>
+            <Mission>S2A</Mission>
+            <File_Class>OPER</File_Class>
+            <File_Type>REP_OLQCPA</File_Type>
+            <Validity_Period>
+                <Validity_Start>UTC=2025-02-11T00:00:00</Validity_Start>
+                <Validity_Stop>UTC=2100-01-01T00:00:00</Validity_Stop>
+            </Validity_Period>
+            <File_Version>2</File_Version>
+            <Source>
+                <System>OLQC-SC</System>
+                <Creator>OLQC-SC</Creator>
+                <Creator_Version>06.04.00</Creator_Version>
+                <Creation_Date>UTC=2025-12-15T18:15:10</Creation_Date>
+            </Source>
+        </Fixed_Header>
+    </Earth_Explorer_Header>
+    <Data_Block type="xml">
+        <report gippVersion="1.0" globalStatus="PASSED" date="2025-12-15T18:15:10.512Z">
+            <checkList>
+                <parentID>S2A_OPER_GIP_OLQCPA_MPC__20250210T000044_V20250211T000000</parentID>
+                <name>GEOMETRIC_QUALITY</name>
+                <version>1.0</version>
+                <item url="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_GR_L1B/output/PDI_DS_GR_LIST/DB1/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/" className="PDI Level 1B Granule Folder" name="S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11" class="http://www.esa.int/s2#pdi_level_1b_granule_container"/>
+                <check>
+                    <inspection creation="2025-12-15T18:15:10.439Z" duration="10" execution="2025-12-15T18:15:10.498Z" id="Incidence_Angle_Zenith" item="S2A_OPER_MTD_L1B_GR_2APS_20251215T175440_S20251215T153354_D05.xml" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_GR_L1B/output/PDI_DS_GR_LIST/DB1/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/S2A_OPER_MTD_L1B_GR_2APS_20251215T175440_S20251215T153354_D05.xml" name="Check the zenith incidence angle. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">Zenith incidence angle (3.07155896362994) is in the limit of the threshold (180.0) </message>
+                    <extraValues>
+                        <value name="EXPECTED">180.0</value>
+                        <value name="INCIDENCE_ZENITH_ANGLE">3.07155896362994</value>
+                    </extraValues>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:10.512Z" duration="1" execution="2025-12-15T18:15:10.521Z" id="Incidence_Angle_Azimuth" item="S2A_OPER_MTD_L1B_GR_2APS_20251215T175440_S20251215T153354_D05.xml" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_GR_L1B/output/PDI_DS_GR_LIST/DB1/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/S2A_OPER_MTD_L1B_GR_2APS_20251215T175440_S20251215T153354_D05.xml" name="Check the azimuth incidence angle. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">Azimuth incidence angle (276.402181720477) is in the limit of the threshold (360.0) </message>
+                    <extraValues>
+                        <value name="EXPECTED">360.0</value>
+                        <value name="INCIDENCE_AZIMUTH_ANGLE">276.402181720477</value>
+                    </extraValues>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:10.566Z" duration="15" execution="2025-12-15T18:15:10.585Z" id="Solar_Angle_Azimuth" item="S2A_OPER_MTD_L1B_GR_2APS_20251215T175440_S20251215T153354_D05.xml" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_GR_L1B/output/PDI_DS_GR_LIST/DB1/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/S2A_OPER_MTD_L1B_GR_2APS_20251215T175440_S20251215T153354_D05.xml" name="Check the azimuth solar angle. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">Azimuth solar angle (221.764366026703) is in the limit of the threshold (360.0) </message>
+                    <extraValues>
+                        <value name="EXPECTED">360.0</value>
+                        <value name="SOLAR_AZIMUTH_ANGLE">221.764366026703</value>
+                    </extraValues>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:10.602Z" duration="7" execution="2025-12-15T18:15:10.707Z" id="Granule_Footprint" item="S2A_OPER_MTD_L1B_GR_2APS_20251215T175440_S20251215T153354_D05.xml" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_GR_L1B/output/PDI_DS_GR_LIST/DB1/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/S2A_OPER_MTD_L1B_GR_2APS_20251215T175440_S20251215T153354_D05.xml" name="Check the consistency of footprint. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">Footprint is valid.</message>
+                    <extraValues>
+                        <value name="UL">1.54482945363154,104.332436865087, -0.329747460348905</value>
+                        <value name="LL">1.75871025559406,104.285356095102, -0.141424380407216</value>
+                        <value name="LR">1.70655770944304,104.063211487323, 27.975721875098</value>
+                        <value name="UR">1.49267232890318,104.110310613357, 21.202994556443</value>
+                        <value name="DISTANCE(UL,UR)">0.22816756423197074</value>
+                        <value name="DISTANCE(LL,LR)">0.22818438779925385</value>
+                        <value name="DISTANCE(UL,LL)">0.21900136152661542</value>
+                        <value name="DISTANCE(UR,LR)">0.21900977987717166</value>
+                    </extraValues>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:11.289Z" duration="254" execution="2025-12-15T18:15:11.314Z" id="Granule_Dimensions_60m" item="S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_GR_L1B/output/PDI_DS_GR_LIST/DB1/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/" name="Check the 60m consistency of granules/tiles. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">60m resolution granules/tiles dimensions are correct.</message>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:11.570Z" duration="179" execution="2025-12-15T18:15:11.580Z" id="Granule_Dimensions_20m" item="S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_GR_L1B/output/PDI_DS_GR_LIST/DB1/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/" name="Check the 20m consistency of granules/tiles. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">20m resolution granules/tiles dimensions are correct.</message>
+                </check>
+                <check>
+                    <inspection creation="2025-12-15T18:15:11.761Z" duration="146" execution="2025-12-15T18:15:11.770Z" id="Granule_Dimensions_10m" item="S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11" itemURL="/mnt/nfs-l1-01/l1-processing/processing-id-37550-2025-12-15-18-05-05/TaskTable_20251215T180506/FORMAT_METADATA_GR_L1B/output/PDI_DS_GR_LIST/DB1/S2A_OPER_MSI_L1B_GR_2APS_20251215T175440_S20251215T153354_D05_N05.11/" name="Check the 10m consistency of granules/tiles. " priority="5" processingStatus="done" status="PASSED"/>
+                    <message contentType="text/plain">10m resolution granules/tiles dimensions are correct.</message>
+                </check>
+            </checkList>
+        </report>
+    </Data_Block>
+</Earth_Explorer_File>
