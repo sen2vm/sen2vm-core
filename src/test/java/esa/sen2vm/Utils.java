@@ -66,7 +66,11 @@ public class Utils {
     {
 
         Configuration configFile = new Configuration(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
         ArrayList<Granule> granules = sm.getGranules();
@@ -97,7 +101,11 @@ public class Utils {
     {
 
         Configuration configFile = new Configuration(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
         ArrayList<Granule> granules = sm.getGranules();
@@ -123,8 +131,22 @@ public class Utils {
 
     public static void verifyDirectLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
     {
+        verifyDirectLoc(configFilepath, outputRef, THRESHOLD_DIR, true);
+    }
+
+    public static void verifyDirectLoc(String configFilepath, String outputRef, double threshold) throws Sen2VMException, IOException
+    {
+        verifyDirectLoc(configFilepath, outputRef, threshold, true);
+    }
+
+    public static void verifyDirectLoc(String configFilepath, String outputRef, double threshold, boolean expected) throws Sen2VMException, IOException
+    {
         Configuration configFile = new Configuration(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
         ArrayList<Granule> granules = sm.getGranules();
@@ -137,22 +159,36 @@ public class Utils {
                 if (grid != null) {
                     int len = grid.toPath().getNameCount();
                     String refGrid = outputRef + File.separator + grid.toPath().subpath(len - 4, len);
-                    assertEquals(imagesEqualDirect(grid.toString(), refGrid,THRESHOLD_DIR), true);
+                    assertEquals(imagesEqualDirect(grid.toString(), refGrid, threshold), expected);
                 }
                 b = b + 1;
             }
-         }
-     }
+        }
+    }
 
     public static void verifyInverseLoc(String configFilepath, String outputRef) throws Sen2VMException, IOException
     {
-        verifyInverseLoc(configFilepath, outputRef, THRESHOLD_INV);
+        verifyInverseLoc(configFilepath, outputRef, THRESHOLD_INV, true);
     }
 
     public static void verifyInverseLoc(String configFilepath, String outputRef, double threshold) throws Sen2VMException, IOException
     {
+        verifyInverseLoc(configFilepath, outputRef, threshold,true);
+    }
+
+    public static void verifyInverseLoc(String configFilepath, String outputRef, boolean expected) throws Sen2VMException, IOException
+    {
+        verifyInverseLoc(configFilepath, outputRef, THRESHOLD_INV, expected);
+    }
+
+    public static void verifyInverseLoc(String configFilepath, String outputRef, double threshold, boolean expected) throws Sen2VMException, IOException
+    {
         Configuration configFile = new Configuration(configFilepath);
-        DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
         SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
         File[][] outputGrids = sm.getInverseGrids(configFile.getInverseLocOutputFolder());
         File[][] refGrids = sm.getInverseGrids(outputRef);
@@ -166,7 +202,7 @@ public class Utils {
                 if (outputGrids[d][b] != null) {
                     File outputGrid = outputGrids[d][b];
                     File refGrid = refGrids[d][b];
-                    assertEquals(imagesEqualInverse(outputGrid.toString(), refGrid.toString(), threshold, res), true);
+                    assertEquals(imagesEqualInverse(outputGrid.toString(), refGrid.toString(), threshold, res), expected);
                 }
             }
         }
@@ -176,6 +212,7 @@ public class Utils {
 
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
+        LOGGER.info("Comparing: " +  img1Path + " with " + img2Path);
         if (ds1.GetRasterCount() == ds2.GetRasterCount() && ds1.getRasterXSize() == ds2.getRasterXSize() && ds1.getRasterYSize() == ds2.getRasterYSize()) {
 
             for(int b = 1; b <= ds1.GetRasterCount(); b++)
@@ -231,6 +268,7 @@ public class Utils {
             new FileWriter("/output/directory")
         );
 
+        LOGGER.info("Comparing: " +  img1Path + " with " + img2Path);
         if (ds1.GetRasterCount() == ds2.GetRasterCount()
             && ds1.getRasterXSize() == ds2.getRasterXSize()
             && ds1.getRasterYSize() == ds2.getRasterYSize()) {

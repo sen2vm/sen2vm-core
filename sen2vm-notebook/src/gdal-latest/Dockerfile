@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     python3-dev \
+    python3-numpy \
+    swig \
     ninja-build \
     libhdf5-dev \
     libnetcdf-dev \
@@ -33,12 +35,12 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev
 
 
-RUN git clone https://github.com/OSGeo/gdal.git /gdal && \
+RUN git clone https://github.com/rouault/gdal.git /gdal && \
     cd /gdal && \
     git fetch --tags && \
     LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`) && \
-    echo "Using GDAL version: $LATEST_TAG" && \
-    git checkout $LATEST_TAG
+    echo "Using GDAL sentinel2_geoloc_missing_granules" && \
+    git checkout sentinel2_geoloc_missing_granules
 
 
 RUN mkdir /gdal/build
@@ -47,7 +49,7 @@ RUN cd /gdal/build && \
     cmake .. \
     -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_PYTHON_BINDINGS=OFF \
+    -DBUILD_PYTHON_BINDINGS=ON \
     -DGDAL_USE_OPENJPEG=ON \
     -DGDAL_USE_TIFF_INTERNAL=ON \
     -DGDAL_USE_GEOTIFF_INTERNAL=ON \

@@ -133,6 +133,13 @@ public class OptionManager
     public static final String OPT_OUTPUT_IMAGE_RES_LONG = "output_image_res";
     public static final String OPT_OUTPUT_IMAGE_RES_SHORT = "or";
 
+    /**
+     * Option for ins raw shifts (pixels)
+     * For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074 
+     */
+    public static final String OPT_DEACTIVATE_INS_RAW_SHIFT_LONG = "ignore_ins_raw_shifts_compensation";
+    public static final String OPT_DEACTIVATE_INS_RAW_SHIFT_SHORT = "is";
+
     /*******************************
      * Options for the params 
      *******************************/
@@ -308,7 +315,12 @@ public class OptionManager
             outputImageRes.setType(Double.class); // TODO  does not seem to work: read as array of String
             outputImageRes.setArgs(3);
             outputImageRes.setRequired(true);
-     
+
+            Option ignore_raw_shifts = new Option(OPT_DEACTIVATE_INS_RAW_SHIFT_SHORT, OPT_DEACTIVATE_INS_RAW_SHIFT_LONG, false,
+                 "(Optional) Deactivate workaround for INS_RAW DATATAKE_TYPE due to https://esa-cams.atlassian.net/browse/GSANOM-22074\n"
+                                          + "if present= \"true\", if not= \"false\".");
+            ignore_raw_shifts.setRequired(false);
+
             // params arguments
             // ------------------
             Option detectors = new Option(OPT_DETECTORS_LIST_SHORT, OPT_DETECTORS_LIST_LONG, true, "(optional) List of detectors to process separated by spaces, example: 01 05 06 10 11");
@@ -334,6 +346,7 @@ public class OptionManager
             optionsNoFile.addOption(noAutoGippSelectionOption);
             optionsNoFile.addOption(overwrite_grids);
             optionsNoFile.addOption(noRefiningOption);
+            optionsNoFile.addOption(ignore_raw_shifts);
             optionsNoFile.addOption(exportAltOption);
             optionsNoFile.addOption(ulxOption);
             optionsNoFile.addOption(ulyOption);

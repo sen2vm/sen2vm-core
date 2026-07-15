@@ -1,13 +1,78 @@
 # Sen2VM Release history
 
-## 1.1.3 (2026-01-06)
+## Merged in main
+
+### Main feature
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * 
+
+* Doc:
+
+  * 
+
+## 1.2.0 (2026-05-04)
+
+### Main feature
+
+Include a shift compensation for acquisition with DATATAKE_TYPE at INS-RAW to compensate https://esa-cams.atlassian.net/browse/GSANOM-22074
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * Issue #73: Include a shift compensation for acquisition with DATATAKE_TYPE at INS-RAW to compensate https://esa-cams.atlassian.net/browse/GSANOM-22074
+
+* Doc:
+
+  * Point to new CDSE official DEM download
+
+## 1.1.4 (2026-02-05)
+
+### Main feature
+
+Notebook using new GDAL handling missing granules, but PDI format no more handled by GDAL for orthorectification
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * Notebook using new GDAL handling missing granules, but PDI format no more handled by GDAL for orthorectification
+
+* Doc:
+
+  * Precision added
+  * Precision to use Compact.SAFE format (using CDSE L1B workflow for example) when using Orthorectification Notebook
+
+## 1.1.3 (2026-01-16)
+
+### Main feature
+
+Improvments of Notebook (cf Fix above)
 
 ### Updates
 
 * Fix:
 
   * Incorrect relative paths between notebook, DEM directory, and Dockerfile
-
+  * Issue #61: Avoid double resampling in mosaic creation - Replaced `gdalwarp` with `gdal_merge.py` for mosaic assembly, added explicit resolution per band (10m, 20m, 60m) for orthorectification, and corrected grid step values (4.5, 2.25, 1 pixels) for sen2vm grid generation
+  * GDAL S2 driver handle DATASTRIP with missing granules #64
+  
 * Feature:
 
   * 

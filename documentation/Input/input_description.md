@@ -4,7 +4,7 @@
 * [Inputs description](../Input/input_description.md)
 
   * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+  * [How to Download Copernicus DEM for Sen2VM](../Input/DEM_CDSE_Download.md)
 
 * Outputs description:
 
@@ -19,7 +19,7 @@
 
 * L1B Product, accessible through **[Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)**. *Please note that special access for L1B products might be required by submitting  a request via the [FAQ section](https://documentation.dataspace.copernicus.eu/FAQ.html).* For detailed download instructions, see **[How to Download L1B Data from CDSE](L1B_CDSE_Download.md)**.
 * Some GIPP files *(parameters files used in operational production, defining Satellites)*, accessible through **[sen2vm-gipp-database](https://github.com/sen2vm/sen2vm-gipp-database)**
-* Digital Elevation Model (DEM) (COPERNICUS DEM is accessible through **[Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/)**). For detailed download instructions, see **[How to Download DEM Data from CDSE](DEM_CDSE_Download.md)**.
+* Digital Elevation Model (DEM). The recommended source is **[CDSE-Copernicus-DEM-downloader](https://github.com/senbox-org/CDSE-Copernicus-DEM-downloader)**, which provides DEM in the per-square-degree format required by Sen2VM. For detailed download instructions, see **[How to Download Copernicus DEM for Sen2VM](DEM_CDSE_Download.md)**.
 * GEOID model to measure precise surface elevations, **it shall be the one used to generate the DEM you are providing**, an example can accessible through **[sen2vm-core git](../../src/test/resources/DEM_GEOID/)**
 * IERS bulletin that provides data and standards related to Earth rotation and reference frames,  accessible through **[Bulletin A](https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html)**
 * Additional information for configuration.
@@ -27,7 +27,7 @@
 > [!NOTE]
 > The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
 
-Please note that <mark>[Notebooks](TODO)</mark> are available to ease configuration and usage.
+Please note that the <mark>[orthorectification notebook](../../sen2vm-notebook/README_Notebooks.md)</mark> is available to ease configuration and usage.
 
 
 ## 1. Configuration
@@ -51,8 +51,9 @@ Each parameter description can be found in the table below:
 | operation    | string   | **Mandatory** |                                                    In term of operation you can select the following Sen2VM configurations:<ul><li>“direct”: to compute direct location grids</li><li>“inverse”: to compute inverse location grids</li></ul>                                                    |
 | deactivate_available_refining| boolean  | Optional      |                                          If set to false (default), refining information (if available in Datastrip Metadata) are used to correct the model before geolocation, cf. product description in §[L1B Product](#112-refining-information)                                          |
 | export_alt   | boolean  | Optional      |  If set to false (default), direct location grids will include only two bands: **Long/Lat**. If set to true, a third band representing the **Altitude** will also be exported, increasing the output grid size. See product description in §[Direct location grids](../Output/output_direct_loc.md)  |
-| steps       | double    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. |
+| steps       | double    | **Mandatory** | The step is mandatory and must be specified  as one per resolution: “10m_bands”, “20m_bands” & “60m_bands””. Please note that only floating numbers in the format NNNN.DDD are accepted and that the unit is given in pixel for direct location and in metrics of referential system for inverse location. **For direct location grids, the GRID step value cannot be under 1.** |
 | inverse_location_additional_info | | **Mandatory if “inverse”, else useless.**|                                                                                                    For the inverse location additional information please refer to the dedicated table below       |
+| deactivate_ins_raw_shift | boolean | Optional | RAW Products are impacted by an issue creating a shift. To compensate (workaround) those shifts, dedicated GIPP (GIP_PRDLOC) is mandatory for acquisition with DATATAKE_TYPE=INS-RAW. If in future, INS-RAW L1B are corrected, this boolean allows to deactivate the shifts compensation |
 
 
 The field “inverse_location_additional_info” is not required and will be ignored if direct location grids are asked. However, it is mandatory for inverse location grids generation and **Sen2VM will raise an error** if this information is missing.
@@ -69,7 +70,7 @@ The field “inverse_location_additional_info” is not required and will be ign
 > [!NOTE]
 > Inverse location grids footprint will enclose desired product footprint [ul_x, ul_y, lr_x, lr_y]. 
 
-Those parameters can be sent to Sen2 VM:
+Those parameters can be sent to Sen2VM:
 
 * either by setting each argument in a command line see [HOWTO](../Usage/HOWTO.md)
 * either using an input configuration file in  [JSON format](https://en.wikipedia.org/wiki/JSON). An example of configuration file is available at: https://github.com/sen2vm/sen2vm-core/blob/main/src/test/resources/configuration_example.json :
@@ -83,6 +84,9 @@ Those parameters can be sent to Sen2 VM:
 
 > [!IMPORTANT]
 > The expected format is compatible with the SAFE format, i.e. a folder structured as illustrated in the following sections.
+
+> [!NOTE]
+> The [orthorectification notebook](../../sen2vm-notebook/README_Notebooks.md) does not work with products in PDI format. For more information, see the Sentinel-2 Product specification document: [S2-PDGS-CS-DI-PSD-V15.0](https://sentinels.copernicus.eu/documents/d/sentinel/s2-pdgs-cs-di-psd-v15-0).
 
 #### 1.1.1 L1B Product input tree structure
 
@@ -142,6 +146,9 @@ The GIPP folder does not require a specific structure; the system searches throu
 
 If only .tar or .tar.gz archives of the GIPPs are available, the archives are extracted.
 
+> [!CAUTION]
+> Without automatic GIPP selection, the GIPP folder should contain only the required GIPP files. No archive extraction is performed in this mode.
+
 The GIPP required are the following ones:
 * **GIP_VIEDIR**: contains Viewing Direction required by Rugged to create viewing model based on TAN_PSI_X/Y_LIST tags. There is one GIP_VIEDIR file **per band** and each file contains information per **detector** (in the following tags: _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_X_LIST]_ and _[DATA/VIEWING_DIRECTIONS_LIST/VIEWING_DIRECTIONS/TAN_PSI_Y_LIST]_)
 * **GIP_SPAMOD**: contains transformations to apply to viewing direction from tags, available in the _[DATA]_ field:
@@ -163,7 +170,7 @@ For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used.
 #### 1.3.1 DEM
 
 > [!NOTE]
-> DEM can be downloaded at [https://browser.dataspace.copernicus.eu/](https://browser.dataspace.copernicus.eu/). For detailed step-by-step instructions on how to download DEM data from the Copernicus Data Space Browser, please refer to the [How to Download DEM Data from CDSE](DEM_CDSE_Download.md) guide.
+> The recommended way to obtain Copernicus DEM for Sen2VM is the [CDSE-Copernicus-DEM-downloader](https://github.com/senbox-org/CDSE-Copernicus-DEM-downloader) tool, which downloads 1°×1° geocells compatible with Sen2VM. For detailed instructions, see [How to Download Copernicus DEM for Sen2VM](DEM_CDSE_Download.md).
 
 Access to the DEM is provided via a path to a folder containing the dataset. 
 The DEM must meet the following requirements:
@@ -226,7 +233,7 @@ If a field (“detectors” or “bands”) **is missing in** the params.json fi
 * [Inputs description](../Input/input_description.md)
 
   * [How to Download L1B Data from CDSE](../Input/L1B_CDSE_Download.md)
-  * [How to Download DEM Data from CDSE](../Input/DEM_CDSE_Download.md)
+  * [How to Download Copernicus DEM for Sen2VM](../Input/DEM_CDSE_Download.md)
 
 * Outputs description:
 

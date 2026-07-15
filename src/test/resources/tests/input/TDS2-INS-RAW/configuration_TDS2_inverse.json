@@ -1,0 +1,28 @@
+{
+  "l1b_product": "src/test/resources/tests/input/TDS2-INS-RAW/S2A_OPER_PRD_MSIL1B_PDMC_20251216T084518_R097_V20251215T153343_20251215T153354.SAFE/",
+  "gipp_folder": "src/test/resources/tests/input/TDS2-INS-RAW/inputs/GIPP/",
+  "auto_gipp_selection": true,
+  "dem": "src/test/resources/DEM",
+  "geoid": "src/test/resources/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx",
+  "iers": "src/test/resources/tests/input/TDS2-INS-RAW/inputs/IERS/bulletina-xxxviii-050.txt",
+  "operation": "inverse",
+  "deactivate_available_refining": false,
+  "steps": {
+    "10m_bands": 600,
+    "20m_bands": 300,
+    "60m_bands": 100
+  },
+  "export_alt": false,
+  "inverse_location_additional_info": {
+    "ul_x": 213205,
+    "ul_y": 201441,
+    "lr_x": 463639,
+    "lr_y": 89871,
+    "referential": "EPSG:32648",
+    "output_folder": "tmp"
+  },
+"deactivate_ins_raw_shift": true,
+}
+
+
+
