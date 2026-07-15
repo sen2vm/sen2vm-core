@@ -264,10 +264,14 @@ public class Utils {
         boolean isOK = true;
         int errorCount = 0;
 
-        BufferedWriter writer = new BufferedWriter(
-            new FileWriter("/output/directory")
-        );
+        Path outputFile = Paths.get(Paths.get("target").toAbsolutePath().toString() + "/DebugMVN/debugInverse.txt");
+        // Create directory tree if needed
+        Files.createDirectories(outputFile.getParent());
 
+        LOGGER.info("Wrting output comparison errors in: " + outputFile);
+
+        BufferedWriter writer = Files.newBufferedWriter(outputFile);
+        
         LOGGER.info("Comparing: " +  img1Path + " with " + img2Path);
         if (ds1.GetRasterCount() == ds2.GetRasterCount()
             && ds1.getRasterXSize() == ds2.getRasterXSize()
@@ -292,20 +296,32 @@ public class Utils {
 
                 for (int c = 0; c < ds1.getRasterXSize(); c++) {
 
+                    // nan in one grid and value in other grid case
                     if (!(myIsNan(data1b1[c]) == myIsNan(data2b1[c]))) {
 
                         isOK = false;
                         errorCount++;
 
                         writer.write("NaN mismatch at pixel (" + r + "," + c + ")\n");
+                        if (errorCount==1)
+                        {
+                            LOGGER.warning("NaN mismatch at pixel (" + r + "," + c + ")");
+                        }
                         continue;
                     }
 
-                    if (!Double.isNaN(data1b1[c])) {
-
+                    // Values in both grids
+                    if (!(Double.isNaN(data1b1[c])))
+                    {
+                        // Calculation of planar error
                         double diff_column = data1b1[c] - data2b1[c];
+                        double diff_column_2 = diff_column * diff_column; // To be kept as a separated line, 
                         double diff_line = data1b2[c] - data2b2[c];
-                        double diff = Math.sqrt(diff_line * diff_line + diff_column * diff_column);
+                        double diff_line_2 = diff_line * diff_line; // To be kept as a separated line,
+                        double diff = Math.sqrt(diff_line_2 + diff_column_2); // To be kept as a separated line,
+                        // If lines above are not kept all separated, it can lead to comparison errors due to Java optimisation
+                        // Indeed doing a diff of lines numbers that can be very big, but results can be very small
+                        // Then operation on small numbers shall be in a separated lines
                         diff = diff * res;
 
                         if (diff > threshold) {
@@ -323,19 +339,34 @@ public class Utils {
                                 + "(" + data2b2[c] + ", " + data2b1[c] + ") "
                                 + " diff=" + diff + "\n"
                             );
+                            
+                            if (errorCount==1)
+                            {
+                                LOGGER.warning("Pixel (" + r + "," + c + ") → "
+                                + "lat=" + lat + ", lon=" + lon + " → "
+                                + "(" + data1b2[c] + ", " + data1b1[c] + ") vs "
+                                + "(" + data2b2[c] + ", " + data2b1[c] + ") "
+                                + " diff=" + diff + "\n");
+                            }
 
                         }
                     }
                 }
             }
-
+            
+            if (errorCount>1)
+            {
+                LOGGER.warning("[...]");
+            }
             writer.write("\nTotal errors = " + errorCount + "\n");
+            LOGGER.warning("\nTotal errors = " + errorCount + "\n");
 
             writer.close();
 
             return isOK;
         }
 
+        LOGGER.warning("Not same number of bands");
         writer.close();
         return false;
     }
