@@ -20,20 +20,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-
+import java.io.BufferedWriter;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.Configuration;
@@ -253,90 +251,70 @@ public class Utils {
         return false;
      }
 
-    public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, double res) throws IOException {
-
+     public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, double res) throws IOException{
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
-        
-        double[] gt = new double[6];
-        ds1.GetGeoTransform(gt);
-
-        boolean isOK = true;
-        int errorCount = 0;
-
-        BufferedWriter writer = new BufferedWriter(
-            new FileWriter("/output/directory")
-        );
 
         LOGGER.info("Comparing: " +  img1Path + " with " + img2Path);
         if (ds1.GetRasterCount() == ds2.GetRasterCount()
-            && ds1.getRasterXSize() == ds2.getRasterXSize()
-            && ds1.getRasterYSize() == ds2.getRasterYSize()) {
+         && ds1.getRasterXSize() == ds2.getRasterXSize()
+         && ds1.getRasterYSize() == ds2.getRasterYSize())
+        {
 
             Band ds1b1 = ds1.GetRasterBand(1);
             Band ds1b2 = ds1.GetRasterBand(2);
             Band ds2b1 = ds2.GetRasterBand(1);
             Band ds2b2 = ds2.GetRasterBand(2);
 
-            for (int r = 0; r < ds1.getRasterYSize(); r++) {
+            for(int r = 0; r < ds1.getRasterYSize(); r++) {
 
                 double[] data1b1 = new double[ds1.getRasterXSize()];
-                double[] data1b2 = new double[ds1.getRasterXSize()];
-                double[] data2b1 = new double[ds1.getRasterXSize()];
-                double[] data2b2 = new double[ds1.getRasterXSize()];
-
                 ds1b1.ReadRaster(0, r, ds1.getRasterXSize(), 1, data1b1);
+                double[] data1b2 = new double[ds1.getRasterXSize()];
                 ds1b2.ReadRaster(0, r, ds1.getRasterXSize(), 1, data1b2);
+
+                double[] data2b1 = new double[ds1.getRasterXSize()];
                 ds2b1.ReadRaster(0, r, ds1.getRasterXSize(), 1, data2b1);
+                double[] data2b2 = new double[ds1.getRasterXSize()];
                 ds2b2.ReadRaster(0, r, ds1.getRasterXSize(), 1, data2b2);
 
-                for (int c = 0; c < ds1.getRasterXSize(); c++) {
+                for(int c = 0; c < ds1.getRasterXSize(); c++) {
 
-                    if (!(myIsNan(data1b1[c]) == myIsNan(data2b1[c]))) {
-
-                        isOK = false;
-                        errorCount++;
-
-                        writer.write("NaN mismatch at pixel (" + r + "," + c + ")\n");
-                        continue;
+                    // nan in one grid and value in other grid case
+                    if (!(myIsNan(data1b1[c]) == myIsNan(data2b1[c])))
+                    {
+                        return false;
                     }
 
-                    if (!Double.isNaN(data1b1[c])) {
+                    // values in both grids
+                    if (!(Double.isNaN(data1b1[c]))) {
 
+                        // Calculation planar error
                         double diff_column = data1b1[c] - data2b1[c];
+                        double diff_column_2 = diff_column * diff_column;
                         double diff_line = data1b2[c] - data2b2[c];
-                        double diff = Math.sqrt(diff_line * diff_line + diff_column * diff_column);
+                        double diff_line_2 = diff_line * diff_line;
+                        double diff = Math.sqrt(diff_line_2 + diff_column_2);
                         diff = diff * res;
 
                         if (diff > threshold) {
-
-                            isOK = false;
-                            errorCount++;
-
-                            double lon = gt[0] + c * gt[1] + r * gt[2];
-                            double lat = gt[3] + c * gt[4] + r * gt[5];
-
-                            writer.write(
-                                "Pixel (" + r + "," + c + ") → "
-                                + "lat=" + lat + ", lon=" + lon + " → "
-                                + "(" + data1b2[c] + ", " + data1b1[c] + ") vs "
-                                + "(" + data2b2[c] + ", " + data2b1[c] + ") "
-                                + " diff=" + diff + "\n"
-                            );
-
+                            LOGGER.warning("Error in " + img1Path);
+                            String error = "(" + String.valueOf(data1b2[c]) + ", " + String.valueOf(data1b1[c])  + ")";
+                            error = error + " vs (" + String.valueOf(data2b2[c]) + ", " + String.valueOf(data2b1[c]) + ")";
+                            error = error + " = " + String.valueOf(diff);
+                            LOGGER.warning("Coordinates (" + String.valueOf(r) + "," + String.valueOf(c) + "): " + error);
+                            LOGGER.warning("Row total number :" + String.valueOf(ds1.getRasterYSize()) + ", Columns" + String.valueOf(ds1.getRasterXSize()) + ".");
+                            LOGGER.warning("Files(" + img1Path + " versus " + img2Path + ".");
+                            return false;
                         }
                     }
+
                 }
             }
 
-            writer.write("\nTotal errors = " + errorCount + "\n");
-
-            writer.close();
-
-            return isOK;
+            return true;
         }
-
-        writer.close();
         return false;
     }
+
 }
