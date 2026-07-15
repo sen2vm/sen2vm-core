@@ -45,7 +45,7 @@ The project is designed and tested on **Linux**. It may not work reliably on **W
 
 * Required data:
   
-  * **Sentinel-2 L1B product** : /DATASTRIP and /GRANULE.  
+  * **Sentinel-2 L1B product**: /DATASTRIP and /GRANULE.  
   * **DEM files**
 
 ## Mandatory Directory Structure
@@ -54,8 +54,8 @@ Only a `WORKDIR` folder is required. All outputs, as well as intermediate files 
 
 ## Inputs
 
-Several inputs are needed :
-* L1B S2 product under EUP.SAFE format :
+Several inputs are needed:
+* L1B S2 product under EUP.SAFE format:
 ```bash
  <L1B_product>/
     ├── DATASTRIP  # Required
@@ -96,7 +96,7 @@ WORKDIR
 
 ## Python Environment Setup
 
-In the notebook directory create your venv :
+In the notebook directory create your venv:
 
 ```bash
 python3 -m venv .venv
@@ -108,16 +108,16 @@ Select the virtual environment kernel in your Jupyter session.
 
 ## Notebooks Configuration
 
-In **inputs-download-notebook.ipynb** :
-In the first cell of the notebook :
+In **inputs-download-notebook.ipynb**:
+In the first cell of the notebook:
 
 1. Set the paths to:
 
    * The directory where you want the GIPP files to be downloaded  
    * The directory where you want the GEOID files to be downloaded  
 
-In **notebook-direct-grid.ipynb** or in **notebook-inverse-grid.ipynb** :
-In the first cell of the notebook :
+In **notebook-direct-grid.ipynb** or in **notebook-inverse-grid.ipynb**:
+In the first cell of the notebook:
 
 1. Set the absolute paths to:
 
@@ -139,13 +139,13 @@ In the first cell of the notebook :
 ## Processing Steps
 
 If you do not have your own GIPP and GEOID files, or if they are not already downloaded,
-execute the **inputs-download-notebook.ipynb** cell by cell in the following order :
+execute the **inputs-download-notebook.ipynb** cell by cell in the following order:
 
 1. Path definitions
 2. Clone `sen2vm-gipp`, and manage GIPP assets  
 3. Copy `Geoid` folder from `"*/sen2vm-core/src/test/resources/DEM_GEOID"`
 
-Then if you want to use the direct grids, which  may be longer, execute the **notebook-direct-grid.ipynb** cell by cell :
+Then if you want to use the direct grids, which  may be longer, execute the **notebook-direct-grid.ipynb** cell by cell:
 
 1. Variable and path definitions 
 2. Automatic download of the IERS bulletin if none is provided by the user
@@ -158,14 +158,14 @@ Then if you want to use the direct grids, which  may be longer, execute the **no
     * Mosaicking by band that generate an image in `WORKDIR/DIRECT/GDAL_OUTPUT_MOSAIC`
  
 
-If you want to use the inverse grids, execute the **notebook-inverse-grid.ipynb** cell by cell :
+If you want to use the inverse grids, execute the **notebook-inverse-grid.ipynb** cell by cell:
 
 1. Variable and path definitions 
 2. Automatic download of the IERS bulletin if none is provided by the user
 3. Generation of `config.json` in: `/WORKDIR/UserConf`
 4. Generation of `params.json` in: `/WORKDIR/UserConf`
 5. Execution of sen2vm inside Docker to generate the inverse grids in `WORKDIR/output/INVERSE/INVERSE_GRID` 
-6. Orthorectification using OTB inside a docker then mosaicking using GDAL :
+6. Orthorectification using OTB inside a docker then mosaicking using GDAL:
 
     * Orthorectification by band 
     * Mosaicking  
