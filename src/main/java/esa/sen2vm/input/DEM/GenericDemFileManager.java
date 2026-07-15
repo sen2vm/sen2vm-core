@@ -35,8 +35,6 @@ import org.gdal.gdalconst.gdalconstConstants;
 
 import org.sxgeo.input.dem.SrtmFileManager;
 
-// import com.sun.tools.javac.util.List;
-
 import org.sxgeo.exception.SXGeoException;
 
 import esa.sen2vm.exception.Sen2VMException;
@@ -157,8 +155,7 @@ public class GenericDemFileManager extends SrtmFileManager
         int latFloor = (int)FastMath.floor(FastMath.toDegrees(latitude));
         int lonFloor = (int)FastMath.floor(FastMath.toDegrees(longitude));
 
-        // LOGGER.finer("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
-        LOGGER.info("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
+        LOGGER.finer("Searching DEM Tile for lat " + FastMath.toDegrees(latitude) + " lon " + FastMath.toDegrees(longitude));
 
         // when close to the anti-meridian
         if (lonFloor >= 180)

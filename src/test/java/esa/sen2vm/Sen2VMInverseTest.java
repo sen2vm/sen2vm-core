@@ -337,10 +337,10 @@ public class Sen2VMInverseTest
     public void testInverseDem()
     {
         String[] detectors = new String[]{"08"};
-        // String[] bands = new String[]{"B01", "B02"};
-        // String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4", "dem_5"};
-        String[] bands = new String[]{"B01"};
-        String[] testsDem = new String[]{"dem_4", "dem_5"};
+        String[] bands = new String[]{"B01", "B02"};
+        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4", "dem_5", "dem_6"};
+        // String[] bands = new String[]{"B01"};
+        // String[] testsDem = new String[]{"dem_4", "dem_5"};
         int stepBand10m = 6000;
 
 
@@ -377,8 +377,8 @@ public class Sen2VMInverseTest
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
 
-                // Utils.verifyInverseLoc(config, outputDir_ref);
-                Utils.verifyInverseLoc(config, outputDir_ref, 0.02);
+                Utils.verifyInverseLoc(config, outputDir_ref);
+                // Utils.verifyInverseLoc(config, outputDir_ref, 0.02);
             }
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
