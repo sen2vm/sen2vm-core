@@ -349,7 +349,7 @@ public class Sen2VMDirectTest
     @Test
     public void testDirectDem()
     {
-        String[] detectors = new String[]{"01"};
+        String[] detectors = new String[]{"08"};
         String[] bands = new String[]{"B01"};
         String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4", "dem_5", "dem_6"};
         int stepBand10m = 600; // corresponding to 6 kms
