@@ -368,7 +368,7 @@ public class Sen2VMInverseTest
     @Test
     public void testInverseDem()
     {
-        String[] detectors = new String[]{"06"};
+        String[] detectors = new String[]{"08"};
         String[] bands = new String[]{"B01", "B02"};
         String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4", "dem_5", "dem_6"};
         // String[] bands = new String[]{"B01"};
