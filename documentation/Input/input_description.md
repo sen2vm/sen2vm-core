@@ -174,8 +174,11 @@ For this, as Sen2VM uses SXGEO (OREKIT/RUGGED), a GEOID and a DEM shall be used.
 
 Access to the DEM is provided via a path to a folder containing the dataset. 
 The DEM must meet the following requirements:
- * it should be split into files or folders (dynamically read) per square degrees,
- * each DEM file (per square degree) shall be readable by gdal.  
+
+ * it can be split into files or folders (dynamically read),
+ * each DEM file shall be readable by gdal.  
+
+Sen2VM also handles mosaic of square degree DEM.
 
  Examples of DEM structures can be found in [/src/test/resources/DEM/](/src/test/resources/DEM)
 
