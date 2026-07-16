@@ -22,6 +22,9 @@ import org.apache.commons.cli.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import java.util.Arrays;
+
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +47,7 @@ import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.Configuration;
-import esa.sen2vm.input.GenericDemFileManager;
+import esa.sen2vm.input.DEM.GenericDemFileManager;
 import esa.sen2vm.input.OptionManager;
 import esa.sen2vm.input.Params;
 import esa.sen2vm.input.datastrip.DataStripManager;
@@ -181,7 +184,6 @@ public class Sen2VM
 
             //Using Sen2VM FileManager
             GenericDemFileManager demFileManager = new GenericDemFileManager(config.getDem());
-            demFileManager.buildMap(config.getDem());
 
             GeoidManager geoidManager = new GeoidManager(config.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
@@ -260,11 +262,11 @@ public class Sen2VM
             // Test if no grids exists already
             if (config.getOperation().equals(Sen2VMConstants.DIRECT))
             {
-                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands) ;
+                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
             }
             else
             {
-                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder()) ;
+                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
             }
 
             for (BandInfo bandInfo: bands)
@@ -339,7 +341,6 @@ public class Sen2VM
                         // Correction post build VRT
                         outputFileManager.correctGeoGrid(inputTIFs);
                         outputFileManager.correctVRT(vrtFileName);
-
                     }
 
                     // Inverse Loc case
@@ -352,6 +353,7 @@ public class Sen2VM
                         double[][] groundGrid = invGrid.get2DgridLatLon();
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
+
                         double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, georefConventionOffsetPixel, -georefConventionOffsetLine);
 
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());
@@ -372,11 +374,11 @@ public class Sen2VM
             }
             outputFileManager.writeInfoJson(config, bands, detectors, outputConfigPath);
         }
-        catch ( IOException exception )
+        catch (IOException exception)
         {
             throw new Sen2VMException(exception);
         }
-        catch ( SXGeoException exception )
+        catch (SXGeoException exception)
         {
             String newMessage = "";
             if(exception.toString().contains("Cant find bundle for base name S2GeoMessages"))
