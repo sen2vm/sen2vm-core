@@ -97,8 +97,9 @@ public class GIPPFileManager
         }
     }
 
-    public static List<File> searchGIPFilesFromRegex(Path root, String dirNameRegex, String fileNameRegex, List<String> validExtensions) throws IOException {
-                final Pattern dirPattern = Pattern.compile(dirNameRegex);
+    public static List<File> searchGIPFilesFromRegex(Path root, String dirNameRegex, String fileNameRegex, List<String> validExtensions) throws IOException
+    {
+        final Pattern dirPattern = Pattern.compile(dirNameRegex);
         final Pattern filePattern = Pattern.compile(fileNameRegex);
         final List<File> results = new ArrayList<>();
         // Stack indicating whether we are currently in a qualified subtree
