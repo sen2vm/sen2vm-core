@@ -155,7 +155,7 @@ public class Sen2VMCheckPointTest
 
             LineSensor lineSensor = ruggedManager.getLineSensor("B01/D01");
             String date = lineSensor.getDate(0.5).toString(TimeScalesFactory.getGPS());
-            LOGGER.info("date line 0.5:" + date);
+            LOGGER.info("date line 0.5: " + date);
 
             assertEquals(date, "2020-08-16T12:02:45.812731");
         } catch ( SXGeoException e ) {

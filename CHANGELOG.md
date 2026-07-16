@@ -1,6 +1,6 @@
 # Sen2VM Release history
 
-## Merged in main
+## Merged in main (1.3.0.rc2)
 
 ### Main feature
 
@@ -12,11 +12,17 @@
 
 * Feature:
 
-  * 
+  * Handle mosaic DEM (multiple square degrees): #62
 
 * Doc:
 
-  * 
+  * Notebooks improvements:
+
+    * Separate static input download in a dedicated notebook (#56)
+    * Allow more flexible input structure with separated input locations (#56)
+    * Creation of a Notebook for Inverse location (#54)
+    * Allow using OTB instead of gdal in direct location Notebook (through a new notebook)
+
 
 ## 1.2.0 (2026-05-04)
 

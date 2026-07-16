@@ -97,8 +97,9 @@ public class GIPPFileManager
         }
     }
 
-    public static List<File> searchGIPFilesFromRegex(Path root, String dirNameRegex, String fileNameRegex, List<String> validExtensions) throws IOException {
-                final Pattern dirPattern = Pattern.compile(dirNameRegex);
+    public static List<File> searchGIPFilesFromRegex(Path root, String dirNameRegex, String fileNameRegex, List<String> validExtensions) throws IOException
+    {
+        final Pattern dirPattern = Pattern.compile(dirNameRegex);
         final Pattern filePattern = Pattern.compile(fileNameRegex);
         final List<File> results = new ArrayList<>();
         // Stack indicating whether we are currently in a qualified subtree
@@ -225,7 +226,7 @@ public class GIPPFileManager
                                 }
                                 catch(IOException e)
                                 {
-                                    LOGGER.warning("The targz extraction of GIPP has failed:"+file.toString());
+                                    LOGGER.warning("The targz extraction of GIPP has failed: "+file.toString());
                                     e.printStackTrace();
                                 }
                             }
@@ -266,7 +267,7 @@ public class GIPPFileManager
         final List<File> results = findGippFiles(root, dirNameRegex, gippList, fileNameRegex, validExtensions);
         if(results.size()==0)
         {
-            throw new Sen2VMException("The directory must be contains keyword:"+fileNameRegex); 
+            throw new Sen2VMException("The directory must be contains keyword: "+fileNameRegex); 
         }
         else if(results.size()>1)
         {

@@ -160,7 +160,7 @@ public class Sen2VMDirectTest
             String config = Config.configAutoGippSelection(configTmpDirectTDS1, GIPP_2, true, outputDir);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
-            LOGGER.info("config:"+config);
+            LOGGER.info("config: "+config);
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
         } catch (Sen2VMException e) {
@@ -202,7 +202,7 @@ public class Sen2VMDirectTest
             String config = Config.configAutoGippSelection(configTmpDirectTDS1, GIPP_2, true, outputDir);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
-            LOGGER.info("config:"+config);
+            LOGGER.info("config: "+config);
             Sen2VM.main(args);
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
             LOGGER.warning("Expecting an error.");
