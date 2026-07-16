@@ -54,13 +54,15 @@ public class Configuration extends InputFileManager
     private double step_band20m;
     private double step_band60m;
     private boolean exportAlt = Sen2VMConstants.EXPORT_ALT;
+    //Only for inverse location
     private double ul_x;
     private double ul_y;
     private double lr_x;
     private double lr_y;
     private String referential;
     private String outputFolder;
-
+    //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074
+    private boolean ignoreInsRawShifts = false;
 
     /**
      * Constructor
@@ -151,6 +153,17 @@ public class Configuration extends InputFileManager
             this.lr_x =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
             this.lr_y =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
             this.outputFolder = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_OUTPUT_FOLDER_SHORT));
+        }
+
+        //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074 
+        // By default we want to keep the shifts.
+        if (commandLine.hasOption(OptionManager.OPT_DEACTIVATE_INS_RAW_SHIFT_SHORT))
+        {
+            this.ignoreInsRawShifts = true;
+        }
+        else
+        { // We keep the shifts
+            this.ignoreInsRawShifts = false;
         }
     }
 
@@ -254,6 +267,12 @@ public class Configuration extends InputFileManager
                        throw new Sen2VMException("Error when initializing inverse_location_additional_info", e);
                    }
                 }
+            }
+
+            // Check the type of location: direct or inverse
+            if (jsonObject.has("deactivate_ins_raw_shift"))
+            {
+                this.ignoreInsRawShifts = jsonObject.getBoolean("deactivate_ins_raw_shift");
             }
         }
         catch (JSONException | IOException e)
@@ -441,5 +460,14 @@ public class Configuration extends InputFileManager
     public String getInverseLocOutputFolder()
     {
         return this.outputFolder;
+    }
+
+    /**
+     * Get boolean if shifts for INS-RAW are defined
+     * @return boolean if shifts for INS-RAW are defined
+     */
+    public boolean getIgnoreInsRawShifts()
+    {
+       return this.ignoreInsRawShifts;
     }
 }

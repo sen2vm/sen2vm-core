@@ -93,6 +93,7 @@ import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_POLYNOMIAL_MODEL
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_ROTATION_TRANSLATION_HOMOTHETY_UNCERTAINTIES_TYPE_LOWER_CASE;
 import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_datastrip_metadata.Level1B_DataStrip;
 
+
 /**
  * Manager for Datastrip directory
  */
@@ -112,6 +113,11 @@ public class DataStripManager
      * Datastrip for L1B
      */
     protected Level1B_DataStrip l1B_datastrip = null;
+
+    /**
+     * DATATAKE_TYPE
+     */
+    protected boolean isRaw = false;
 
     /**
      * Sensor configuration
@@ -194,10 +200,12 @@ public class DataStripManager
      * @throws Sen2VMException
      */
     public DataStripManager(String dsFilePath, String iersFilePath,
-                            Boolean activateAvailableRefining) throws Sen2VMException
+                            Boolean activateAvailableRefining, Boolean deactivateRawShift) throws Sen2VMException
     {
         this.dsFile = new File(dsFilePath);
+
         gps = TimeScalesFactory.getGPS();
+        this.isRaw = deactivateRawShift;
         loadFile(dsFilePath, iersFilePath, activateAvailableRefining);
     }
 
@@ -237,6 +245,18 @@ public class DataStripManager
             File datastripFile = new File(dsFilePath);
             JAXBElement<Level1B_DataStrip> jaxbElement = (JAXBElement<Level1B_DataStrip>) jaxbUnmarshaller.unmarshal(datastripFile);
             l1B_datastrip = jaxbElement.getValue();
+
+            Boolean isRawDatastrip = (l1B_datastrip.getGeneral_Info().getDatatake_Info().getDATATAKE_TYPE().value() == "INS-RAW");
+            if (isRawDatastrip)
+            {
+                LOGGER.info("DATATAKE_TYPE is INS-RAW");
+            }else{
+                LOGGER.info("DATATAKE_TYPE is NOT INS-RAW");
+            }
+            //this.isRaw is containing deactivate raw shifts
+            if (this.isRaw & isRawDatastrip)
+                LOGGER.info("Deactivation of INS-RAW shifts");
+            this.isRaw = (isRawDatastrip && !this.isRaw);
 
             sensorConfiguration = l1B_datastrip.getImage_Data_Info().getSensor_Configuration();
 
@@ -382,6 +402,9 @@ public class DataStripManager
                 A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleVAngle = iersBulletin.getPOLE_V_ANGLE();
 
                 XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
+
+
+
                 AbsoluteDate datastripStartDateUTC = new AbsoluteDate(datastripStartDateGregorian.toString(), TimeScalesFactory.getUTC());
                 int year = datastripStartDateUTC.getComponents(TimeScalesFactory.getUTC()).getDate().getYear();
 
@@ -892,7 +915,7 @@ public class DataStripManager
      * @param detectorIndex the detector index
      * @return
      */
-    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo)
+    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo, int rawshift) throws Sen2VMException
     {
         AbsoluteDate referenceDate = null;
         double referenceLineDouble = 1d;
@@ -931,6 +954,14 @@ public class DataStripManager
                                     referenceDate = new AbsoluteDate(referenceDateXML.toString(), gps);
                                     // We shift the date of a half line period to be in the middle of the line
                                     referenceDate = referenceDate.shiftedBy(halfLinePeriod / 1000d);
+
+                                    // Apply shift workaround due to https://esa-cams.atlassian.net/browse/GSANOM-22074 for INS-RAW
+                                    if(isRaw)
+                                    {
+                                        LOGGER.info("Applying shift as DATATAKE_TYPE is INS-RAW:" + rawshift + " for " + detectorInfo.getNameWithD() + "-" + bandInfo.getNameWithB());
+                                        // referenceDate = referenceDate.shiftedBy( rawshift * (bandInfo.getPixelHeight()/10) * 2 * halfLinePeriod / 1000d);
+                                        referenceDate = referenceDate.shiftedBy( rawshift * 2 * halfLinePeriod / 1000d);
+                                    }
                                 }
                                 else
                                 {
@@ -1015,5 +1046,13 @@ public class DataStripManager
     public RefiningInfo getRefiningInfo()
     {
         return refiningInfo;
+    }
+
+    /**
+     * @return isRaw
+     */
+    public boolean getIsRaw()
+    {
+        return isRaw;
     }
 }

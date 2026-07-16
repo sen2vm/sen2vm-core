@@ -9,9 +9,9 @@
   "deactivate_available_refining": false,
   "export_alt": false,
   "steps": {
-    "10m_bands": 45,
-    "20m_bands": 90,
-    "60m_bands": 270
+    "10m_bands": 4.5,
+    "20m_bands":4.5 ,
+    "60m_bands": 9
   },
   "inverse_location_additional_info": {
     "ul_x": 15000,
@@ -20,7 +20,8 @@
     "lr_y": 7000,
     "referential": "EPSG:4326",
     "output_folder": "PATH_TO_OUTPUT_FOLDER_FOR_INVERSE_LOCATION_GRIDS"
-  }
+  },
+  "deactivate_ins_raw_shift": false,
 }
 
 

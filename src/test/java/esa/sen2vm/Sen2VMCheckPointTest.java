@@ -78,7 +78,7 @@ public class Sen2VMCheckPointTest
         try
         {
             String nameTest = "direct_first_line_" + Integer.toString(step);
-            String outputDir = Config.createTestDir(nameTest, "direct");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
             String config = Config.config(configTmpDirect, outputDir, step, "direct", false);
             String param = Config.changeParams(paramTmp, new String[]{"01"}, new String[]{"B01"}, outputDir);
 
@@ -87,7 +87,11 @@ public class Sen2VMCheckPointTest
             detectors.add(DetectorInfo.getDetectorInfoFromName("01"));
             List<BandInfo> bands = new ArrayList<BandInfo>();
             bands.add(BandInfo.getBandInfoFromNameWithB("B01"));
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+            DataStripManager dataStripManager = new DataStripManager(
+                                                    configFile.getDatastripFilePath(),
+                                                    configFile.getIers(),
+                                                    !configFile.getDeactivateRefining(),
+                                                    configFile.getIgnoreInsRawShifts());
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
 
             // Build sensor list
@@ -96,7 +100,7 @@ public class Sen2VMCheckPointTest
             for (DetectorInfo detectorInfo: detectors) {
                 for (BandInfo bandInfo: bands) {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
+                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo,gippManager.getRawShifts(bandInfo, detectorInfo));
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
                     SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
@@ -212,7 +216,11 @@ public class Sen2VMCheckPointTest
             bands.add(BandInfo.getBandInfoFromNameWithB("B01"));
 
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+            DataStripManager dataStripManager = new DataStripManager(
+                                                    configFile.getDatastripFilePath(),
+                                                    configFile.getIers(),
+                                                    !configFile.getDeactivateRefining(),
+                                                    configFile.getIgnoreInsRawShifts());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
@@ -241,7 +249,7 @@ public class Sen2VMCheckPointTest
                 for (BandInfo bandInfo: bands)
                 {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
+                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo, gippManager.getRawShifts(bandInfo, detectorInfo));
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
                     SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
@@ -310,7 +318,7 @@ public class Sen2VMCheckPointTest
             for (BandInfo bandInfo: bands)
             {
                 SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
+                LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo,gippManager.getRawShifts(bandInfo, detectorInfo));
                 SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
                 SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
                 SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
@@ -381,7 +389,11 @@ public class Sen2VMCheckPointTest
             bands.add(BandInfo.getBandInfoFromNameWithB(band));
 
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+            DataStripManager dataStripManager = new DataStripManager(
+                                                    configFile.getDatastripFilePath(),
+                                                    configFile.getIers(),
+                                                    !configFile.getDeactivateRefining(),
+                                                    configFile.getIgnoreInsRawShifts());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(configFile.getGippFolder(), bands, dataStripManager, configFile.getGippVersionCheck());
@@ -410,7 +422,7 @@ public class Sen2VMCheckPointTest
                 for (BandInfo bandInfo: bands)
                 {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
+                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo, gippManager.getRawShifts(bandInfo, detectorInfo));
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
                     SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);

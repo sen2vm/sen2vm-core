@@ -103,6 +103,21 @@ public enum DetectorInfo
     }
 
     /**
+     * Get DetectorInfo from detector number
+     * @param detectorNumber detector number (from 1 to 12)
+     * @return the detector having the given number (from 1 to 12). Null if not found
+     */
+    public static DetectorInfo getDetectorInfoFromNumber(int detectorNumber)
+    {
+        int nbDetector = DetectorInfo.values().length;
+        if (detectorNumber <= 0 || detectorNumber > nbDetector)
+        {
+            return null;
+        }
+        return DetectorInfo.values()[detectorNumber - 1];
+    }
+
+    /**
      * @return the index
      */
     public int getIndex()
