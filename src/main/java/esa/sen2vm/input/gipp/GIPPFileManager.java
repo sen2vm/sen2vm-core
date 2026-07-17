@@ -267,7 +267,14 @@ public class GIPPFileManager
         final List<File> results = findGippFiles(root, dirNameRegex, gippList, fileNameRegex, validExtensions);
         if(results.size()==0)
         {
-            throw new Sen2VMException("The directory must be contains keyword: "+fileNameRegex); 
+            if (gippList.size() > 0)
+            {
+                throw new Sen2VMException("GIPP directory(ies) for GIPP type " + fileNameRegex + " must match GIPP list from Datastrip Metadata: " + Arrays.toString(gippList.toArray()));
+            }
+            else
+            {
+                throw new Sen2VMException("GIPP directory(ies) must contains at list one GIPP of type: " + fileNameRegex);
+            }
         }
         else if(results.size()>1)
         {
