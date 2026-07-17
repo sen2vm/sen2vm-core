@@ -265,15 +265,15 @@ public class GIPPFileManager
      */
     public static File findGippFile(Path root, String dirNameRegex, List<String> gippList, String fileNameRegex, List<String> validExtensions) throws IOException, Sen2VMException {
         final List<File> results = findGippFiles(root, dirNameRegex, gippList, fileNameRegex, validExtensions);
-        if(results.size()==0)
+        if(results.isEmpty())
         {
-            if (gippList.size() > 0)
+            if (gippList.isEmpty())
             {
-                throw new Sen2VMException("GIPP directory(ies) for GIPP type " + fileNameRegex + " must match GIPP list from Datastrip Metadata: " + Arrays.toString(gippList.toArray()));
+                throw new Sen2VMException("GIPP directory(ies) must contains at list one GIPP of type: " + fileNameRegex);                
             }
             else
             {
-                throw new Sen2VMException("GIPP directory(ies) must contains at list one GIPP of type: " + fileNameRegex);
+                throw new Sen2VMException("GIPP directory(ies) for GIPP type " + fileNameRegex + " must match GIPP list from Datastrip Metadata: " + Arrays.toString(gippList.toArray()));
             }
         }
         else if(results.size()>1)
@@ -283,7 +283,7 @@ public class GIPPFileManager
                 .map(File::getAbsolutePath)
                 .collect(Collectors.joining(", "));
 
-            LOGGER.info("GIPP "+dirNameRegex+" : "+message);
+            LOGGER.info("GIPP " + dirNameRegex + " : " + message);
             throw new Sen2VMException("Duplicate GIPP file type found"); 
         }
         else
