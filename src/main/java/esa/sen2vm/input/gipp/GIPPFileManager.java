@@ -102,6 +102,7 @@ public class GIPPFileManager
         final Pattern dirPattern = Pattern.compile(dirNameRegex);
         final Pattern filePattern = Pattern.compile(fileNameRegex);
         final List<File> results = new ArrayList<>();
+        final List<String> tarExtension = Arrays.asList("TGZ", "tar.gz","tgz");
         // Stack indicating whether we are currently in a qualified subtree
         final Deque<Boolean> qualifiedStack = new ArrayDeque<>();
         Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
@@ -129,7 +130,30 @@ public class GIPPFileManager
                 if (inQualifiedSubtree || filePattern.matcher(fileName).matches()) {
                     File file = filePath.toFile();
                     String extension = getFileExtension(file);
-                    if(validExtensions.stream().anyMatch(item -> item.contains(extension)))
+
+                    if(tarExtension.stream().anyMatch(item -> item.contains(extension)))
+                    {
+                        try
+                        {
+                            List<Path> listPath = UntarGIPP.untarGz(file.toPath(), Paths.get(file.getParent()));
+                            for(Path untarPath:listPath)
+                                {
+                                File untarFile = untarPath.toFile();
+                                String untarFileExtension = getFileExtension(untarFile);
+                                if(validExtensions.stream().anyMatch(item -> item.contains(untarFileExtension)))
+                                {
+                                    results.add(untarFile);
+                                }
+                            }
+                            LOGGER.info("Untar GIPP: "+file.toString());
+                        }
+                        catch(IOException e)
+                        {
+                            LOGGER.warning("The targz extraction of GIPP has failed: "+file.toString());
+                            e.printStackTrace();
+                        }
+                    }
+                    else if(validExtensions.stream().anyMatch(item -> item.contains(extension)))
                     {
                         results.add(file);
                     }

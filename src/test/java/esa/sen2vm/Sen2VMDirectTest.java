@@ -175,6 +175,56 @@ public class Sen2VMDirectTest
     }
 
     @Test
+    public void testNoAutoSelectTarGipp()
+    {
+        String[] detectors = new String[]{"01"};
+        String[] bands = new String[]{"B01"};
+        String GIPP_archive = "src/test/resources/tests/data/archive_GIPP/";
+        String GIPP_2 = "src/test/resources/tests/data/test_GIPP/";
+        File gippDir= new File(GIPP_2);
+        File sourceArchive= new File(GIPP_archive);
+        if(Files.exists(gippDir.toPath()))
+        {
+
+            Config.deleteDirectory(gippDir);
+        }
+        gippDir.mkdir();
+        try
+        {
+            Config.copyFolder(sourceArchive,gippDir,true);
+
+            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
+            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove.delete();
+
+            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
+            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove.delete();
+
+            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.DBL");
+            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove.delete();
+            
+            String nameTest = "testDirectLoc";
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
+            String config = Config.configAutoGippSelection(configTmpDirectTDS1, GIPP_2, false, outputDir);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            LOGGER.info("config: "+config);
+            Sen2VM.main(args);
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+        } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }
+    }
+
+    @Test
     public void testAutoSelectWithMissingGipp()
     {
         String[] detectors = new String[]{"01"};
@@ -197,6 +247,61 @@ public class Sen2VMDirectTest
             File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_VIEDIR_SPS__20150731T092207_V20150703T000000_21000101T000000_B01.tar.gz");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
+            String nameTest = "testDirectLoc";
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
+            String config = Config.configAutoGippSelection(configTmpDirectTDS1, GIPP_2, true, outputDir);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            LOGGER.info("config: "+config);
+            Sen2VM.main(args);
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+            LOGGER.warning("Expecting an error.");
+            assert(false);
+        } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(true);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }
+    }
+
+    @Test
+    public void testAutoSelectWithMissingUntarGipp()
+    {
+        String[] detectors = new String[]{"01"};
+        String[] bands = new String[]{"B01"};
+        String GIPP_archive = "src/test/resources/tests/data/archive_GIPP/";
+        String GIPP_2 = "src/test/resources/tests/data/test_GIPP/";
+        File gippDir= new File(GIPP_2);
+        File sourceArchive= new File(GIPP_archive);
+        if(Files.exists(gippDir.toPath()))
+        {
+
+            Config.deleteDirectory(gippDir);
+        }
+        gippDir.mkdir();
+
+        try
+        {
+            Config.copyFolder(sourceArchive,gippDir,true);
+
+            // remove a listed GIPP to check a test failure
+            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
+            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove.delete();
+
+            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
+            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove.delete();
+
+            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20220120T000025_V20220125T022000_21000101T000000_B00.tar.gz");
+            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove.delete();
+
+
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
             String config = Config.configAutoGippSelection(configTmpDirectTDS1, GIPP_2, true, outputDir);
