@@ -23,7 +23,7 @@
 
 Digital Elevation Models (DEM) are essential for geolocation and orthorectification in Sen2VM. Users can use different types of DEM (cf [Inputs Description](../Input/input_description.md)).
 
-Sen2VM requires DEM data **organized per square degree** (see §[DEM format requirements](../Input/input_description.md#131-dem)) but can now also handle mosaic of square degrees. The recommended way to obtain Copernicus DEM in the correct format is to use the **[CDSE-Copernicus-DEM-downloader](https://github.com/senbox-org/CDSE-Copernicus-DEM-downloader)** tool, which downloads individual 1°×1° geocells from the Copernicus Data Space Ecosystem.
+Sen2VM requires DEM data **organized per square degree** (see §[DEM format requirements](../Input/input_description.md#131-dem)) but can now also handle **mosaic of square degrees**. The recommended way to obtain Copernicus DEM in the correct format is to use the **[CDSE-Copernicus-DEM-downloader](https://github.com/senbox-org/CDSE-Copernicus-DEM-downloader)** tool, which downloads individual 1°×1° geocells from the Copernicus Data Space Ecosystem.
 
 ---
 

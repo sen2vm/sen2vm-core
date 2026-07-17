@@ -1,6 +1,6 @@
 # Sen2VM Release history
 
-## Merged in main (1.3.0.rc2)
+## Merged in main
 
 ### Main feature
 
@@ -9,6 +9,28 @@
 * Fix:
 
   * 
+
+* Feature:
+
+  * 
+
+* Doc:
+
+  * 
+
+## 1.3.0 (2026-07-17)
+
+### Main features
+
+* Allow to have mosaic DEM and not only cut in square degrees
+* Notebooks improvments
+* GIPP handling more robust
+
+### Updates
+
+* Fix:
+
+  * Update GIPP handling (#70)
 
 * Feature:
 
@@ -22,6 +44,9 @@
     * Allow more flexible input structure with separated input locations (#56)
     * Creation of a Notebook for Inverse location (#54)
     * Allow using OTB instead of gdal in direct location Notebook (through a new notebook)
+
+  * Change input description related to DEM and GIPP
+  * Addition of Unit test for GIPP handling (#51, #70)
 
 
 ## 1.2.0 (2026-05-04)

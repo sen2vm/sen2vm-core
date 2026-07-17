@@ -155,7 +155,7 @@ public class GIPPManager
         }
         catch (Exception e)
         {
-            throw new Sen2VMException("Error when reading the blind pixel GIPP file: " + fileBlindPixel, e);
+            throw new Sen2VMException("Error when reading the blind pixel (GIP_BLINDP) GIPP file: " + fileBlindPixel  + ": " + e.getMessage(), e);
         }
 
         // Load spacecraft model gipp
@@ -179,7 +179,7 @@ public class GIPPManager
         }
         catch (Exception e)
         {
-            throw new Sen2VMException("Error when reading spacecraft model GIPP file: " + fileSpaMod, e);
+            throw new Sen2VMException("Error when reading spacecraft model (GIP_SPAMOD) GIPP file: " + fileSpaMod + ": " + e.getMessage(), e);
         }
 
         // Load viewing directions gipp
@@ -191,7 +191,7 @@ public class GIPPManager
                 File file = gippFilePathFromIndexBand(bands.get(i), gippFilePathList);
                 if (file == null)
                 {
-                    throw new Sen2VMException("Viewing directions GIPP file missing for band "+ bands.get(i));
+                    throw new Sen2VMException("Viewing directions (GIP_VIEDIR) GIPP file missing for band "+ bands.get(i));
                 }
 
                 // Load GIPP DATA
@@ -211,7 +211,7 @@ public class GIPPManager
         }
         catch (Exception e)
         {
-            throw new Sen2VMException("Error when reading viewing directions GIPP files from", e);
+            throw new Sen2VMException("Error when reading viewing directions GIPP (GIP_VIEDIR) files: " + e.getMessage(), e);
         }
 
         // Load prdloc model gipp, only for RAW mode
