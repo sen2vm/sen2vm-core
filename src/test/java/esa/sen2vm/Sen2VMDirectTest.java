@@ -207,17 +207,17 @@ public class Sen2VMDirectTest
             fileToRemove.delete();
 
 
-            LOGGER.info("DEBUG DEBUG DEBUG DEBUG: List BLINDP");
-            // fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.pdf");
-            // LOGGER.info("File to remove: "+fileToRemove.toString());
-            // fileToRemove.delete();
-            Path root = Paths.get("src/test/resources/tests/data/test_GIPP/");
-            Pattern pattern = Pattern.compile(".*BLINDP.*");
-            Files.walk(root)
-              .filter(Files::isRegularFile)
-              .filter(path -> pattern.matcher(path.getFileName().toString()).matches())
-              .forEach(System.out::println);
-            LOGGER.info("DEBUG DEBUG DEBUG DEBUG: End List BLINDP");
+            // LOGGER.info("DEBUG DEBUG DEBUG DEBUG: List BLINDP");
+            // // fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.pdf");
+            // // LOGGER.info("File to remove: "+fileToRemove.toString());
+            // // fileToRemove.delete();
+            // Path root = Paths.get("src/test/resources/tests/data/test_GIPP/");
+            // Pattern pattern = Pattern.compile(".*BLINDP.*");
+            // Files.walk(root)
+            //   .filter(Files::isRegularFile)
+            //   .filter(path -> pattern.matcher(path.getFileName().toString()).matches())
+            //   .forEach(System.out::println);
+            // LOGGER.info("DEBUG DEBUG DEBUG DEBUG: End List BLINDP");
 
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
