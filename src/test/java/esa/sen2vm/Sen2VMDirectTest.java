@@ -28,6 +28,9 @@ import esa.sen2vm.exception.Sen2VMException;
 import org.orekit.data.DataContext;
 import org.orekit.data.LazyLoadedDataContext;
 
+import java.nio.file.*;
+import java.util.regext.Pattern;
+
 /**
  * Unit test for Sen2VM (direct loc).
  */
@@ -207,6 +210,14 @@ public class Sen2VMDirectTest
             fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.pdf");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
+            
+
+            Path root = Paths.get("");
+            Pattern pattern = Pattern.compile("*BLINDP*");
+            Files.walk(root)
+              .filter(Files::isRegularFiler)
+              .filter(path -> pattern.match(path.getFiuleName().toString()).matches())
+              .forEach(System.out::println);
             
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
