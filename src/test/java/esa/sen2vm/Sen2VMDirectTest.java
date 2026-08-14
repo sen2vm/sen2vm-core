@@ -215,8 +215,8 @@ public class Sen2VMDirectTest
             Path root = Paths.get("");
             Pattern pattern = Pattern.compile("*BLINDP*");
             Files.walk(root)
-              .filter(Files::isRegularFiler)
-              .filter(path -> pattern.match(path.getFiuleName().toString()).matches())
+              .filter(Files::isRegularFile)
+              .filter(path -> pattern.matcher(path.getFileName().toString()).matches())
               .forEach(System.out::println);
             
             String nameTest = "testDirectLoc";
