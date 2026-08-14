@@ -185,7 +185,6 @@ public class Sen2VMDirectTest
         File sourceArchive= new File(GIPP_archive);
         if(Files.exists(gippDir.toPath()))
         {
-
             Config.deleteDirectory(gippDir);
         }
         gippDir.mkdir();
@@ -202,6 +201,10 @@ public class Sen2VMDirectTest
             fileToRemove.delete();
 
             fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.DBL");
+            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove.delete();
+
+            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.pdf");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
             
