@@ -29,7 +29,7 @@ import org.orekit.data.DataContext;
 import org.orekit.data.LazyLoadedDataContext;
 
 import java.nio.file.*;
-import java.util.regext.Pattern;
+import java.util.regex.Pattern;
 
 /**
  * Unit test for Sen2VM (direct loc).
