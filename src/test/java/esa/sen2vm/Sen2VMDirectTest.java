@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import esa.sen2vm.exception.Sen2VMException;
@@ -27,8 +28,6 @@ import esa.sen2vm.exception.Sen2VMException;
 import org.orekit.data.DataContext;
 import org.orekit.data.LazyLoadedDataContext;
 
-import java.nio.file.*;
-import java.util.regex.Pattern;
 
 /**
  * Unit test for Sen2VM (direct loc).
