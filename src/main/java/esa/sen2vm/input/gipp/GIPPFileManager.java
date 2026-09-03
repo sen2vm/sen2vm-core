@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import esa.sen2vm.exception.Sen2VMException;
@@ -288,7 +289,9 @@ public class GIPPFileManager
      * @throws Sen2VMException
      */
     public static File findGippFile(Path root, String dirNameRegex, List<String> gippList, String fileNameRegex, List<String> validExtensions) throws IOException, Sen2VMException {
-        final List<File> results = findGippFiles(root, dirNameRegex, gippList, fileNameRegex, validExtensions);
+        final List<File> results = findGippFiles(root, dirNameRegex, gippList, fileNameRegex, validExtensions)
+                                    .stream().distinct().collect(Collectors.toList()); // Remove identical, can happen when untaring
+
         if(results.isEmpty())
         {
             if (gippList.isEmpty())
