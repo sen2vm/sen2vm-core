@@ -66,8 +66,8 @@ jobs:
         with:
           # Additional arguments for the SonarScanner CLI
           args: >
-            -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_}
-            -Dsonar.organization=${GITHUB_REPOSITORY_OWNER}
+            -Dsonar.projectKey=sen2vm-core
+            -Dsonar.organization=sen2vm
 
           projectBaseDir: .
 #        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_} -Dsonar.organization=${GITHUB_REPOSITORY_OWNER}
