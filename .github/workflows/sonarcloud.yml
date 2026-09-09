@@ -53,6 +53,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+          cache: maven
       - name: Analyze with SonarCloud
         if: env.SONAR_TOKEN_DEFINED == 'true'
         # You can pin the exact commit or the version.
