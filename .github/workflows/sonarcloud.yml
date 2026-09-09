@@ -61,13 +61,13 @@ jobs:
         # uses: actions/setup-java@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
+#        with:
           # Additional arguments for the SonarScanner CLI
-          args:
+ #         args:
             # Unique keys of your project and organization. You can find them in SonarCloud > Information (bottom-left menu)
             # mandatory
-            -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_}
-            -Dsonar.organization=${GITHUB_REPOSITORY_OWNER}
+  #          -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_}
+   #         -Dsonar.organization=${GITHUB_REPOSITORY_OWNER}
             # Comma-separated paths to directories containing main source files.
             #-Dsonar.sources= # optional, default is project base directory
             # Comma-separated paths to directories containing test source files.
@@ -76,4 +76,4 @@ jobs:
             #-Dsonar.verbose= # optional, default is false
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           # projectBaseDir: .
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_} -Dsonar.organization=${GITHUB_REPOSITORY_OWNER}
