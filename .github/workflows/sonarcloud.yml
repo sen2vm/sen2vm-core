@@ -44,6 +44,8 @@ env:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sen2vm/sen2vm-build-env:0.1.0
     steps:
       - uses: actions/checkout@v6
         with:
