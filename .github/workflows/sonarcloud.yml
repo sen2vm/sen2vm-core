@@ -44,8 +44,6 @@ env:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/sen2vm/sen2vm-build-env:0.1.0
     steps:
       - uses: actions/checkout@v6
         with:
@@ -78,4 +76,4 @@ jobs:
             #-Dsonar.verbose= # optional, default is false
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           # projectBaseDir: .
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_} -Dsonar.organization=${GITHUB_REPOSITORY_OWNER}
+        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_} -Dsonar.organization=${GITHUB_REPOSITORY_OWNER}
