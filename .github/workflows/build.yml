@@ -28,7 +28,6 @@ jobs:
                 exit 1
             fi
             mvn $MAVEN_CLI_OPTS deploy \
-                -DskipTests=true \
                 -Dmaven.repository.target=${{ github.repository }}
           else
             echo "Tag '$TAG_NAME' does not follow SemVer format. No artifact released."

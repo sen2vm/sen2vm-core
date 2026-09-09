@@ -28,6 +28,7 @@ import esa.sen2vm.exception.Sen2VMException;
 import org.orekit.data.DataContext;
 import org.orekit.data.LazyLoadedDataContext;
 
+
 /**
  * Unit test for Sen2VM (direct loc).
  */
@@ -185,7 +186,6 @@ public class Sen2VMDirectTest
         File sourceArchive= new File(GIPP_archive);
         if(Files.exists(gippDir.toPath()))
         {
-
             Config.deleteDirectory(gippDir);
         }
         gippDir.mkdir();
@@ -193,18 +193,18 @@ public class Sen2VMDirectTest
         {
             Config.copyFolder(sourceArchive,gippDir,true);
 
-            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
-            LOGGER.info("File to remove: "+fileToRemove.toString());
+            File fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
+            LOGGER.info("File to remove: " + fileToRemove.toString());
             fileToRemove.delete();
 
-            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
-            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
+            LOGGER.info("File to remove: " + fileToRemove.toString());
             fileToRemove.delete();
 
-            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.DBL");
-            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.DBL");
+            LOGGER.info("File to remove: " + fileToRemove.toString());
             fileToRemove.delete();
-            
+
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
             String config = Config.configAutoGippSelection(configTmpDirectTDS1, GIPP_2, false, outputDir);
@@ -244,7 +244,7 @@ public class Sen2VMDirectTest
         {
             Config.copyFolder(sourceArchive,gippDir,true);
             // remove a listed GIPP to check a test failure
-            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_VIEDIR_SPS__20150731T092207_V20150703T000000_21000101T000000_B01.tar.gz");
+            File fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_VIEDIR_SPS__20150731T092207_V20150703T000000_21000101T000000_B01.tar.gz");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
             String nameTest = "testDirectLoc";
@@ -289,15 +289,15 @@ public class Sen2VMDirectTest
             Config.copyFolder(sourceArchive,gippDir,true);
 
             // remove a listed GIPP to check a test failure
-            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
+            File fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
 
-            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
+            fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
 
-            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20220120T000025_V20220125T022000_21000101T000000_B00.tar.gz");
+            fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20220120T000025_V20220125T022000_21000101T000000_B00.tar.gz");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
 
