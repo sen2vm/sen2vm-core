@@ -1,23 +1,47 @@
-ssh 172.26.45.33
+# Goal
 
+Generation of the reference data using ASGARD-Legacy for the CI
+
+# Strategy
+
+The strategy is to compare a Sen2VM run (calling SXGEO beneath) versus an ASGARD-Legacy run (also calling SXGEO beneath)
+Outputs are expected to be almost identical
+
+## Step 1 - Set up environement
+
+For the generation, all dependancies from Sen2VM are needed, and ASGARD-Legacy (with its dependencies), will also be needed.
+
+An already well configured environment can be use, if so, please skip the first step
+
+``` bash
+# Step 1.1 - Base environment
+
+## (Optional) Connect to a VM where everything asgard-build-env is available
+ssh 172.26.45.33
+## Or pull it looking at asgard documentation
+
+## Launch a Docker to isolate the environment
 docker run -it --rm --name asgard-legacy --user root --network host -v ~/.gitconfig:/root/.gitconfig2 -v ~/.m2:/root/.m2 -v /home/aburie/Sen2VM/:/home/aburie/Sen2VM -v $root_dir:$root_dir -v /DATA:/DATA -v /DATA-MPC2:/DATA-MPC2 -v /DATA-NETAPP-MPC:/DATA-NETAPP-MPC registry.eopf.copernicus.eu/geolib/asgard-build-environment bash
 
-
+# Step 2.1 - Installation of ASGARD-Legacy
+## Set-up GitLab tokens
 export EOPF_PYPI_TOKEN= #TOKEN with access to GEOLIB and especially ASGARD-Legacy and asgard-legacy-drivers
 export PIP_EXTRA_INDEX_URL="https://eopf:${EOPF_PYPI_TOKEN}@gitlab.eopf.copernicus.eu/api/v4/projects/14/packages/pypi/simple \
                      https://eopf:${EOPF_PYPI_TOKEN}@gitlab.eopf.copernicus.eu/api/v4/projects/67/packages/pypi/simple \
 					 https://eopf:${EOPF_PYPI_TOKEN}@gitlab.eopf.copernicus.eu/api/v4/projects/92/packages/pypi/simple \
 					 https://eopf:${EOPF_PYPI_TOKEN}@gitlab.eopf.copernicus.eu/api/v4/projects/171/packages/pypi/simple"
 
+## Install ASGARD-Legacy and its dependencies.
+## Use versions that are using the same SXGEO version than Sen2VM
 pip install asgard_legacy==1.2.1
 pip install asgard_legacy_drivers==0.1.1
 
+## /!\/!\/!\ UNTIL ASGARD-LEGACY IS CORRECTED /!\/!\/!\
+## ASGARD-Legacy is requiring direct location on integer, which is not a limitation in the code after
 
-pip install termcolor
-pip install fiona
-pip install rasterio
-
-#  UNTIL ASGARD-LEGACY IS CORRECTED
+### EITHER  COPY FROM REPO:
+cp <PATH_>/sen2vm-core/src/test/reference_generation/msi.py /usr/local/lib/python3.11/site-packages/asgard_legacy/sensors/sentinel2/msi.py
+### OR MODIFY IT DIRECTLY
  apt-get update
  apt-get install nano
  nano /usr/local/lib/python3.11/site-packages/asgard_legacy/sensors/sentinel2/msi.py
@@ -25,15 +49,132 @@ pip install rasterio
   #     assert np.issubdtype(pixels.dtype, np.integer)
 
 
+## Install additional dependencies for the reference generation script
+pip install termcolor
+pip install fiona
+pip install rasterio
+```
+
+>[!IMPORTANT] A full already installed context is available on 172.26.45.33 with additional logs to better track from where differences could come
+
+Instead of doing the previous commands, please only launch the other docker images
+
+``` bash
+
+## Connect to the VM where the docker image is available
+ssh 172.26.45.33
+
+# TODO: change the path to your home
+docker run -it --rm -v  ~/.gitconfig:/root/.gitconfig2 -v ~/.m2:/root/.m2 -v /home/aburie:/home/aburie -v $root_dir:$root_dir -v /DATA:/DATA -v /DATA-MPC2:/DATA-MPC2 -v /DATA-NETAPP-MPC:/DATA-NETAPP-MPC ref_gen_sen2vm:v3 bash
+```
+
+
+## Step 2 - Generate grids with Sen2VM
+
+First step is to generate the grids with Sen2VM. Indeed ASGARD-Legacy does not know on which point to perform direct/inverse locations. ASGARD-Legacy will only be used to verify the results of direct/inverse location, but not the generation of the grids which is handled in other CI tests.
+
+
+``` bash
+# The automatic tests can be launched with compilation command:
+mvn clean install
+
+# Outputs are generated inside folder: `sen2vm-core/src/test/resources/tests/output/`
+```
+
+## Step 3 - Generate grids with ASGARD-Legacy (using Sen2VM grids)
+
+Sen2VM grids (generated through Step 2) then serve as inputs to generate references with ASGARD-Legacy.
+
+The idea is to launch ASGARD-Legacy on each point of the grids and to save the ASGARD-Legacy results in new reference grids.
+
+>[!WARNING] In the process, comparison is also performed between Sen2VM results and the ASGARD-Legacy results to anticipate any future CI failing once reference will be replaced.
+
+
+``` bash
+# Go inside script folder
+# LOCATION IS IMPORTANT:
+cd sen2vm-core/src/test/reference_generation
+# Indeed, Sen2VM configuration file contains relativ path, so they are interpreted and paths are reconstructed within the script
+# It is to be noted that if config.json file contains absolute path, you can launch the script from everywhere
+
+# Remove outputs of previous run of the script
+rm -Rf test_generation/*
+
+# asgard-legacy-drivers is not robust to several GIPP in the same input folder
+## Hence EITHER back-up input/data and rm them
+cp -R sen2vm-core/src/test/resources/tests/data/ sen2vm-core/src/test/resources/tests/data_bk
+rm sen2vm-core/src/test/resources/tests/data_bk/GIPP/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.pdf
+rm sen2vm-core/src/test/resources/tests/data_bk/GIPP/S2A_OPER_GIP_SPAMOD_MPC__20220120T000025_V20220125T022000_21000101T000000_B00.HDR
+## Or rm them directly
+# /!\/!\/!\ TO NOT PUSH THE SUPPRESSION, DO NO TO A git rm
+
+# Example of launch command on the full reference folder
+python3.11 test_legacy_sen2vm.py /home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/output/
+
+# Outputs are generated in sen2vm-core/src/test/reference_generation/test_generation/
+```
+
+
+## Step 4 - Back-up ASGARD-Legacy grids as reference for Sen2VM
+
+
+If previous step gave consitent grids between Sen2VM and ASGARD-Legacy
+
+``` bash
+# Go into the ref folder
+cd sen2vm-core/src/test/resources/tests/ref/
+
+# Remove previous reference data
+rm -Rf */*
+
+# Copy new reference data into the folders
+
+for a in *; do cp -R ../../../reference_generation/test_generation/$a/* $a/ ; done
+```
+
+
+# Example of launch of the script on other data
+
+
+## Launch on only on CI tests
+
+* First perform Step 1 from above.
+
+* Then perform step 2 of only run a chosen test with `mvn -Dtest=<test_file_withou_java_extention>#<test_name> test`
+
+* Then launch the script:
+
+``` bash
+# Go in the ASGARD-Legacy script folder and clean previous runs
 cd /home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/
+rm -Rf test_generation/*
 
-python3.11 test_legacy_sen2vm.py # TODO: Add conf file in input after verifying that hard coded path give consistent results
+# Launch the script on previously run data
+python3.11 test_legacy_sen2vm.py /home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/output/testDirectGipp/configuration.json /home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/output/testDirectGipp/params.json
+python3.11 test_legacy_sen2vm.py /home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/output/testInverseLoc/configuration.json /home/aburie/Sen2VM/sen2vm-core/src/test/resources/tests/output/testInverseLoc/params.json
+```
+
+## Launch on personnal data
+
+* First go in a working env (cf Step 1 above)
+
+* Then create your data and launch the script:
 
 
+``` bash
+# Launch Sen2VM on some personal data
+cd /home/aburie/Sen2VM/sen2vm-core/
+#(Optional) Delete previous data from previous run
+sudo rm -rf  /DATA/Sen2VM/MadeiraSAFE_SXGEO-0.3.1/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/*/*/GEO*/
+# Run Sen2VM
+java -jar target/sen2vm-core-2.0.0-jar-with-dependencies.jar -c /DATA/Sen2VM/aburie/Sen2VM/MadeiraSAFE_SXGEO-0.3.1_configuration.json -p /DATA/Sen2VM/aburie/Sen2VM/params_B01_D01.json
+# Grids are generated inside the product as it is a direct location configuration
 
 
+# Go in the ASGARD-Legacy script folder and clean previous runs
+cd /home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/
+rm -Rf test_generation/*
 
-
-
-
-docker exec -it 85375cc0ac57  bash
+# Launch the script on previously run data
+python3.11 test_legacy_sen2vm.py /DATA/Sen2VM/aburie/Sen2VM/MadeiraSAFE_SXGEO-0.3.1_configuration.json /DATA/Sen2VM/aburie/Sen2VM/params_B01_D01.json
+```

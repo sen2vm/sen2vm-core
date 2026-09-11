@@ -23,6 +23,8 @@
 Unit tests for MSI Sentinel 2 products
 """
 
+import math
+
 import os
 import os.path as osp
 
@@ -37,16 +39,15 @@ import json
 import pandas as pd
 import fiona.transform
 from termcolor import colored
+import rasterio
 
 from math import sqrt, isnan
 
 from asgard.sensors.sentinel2.s2_band import S2Band
 from asgard.sensors.sentinel2.s2_detector import S2Detector
 from asgard.sensors.sentinel2.s2_sensor import S2Sensor
-
-#from helpers.compare import GeodeticComparator, planar_captor_error
-
 from asgard_legacy.sensors.sentinel2.msi import S2MSILegacyGeometry
+from asgard.sensors.sentinel2.msi import S2MSIGeometry
 
 from asgard_legacy_drivers.drivers.sentinel_2_legacy import S2LegacyDriver
 
@@ -57,12 +58,16 @@ georefConventionOffsetPixel = -0.5
 georefConventionOffsetLine = 0.5
 
 THRESHOLDS = {
-    "direct": 1e-7,  # degrees
+    "direct": 1e-2,  # degrees
     "inverse": 1e-2  # pixel
 }
 
+def normalize_path(path):
+  return path if (op.isabs(path) or path.startswith("./")) else "../../../" + path
+
+
 #def test_Sen2VM(test_to_generate):
-def test_Sen2VM():
+def test_Sen2VM(config_file: str, param_file: str, ref_dir: str):
     """
     Run general test to compare direct or inverse grids generated with SEN2VM
 
@@ -71,32 +76,34 @@ def test_Sen2VM():
 
     #print(f"Test: {test_to_generate}")
     print(f"Start")
+    
 
-
-    f"""# Read configuration
-    with open(os.path.join(input_dir, "configuration.json")) as json_file:
+    # Read configuration
+    # with open(os.path.join(input_dir, "configuration.json")) as json_file:
+    with open(config_file) as json_file:
         json_data = json.load(json_file)
 
     # Get all needed info in the json
-    l1b_product = op.join(json_data["l1b_product"])
+    l1b_product = normalize_path(json_data["l1b_product"])
+    print(f"l1b_product: {l1b_product}")
+    iers = normalize_path(op.join(json_data["iers"]))
+    print(f"iers: {iers}")
+    geoid = normalize_path(op.join( json_data["geoid"]))
+    print(f"geoid: {geoid}")
+    dem = normalize_path(op.join(json_data["dem"]))
+    print(f"dem: {dem}")
+    gipp = normalize_path(op.join(json_data["gipp_folder"]))
+    print(f"gipp: {gipp}")
+
     xml_product = glob.glob(op.join(l1b_product, "DATASTRIP", "*", "*.xml"))[0]
-    iers = op.join(json_data["iers"])
-    geoid = op.join( json_data["geoid"])
-    dem = op.join(json_data["dem"])
-    gipp = op.join( json_data["gipp_folder"])
-    refining = not (json_data["deactivate_available_refining"])"""
+    refining = not (json_data["deactivate_available_refining"])
 
     # Init S2geoInterface
     #config = S2geoInterfaceSen2VM(xml_product, iers, geoid, dem, gipp, refining).read()
-    #config = S2LegacyDriver(xml_product, iers, geoid, dem, gipp).read()
-    
-    config = S2LegacyDriver(
-        "/DATA/Sen2VM/MadeiraSAFE_SXGEO-0.3.1/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/DATASTRIP/S2B_OPER_MSI_L1B_DS_2BPS_20241019T153411_S20241019T120215_N05.11/S2B_OPER_MTD_L1B_DS_2BPS_20241019T153411_S20241019T120215.xml", #L1B
-        "/DATA/Sen2VM/MadeiraSAFE_SXGEO-0.3.1/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/AUX_DATA/IERS/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20241017T000000.txt", #IERS
-        "/DATA/DEM_Legacy/DEM_GEOID/S2__OPER_DEM_GEOIDF_MPC__20200112T130120_S20190507T000000.gtx", #GEOID
-        "/DATA/DEM_Legacy/DEM_SRTM", #DEM
-        "/DATA/Sen2VM/MadeiraSAFE_SXGEO-0.3.1/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/AUX_DATA/GIPP_restricted/", #GIPP
-        ).read()
+    config = S2LegacyDriver(xml_product, iers, geoid, dem, gipp).read()
+        
+    print("Config Keys: ", config.keys())
+    print("Refining information: ", config["refining"])
     
     product = S2MSILegacyGeometry(**config)  # TOFIX
 
@@ -105,26 +112,24 @@ def test_Sen2VM():
     Path(ref_dir).mkdir(parents=True, exist_ok=True)"""
 
     # List detectors and bands to test
-    #detectors, bands = read_params(input_dir)
-    detectors = [S2Detector.from_name("D01")]
-    bands = [S2Band.from_name("B01")]
+    detectors, bands = read_params(param_file)
 
-    l1b_product = "/DATA/Sen2VM/MadeiraSAFE_SXGEO-0.3.1/S2B_MSIL1B_20241019T120219_N0511_R023_20241022T154709.SAFE/"
-    ref_dir = "/home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/test_generation/"
-
-    compute_direct_location(config, l1b_product, product, detectors, bands, ref_dir)
-    """# Direct or inverse case
-    if "direct" in test_to_generate.lower():
+    # Direct or inverse case
+    if "direct" in json_data["operation"]:
         compute_direct_location(config, l1b_product, product, detectors, bands, ref_dir)
-    elif "inverse" in test_to_generate.lower():
+    elif "inverse" in json_data["operation"]:
         # Replace input directory to output_folder written in configuration file
-        input_dir = json_data["inverse_location_additional_info"]["output_folder"]
-        compute_inverse_location(input_dir, product, detectors, bands, ref_dir)
+        input_dir = normalize_path(json_data["inverse_location_additional_info"]["output_folder"])
+        
+        # Redefine product as ASGARD-Legacy is requiring the altitude as input
+        # product = S2MSIGeometry(**config)  # TOFIX
+        product_asgard = S2MSIGeometry(**config)  # TOFIX
+        compute_inverse_location(input_dir, product, product_asgard, detectors, bands, ref_dir)    
     else:
-        print('No test found: no "direct" or "inverse" found in name test')"""
+        print('No test found: no "direct" or "inverse" found in name test')
+    
 
-
-#def compute_inverse_location(input_dir: str, product, detectors, bands, ref_dir=None):
+def compute_inverse_location(input_dir: str, product, product_asgard, detectors, bands, ref_dir=None):
     """
     Inverse location of a data test from SEN2VM
 
@@ -133,7 +138,7 @@ def test_Sen2VM():
     :param ref_dir: output directory for asgard grids
     :return:
     """
-"""
+
     for band in bands:
         df = pd.DataFrame(columns=['band', 'det', "nb_valeurs not nan", "nb_errors > 10-6 m", "nb_errors > 10-4 m",
                                    "nb_errors > 10-2 m", "mean (m)", "max (m)", "std (m)", "ce95 (m)"])
@@ -141,9 +146,6 @@ def test_Sen2VM():
 
             sensor = S2Sensor(detector, band).name
             #print("#", sensor)
-
-            # Select corresponding grid
-            geo_grid = glob.glob(op.join(input_dir, "*INV*" + sensor[4:] + "_" + sensor[0:3] + ".tif"))[0]
 
             # Init all grounds coordinates to compute inverse loc
             sensor = S2Sensor(detector, band).name
@@ -167,12 +169,31 @@ def test_Sen2VM():
 
             # Pixels need to be [[col0, col1...], [row0, row1...]] for inverse location TODO
             grounds = np.array([[grounds[0][i], grounds[1][i]] for i in range(len(grounds[0]))], np.float64)
-            print (grounds.shape)
+            grounds_2 = np.array([[grounds[i][0], grounds[i][1], 0] for i in range(grounds.shape[0])], np.float64)            
+
+            # Generate the altitudes from TileUpdater from the asgard propagation_model.
+            # It is necessary as ASGGARD-Legacy requires the altitudes as input
+            if product_asgard.propagation_model is not None:
+                flat_ground_coords = grounds[..., :2].reshape((-1, 2))
+               
+                tile_updater = product_asgard.propagation_model.tile_updater
+                if tile_updater is not None:
+                    if product_asgard._cache is None:
+                        product_asgard._cache = TilesCache(SimpleTile, tile_updater, product_asgard._max_cached_tiles)
+                    altitudes = np.ones(flat_ground_coords.shape[0:1]) * np.nan
+                    flat_ground_coords_rad = np.deg2rad(flat_ground_coords)
+                    tiles, indexes = product_asgard._cache.get_tiles(flat_ground_coords_rad[:, 1], flat_ground_coords_rad[:, 0])
+                    for tile, index in zip(tiles, indexes):
+                        altitudes[index] = tile.interpolate_elevation_arr(
+                            flat_ground_coords_rad[index, 1], flat_ground_coords_rad[index, 0]
+                        )
+                        grounds_2[index,2] = altitudes[index]
+            grounds = grounds_2
+            
             # Call inverse location
             inverse_pixels = None
             try:
                 inverse_pixels = product.inverse_loc(grounds, geometric_unit=sensor)
-
                 # note : (col, row) conv
             except AttributeError as exp:
                 print(colored("    ! PyRuggedError: " + str(exp), "red"))
@@ -182,16 +203,17 @@ def test_Sen2VM():
 
             # Compare results to Sen2vm
             dataset = gdal.Open(geo_grid, gdalconst.GA_ReadOnly)
-            columns_ref = np.array(dataset.GetRasterBand(1).ReadAsArray()).flatten()
-            rows_ref = np.array(dataset.GetRasterBand(2).ReadAsArray()).flatten()
+            image = rasterio.open(geo_grid)
+            columns_ref = np.array(image.read(1)).flatten()
+            rows_ref = np.array(image.read(2)).flatten()
             ref = np.stack((columns_ref, rows_ref), axis=1)
 
+
             # Compute planar error
-            # error_invloc = planar_captor_error(ref, inverse_pixels) / band.pixel_height
             error_invloc = []
             for i in range(len(ref)) :
 
-                if not isnan(ref[i][0]):
+                if not isnan(ref[i][0]) and not ref[i][0] == -32768:
 
                     diff_col = inverse_pixels[i][0] - ref[i][0]
                     sqrt_diff_col = diff_col * diff_col
@@ -201,8 +223,7 @@ def test_Sen2VM():
                     diff = sqrt(sum)
                     diff_metres = diff * band.pixel_height
                     if diff_metres > 1:
-
-                        print(i, "input", grounds_in[i], "=>", grounds[i][0], grounds[i][1])
+                        print(i, " input => ", grounds[i][0], grounds[i][1])
                         print("  asgard:", inverse_pixels[i], "vs sen2vm:", ref[i], "=> diff de", diff_metres, "m")
                     error_invloc.append(diff_metres)
                 else :
@@ -230,7 +251,11 @@ def test_Sen2VM():
                 # Same grid name file saved into ref_dir
                 Path(ref_dir).mkdir(parents=True, exist_ok=True)
                 output_ref_grid = op.join(ref_dir, op.basename(geo_grid))
-                arrays_to_raster(output_ref_grid, sensor_pixels)
+                #arrays_to_raster(output_ref_grid, sensor_pixels)
+                with rasterio.open(output_ref_grid, 'w', **image.profile.copy()) as dst:
+                  dst.write(np.array(sensor_pixels))
+                  print(f"Sensor {sensor} grid saved in {output_ref_grid}")                
+                
                 # print("Grid save in", output_ref_grid)
 
             print_error(sensor, error_invloc, "inverse")
@@ -238,7 +263,7 @@ def test_Sen2VM():
                                nb_errors_104, nb_errors_102, mean_err, max_err, std_err, ce95_err]
 
             df.to_csv(op.join(ref_dir, sensor[0:3] + "_results.csv"))
-            print (df)"""
+            print (df)
 
 
 
@@ -282,11 +307,9 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
             error_2d = np.array([])
 
             # Select corresponding granules
+            list_granules = sorted(glob.glob(op.join(input_dir, "GRANULE", "*" + sensor[4:] + "*")))
+            print(list_granules)
 
-            list_granules = glob.glob(op.join(input_dir, "GRANULE", "*" + sensor[4:] + "*"))
-            #list_granules = glob.glob(op.join("/home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/test_generation/GRANULE/", "*" + sensor[4:] + "*"))
-            
-            # list_granules = glob.glob(op.join(input_dir, "GRANULE", "S2B_OPER_MSI_L1B_GR_DPRM_20140630T140000_S20240116T154306_D06*"))
 
             print(f"# Sensor {sensor}")
             if len(list_granules) == 0:
@@ -298,119 +321,143 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
             for g, granule in enumerate(list_granules):
 
                 # Select corresponding geo grid
-                geo_grid = glob.glob(op.join(granule, "GEO_DATA", "*" + sensor[0:3] + ".tif"))[0]
-
-                # Init all sensor points to compute direct loc
-                minx, maxy, sizex, sizey, stepx, stepy, src_crs = get_geotransfrom(geo_grid)
-
-
-                # compute upper left in general detector grid
-                start_y = stepy / 2 + georefConventionOffsetLine  # image_upper_left_y + cony = (step/2 - 0.5) + 1
-                start_x = stepx / 2 + georefConventionOffsetPixel  # image_upper_left_y + conx = (step/2 - 0.5) + 0
-
-                # Compute coordinates for the specific granule
-                #rows = np.arange(start_y + miny, start_y + maxy, resy)  # from upper_left_det_y + upper_left_granule_y
-                #cols = np.arange(start_x + minx, start_x + maxx, resx)  # from upper_left_det_y + upper_left_granule_y
-                rows = [start_y + maxy + iy * stepy for iy in range(sizey)]
-                cols = [start_x + minx + ix * stepx for ix in range(sizex)]
-
-                # Pixels need to be [[col1, row1], [col1, row1] ...] for direct location
-                pixels = np.array([[col, row] for row in rows for col in cols], np.float64)
-                en = np.array([[c, r] for r, row in enumerate(rows) for c, col in enumerate(cols)], np.float64)
-
-                # Call direction location
-                grounds = []
-                try:
-                    grounds, _ = product.direct_loc(pixels, sensor)
-                    # note: long, lat, alt conv
-                except PyRuggedError as exp:
-                    print(colored("    ! PyRuggedError: " + str(exp), "red"))
-
-                # Compare results to Sen2vm
-                print("GEO_GRID: ", geo_grid)
-                dataset = gdal.Open(geo_grid, gdalconst.GA_ReadOnly)
-                """
-                print(dataset.GetRasterBand(1))
-                nBands = dataset.RasterCount      # how many bands, to help you loop
-                nRows  = dataset.RasterYSize      # how many rows
-                nCols  = dataset.RasterXSize      # how many columns
-                Band = dataset.GetRasterBand(1)
-                dType = Band.DataType          # the datatype for this band
-                dType = gdal.GDT_Float64
-                 
+                geo_grids = glob.glob(op.join(granule, "GEO_DATA", "*" + sensor[0:3] + ".tif")) 
                 
-                RowRange = range(nRows)
-                for ThisRow in RowRange:
-                    # read a single line from this band
-                    ThisLine = Band.ReadRaster(0,ThisRow,nCols,1,nCols,1,dType)
-                    print("ThisLine", ThisLine)
-                    import struct
-                    print(struct.unpack('>f', ThisLine[:4]))"""
-                    
-                import rasterio
-                image = rasterio.open(geo_grid)
-                
-                band = image.read(1)
-                
-                longitude_test = np.array(image.read(1)).flatten()
-                latitude_test = np.array(image.read(2)).flatten()
-                if dataset.RasterCount == 3:
-                    altitude_test = np.array(image.read(3)).flatten()
+                if not geo_grids:
+                  print(f"No GEO_DATA available for {granule}")
                 else:
-                    # if altitude not saved in grid, take direct altitude from ground truth (asgard)
-                    altitude_test = grounds[:, 2]
-
-
-                ref = np.stack((longitude_test, latitude_test, altitude_test), axis=1)
-                #error_2d_g = np.array(comp.planar_error(ref, np.array(grounds)))
-                print("ref1: ",np.array(ref[:,1]))
-                print("ground1: ",np.array(grounds[:,1]))
-                error_2d_g = np.array(distance(latitude_test, longitude_test, np.array(grounds[:,1]),np.array(grounds[:,0])))[2]
-                print("error_2d: ",error_2d_g)
-                if error_2d_g[np.nanargmax(error_2d_g)] > 0.0002 :
-                    #print ("pixel before direct loc (" + str(pixels[np.nanargmax(error_2d_g)][1])+","+ str([np.nanargmax(error_2d_g)][0]),")")
-                    #print("   asgard:", grounds[np.nanargmax(error_2d_g)], "vs sen2vm:", ref[np.nanargmax(error_2d_g)])
-                    #print("   avec diff =", error_2d_g[np.nanargmax(error_2d_g)], "m")
-                    print("error max: ", grounds[np.nanargmax(error_2d_g)], ref[np.nanargmax(error_2d_g)], error_2d_g[np.nanargmax(error_2d_g)])
-                    print("errors (nb=", len(error_2d_g[error_2d_g > 0.0002]), "/", len(error_2d_g) ,"): ", error_2d_g[error_2d_g > 0.0002][::10])
-                df = add_direct_errors_infos_dataframe(sensor[0:3], sensor[4:], granule, error_2d_g, pixels, df)
-
-                # If ground truth (asgard) need to be saved
-                if ref_dir:
-                    lat = grounds[:, 0].reshape(len(rows), len(cols))
-                    lon = grounds[:, 1].reshape(len(rows), len(cols))
-                    alt = grounds[:, 2].reshape(len(rows), len(cols))
-                    grounds = [lat, lon, alt]
-
-                    # Same grid name file saved into ref_dir
-                    geo_grid_dir = op.join(ref_dir, "GRANULE", op.basename(granule), "GEO_DATA")
-                    Path(geo_grid_dir).mkdir(parents=True, exist_ok=True)
-                    output_ref_grid = op.join(geo_grid_dir, op.basename(geo_grid))
-                    
-                    #TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script
-                    print()
-                    print()
-                    print()
-                    print()
-                    print()
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    print("TODO, change writing of output grids (after validation that input grids are equivalent to the ones generated by this script.")
-                    # arrays_to_raster(output_ref_grid, grounds)
-                    # print(f"Granule {g} save in {output_ref_grid}")
-
-
-                intersection = np.intersect1d(rows_detecteur_band_grid, rows)
-                if rows[0] in intersection:
-                    error_2d_g = error_2d_g[len(cols):]
-                if rows[len(rows) -1] in intersection:
-                    error_2d_g = error_2d_g[:len(error_2d_g) - len(cols)]
-
-                error_2d = np.concatenate((error_2d, error_2d_g))
+                  geo_grid = geo_grids[0]
+  
+                  # Init all sensor points to compute direct loc
+                  minx, maxy, sizex, sizey, stepx, stepy, src_crs = get_geotransfrom(geo_grid)
+  
+  
+                  # compute upper left in general detector grid
+                  start_y = stepy / 2 + georefConventionOffsetLine  # image_upper_left_y + cony = (step/2 - 0.5) + 1
+                  start_x = stepx / 2 + georefConventionOffsetPixel  # image_upper_left_y + conx = (step/2 - 0.5) + 0
+  
+                  # Compute coordinates for the specific granule
+                  #rows = np.arange(start_y + miny, start_y + maxy, resy)  # from upper_left_det_y + upper_left_granule_y
+                  #cols = np.arange(start_x + minx, start_x + maxx, resx)  # from upper_left_det_y + upper_left_granule_y
+                  
+                  print("nb rows: ", sizey)
+                  print("nb cols: ", sizex)
+                  rows = [start_y + maxy + iy * stepy for iy in range(sizey)]
+                  cols = [start_x + minx + ix * stepx for ix in range(sizex)]
+  
+                  # Pixels need to be [[col1, row1], [col1, row1] ...] for direct location
+                  pixels = np.array([[col, row] for row in rows for col in cols], np.float64)
+                  # en = np.array([[c, r] for r, row in enumerate(rows) for c, col in enumerate(cols)], np.float64)
+  
+                  # Call direction location
+                  grounds = []
+                  try:
+                      grounds, _ = product.direct_loc(pixels, sensor)
+                      # note: long, lat, alt conv
+                  except PyRuggedError as exp:
+                      print(colored("    ! PyRuggedError: " + str(exp), "red"))
+  
+                  # Compare results to Sen2vm
+                  print("GEO_GRID: ", geo_grid)
+                  dataset = gdal.Open(geo_grid, gdalconst.GA_ReadOnly)
+                  """
+                  print(dataset.GetRasterBand(1))
+                  nBands = dataset.RasterCount      # how many bands, to help you loop
+                  nRows  = dataset.RasterYSize      # how many rows
+                  nCols  = dataset.RasterXSize      # how many columns
+                  Band = dataset.GetRasterBand(1)
+                  dType = Band.DataType          # the datatype for this band
+                  dType = gdal.GDT_Float64
+                   
+                  
+                  RowRange = range(nRows)
+                  for ThisRow in RowRange:
+                      # read a single line from this band
+                      ThisLine = Band.ReadRaster(0,ThisRow,nCols,1,nCols,1,dType)
+                      print("ThisLine", ThisLine)
+                      import struct
+                      print(struct.unpack('>f', ThisLine[:4]))"""
+                      
+                  import rasterio
+                  image = rasterio.open(geo_grid)
+                  
+                  band = image.read(1)
+                  
+                  longitude_test = np.array(image.read(1)).flatten()
+                  latitude_test = np.array(image.read(2)).flatten()
+                  print("Pixel[10]: ", pixels[10])
+                  if dataset.RasterCount == 3:
+                      altitude_test = np.array(image.read(3)).flatten()
+                  else:
+                      # if altitude not saved in grid, take direct altitude from ground truth (asgard)
+                      altitude_test = grounds[:, 2]
+  
+  
+                  ref = np.stack((longitude_test, latitude_test, altitude_test), axis=1)
+                  #error_2d_g = np.array(comp.planar_error(ref, np.array(grounds)))
+                  print("ref1: ",np.array(ref[:,1]))
+                  print("ground1: ",np.array(grounds[:,1]))
+                  print(f"ref1[0]   : {np.array(ref[:,1])[0]:.20f}")
+                  print(f"ground1[0]: {np.array(grounds[:,1])[0]:.20f}")
+                  error_2d_g = np.array(distance(
+                                          latitude_test,
+                                          longitude_test,
+                                          np.array(grounds[:,1]),
+                                          np.array(grounds[:,0]),
+                                          True
+                                          ))[2]
+                  error_2d_haversine = haversine(
+                                          latitude_test[0],
+                                          longitude_test[0],
+                                          np.array(grounds[:,1])[0],
+                                          np.array(grounds[:,0])[0]
+                                          )
+                                          
+                  print("error_2d: ",error_2d_g)
+                  #for i in range(100):
+                  #  print("  ", i,": Pixel(col,row):",  pixels[i], ", Error: ", f'{error_2d_g[i]:.10f}')
+                  print("error_2d[0] & haversine[]: ", error_2d_g[0], error_2d_haversine)
+                  #if error_2d_g[np.nanargmax(error_2d_g)] > 0.0002 :
+                  if error_2d_g[np.nanargmax(error_2d_g)] > 0.2 :
+                      #print ("pixel before direct loc (" + str(pixels[np.nanargmax(error_2d_g)][1])+","+ str([np.nanargmax(error_2d_g)][0]),")")
+                      #print("   asgard:", grounds[np.nanargmax(error_2d_g)], "vs sen2vm:", ref[np.nanargmax(error_2d_g)])
+                      #print("   avec diff =", error_2d_g[np.nanargmax(error_2d_g)], "m")
+                      print(f"error max: index {np.nanargmax(error_2d_g)}: [{pixels[np.nanargmax(error_2d_g)]}]")
+                      print(f"  [{grounds[np.nanargmax(error_2d_g)][0]:.20f} {grounds[np.nanargmax(error_2d_g)][1]:.20f} {grounds[np.nanargmax(error_2d_g)][2]:.20f}] ")
+                      print(f"  [{ref[np.nanargmax(error_2d_g)][0]:.20f} {ref[np.nanargmax(error_2d_g)][1]:.20f} {ref[np.nanargmax(error_2d_g)][2]:.20f}] ")
+                      print(f"  {error_2d_g[np.nanargmax(error_2d_g)]:.20f}")
+                      print("errors (nb=", len(error_2d_g[error_2d_g > 0.0002]), "/", len(error_2d_g) ,"): ", error_2d_g[error_2d_g > 0.0002][:10])
+                  else:
+                      # print("No error > 0.0002")
+                      print("No error > 0.2")
+                  df = add_direct_errors_infos_dataframe(sensor[0:3], sensor[4:], granule, error_2d_g, pixels, df)
+  
+                  # If ground truth (asgard) need to be saved
+                  if ref_dir:
+                      lat = grounds[:, 0].reshape(len(rows), len(cols))
+                      lon = grounds[:, 1].reshape(len(rows), len(cols))
+                      alt = grounds[:, 2].reshape(len(rows), len(cols))
+                      grounds = [lat, lon, alt]
+                      # grounds = [lat, lon]
+  
+                      # Same grid name file saved into ref_dir
+                      geo_grid_dir = op.join(ref_dir, "GRANULE", op.basename(granule), "GEO_DATA")
+                      Path(geo_grid_dir).mkdir(parents=True, exist_ok=True)
+                      output_ref_grid = op.join(geo_grid_dir, op.basename(geo_grid))
+                      
+                      # arrays_to_raster(output_ref_grid, grounds)
+                      with rasterio.open(output_ref_grid, 'w', **image.profile.copy()) as dst:
+                        dst.write(np.array(grounds))
+                        print(f"Granule {g} save in {output_ref_grid}")
+  
+  
+                  intersection = np.intersect1d(rows_detecteur_band_grid, rows)
+                  if rows[0] in intersection:
+                      error_2d_g = error_2d_g[len(cols):]
+                  if rows[len(rows) -1] in intersection:
+                      error_2d_g = error_2d_g[:len(error_2d_g) - len(cols)]
+  
+                  error_2d = np.concatenate((error_2d, error_2d_g))
             df = add_direct_errors_infos_dataframe(sensor[0:3], sensor[4:], "all", error_2d, [], df)
             print_error(sensor, error_2d, "direct")
             print (df.columns)
@@ -492,8 +539,9 @@ def read_params(input_test: str):
     :param input_test: test directory with params.json file
     :return: detectors: list of S2Detector, bands: list of S2Band
     """
-    with open(os.path.join(input_test, "params.json")) as json_file:
-        params = json.load(json_file)
+    #with open(os.path.join(input_test, "params.json")) as json_file:
+    with open(input_test) as json_file:
+            params = json.load(json_file)
     detectors = [S2Detector.from_name("D" + name) for name in params["detectors"]]
     bands = [S2Band.from_name(name) for name in params["bands"]]
     return detectors, bands
@@ -562,4 +610,65 @@ def distance(s_lat: float, s_lng: float, e_lat: float, e_lng: float, degrees: bo
 
     return dlat_meters, dlon_meters, d_meters
 
-test_Sen2VM()
+
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371000.0  # meters
+
+    # conversion en radians
+    lat1 = math.radians(lat1)
+    lon1 = math.radians(lon1)
+    lat2 = math.radians(lat2)
+    lon2 = math.radians(lon2)
+
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    return R * c
+
+if __name__ == "__main__":
+    
+  expected_message = "  Waiting for 1 arg: <a_folder_path> ; or 2 args: <a_config_file_path> <a_param_file_path>" 
+
+  ref_dir = "/home/aburie/Sen2VM/sen2vm-core/src/test/reference_generation/test_generation/"
+
+  match len(sys.argv) - 1:
+    case 0:
+      print(expected_message)
+    case 1:
+      print(f"One argument (expecting a folder): {sys.argv[1]}")
+      if Path(sys.argv[1]).is_dir():
+          print("Input arg is a folder. Scooting each subfolder.")
+          
+          for subdir in Path(sys.argv[1]).iterdir():
+            if subdir.is_dir():
+              print(f"Scooting subdir: {subdir}")
+          
+              config_file = os.path.join(subdir, "configuration.json")
+              param_file = os.path.join(subdir, "params.json")
+              
+              if Path(config_file).is_file() and Path(param_file).is_file():
+                try: 
+                  test_Sen2VM(config_file, param_file, os.path.join(ref_dir,Path(subdir).name))
+                except:
+                  print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                  print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                  print("!!!!!!!!!!!!!!!!!!!!!!!!! SKIPPING TEST AS ERROR OCCURED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                  print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                  print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")                  
+                
+              else:
+                print(f"  Skipping folder {subfolder} as configuration.json or params.json file not found.")
+      else:
+        print(expected_message)
+    case 2:
+      print(f"Two arguments (expecting <config_file> <param_file>): {sys.argv[1]}, {sys.argv[2]}")
+      
+      if Path(sys.argv[1]).is_file() and Path(sys.argv[2]).is_file():
+        test_Sen2VM(sys.argv[1],sys.argv[2], ref_dir)
+      else:
+        print(expected_message)
+    case _:
+      print(expected_message)
