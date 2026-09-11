@@ -1,13 +1,41 @@
+/** Copyright 2024-2025, CS GROUP, https://www.cs-soprasteria.com/
+*
+* This file is part of the Sen2VM Core project
+*     https://gitlab.acri-cwa.fr/opt-mpc/s2_tools/sen2vm/sen2vm-core
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.*/
+
 package esa.sen2vm.input.datastrip;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -65,8 +93,8 @@ import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_POLYNOMIAL_MODEL
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_ROTATION_TRANSLATION_HOMOTHETY_UNCERTAINTIES_TYPE_LOWER_CASE;
 import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_datastrip_metadata.Level1B_DataStrip;
 
-
 import org.orekit.time.DateTimeComponents;
+
 /**
  * Manager for Datastrip directory
  */
@@ -86,6 +114,11 @@ public class DataStripManager
      * Datastrip for L1B
      */
     protected Level1B_DataStrip l1B_datastrip = null;
+
+    /**
+     * DATATAKE_TYPE
+     */
+    protected boolean isRaw = false;
 
     /**
      * Sensor configuration
@@ -168,11 +201,29 @@ public class DataStripManager
      * @throws Sen2VMException
      */
     public DataStripManager(String dsFilePath, String iersFilePath,
-                            Boolean activateAvailableRefining) throws Sen2VMException
+                            Boolean activateAvailableRefining, Boolean deactivateRawShift) throws Sen2VMException
     {
         this.dsFile = new File(dsFilePath);
+
         gps = TimeScalesFactory.getGPS();
+        this.isRaw = deactivateRawShift;
         loadFile(dsFilePath, iersFilePath, activateAvailableRefining);
+    }
+
+    public static void extractDirectoryFromJar(URI jarPath, String sourceDir, String targetDir) throws IOException {
+        try (JarFile jarFile = new JarFile(new File(jarPath))) {
+            jarFile.stream()
+                   .filter(entry -> entry.getName().startsWith(sourceDir) && !entry.isDirectory())
+                   .forEach(entry -> {
+                       File outFile = new File(targetDir.toString(), entry.getName().substring(sourceDir.length()));
+                       outFile.getParentFile().mkdirs();
+                       try (InputStream is = jarFile.getInputStream(entry)) {
+                           Files.copy(is, outFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       }
+                   });
+        }
     }
 
     /**
@@ -196,10 +247,44 @@ public class DataStripManager
             JAXBElement<Level1B_DataStrip> jaxbElement = (JAXBElement<Level1B_DataStrip>) jaxbUnmarshaller.unmarshal(datastripFile);
             l1B_datastrip = jaxbElement.getValue();
 
+            Boolean isRawDatastrip = (l1B_datastrip.getGeneral_Info().getDatatake_Info().getDATATAKE_TYPE().value() == "INS-RAW");
+            if (isRawDatastrip)
+            {
+                LOGGER.info("DATATAKE_TYPE is INS-RAW");
+            }else{
+                LOGGER.info("DATATAKE_TYPE is NOT INS-RAW");
+            }
+            //this.isRaw is containing deactivate raw shifts
+            if (this.isRaw & isRawDatastrip)
+                LOGGER.info("Deactivation of INS-RAW shifts");
+            this.isRaw = (isRawDatastrip && !this.isRaw);
+
             sensorConfiguration = l1B_datastrip.getImage_Data_Info().getSensor_Configuration();
 
             auxiliaryDataInfo = l1B_datastrip.getAuxiliary_Data_Info();
-            initOrekitRessources(Sen2VMConstants.OREKIT_DATA_DIR, iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
+            String orekit_data_name = Sen2VMConstants.OREKIT_DATA_TEST_DIR;
+            Path orekit_data_path = Paths.get(orekit_data_name);
+            // get jar url to extract orekit data
+            URL jarUrl = DataStripManager.class
+                .getProtectionDomain()
+                .getCodeSource()
+                .getLocation();
+            Path basePath = Paths.get(jarUrl.getPath());
+            Path parentPath = basePath.getParent();
+            Path targetPath = parentPath.resolve(Sen2VMConstants.OREKIT_DATA_DIR);
+            if(!Files.isDirectory(basePath)) 
+            {
+                orekit_data_path=targetPath;
+            }//otherwise is test case use src/main/resource
+            // check orekit data dir exist, otherwise it will extracted from jar
+            if(!Files.isDirectory(orekit_data_path))
+            {
+                // extract orekit-data from jar and save in  Sen2VMConstants.OREKIT_DATA_DIR_SAVE
+                extractDirectoryFromJar(jarUrl.toURI(),Sen2VMConstants.OREKIT_DATA_DIR_IN_JAR,orekit_data_path.toString());
+                LOGGER.info("Initializing: copy of the Orekit-data: "+orekit_data_path.toString());
+            }
+            LOGGER.info("Orekit-data: "+orekit_data_path);
+            initOrekitRessources(orekit_data_path.toString(), iersFilePath, l1B_datastrip.getGeneral_Info().getDatastrip_Time_Info());
 
             // Test if we need to take refining data into account according to the flag
             if (activateAvailableRefining)
@@ -230,10 +315,15 @@ public class DataStripManager
             dataSensingInfos = new DataSensingInfos(satelliteQList, satellitePVList, minLinePerSensor, maxLinePerSensor);
 
         } catch (JAXBException e) {
+            LOGGER.warning("Error reading the file: " + dsFilePath);
             throw new Sen2VMException(e);
-        }  catch (OrekitException e) {
+        } catch (OrekitException e) {
             throw new Sen2VMException(e);
         } catch (SXGeoException e) {
+            throw new Sen2VMException(e);
+        } catch(URISyntaxException e) {
+            throw new Sen2VMException(e);
+        } catch(IOException e) {
             throw new Sen2VMException(e);
         }
     }
@@ -266,11 +356,19 @@ public class DataStripManager
      * return {min granule name, max granule name}
      * @throws Sen2VMException
      */
-    public String[] getMinMaxGranule(BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException
+    public String[] getMinMaxGranule(BandInfo bandInfo, DetectorInfo detectorInfo, List<String> granulesList)  throws Sen2VMException
     {
-        Map granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
-        Map.Entry<String, Integer> min = Collections.min(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
-        Map.Entry<String, Integer> max = Collections.max(granulesDetector.entrySet(),  Map.Entry.comparingByValue());
+        Map<String, Integer> granulesDetector = positionGranuleByDetector[detectorInfo.getIndex()];
+        Map<String, Integer> filteredGranulesDetector = granulesDetector.entrySet().stream()
+                .filter(entry -> granulesList.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if (filteredGranulesDetector.isEmpty())
+        {
+            throw new Sen2VMException(
+                    "No granule was found for Detector " + detectorInfo.getName() + " according to the Datastrip metadata granules list.\nPlease check the granules in the GRANULE folder and in the Datastrip metadata granules list.");
+        }
+        Map.Entry<String, Integer> min = Collections.min(filteredGranulesDetector.entrySet(),  Map.Entry.comparingByValue());
+        Map.Entry<String, Integer> max = Collections.max(filteredGranulesDetector.entrySet(),  Map.Entry.comparingByValue());
         String[] minmax = { min.getKey(), max.getKey() };
         return minmax;
     }
@@ -291,7 +389,7 @@ public class DataStripManager
             File orekitDataDir = new File(orekitDataPath);
             if (orekitDataDir == null || (!orekitDataDir.exists()))
             {
-                throw new Sen2VMException("Orekit data dir not found" + orekitDataPath);
+                throw new Sen2VMException("Orekit-data dir not found" + orekitDataPath);
             }
             DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(orekitDataDir));
 
@@ -305,6 +403,9 @@ public class DataStripManager
                 A_DOUBLE_WITH_ARCSEC_UNIT_ATTR poleVAngle = iersBulletin.getPOLE_V_ANGLE();
 
                 XMLGregorianCalendar datastripStartDateGregorian = dataStripTimeInfo.getDATASTRIP_SENSING_START();
+
+
+
                 AbsoluteDate datastripStartDateUTC = new AbsoluteDate(datastripStartDateGregorian.toString(), TimeScalesFactory.getUTC());
                 int year = datastripStartDateUTC.getComponents(TimeScalesFactory.getUTC()).getDate().getYear();
 
@@ -763,6 +864,21 @@ public class DataStripManager
     }
 
     /**
+     * get GIPP name from datastrip
+     * @throws Sen2VMException
+     */
+    public List<String> getGIPPListFromAux() throws Sen2VMException
+    {
+        List<A_GIPP_LIST.GIPP_FILENAME> gippList = auxiliaryDataInfo.getGIPP_List().getGIPP_FILENAME();
+        List<String> gippStringList = new ArrayList<>();
+        for (GIPP_FILENAME gipp_filename : gippList)
+        {
+            gippStringList.add(gipp_filename.getValue());
+        }
+        return gippStringList;
+    }
+
+    /**
      * Check if the GIPP version is supported
      * @param gippType is the type of GIPP, can be GIP_SPAMOD or GIP_BLINDP
      * @param gippVersion is the version of the input GIPP
@@ -809,7 +925,7 @@ public class DataStripManager
      * @param detectorIndex the detector index
      * @return
      */
-    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo)
+    public LineDatation getLineDatation(BandInfo bandInfo, DetectorInfo detectorInfo, int rawshift) throws Sen2VMException
     {
         AbsoluteDate referenceDate = null;
         double referenceLineDouble = 1d;
@@ -851,7 +967,16 @@ public class DataStripManager
                                     
                                     // We shift the date of a half line period to be in the middle of the line
                                     referenceDate = referenceDate.shiftedBy(halfLinePeriod / 1000d);
+
                                     LOGGER.info("referenace date:" + referenceDate);
+
+                                    // Apply shift workaround due to https://esa-cams.atlassian.net/browse/GSANOM-22074 for INS-RAW
+                                    if(isRaw)
+                                    {
+                                        LOGGER.info("Applying shift as DATATAKE_TYPE is INS-RAW:" + rawshift + " for " + detectorInfo.getNameWithD() + "-" + bandInfo.getNameWithB());
+                                        // referenceDate = referenceDate.shiftedBy( rawshift * (bandInfo.getPixelHeight()/10) * 2 * halfLinePeriod / 1000d);
+                                        referenceDate = referenceDate.shiftedBy( rawshift * 2 * halfLinePeriod / 1000d);
+                                    }
                                 }
                                 else
                                 {
@@ -938,9 +1063,6 @@ public class DataStripManager
     {
         return refiningInfo;
     }
-    
-
-
 
     private static AbsoluteDate truncateEpoch(AbsoluteDate absDate, TimeScale scale) {
         DateTimeComponents c = absDate.getComponents(scale);
@@ -957,4 +1079,11 @@ public class DataStripManager
         );
     }
 
+    /**
+     * @return isRaw
+     */
+    public boolean getIsRaw()
+    {
+        return isRaw;
+    }
 }

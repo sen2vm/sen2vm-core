@@ -1,3 +1,19 @@
+/** Copyright 2024-2025, CS GROUP, https://www.cs-soprasteria.com/
+*
+* This file is part of the Sen2VM Core project
+*     https://gitlab.acri-cwa.fr/opt-mpc/s2_tools/sen2vm/sen2vm-core
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.*/
+
 package esa.sen2vm.input;
 
 import java.util.logging.Logger;
@@ -75,8 +91,8 @@ public class OptionManager
     /**
      * Option for the GIPP version check or not (optional; no argument)
      */
-    public static final String OPT_DEACTIVATE_GIPP_CHECK_LONG = "deactivate_gipp_check";
-    public static final String OPT_DEACTIVATE_GIPP_CHECK_SHORT = "dgc";
+    public static final String OPT_DEACTIVATE_AUTO_GIPP_SELECTION_LONG = "deactivate_auto_gipp_selection";
+    public static final String OPT_DEACTIVATE_AUTO_GIPP_SELECTION_SHORT = "dgc";
 
     /**
      * Option for the IERS file path (optional)
@@ -117,6 +133,13 @@ public class OptionManager
     public static final String OPT_OUTPUT_IMAGE_RES_LONG = "output_image_res";
     public static final String OPT_OUTPUT_IMAGE_RES_SHORT = "or";
 
+    /**
+     * Option for ins raw shifts (pixels)
+     * For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074 
+     */
+    public static final String OPT_DEACTIVATE_INS_RAW_SHIFT_LONG = "ignore_ins_raw_shifts_compensation";
+    public static final String OPT_DEACTIVATE_INS_RAW_SHIFT_SHORT = "is";
+
     /*******************************
      * Options for the params 
      *******************************/
@@ -133,6 +156,14 @@ public class OptionManager
      */
     public static final String OPT_BANDS_LIST_LONG = "bands";
     public static final String OPT_BANDS_LIST_SHORT = "b";
+
+    /**
+     * Option to overwrite grid
+     * (optional; no argument = no overwrite)
+     */
+    public static final String OPT_OVERWRITE_GRIDS_LONG= "grids_overwriting";
+    public static final String OPT_OVERWRITE_GRIDS_SHORT = "go";
+
 
     // If configuration file and (optional) parameter file are present: true
     private static boolean areFiles;
@@ -243,10 +274,15 @@ public class OptionManager
             Option iersOption = new Option(OPT_IERS_SHORT, OPT_IERS_LONG, true, "(optional) Path to IERS file");
             iersOption.setRequired(false);  
 
-            Option noGippCheckOption = new Option(OPT_DEACTIVATE_GIPP_CHECK_SHORT, OPT_DEACTIVATE_GIPP_CHECK_LONG, false,
+            Option noAutoGippSelectionOption = new Option(OPT_DEACTIVATE_AUTO_GIPP_SELECTION_SHORT, OPT_DEACTIVATE_AUTO_GIPP_SELECTION_LONG, false,
                                                     "(optional) Deactivate the check of GIPP version;\n"
                                                     + "if present= \"true\", if not= \"false\". ");
-            noGippCheckOption.setRequired(false);  
+            noAutoGippSelectionOption.setRequired(false);
+
+            Option overwrite_grids = new Option(OPT_OVERWRITE_GRIDS_SHORT, OPT_OVERWRITE_GRIDS_LONG, false,
+                                                    "(optional) Activate grids overwriting;\n"
+                                                    + "if present= \"true\", if not= \"false\". ");
+            overwrite_grids.setRequired(false);
 
             Option noRefiningOption = new Option(OPT_IGNORE_REFINING_SHORT, OPT_IGNORE_REFINING_LONG, false, 
                                                 "(optional) Allows to ignore refining parameters if they are available  in the Datastrip Metadata;\n"
@@ -279,7 +315,12 @@ public class OptionManager
             outputImageRes.setType(Double.class); // TODO  does not seem to work: read as array of String
             outputImageRes.setArgs(3);
             outputImageRes.setRequired(true);
-     
+
+            Option ignore_raw_shifts = new Option(OPT_DEACTIVATE_INS_RAW_SHIFT_SHORT, OPT_DEACTIVATE_INS_RAW_SHIFT_LONG, false,
+                 "(Optional) Deactivate workaround for INS_RAW DATATAKE_TYPE due to https://esa-cams.atlassian.net/browse/GSANOM-22074\n"
+                                          + "if present= \"true\", if not= \"false\".");
+            ignore_raw_shifts.setRequired(false);
+
             // params arguments
             // ------------------
             Option detectors = new Option(OPT_DETECTORS_LIST_SHORT, OPT_DETECTORS_LIST_LONG, true, "(optional) List of detectors to process separated by spaces, example: 01 05 06 10 11");
@@ -302,8 +343,10 @@ public class OptionManager
            
             // Add the optional arguments
             optionsNoFile.addOption(iersOption);
-            optionsNoFile.addOption(noGippCheckOption);
+            optionsNoFile.addOption(noAutoGippSelectionOption);
+            optionsNoFile.addOption(overwrite_grids);
             optionsNoFile.addOption(noRefiningOption);
+            optionsNoFile.addOption(ignore_raw_shifts);
             optionsNoFile.addOption(exportAltOption);
             optionsNoFile.addOption(ulxOption);
             optionsNoFile.addOption(ulyOption);

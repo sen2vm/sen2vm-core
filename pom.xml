@@ -8,9 +8,9 @@
     <artifactId>sen2vm-core</artifactId>
     <version>2.0.0</version>
 
+
     <name>sen2vm-core</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <url>https://github.com/sen2vm/sen2vm-core</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,6 +22,7 @@
         <sxgeo.version>0.3.1</sxgeo.version>
         <!-- <sxgeo.orekit-tools.version>1.2</sxgeo.orekit-tools.version> -->
         <!-- <sxgeo.hipparchus.version>4.0.1</sxgeo.hipparchus.version> -->
+        <commons-compress.version>1.26.0</commons-compress.version>
         <maven.repository.target>sen2vm/sen2vm-core</maven.repository.target>
     </properties>
 
@@ -90,6 +91,11 @@
             <artifactId>orekit-tools</artifactId>
             <version>${sxgeo.orekit-tools.version}</version>
         </dependency> -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${commons-compress.version}</version>
+        </dependency>
     </dependencies>
 
     <distributionManagement>
@@ -142,6 +148,7 @@
                     <sources>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_blind_pixels.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_spacecraft_model_parameters.xsd</source>
+                        <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_init_loc_prod_parameters.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/GIPP/GS2_GIPP/gs2_viewing_directions.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/Datastrip/S2_PDI_Level-1B_Datastrip_Metadata.xsd</source>
                         <source>${basedir}/src/main/resources/xsd/Datastrip/S2_PDI_Level-1B_Granule_Metadata.xsd</source>

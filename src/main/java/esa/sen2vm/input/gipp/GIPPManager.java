@@ -1,6 +1,23 @@
+/** Copyright 2024-2025, CS GROUP, https://www.cs-soprasteria.com/
+*
+* This file is part of the Sen2VM Core project
+*     https://gitlab.acri-cwa.fr/opt-mpc/s2_tools/sen2vm/sen2vm-core
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.*/
+
 package esa.sen2vm.input.gipp;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -21,6 +38,7 @@ import generated.GS2_VIEWING_DIRECTIONS;
 import generated.GS2_VIEWING_DIRECTIONS.DATA;
 import generated.GS2_VIEWING_DIRECTIONS.DATA.VIEWING_DIRECTIONS_LIST;
 import generated.GS2_VIEWING_DIRECTIONS.DATA.VIEWING_DIRECTIONS_LIST.VIEWING_DIRECTIONS;
+import generated.GS2_INIT_LOC_PROD_PARAMETERS;
 
 /**
  * Manager for GIPP
@@ -53,6 +71,11 @@ public class GIPPManager
     protected SpaModManager spaModMgr = null;
 
     /**
+     * GIP_PRDLOC, for shifts if DAtATAKE_TYPE is INS-RAW
+     */
+    protected PrdlocManager prdlocMgr = null;
+
+    /**
      * Jaxb unmarshaller
      */
     private Unmarshaller jaxbUnmarshaller;
@@ -66,6 +89,11 @@ public class GIPPManager
      * Boolean to activate or deactivate gipp version check
      */
     private Boolean gippVersionCheck;
+
+    /**
+     * List of gipp retrieved from the datastrip metadata
+     */
+    private List<String> gippList = new ArrayList<>();
 
     /**
      * Load GIPP from XML folder
@@ -87,14 +115,19 @@ public class GIPPManager
         {
             throw new Sen2VMException(e);
         }
-
+       
         this.dataStripManager = dataStripManager;
         this.gippVersionCheck = gippVersionCheck;
-        this.gippFileManager = new GIPPFileManager(gippFolder);
+        if(gippVersionCheck)
+        {
+            this.gippList = dataStripManager.getGIPPListFromAux();
+        }
+        this.gippFileManager = new GIPPFileManager(gippFolder,this.gippList, dataStripManager.getIsRaw());
         this.viewingDirectionMap = new HashMap<BandInfo, GS2_VIEWING_DIRECTIONS>();
 
         loadAllGIPP(bands);
     }
+
 
     /*
      * Function to load all GIPP
@@ -122,7 +155,7 @@ public class GIPPManager
         }
         catch (Exception e)
         {
-            throw new Sen2VMException("Error when reading the blind pixel GIPP file: " + fileBlindPixel, e);
+            throw new Sen2VMException("Error when reading the blind pixel (GIP_BLINDP) GIPP file: " + fileBlindPixel  + ": " + e.getMessage(), e);
         }
 
         // Load spacecraft model gipp
@@ -146,7 +179,7 @@ public class GIPPManager
         }
         catch (Exception e)
         {
-            throw new Sen2VMException("Error when reading spacecraft model GIPP file: " + fileSpaMod, e);
+            throw new Sen2VMException("Error when reading spacecraft model (GIP_SPAMOD) GIPP file: " + fileSpaMod + ": " + e.getMessage(), e);
         }
 
         // Load viewing directions gipp
@@ -158,7 +191,7 @@ public class GIPPManager
                 File file = gippFilePathFromIndexBand(bands.get(i), gippFilePathList);
                 if (file == null)
                 {
-                    throw new Sen2VMException("Viewing directions GIPP file missing for band "+ bands.get(i));
+                    throw new Sen2VMException("Viewing directions (GIP_VIEDIR) GIPP file missing for band "+ bands.get(i));
                 }
 
                 // Load GIPP DATA
@@ -178,7 +211,38 @@ public class GIPPManager
         }
         catch (Exception e)
         {
-            throw new Sen2VMException("Error when reading viewing directions GIPP files from", e);
+            throw new Sen2VMException("Error when reading viewing directions GIPP (GIP_VIEDIR) files: " + e.getMessage(), e);
+        }
+
+        // Load prdloc model gipp, only for RAW mode
+        if (this.dataStripManager.getIsRaw())
+        {
+            File filePrdLoc = null;
+            try
+            {
+                filePrdLoc = gippFileManager.getPrdlocFile();
+                if (filePrdLoc != null)
+                {
+                    LOGGER.info("INS-RAW: Read PRDLOC_GIP file: "+ filePrdLoc);
+                    GS2_INIT_LOC_PROD_PARAMETERS prdlocInfo = (GS2_INIT_LOC_PROD_PARAMETERS) jaxbUnmarshaller.unmarshal(filePrdLoc);
+
+                    if (gippVersionCheck)
+                    {
+                        String gippVersion = prdlocInfo.getSPECIFIC_HEADER().getVERSION_NUMBER();
+                        dataStripManager.checkGIPPVersion(filePrdLoc.getName(), gippVersion);
+                    }
+
+                    this.prdlocMgr = new PrdlocManager(prdlocInfo);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Sen2VMException("Error when reading PRDLOC GIPP file: " + filePrdLoc, e);
+            }
+        }
+        else
+        {
+            this.prdlocMgr = null;
         }
     }
 
@@ -328,5 +392,21 @@ public class GIPPManager
             returned = spaModMgr.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
         }
         return returned;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getRawShifts(BandInfo bandInfo, DetectorInfo detectorInfo)
+    {
+        if (dataStripManager.getIsRaw())
+        {
+            return prdlocMgr.getRawShift(detectorInfo, bandInfo);
+        }
+        else
+        {
+            return 0;
+        }
     }
 }

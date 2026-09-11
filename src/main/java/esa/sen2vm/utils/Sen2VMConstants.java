@@ -1,3 +1,19 @@
+/** Copyright 2024-2025, CS GROUP, https://www.cs-soprasteria.com/
+*
+* This file is part of the Sen2VM Core project
+*     https://gitlab.acri-cwa.fr/opt-mpc/s2_tools/sen2vm/sen2vm-core
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.*/
+
 package esa.sen2vm.utils;
 
 /**
@@ -18,7 +34,12 @@ public class Sen2VMConstants
     /**
      * To check the GIPP version (by default the GIPP version is checked)
      */
-    public static final boolean GIPP_CHECK = true;
+    public static final boolean AUTO_GIPP_SELECTION = true;
+
+    /**
+     * To overwrite grids (by default it is disable)
+     */
+    public static final boolean GRIDS_OVERWRITING = false;
     
     /**
      * To deactivate the refining (by default the refining is set)
@@ -60,6 +81,7 @@ public class Sen2VMConstants
     public static final String GIPP_VIEWDIR_PAT = ".*GIP_VIEDIR.*";
     public static final String GIPP_BLINDP_PAT = ".*GIP_BLINDP.*";
     public static final String GIPP_SPAMOD_PAT = ".*GIP_SPAMOD.*";
+    public static final String GIPP_PRDLOC_PAT = ".*GIP_PRDLOC.*"; // FOr INS-RAW only
     public static final int NB_GIPP_MAX_FILE = 13;
 
     /**
@@ -106,7 +128,9 @@ public class Sen2VMConstants
     /**
      * Rugged Manager initialization
      */
-    public static final String OREKIT_DATA_DIR = "src/main/resources/orekit-data";
+    public static final String OREKIT_DATA_DIR_IN_JAR = "orekit-data/";
+    public static final String OREKIT_DATA_DIR = "orekit-data";
+    public static final String OREKIT_DATA_TEST_DIR = "src/main/resources/orekit-data";
 
     // Granule line (for a 10m resolution band)
     public static final double GRANULE_NB_LINE_10_M = 2304.0;

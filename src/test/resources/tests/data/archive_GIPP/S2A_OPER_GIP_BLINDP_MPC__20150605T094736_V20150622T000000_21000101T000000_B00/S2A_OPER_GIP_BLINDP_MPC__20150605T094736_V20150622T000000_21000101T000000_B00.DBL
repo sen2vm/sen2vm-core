@@ -1,0 +1,1813 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XML file generated manually, with 10 (6+4) blind pixels for 20/60m bands and 20 (16+4) blind pixels for 10m bands--><GS2_BLIND_PIXELS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="T:\SENTINEL-2\04-SEGMENT_SOL\02-Spec-SSI-S2\03-GS\03-Schemas_Image_S2\GS2_GIPP\gs2_blind_pixels.xsd">
+    <HEADER>
+        <SATELLITE>S2A</SATELLITE>
+        <SCHEME_VERSION>String</SCHEME_VERSION>
+        <PRODUCTION_DATE>2015-05-19T10:10:00.0Z</PRODUCTION_DATE>
+        <PROVIDER>String</PROVIDER>
+        <CONSUMER>GPP-Light</CONSUMER>
+    </HEADER>
+    <SPECIFIC_HEADER>
+        <TYPE>S2A_BLIND_PIXELS_FILE</TYPE>
+        <APPLICABILITY_DATE>2015-06-22T00:00:00.0Z</APPLICABILITY_DATE>
+        <APPLICABILITY_END_DATE>2100-01-01T00:00:00.0Z</APPLICABILITY_END_DATE>
+        <VERSION_NUMBER>0003</VERSION_NUMBER>
+        <PARAMETER_ID>String</PARAMETER_ID>
+    </SPECIFIC_HEADER>    
+    <DATA>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 0                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="0">
+            <BLIND_PIXEL_NUMBER>20</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 1                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="1">
+            <BLIND_PIXEL_NUMBER>40</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 2                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="2">
+            <BLIND_PIXEL_NUMBER>40</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 3                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="3">
+            <BLIND_PIXEL_NUMBER>40</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 4                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="4">
+            <BLIND_PIXEL_NUMBER>20</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 5                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="5">
+            <BLIND_PIXEL_NUMBER>20</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 6                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="6">
+            <BLIND_PIXEL_NUMBER>20</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 7                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="7">
+            <BLIND_PIXEL_NUMBER>40</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>20</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>16 17 18 19</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>2576 2577 2578 2579 2580 2581 2582 2583 2584 2585 2586 2587 2588 2589 2590 2591</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>2572 2573 2574 2575</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 8                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="8">
+            <BLIND_PIXEL_NUMBER>20</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 0 9                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="9">
+            <BLIND_PIXEL_NUMBER>20</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 1 0                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="10">
+            <BLIND_PIXEL_NUMBER>20</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 1 1                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="11">
+            <BLIND_PIXEL_NUMBER>20</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+        <!-- ================================================================= -->
+        <!--                B A N D   :   B 1 2                                -->
+        <!-- ================================================================= -->
+        <BAND band_id="12">
+            <BLIND_PIXEL_NUMBER>20</BLIND_PIXEL_NUMBER>
+            <DETECTOR detector_id="01">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="02">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="03">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="04">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="05">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="06">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="07">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="08">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="09">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="10">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="11">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+            <DETECTOR detector_id="12">
+                <NORMALIZATION_COEF>10</NORMALIZATION_COEF>
+                <SIDE side_id="LEFT">
+                    <VALID_BLIND_PIXELS>0 1 2 3 4 5</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>6 7 8 9</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+                <SIDE side_id="RIGHT">
+                    <VALID_BLIND_PIXELS>1290 1291 1292 1293 1294 1295</VALID_BLIND_PIXELS>
+                    <NON_VALID_BLIND_PIXELS>1286 1287 1288 1289</NON_VALID_BLIND_PIXELS>
+                </SIDE>
+            </DETECTOR>
+        </BAND>
+    </DATA>
+</GS2_BLIND_PIXELS>

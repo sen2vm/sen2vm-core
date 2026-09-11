@@ -1,3 +1,20 @@
+/** Copyright 2024-2025, CS GROUP, https://www.cs-soprasteria.com/
+*
+* This file is part of the Sen2VM Core project
+*     https://gitlab.acri-cwa.fr/opt-mpc/s2_tools/sen2vm/sen2vm-core
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.*/
+
+
 package esa.sen2vm;
 
 import org.apache.commons.cli.*;
@@ -5,6 +22,9 @@ import org.apache.commons.cli.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import java.util.Arrays;
+
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +47,7 @@ import esa.sen2vm.enums.BandInfo;
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.exception.Sen2VMException;
 import esa.sen2vm.input.Configuration;
-import esa.sen2vm.input.GenericDemFileManager;
+import esa.sen2vm.input.DEM.GenericDemFileManager;
 import esa.sen2vm.input.OptionManager;
 import esa.sen2vm.input.Params;
 import esa.sen2vm.input.datastrip.DataStripManager;
@@ -140,7 +160,11 @@ public class Sen2VM
             LOGGER.info("Bands list: " + bands);
 
             // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(config.getDatastripFilePath(), config.getIers(), !config.getDeactivateRefining());
+            DataStripManager dataStripManager = new DataStripManager(
+                                                    config.getDatastripFilePath(),
+                                                    config.getIers(),
+                                                    !config.getDeactivateRefining(),
+                                                    config.getIgnoreInsRawShifts());
 
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
@@ -160,7 +184,6 @@ public class Sen2VM
 
             //Using Sen2VM FileManager
             GenericDemFileManager demFileManager = new GenericDemFileManager(config.getDem());
-            demFileManager.buildMap(config.getDem());
 
             GeoidManager geoidManager = new GeoidManager(config.getGeoid(), isOverlappingTiles);
             DemManager demManager = new DemManager(
@@ -177,7 +200,7 @@ public class Sen2VM
                 for (BandInfo bandInfo: bands)
                 {
                     SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo);
+                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo,gippManager.getRawShifts(bandInfo, detectorInfo));
                     SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
                     SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
                     SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
@@ -217,9 +240,8 @@ public class Sen2VM
                 ruggedManager,
                 demManager
             );
-
             // Safe Manager
-            SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager);
+            SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager, config.getGridsOverwriting());
             Datastrip datastrip = safeManager.getDatastrip();
             //ds.checkNoVRT(detectors, bands);
 
@@ -240,11 +262,11 @@ public class Sen2VM
             // Test if no grids exists already
             if (config.getOperation().equals(Sen2VMConstants.DIRECT))
             {
-                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands) ;
+                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
             }
             else
             {
-                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder()) ;
+                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
             }
 
             for (BandInfo bandInfo: bands)
@@ -343,7 +365,6 @@ public class Sen2VM
                         // Correction post build VRT
                         outputFileManager.correctGeoGrid(inputTIFs);
                         outputFileManager.correctVRT(vrtFileName);
-
                     }
 
                     // Inverse Loc case
@@ -356,6 +377,7 @@ public class Sen2VM
                         double[][] groundGrid = invGrid.get2DgridLatLon();
 
                         double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
+
                         double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, georefConventionOffsetPixel, -georefConventionOffsetLine);
 
                         String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());
@@ -374,15 +396,20 @@ public class Sen2VM
             {
                 outputConfigPath = config.getInverseLocOutputFolder();
             }
-            outputFileManager.writeInfoJson(config, params, outputConfigPath);
+            outputFileManager.writeInfoJson(config, bands, detectors, outputConfigPath);
         }
-        catch ( IOException exception )
+        catch (IOException exception)
         {
             throw new Sen2VMException(exception);
         }
-        catch ( SXGeoException exception )
+        catch (SXGeoException exception)
         {
-            throw new Sen2VMException(exception);
+            String newMessage = "";
+            if(exception.toString().contains("Cant find bundle for base name S2GeoMessages"))
+            {
+                newMessage = "Please, check the GEOID data contains .gtx, DBL, HDR and .xml : ";
+            }
+            throw new Sen2VMException(newMessage, exception);
         }
     }
 

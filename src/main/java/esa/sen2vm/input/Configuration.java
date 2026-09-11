@@ -1,3 +1,19 @@
+/** Copyright 2024-2025, CS GROUP, https://www.cs-soprasteria.com/
+*
+* This file is part of the Sen2VM Core project
+*     https://gitlab.acri-cwa.fr/opt-mpc/s2_tools/sen2vm/sen2vm-core
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.*/
+
 package esa.sen2vm.input;
 
 import java.io.FileInputStream;
@@ -27,7 +43,8 @@ public class Configuration extends InputFileManager
     private String configPath;
     private String l1bProduct;
     private String gippFolder;
-    private boolean gippVersionCheck = Sen2VMConstants.GIPP_CHECK;
+    private boolean gippVersionCheck = Sen2VMConstants.AUTO_GIPP_SELECTION;
+    private boolean gridsOverwriting = Sen2VMConstants.GRIDS_OVERWRITING;
     private String dem;
     private String geoid;
     private String iers = "";
@@ -37,13 +54,15 @@ public class Configuration extends InputFileManager
     private double step_band20m;
     private double step_band60m;
     private boolean exportAlt = Sen2VMConstants.EXPORT_ALT;
+    //Only for inverse location
     private double ul_x;
     private double ul_y;
     private double lr_x;
     private double lr_y;
     private String referential;
     private String outputFolder;
-
+    //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074
+    private boolean ignoreInsRawShifts = false;
 
     /**
      * Constructor
@@ -85,13 +104,23 @@ public class Configuration extends InputFileManager
         }
         
         // By default we want the check of GIPP version. The option deactivate the check
-        if (commandLine.hasOption(OptionManager.OPT_DEACTIVATE_GIPP_CHECK_SHORT))
+        if (commandLine.hasOption(OptionManager.OPT_DEACTIVATE_AUTO_GIPP_SELECTION_SHORT))
         {
             this.gippVersionCheck  = false;
         }
         else
         { // We let the check
             this.gippVersionCheck = true;
+        }
+
+        // By default we won't overwrite grids. The option deactivate the overwriting
+        if (commandLine.hasOption(OptionManager.OPT_OVERWRITE_GRIDS_SHORT))
+        {
+            this.gridsOverwriting  = true;
+        }
+        else
+        { // We let the check
+            this.gridsOverwriting = false;
         }
 
         // By default we want the refining. The option deactivate the refining
@@ -124,6 +153,17 @@ public class Configuration extends InputFileManager
             this.lr_x =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRX_SHORT));
             this.lr_y =  Double.parseDouble(commandLine.getOptionValue(OptionManager.OPT_LRY_SHORT));
             this.outputFolder = PathUtils.checkPath(commandLine.getOptionValue(OptionManager.OPT_OUTPUT_FOLDER_SHORT));
+        }
+
+        //For INS-RAW correction due to https://esa-cams.atlassian.net/browse/GSANOM-22074 
+        // By default we want to keep the shifts.
+        if (commandLine.hasOption(OptionManager.OPT_DEACTIVATE_INS_RAW_SHIFT_SHORT))
+        {
+            this.ignoreInsRawShifts = true;
+        }
+        else
+        { // We keep the shifts
+            this.ignoreInsRawShifts = false;
         }
     }
 
@@ -176,9 +216,21 @@ public class Configuration extends InputFileManager
             this.exportAlt = jsonObject.getBoolean("export_alt");
 
             // Optional parameters
-            if (jsonObject.has("gipp_version_check"))
+            if (jsonObject.has("auto_gipp_selection"))
             {
-                this.gippVersionCheck = jsonObject.getBoolean("gipp_version_check");
+                this.gippVersionCheck = jsonObject.getBoolean("auto_gipp_selection");
+            }
+            if (jsonObject.has("grids_overwritings"))
+            {
+                this.gridsOverwriting = jsonObject.getBoolean("grids_overwritings");
+            }
+            if (jsonObject.has("grids_overwriting"))
+            {
+                this.gridsOverwriting = jsonObject.getBoolean("grids_overwriting");
+            }
+            if (jsonObject.has("grids_overwriting"))
+            {
+                this.gridsOverwriting = jsonObject.getBoolean("grids_overwriting");
             }
             if (jsonObject.has("iers"))
             {
@@ -215,6 +267,12 @@ public class Configuration extends InputFileManager
                        throw new Sen2VMException("Error when initializing inverse_location_additional_info", e);
                    }
                 }
+            }
+
+            // Check the type of location: direct or inverse
+            if (jsonObject.has("deactivate_ins_raw_shift"))
+            {
+                this.ignoreInsRawShifts = jsonObject.getBoolean("deactivate_ins_raw_shift");
             }
         }
         catch (JSONException | IOException e)
@@ -268,6 +326,16 @@ public class Configuration extends InputFileManager
     public Boolean getGippVersionCheck()
     {
         return gippVersionCheck;
+    }
+
+    /**
+     * Get the boolean which, if set to false, will activate the
+     * grids overwriting
+     * @return activate the grids overwriting (false by default)
+     */
+    public Boolean getGridsOverwriting()
+    {
+        return gridsOverwriting;
     }
 
     /**
@@ -392,5 +460,14 @@ public class Configuration extends InputFileManager
     public String getInverseLocOutputFolder()
     {
         return this.outputFolder;
+    }
+
+    /**
+     * Get boolean if shifts for INS-RAW are defined
+     * @return boolean if shifts for INS-RAW are defined
+     */
+    public boolean getIgnoreInsRawShifts()
+    {
+       return this.ignoreInsRawShifts;
     }
 }

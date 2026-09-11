@@ -1,3 +1,19 @@
+/** Copyright 2024-2025, CS GROUP, https://www.cs-soprasteria.com/
+*
+* This file is part of the Sen2VM Core project
+*     https://gitlab.acri-cwa.fr/opt-mpc/s2_tools/sen2vm/sen2vm-core
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.*/
+
 package esa.sen2vm;
 
 import java.util.logging.Logger;
@@ -5,6 +21,7 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 
 import esa.sen2vm.enums.DetectorInfo;
 import esa.sen2vm.enums.BandInfo;
@@ -22,21 +39,39 @@ import esa.sen2vm.exception.Sen2VMException;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 
+import org.orekit.data.DataContext;
+import org.orekit.data.LazyLoadedDataContext;
+
 /**
  * Unit test for Sen2VM (inverse loc).
  */
 public class Sen2VMInverseTest
 {
     String configTmpInverse = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
+    String configTmpInverseShifted = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse_shift_raw.json";
+    String configTmpInverseTDS2 = "src/test/resources/tests/input/TDS2-INS-RAW/configuration_TDS2_inverse.json";
     String paramTmp = "src/test/resources/params_base.json";
     String refDir = "src/test/resources/tests/ref";
 
+    // [ERROR]   Sen2VMInverseTest.testInverseGipp:180 expected: <false> but was: <true>
+    // [ERROR]   Sen2VMInverseTest.testInverseLoc:141 expected: <false> but was: <true>
+    // [ERROR]   Sen2VMInverseTest.testInverseNoRefining:210 expected: <false> but was: <true>
     private static final double THRESHOLD_INV_HIGH = 6e-1; // Shall be high due to the cache mechanism for inverse location in SXGEO/RUGGED/OREKIT
     
     /**
      * Get sen2VM logger
      */
     private static final Logger LOGGER = Logger.getLogger(Sen2VMInverseTest.class.getName());
+
+    @AfterEach
+    void resetGlobalState(){
+        // Orekit
+        DataContext.getDefault()
+                   .getDataProvidersManager()
+                   .clearProviders();
+
+        DataContext.setDefault(new LazyLoadedDataContext());
+    }
 
     @Test
     public void testStepInverseLoc()
@@ -50,14 +85,18 @@ public class Sen2VMInverseTest
             try
             {
                 String nameTest = "testStepInverseLoc_" +  stepBand10m;
-                String outputDir = Config.createTestDir(nameTest, "inverse");
+                String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
                 String config = Config.config(configTmpInverse, outputDir, stepBand10m, "inverse", false);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
 
                 Configuration configFile = new Configuration(config);
-                DataStripManager dataStripManager = new DataStripManager(configFile.getDatastripFilePath(), configFile.getIers(), !configFile.getDeactivateRefining());
+                DataStripManager dataStripManager = new DataStripManager(
+                                                        configFile.getDatastripFilePath(),
+                                                        configFile.getIers(),
+                                                        !configFile.getDeactivateRefining(),
+                                                        configFile.getIgnoreInsRawShifts());
                 SafeManager safeManager = new SafeManager(configFile.getL1bProduct(), dataStripManager);
                 Datastrip datastrip = safeManager.getDatastrip();
 
@@ -99,14 +138,23 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest = "testInverseLoc";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
             String config = Config.config(configTmpInverse, outputDir, stepBand10m, "inverse", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-
             LOGGER.warning("Threshold released at: " + THRESHOLD_INV_HIGH); // TODO
             Utils.verifyInverseLoc(config, refDir + "/" + nameTest, THRESHOLD_INV_HIGH);
+
+            // Test that a shift is not product when using 0 as configuration
+            String nameTest2 = "testInverseLocWithNominalRawShiftIgnored";
+            String outputDir2 = Config.createTestDir(Config.TDS.TDS1, nameTest2, "inverse");
+            String config2 = Config.configRawShifts(configTmpInverseShifted, outputDir2, stepBand10m, "inverse", false,false);
+            String param2 = Config.changeParams(paramTmp, detectors, bands, outputDir2);
+            String[] args2 = {"-c", config2, "-p", param2};
+            Sen2VM.main(args2);
+            // Compare to original run
+            Utils.verifyInverseLoc(config2, outputDir);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -128,8 +176,8 @@ public class Sen2VMInverseTest
        try
        {
             String nameTest = "testInverseGipp";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
-            String config = Config.configCheckGipp(configTmpInverse, GIPP_2, false, outputDir);
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
+            String config = Config.configAutoGippSelection(configTmpInverse, GIPP_2, false, outputDir);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
@@ -158,7 +206,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest = "testInverseNoRefining";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
             String config = Config.config(configTmpInverse, outputDir, stepBand10m, "inverse", false);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
@@ -186,7 +234,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest_ref = "testInverseIers_ref";
-            String outputDir_ref = Config.createTestDir(nameTest_ref, "inverse");
+            String outputDir_ref = Config.createTestDir(Config.TDS.TDS1, nameTest_ref, "inverse");
             String iers_ref = "src/test/resources/tests/data/S2__OPER_AUX_UT1UTC_PDMC_20190725T000000_V20190726T000000_20200725T000000.txt";
             String config_ref = Config.configIERS(configTmpInverse, outputDir_ref, iers_ref);
             String param_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
@@ -194,7 +242,7 @@ public class Sen2VMInverseTest
             Sen2VM.main(args_ref);
 
             String nameTest = "testInverseIers_test";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
             String config = Config.configIERS(configTmpInverse, outputDir, null);
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
@@ -218,7 +266,7 @@ public class Sen2VMInverseTest
         int stepBand10m = 6000;
         try
         {
-            String outputDir1 = Config.createTestDir("testInverseParallelisation_1", "inverse");
+            String outputDir1 = Config.createTestDir(Config.TDS.TDS1, "testInverseParallelisation_1", "inverse");
             String[] detectors_order_1 = new String[]{"05", "06"};
             String[] bands_order_1 = new String[]{"B01", "B02"};
             String config_order_1 = Config.config(configTmpInverse, outputDir1, stepBand10m, "inverse", false);
@@ -226,7 +274,7 @@ public class Sen2VMInverseTest
             String[] args_order_1 = {"-c", config_order_1, "-p", param_order_1};
             Sen2VM.main(args_order_1);
 
-            String outputDir2 = Config.createTestDir("testInverseParallelisation_2", "inverse");
+            String outputDir2 = Config.createTestDir(Config.TDS.TDS1, "testInverseParallelisation_2", "inverse");
             String[] detectors_order_2 = new String[]{"06", "05"};
             String[] bands_order_2 = new String[]{"B02", "B01"};
             String config_order_2 = Config.config(configTmpInverse, outputDir2, stepBand10m, "inverse", false);
@@ -256,7 +304,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest = "testInverseReferentialArea";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
 
             // T27SYT
             double ul_x = 699960.0f;
@@ -291,7 +339,7 @@ public class Sen2VMInverseTest
         try
         {
             String nameTest = "testInverseAreaHandling";
-            String outputDir = Config.createTestDir(nameTest, "inverse");
+            String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
 
             // T28SBA
             double ul_x = 199980.0f;
@@ -320,15 +368,34 @@ public class Sen2VMInverseTest
     @Test
     public void testInverseDem()
     {
-        String[] detectors = new String[]{"06"};
+        String[] detectors = new String[]{"08"};
         String[] bands = new String[]{"B01", "B02"};
-        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4"};
+        String[] testsDem = new String[]{"dem_1", "dem_2", "dem_3", "dem_4", "dem_5", "dem_6"};
+        // String[] bands = new String[]{"B01"};
+        // String[] testsDem = new String[]{"dem_4", "dem_5"};
         int stepBand10m = 6000;
+
+
+        // ElevationManager elev_dem90_xarray = ElevationManager(
+        //         store,
+        //         half_pixel_dem_shift=False,  # only for ZARR_GETAS for now
+        //         geoid_path=geoid_path,
+        //         flip_lat=False,
+        //         shift_lon=None,
+        //         shift_lat=None,
+        // );
+
+        // SimpleTile tile = new SimpleTile();
+        // elev_dem90_xarray.update_tile(latitude, longitude, tile);
+
+
+        // double altitude = tile.interpolate_elevation(latitude, longitude);
+
 
         try
         {
             String nameTest_ref = "testInverseDem_ref";
-            String outputDir_ref = Config.createTestDir(nameTest_ref, "inverse");
+            String outputDir_ref = Config.createTestDir(Config.TDS.TDS1, nameTest_ref, "inverse");
             String config_ref = Config.config(configTmpInverse, outputDir_ref, stepBand10m, "inverse", false);
             String params_ref = Config.changeParams(paramTmp, detectors, bands, outputDir_ref);
             String[] args_ref = {"-c", config_ref, "-p", params_ref};
@@ -336,13 +403,14 @@ public class Sen2VMInverseTest
 
             for (String testDem : testsDem) {
                 String nameTest = "testInverseDem_" + testDem;
-                String outputDir = Config.createTestDir(nameTest, "inverse");
+                String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
                 String config = Config.changeDem(configTmpInverse, "src/test/resources/tests/data/dem_tests/" + testDem, outputDir);
                 String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
                 String[] args = {"-c", config, "-p", param};
                 Sen2VM.main(args);
 
                 Utils.verifyInverseLoc(config, outputDir_ref);
+                // Utils.verifyInverseLoc(config, outputDir_ref, 0.02);
             }
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
@@ -372,7 +440,7 @@ public class Sen2VMInverseTest
 		try
 		{
 			String nameTest = "testInverseLatLonArea";
-			String outputDir = Config.createTestDir(nameTest, "inverse");
+			String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "inverse");
 
 			// Init source/target SpatialReference and transformation
 			SpatialReference sourceSRS = new SpatialReference();
@@ -402,4 +470,47 @@ public class Sen2VMInverseTest
 			assert(false);
 		}
 	}
+
+    // Raw testing limited to functional tests as stronger are done in Direct  (On test also added in testInverseLoc of this file)
+    @Test
+    public void testInverseLocRawShifted()
+    {
+        String[] detectors = new String[]{"05","06","11","12"};
+        String[] bands = new String[]{"B01", "B02","B03","B04","B05","B06","B07","B08","B8A", "B09","B10","B11","B12"};
+        int stepBand10m = 6000;
+        try
+        {
+            String nameTest = "testInverseLocRawNotShifted";
+            String outputDir = Config.createTestDir(Config.TDS.TDS2, nameTest, "inverse");
+            String config = Config.configRawShifts(configTmpInverseTDS2, outputDir, stepBand10m, "inverse", false, true);
+            String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
+            String[] args = {"-c", config, "-p", param};
+            Sen2VM.main(args);
+
+            String nameTest2 = "testInverseLocRawShifted";
+            String outputDir2 = Config.createTestDir(Config.TDS.TDS2, nameTest2, "inverse");
+            String config2 = Config.configRawShifts(configTmpInverseTDS2, outputDir2, stepBand10m, "inverse", false, false);
+            String param2 = Config.changeParams(paramTmp, detectors, bands, outputDir2);
+            String[] args2 = {"-c", config2, "-p", param2};
+            Sen2VM.main(args2);
+
+            // Compare to original run
+            Utils.verifyInverseLoc(config2, outputDir, false);
+
+            // Verify that shift is under the shift applied
+            //  48 * 10m => 480m
+            //  32 * 20m => 640m
+            //  18 * 60m => 1080m
+            Utils.verifyInverseLoc(config2, outputDir, 1081, true);
+
+        } catch (Sen2VMException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            assert(false);
+        }
+    }
 }

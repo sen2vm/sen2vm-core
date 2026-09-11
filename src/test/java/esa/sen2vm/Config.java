@@ -1,3 +1,19 @@
+/** Copyright 2024-2025, CS GROUP, https://www.cs-soprasteria.com/
+*
+* This file is part of the Sen2VM Core project
+*     https://gitlab.acri-cwa.fr/opt-mpc/s2_tools/sen2vm/sen2vm-core
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.*/
+
 package esa.sen2vm;
 
 import org.junit.jupiter.api.Test;
@@ -22,6 +38,21 @@ import esa.sen2vm.input.Configuration;
 
 public class Config
 {
+    protected enum TDS
+    {
+        TDS1("src/test/resources/tests/input/TDS1/L1B_all/"),
+        TDS2("src/test/resources/tests/input/TDS2-INS-RAW/S2A_OPER_PRD_MSIL1B_PDMC_20251216T084518_R097_V20251215T153343_20251215T153354.SAFE/");
+
+        private final String path;
+
+        TDS(String path){
+            this.path = path;
+        }
+
+        public String getPath(){
+            return this.path;
+        }
+    }
 
     private static final double THRESHOLD_DIR = 1e-9;
     private static final double THRESHOLD_INV = 1e-8;
@@ -36,6 +67,37 @@ public class Config
         objJson.put("l1b_product", l1b_product);
         objJson.put("operation", operation);
         objJson.put("deactivate_available_refining", refining);
+
+        JSONObject steps = (JSONObject) objJson.get("steps");
+        steps.put("10m_bands", stepBand10m);
+        steps.put("20m_bands", stepBand10m / 2);
+        steps.put("60m_bands", stepBand10m / 6);
+
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("output_folder", l1b_product);
+
+        String outputConfig = l1b_product + "/configuration.json";
+        FileWriter writer = new FileWriter(outputConfig); //overwrites the content of file
+        writer.write(objJson.toString());
+        writer.flush();
+        writer.close();
+
+        return outputConfig;
+    }
+
+    public static String configRawShifts(String filePath, String l1b_product,
+        double stepBand10m, String operation, boolean refining,
+        boolean deactivateRawShift ) throws FileNotFoundException,
+            IOException, ParseException
+    {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(filePath));
+
+        JSONObject objJson = (JSONObject) obj;
+        objJson.put("l1b_product", l1b_product);
+        objJson.put("operation", operation);
+        objJson.put("deactivate_available_refining", refining);
+        objJson.put("deactivate_ins_raw_shift", deactivateRawShift);
 
         JSONObject steps = (JSONObject) objJson.get("steps");
         steps.put("10m_bands", stepBand10m);
@@ -163,7 +225,7 @@ public class Config
         return outputConfig;
     }
 
-    public static String configCheckGipp(String filePath, String gippPath, boolean checkGipp, String l1b_product)
+    public static String configAutoGippSelection(String filePath, String gippPath, boolean autoGippSelection, String l1b_product)
         throws FileNotFoundException, IOException, ParseException
     {
         JSONParser parser = new JSONParser();
@@ -171,8 +233,32 @@ public class Config
 
         JSONObject objJson = (JSONObject) obj;
         objJson.put("gipp_folder", gippPath);
-        objJson.put("gipp_version_check", checkGipp);
+        objJson.put("auto_gipp_selection", autoGippSelection);
         objJson.put("l1b_product", l1b_product);
+
+        JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
+        inverse.put("output_folder", l1b_product);
+
+        String outputConfig = l1b_product + "/configuration.json";
+        FileWriter writer = new FileWriter(outputConfig, false);
+        writer.write(obj.toString());
+        writer.close();
+
+        return outputConfig;
+    }
+
+    public static String configAutoGippSelectionWithRawShift(String filePath, String gippPath,
+         boolean autoGippSelection, String l1b_product, boolean deactivateRawShift)
+        throws FileNotFoundException, IOException, ParseException
+    {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(filePath));
+
+        JSONObject objJson = (JSONObject) obj;
+        objJson.put("gipp_folder", gippPath);
+        objJson.put("auto_gipp_selection", autoGippSelection);
+        objJson.put("l1b_product", l1b_product);
+        objJson.put("deactivate_ins_raw_shift", deactivateRawShift);
 
         JSONObject inverse = (JSONObject) objJson.get("inverse_location_additional_info");
         inverse.put("output_folder", l1b_product);
@@ -195,15 +281,14 @@ public class Config
         return directory.delete();
     }
 
-    public static String createTestDir(String nameTest, String type) throws IOException
+    public static String createTestDir(TDS inputTDS, String nameTest, String type) throws IOException
     {
-        String inputRef = "src/test/resources/tests/input/TDS1/L1B_all";
         String outputDir = "src/test/resources/tests/output/" + nameTest;
         File outputDirFile = new File(outputDir);
         if(outputDirFile.exists()) {
             deleteDirectory(outputDirFile);
         }
-        copyFolder(new File(inputRef), new File(outputDir), true);
+        copyFolder(new File(inputTDS.getPath()), new File(outputDir), true);
         return outputDir;
     }
 

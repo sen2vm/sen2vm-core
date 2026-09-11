@@ -1,6 +1,23 @@
+/** Copyright 2024-2025, CS GROUP, https://www.cs-soprasteria.com/
+*
+* This file is part of the Sen2VM Core project
+*     https://gitlab.acri-cwa.fr/opt-mpc/s2_tools/sen2vm/sen2vm-core
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.*/
+
 package esa.sen2vm.input;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 import java.io.File;
 import java.util.List;
@@ -33,15 +50,26 @@ public class SafeManager
      */
     private ArrayList<Granule> listGranules;
 
+
+    /**
+     * List of all the granule names found in dirGranules
+     */
+    private ArrayList<String> listGranuleNames;
+
     /**
      * Datastrip of the SAFE
      */
     private Datastrip datastrip;
 
     /**
+     * option to overwrite grids
+     */
+    private Boolean overwrite_grids;
+
+    /**
      * Constructor
      */
-    public SafeManager(String path, DataStripManager dataStripManager) throws Sen2VMException
+    public SafeManager(String path, DataStripManager dataStripManager, boolean overwrite_grids) throws Sen2VMException
     {
          // Inventory of the Datastrip
          String datastrip_path = path  + "/" + Sen2VMConstants.DATASTRIP;
@@ -51,6 +79,12 @@ public class SafeManager
          // Load all images and geo grid already existing (granule x det x band)
          String granules_path = path + "/" + Sen2VMConstants.GRANULE + "/";
          this.setAndProcessGranules(granules_path);
+         this.overwrite_grids=overwrite_grids;
+    }
+
+    public SafeManager(String path, DataStripManager dataStripManager) throws Sen2VMException
+    {
+        this(path, dataStripManager,true);
     }
 
     /**
@@ -60,7 +94,7 @@ public class SafeManager
     public void setAndProcessGranules(String path) throws Sen2VMException
     {
         this.listGranules = new ArrayList<Granule>();
-
+        this.listGranuleNames = new ArrayList<String>();
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
         if(listOfFiles != null) {
@@ -69,7 +103,8 @@ public class SafeManager
                 if (listOfFiles[i].isDirectory())
                 {
                     Granule gr = new Granule(listOfFiles[i]);
-                    listGranules.add(gr);
+                    this.listGranules.add(gr);
+                    this.listGranuleNames.add(gr.getName());
                 }
             }
         }
@@ -89,6 +124,7 @@ public class SafeManager
             {
                 if (listOfFiles[i].isDirectory())
                 {
+                    LOGGER.info("setAndProcessDataStrip listOfFiles"+listOfFiles[i].toString());
                     this.datastrip = new Datastrip(listOfFiles[i]);
                 }
             }
@@ -134,12 +170,11 @@ public class SafeManager
      */
     public int[] getFullSize(DataStripManager dataStripManager, BandInfo bandInfo, DetectorInfo detectorInfo)  throws Sen2VMException
     {
-        String[] minmax = dataStripManager.getMinMaxGranule(bandInfo, detectorInfo);
-
+        String[] minmax = dataStripManager.getMinMaxGranule(bandInfo, detectorInfo,this.listGranuleNames);
         Granule minGranule = getGranuleByName(minmax[0]);
         Granule maxGranule = getGranuleByName(minmax[1]);
 
-        if (minGranule == null || minGranule == null)
+        if (minGranule == null || minGranule == null && !this.overwrite_grids)
         {
             Sen2VMException error = new Sen2VMException("Error GRANULE: no first or last granule of the datastrip.");
             throw error;
@@ -224,7 +259,7 @@ public class SafeManager
                 ArrayList<Granule> granulesToCompute = getGranulesToCompute(detectorInfo, bandInfo);
                 for (Granule granuleToCompute: granulesToCompute)
                 {
-                    if (granuleToCompute.getGrid(bandInfo) != null)
+                    if (granuleToCompute.getGrid(bandInfo) != null && !this.overwrite_grids)
                     {
                         String error = "Direct grid(s) already exist(s)";
                         error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
@@ -234,7 +269,7 @@ public class SafeManager
 
                 // Check vrt
                 File vrt = this.datastrip.getVRT(detectorInfo, bandInfo);
-                if (vrt != null)
+                if (vrt != null && !this.overwrite_grids)
                 {
                     String error = "VRT grid(s) already exist(s)";
                     error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";
@@ -259,7 +294,7 @@ public class SafeManager
             {
                 String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, outputDirPath);
                 File f = new File(invFileName);
-                if (f.exists())
+                if (f.exists() && !this.overwrite_grids)
                 {
                     String error = "Inverse grid(s) already exist(s)";
                     error = error + " (ex: " + detectorInfo.getNameWithD()  + "/" + bandInfo.getNameWithB() + ")";

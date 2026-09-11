@@ -1,0 +1,231 @@
+# Sen2VM Release history
+
+## Merged in main
+
+### Main feature
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * 
+
+* Doc:
+
+  * 
+
+## 1.3.0 (2026-07-17)
+
+### Main features
+
+* Allow to have mosaic DEM and not only cut in square degrees
+* Notebooks improvments
+* GIPP handling more robust
+
+### Updates
+
+* Fix:
+
+  * Update GIPP handling (#70)
+
+* Feature:
+
+  * Handle mosaic DEM (multiple square degrees): #62
+
+* Doc:
+
+  * Notebooks improvements:
+
+    * Separate static input download in a dedicated notebook (#56)
+    * Allow more flexible input structure with separated input locations (#56)
+    * Creation of a Notebook for Inverse location (#54)
+    * Allow using OTB instead of gdal in direct location Notebook (through a new notebook)
+
+  * Change input description related to DEM and GIPP
+  * Addition of Unit test for GIPP handling (#51, #70)
+
+
+## 1.2.0 (2026-05-04)
+
+### Main feature
+
+Include a shift compensation for acquisition with DATATAKE_TYPE at INS-RAW to compensate https://esa-cams.atlassian.net/browse/GSANOM-22074
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * Issue #73: Include a shift compensation for acquisition with DATATAKE_TYPE at INS-RAW to compensate https://esa-cams.atlassian.net/browse/GSANOM-22074
+
+* Doc:
+
+  * Point to new CDSE official DEM download
+
+## 1.1.4 (2026-02-05)
+
+### Main feature
+
+Notebook using new GDAL handling missing granules, but PDI format no more handled by GDAL for orthorectification
+
+### Updates
+
+* Fix:
+
+  * 
+
+* Feature:
+
+  * Notebook using new GDAL handling missing granules, but PDI format no more handled by GDAL for orthorectification
+
+* Doc:
+
+  * Precision added
+  * Precision to use Compact.SAFE format (using CDSE L1B workflow for example) when using Orthorectification Notebook
+
+## 1.1.3 (2026-01-16)
+
+### Main feature
+
+Improvments of Notebook (cf Fix above)
+
+### Updates
+
+* Fix:
+
+  * Incorrect relative paths between notebook, DEM directory, and Dockerfile
+  * Issue #61: Avoid double resampling in mosaic creation - Replaced `gdalwarp` with `gdal_merge.py` for mosaic assembly, added explicit resolution per band (10m, 20m, 60m) for orthorectification, and corrected grid step values (4.5, 2.25, 1 pixels) for sen2vm grid generation
+  * GDAL S2 driver handle DATASTRIP with missing granules #64
+  
+* Feature:
+
+  * 
+
+* Doc:
+
+  * 
+
+## 1.1.2 (2025-12-19)
+
+### Main feature
+
+Documentation rework and example Notebook provision
+
+### Updates
+
+* Fix:
+
+  *
+
+* Feature:
+
+  * Addition of example Notebook
+
+* Doc:
+
+  * Doc refactoring
+  * Inclusion of usage of Notebooks
+  * Inclusion of tutorials on how to get required inputs
+  * Updates on orthorectification example to be compatible with PDI/EUP.SAFE/EUP.COMPACT_SAFE
+  * Addition of a CHANGELOG
+
+## 1.1.1 (2025-12-18)
+
+### Main feature
+
+Fix Dockerfile with updated version number
+
+### Updates
+
+* Fix:
+
+  * Hotfixe Dockerfile to have the same version than pom.xm. Addition of Commentary not to reproduce the issue
+
+
+## 1.1.0 (2025-12-18)
+
+### Main feature
+
+Optimized GIPP loading and License clarification
+
+### Updates
+
+* Fix:
+  
+  * Addition of License header
+
+* Feature:
+
+  * GIPP can now be stored in any subfolders, and can be in tgz or tar.gz
+
+* Doc:
+
+  * New GIPP loading strategy described
+  * Clear statment of the License in the main README
+
+## 1.0.3 (2025-12-10)
+
+### Main feature
+
+### Updates
+
+* Fix:
+
+  * Hotfix of a `grids_overwriting` with "s" in the code
+
+
+## 1.0.2 (2025-12-10)
+
+### Main feature
+
+Ease user experience and addition of a Dockerfile to have Sen2VM automatically installed in a suitable environment
+
+### Updates
+
+* Fix:
+  
+  * Logs clearer when GEOID is missing
+  * Processing of only one granule allowed
+
+* Feature:
+
+  * New `grids_overwriting` configuration parameter
+  * New Dockerfile to automatically install Sen2VM in a suitable context
+
+* Doc:
+
+  * New `grids_overwriting` configuration parameter description
+  * Usage of Sen2VM updated: how to launch Sen2VM and how to use the new Dockerfile
+
+## 1.0.1 (2025-12-03)
+
+### Main feature
+
+Allow Sen2VM to handle both PDI and EUP format
+
+### Updates
+
+* Fix:
+  
+  * Handling of PDI format (not only EUP) for Sen2VM
+
+* Feature:
+
+  * orekit-data folder extracted and placed beside jar at first run
+
+* Doc:
+
+  * update regarding orekit-data folder
+
+## 1.0.0 (2025-06-12)
+
+### Main feature
+
+* First complete, official, validated version
