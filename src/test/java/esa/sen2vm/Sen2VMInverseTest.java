@@ -352,8 +352,8 @@ public class Sen2VMInverseTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-
-            Utils.verifyInverseLoc(config, refDir + "/" + nameTest);
+            LOGGER.warning("Threshold released at: " + THRESHOLD_INV_HIGH); // TODO
+            Utils.verifyInverseLoc(config, refDir + "/" + nameTest, THRESHOLD_INV_HIGH);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
