@@ -281,14 +281,14 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
     #product_asgard = S2MSIGeometry(**config)
     #comp = GeodeticComparator(product_asgard.propagation_model.body)
 
-    for band in bands:
+    for band_i in bands:
 
         df = pd.DataFrame(columns=['band', 'det', 'name', "nb_errors > 10-8", "nb_errors > 1",
                                    "mean (m)", "median (m)", "min (m)", "max (m)", "std (m)", "ce95 (m)",
                                     "argmax (flatten list coords)", "coordinates_argmax_c (pixel)", "coordinates_argmax_r (pixel)"])
 
         for detector in detectors:
-            sensor = S2Sensor(detector, band).name
+            sensor = S2Sensor(detector, band_i).name
             path_csv = glob.glob(op.join(ref_dir, sensor[0:3] + "_results.csv"))
             if len(path_csv) > 0:
                 df = pd.read_csv(path_csv[0], index_col=0)
@@ -340,8 +340,8 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
                   #rows = np.arange(start_y + miny, start_y + maxy, resy)  # from upper_left_det_y + upper_left_granule_y
                   #cols = np.arange(start_x + minx, start_x + maxx, resx)  # from upper_left_det_y + upper_left_granule_y
                   
-                  print("nb rows: ", sizey)
-                  print("nb cols: ", sizex)
+                  #print("nb rows: ", sizey)
+                  #print("nb cols: ", sizex)
                   rows = [start_y + maxy + iy * stepy for iy in range(sizey)]
                   cols = [start_x + minx + ix * stepx for ix in range(sizex)]
   
@@ -385,7 +385,7 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
                   
                   longitude_test = np.array(image.read(1)).flatten()
                   latitude_test = np.array(image.read(2)).flatten()
-                  print("Pixel[10]: ", pixels[10])
+                  #print("Pixel[10]: ", pixels[10])
                   if dataset.RasterCount == 3:
                       altitude_test = np.array(image.read(3)).flatten()
                   else:
@@ -395,10 +395,10 @@ def compute_direct_location(config: dict, input_dir: str, product, detectors, ba
   
                   ref = np.stack((longitude_test, latitude_test, altitude_test), axis=1)
                   #error_2d_g = np.array(comp.planar_error(ref, np.array(grounds)))
-                  print("ref1: ",np.array(ref[:,1]))
-                  print("ground1: ",np.array(grounds[:,1]))
-                  print(f"ref1[0]   : {np.array(ref[:,1])[0]:.20f}")
-                  print(f"ground1[0]: {np.array(grounds[:,1])[0]:.20f}")
+                  #print("ref1: ",np.array(ref[:,1]))
+                  #print("ground1: ",np.array(grounds[:,1]))
+                  #print(f"ref1[0]   : {np.array(ref[:,1])[0]:.20f}")
+                  #print(f"ground1[0]: {np.array(grounds[:,1])[0]:.20f}")
                   error_2d_g = np.array(distance(
                                           latitude_test,
                                           longitude_test,
