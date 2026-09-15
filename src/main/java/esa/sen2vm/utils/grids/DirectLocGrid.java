@@ -89,7 +89,7 @@ public class DirectLocGrid
                 grid[l*nbCols + c][0] = this.gridLines.get(l) + lineOffest;
                 grid[l*nbCols + c][1] = this.gridPixels.get(c) + pixelOffest;
             }
-            LOGGER.info("Grid Direct Lines " + l + " => " + grid[l*nbCols][0]);
+            LOGGER.fine("Grid Direct Lines " + l + " => " + grid[l*nbCols][0]);
         }
 
         return grid;
