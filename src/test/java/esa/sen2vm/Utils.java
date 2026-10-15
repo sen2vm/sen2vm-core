@@ -61,7 +61,7 @@ public class Utils {
     private static final double THRESHOLD_DIR = 1e-8;
     private static final double THRESHOLD_INV = 1e-6;
 
-    private static final boolean cancel_verify = true;
+    private static final boolean cancel_verify = false;
 
 
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException

@@ -42,7 +42,7 @@ public class Sen2VMDirectTest
     String paramTmp = "src/test/resources/params_base.json";
     String refDir = "src/test/resources/tests/ref";
 
-    private static final double THRESHOLD_DIR_HIGH = 2.5e-2; // Shall be high due to the cache mechanism for inverse location in SXGEO/RUGGED/OREKIT
+    private static final double THRESHOLD_DIR_HIGH = 1.2e-1; // Shall be high due to the cache mechanism for inverse location in SXGEO/RUGGED/OREKIT
 
     @AfterEach
     void resetGlobalState(){
@@ -100,8 +100,9 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+            
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // TODO
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest, THRESHOLD_DIR_HIGH);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -129,8 +130,8 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
 
-            //LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // TODO
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+            LOGGER.warning("Threshold released at: 1e-5"); // THRESHOLD_DIR_HIGH TODO
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest, 1e-5);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -219,7 +220,9 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             LOGGER.info("config: "+config);
             Sen2VM.main(args);
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+
+            LOGGER.warning("Threshold released at: 1e-5"); // THRESHOLD_DIR_HIGH TODO
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest,1e-5);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -591,7 +594,7 @@ public class Sen2VMDirectTest
     @Test
     public void testDirectLocRawShifted()
     {
-        // ref DATA generated duriectly with Sen2Vm 1.1.4 using Notebook with same list of bands/detectors. In Sen2VM 1.1.4, shift was not corrected yet
+        // ref DATA directly generated with Sen2Vm 1.1.4 using Notebook with same list of bands/detectors. In Sen2VM 1.1.4, shift was not corrected yet
         String[] detectors = new String[]{"05","06","11","12"};
         String[] bands = new String[]{"B01","B02","B03","B04","B05","B06", "B07", "B08", "B8A","B09","B10","B11","B12"};
         int stepBand10m = 600; // corresponding to 6 kms

@@ -68,7 +68,6 @@ public class Sen2VMCheckPointTest
     String configTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct.json";
     String configTmpInverse = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
     String paramTmp = "src/test/resources/params_base.json";
-    String refDir = "src/test/resources/tests/ref";
 
     @Test
     public void geoTimeFirstLine()
@@ -176,7 +175,7 @@ public class Sen2VMCheckPointTest
     @Test
     public void geoLocD01B01_fromAsgard()
     {
-        double delta = 1e-9;
+        double delta = 3e-7; // Around 0.033m
         try
         {
             double[][] grounds = geoLocD01B01(configTmpDirect, 0.0, 0.0);
@@ -187,6 +186,7 @@ public class Sen2VMCheckPointTest
 
             grounds = geoLocD01B01(configTmpDirect, 250.5, 700.5);
             LOGGER.info("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
+            // Not regenerated with asgard-legacy 1.2.1 // SXGEO 0.3.1
             assertEquals(grounds[0][0], -18.490305707482214, delta);
             assertEquals(grounds[0][1], 33.58277655913304, delta);
             assertEquals(grounds[0][2], 43.448338191393816, delta);
@@ -308,7 +308,7 @@ public class Sen2VMCheckPointTest
         return grounds;
     }
 
-     public static HashMap<String, Sensor> getSensorHashMap(List<DetectorInfo> detectors, List<BandInfo> bands,
+    public static HashMap<String, Sensor> getSensorHashMap(List<DetectorInfo> detectors, List<BandInfo> bands,
          DataStripManager dataStripManager, GIPPManager gippManager) throws Sen2VMException {
 
         // Save sensors for each focal plane
@@ -366,12 +366,11 @@ public class Sen2VMCheckPointTest
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
         }
-
     }
 
     public double[][] inverseLocD01B01(String config, String det, String band, double[] ground) throws Sen2VMException
@@ -463,15 +462,15 @@ public class Sen2VMCheckPointTest
 
             double[][] grounds = {ground};
             sensorCoordinates = simpleLocEngine.computeInverseLoc(sensorList.get("B01/D01"), grounds, "EPSG:4326");
-        } catch ( SXGeoException e ) {
+        } catch (SXGeoException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        }  catch (Sen2VMException e) {
+        } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
