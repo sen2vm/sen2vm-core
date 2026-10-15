@@ -53,9 +53,6 @@ from asgard_legacy_drivers.drivers.sentinel_2_legacy import S2LegacyDriver
 from pyrugged.errors.pyrugged_exception import PyRuggedError
 
 
-georefConventionOffsetPixel = -0.5
-georefConventionOffsetLine = 0.5
-
 def normalize_path(path):
   return path if (op.isabs(path) or path.startswith("./")) else "../../../" + path
 
@@ -117,68 +114,68 @@ def test_Sen2VM(config_file: str, detector: str, band: str, col_lon: float, row_
         else:
             # Generate the altitudes from TileUpdater from the asgard propagation_model.
             # It is necessary as ASGGARD-Legacy requires the altitudes as input
-            grounds = np.array([[grounds[0][i], grounds[1][i]] for i in range(len(grounds[0]))], np.float64)
-            grounds_2 = np.array([[grounds[i][0], grounds[i][1], 0] for i in range(grounds.shape[0])], np.float64)            
+            grounds = np.array([col_lon, row_lat])
+            grounds_2 = np.array([col_lon, row_lat, 0])
             product_asgard = S2MSIGeometry(**config)  # TOFIX
             if product_asgard.propagation_model is not None:
-                flat_ground_coords = grounds[..., :2].reshape((-1, 2))
                 
                 tile_updater = product_asgard.propagation_model.tile_updater
                 if tile_updater is not None:
                     if product_asgard._cache is None:
                         product_asgard._cache = TilesCache(SimpleTile, tile_updater, product_asgard._max_cached_tiles)
-                    altitudes = np.ones(flat_ground_coords.shape[0:1]) * np.nan
-                    flat_ground_coords_rad = np.deg2rad(flat_ground_coords)
-                    tiles, indexes = product_asgard._cache.get_tiles(flat_ground_coords_rad[:, 1], flat_ground_coords_rad[:, 0])
+
+                    ground_rad = np.deg2rad(grounds)
+                    tiles, indexes = product_asgard._cache.get_tiles(np.atleast_1d(ground_rad[1]), np.atleast_1d(ground_rad[0]))
                     for tile, index in zip(tiles, indexes):
-                        altitudes[index] = tile.interpolate_elevation_arr(
-                            flat_ground_coords_rad[index, 1], flat_ground_coords_rad[index, 0]
+                        altitude = tile.interpolate_elevation_arr(np.atleast_1d(ground_rad[1]), np.atleast_1d(ground_rad[0])
                         )
-                        grounds_2[index,2] = altitudes[index]
-                        grounds = grounds_2
+                        grounds_2[2] = altitude[0]
+            grounds = grounds_2
             print("Inverse loc, recomputing altitude as not provided: ", grounds_2)
 
-        compute_inverse_location(input_dir, product, product_asgard, detector, band, grounds_2)    
+        compute_inverse_location(product, detector, band, grounds_2)    
     else:
         print('No test found: no "direct" or "inverse" found in name test')
     
 
-def compute_inverse_location(product, product_asgard, detector, band, grounds):
+def compute_inverse_location(product, detector, band, grounds):
     """
     Inverse location of a data test from SEN2VM
 
-    :param input_dir: directory with all inverse grids to verify (bands x detectors in params.json)
     :param product: S2MSILegacyGeometry (legacy-base) ; S2MSIGeometry (refactored)
-    :param ref_dir: output directory for asgard grids
+    :param detector: S2Detector Object from ASGARD
+    :param band: S2Band Object from ASGARD
+    :param grounds: Grounds np array lon, lat, alt
     :return:
     """
 
     sensor = S2Sensor(detector, band).name
     print("#", sensor)
 
-
-    
     # Call inverse location
     inverse_pixels = None
     try:
         inverse_pixels = product.inverse_loc(grounds, geometric_unit=sensor)
-        # note : (col, row) conv
+
+        print(
+          f"sensor (col, row) for input ground coord ",
+          f"({grounds[0]:.20f}, {grounds[1]:.20f}, {grounds[2]:.20f}): ",
+          f"({inverse_pixels[0]:.20f}, {inverse_pixels[1]:.20f})"
+          )
+
     except AttributeError as exp:
         print(colored("    ! PyRuggedError: " + str(exp), "red"))
-
-    # TODO
-    inverse_pixels = inverse_pixels + [-georefConventionOffsetPixel, -georefConventionOffsetLine]
-
 
 
 def compute_direct_location(product, detector, band, col, row):
     """
     Direct location of a data test from SEN2VM
 
-    :param config:
-    :param input_dir: directory with all inverse grids to verify (bands x detectors in params.json)
-    :param product: dict of S2geo interface
-    :param ref_dir: output directory for asgard grids
+    :param product: S2MSILegacyGeometry (legacy-base); S2MSIGeometry (refactored)
+    :param detector: S2Detector Object from ASGARD
+    :param band: S2Band Object from ASGARD
+    :param col: column in float
+    :param row: row in float
     """
 
     sensor = S2Sensor(detector, band).name
@@ -195,7 +192,11 @@ def compute_direct_location(product, detector, band, col, row):
     try:
         grounds, _ = product.direct_loc(pixel, sensor)
         # note: long, lat, alt conv
-        print(f"ground (lon,lat,alt) for input coord {pixel}: ", ground)
+        print(
+          f"ground (lon,lat,alt) for input coord ",
+          f"({pixel[0]:.20f}, {pixel[1]:.20f}): ",
+          f"({grounds[0]:.20f}, {grounds[1]:.20f}, {grounds[2]:.20f})"
+          )
     except PyRuggedError as exp:
         print(colored("    ! PyRuggedError: " + str(exp), "red"))
 
@@ -213,7 +214,12 @@ def read_params(input_test: str):
     bands = [S2Band.from_name(name) for name in params["bands"]]
     return detectors, bands
 
-    
+def is_float(value):
+    try:
+        float(value)
+        return True
+    except (ValueError, TypeError):
+        return False
 
 if __name__ == "__main__":
     
@@ -222,26 +228,55 @@ if __name__ == "__main__":
   match len(sys.argv) - 1:
     case 5:
       print(f"Five arguments (expecting <a_config_file_path> <detector> <band> <col_or_longitude> <row_or_latitude>): {sys.argv[1]}, {sys.argv[2]}, {sys.argv[3]}, {sys.argv[4]}")
-      
-      if (Path(sys.argv[1]).is_file()
-      and re.fullmatch(r"(0[1-9]|1[0-2])",sys.argv[2])
-      and re.fullmatch(r"B(0[1-9]|1[0-2]|8A)",sys.argv[3])
-      and float(sys.argv[4])
-      and float(sys.argv[5])):
-        test_Sen2VM(sys.argv[1],sys.argv[2],sys.argv[3], sys.argv[4], sys.argv[5])
+
+      launch_sen2vm = True      
+      if not Path(sys.argv[1]).is_file():
+        print(f"{sys.argv[1]} is supposed to be a file")
+        launch_sen2vm = False
+      if not re.fullmatch(r"D(0[1-9]|1[0-2])", sys.argv[2]):
+        print(f"{sys.argv[2]} is supposed to be a detector string between D01-D12")
+        launch_sen2vm = False
+      if not re.fullmatch(r"B(0[1-9]|1[0-2]|8A)", sys.argv[3]):
+        print(f"{sys.argv[3]} is supposed to be a band string between B01-B12 (including B8A)")
+        launch_sen2vm = False
+      if not is_float(sys.argv[4]):
+        print(f"{sys.argv[4]} is supposed to be a float")
+        launch_sen2vm = False
+      if not is_float(sys.argv[5]):
+        print(f"{sys.argv[5]} is supposed to be a float")
+        launch_sen2vm = False
+        
+      if launch_sen2vm:
+        test_Sen2VM(sys.argv[1], S2Detector.from_name(sys.argv[2]), S2Band.from_name(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), None)
       else:
         print(expected_message)
     case 6:
       print(f"Six arguments (expecting <a_config_file_path> <detector> <band> <col_or_longitude> <lrow_or_latitude> <altitude>): {sys.argv[1]}, {sys.argv[2]}, {sys.argv[3]}, {sys.argv[4]}, {sys.argv[5]}")
     
-      if (Path(sys.argv[1]).is_file()
-      and re.fullmatch(r"(0[1-9]|1[0-2])",sys.argv[2])
-      and re.fullmatch(r"B(0[1-9]|1[0-2]|8A)",sys.argv[3])
-      and float(sys.argv[4])
-      and float(sys.argv[5])
-      and float(sys.argv[6])):
-        test_Sen2VM(sys.argv[1],sys.argv[2],sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+      launch_sen2vm = True      
+      if not Path(sys.argv[1]).is_file():
+        print(f"{sys.argv[1]} is supposed to be a file")
+        launch_sen2vm = False
+      if not re.fullmatch(r"D(0[1-9]|1[0-2])", sys.argv[2]):
+        print(f"{sys.argv[2]} is supposed to be a detector string between D01-D12")
+        launch_sen2vm = False
+      if not re.fullmatch(r"B(0[1-9]|1[0-2]|8A)", sys.argv[3]):
+        print(f"{sys.argv[3]} is supposed to be a band string between B01-B12 (including B8A)")
+        launch_sen2vm = False
+      if not is_float(sys.argv[4]):
+        print(f"{sys.argv[4]} is supposed to be a float")
+        launch_sen2vm = False
+      if not is_float(sys.argv[5]):
+        print(f"{sys.argv[5]} is supposed to be a float")
+        launch_sen2vm = False
+      if not is_float(sys.argv[6]):
+        print(f"{sys.argv[6]} is supposed to be a float")
+        launch_sen2vm = False
+      
+      if launch_sen2vm:          
+        test_Sen2VM(sys.argv[1], S2Detector.from_name(sys.argv[2]), S2Band.from_name(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]))
       else:
         print(expected_message)
     case _:
       print(expected_message)
+  print()

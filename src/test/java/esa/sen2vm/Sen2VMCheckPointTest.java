@@ -180,16 +180,17 @@ public class Sen2VMCheckPointTest
         {
             double[][] grounds = geoLocD01B01(configTmpDirect, 0.0, 0.0);
             LOGGER.info("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
-            assertEquals(grounds[0][0], -18.919024167218094, delta);
-            assertEquals(grounds[0][1], 33.79483143151926, delta);
-            assertEquals(grounds[0][2], 42.538715533140156, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(grounds[0][0], -18.91902420145735064239, delta);
+            assertEquals(grounds[0][1], 33.79483135354386291738, delta);
+            assertEquals(grounds[0][2], 42.53871557567230610175, delta);
 
             grounds = geoLocD01B01(configTmpDirect, 250.5, 700.5);
             LOGGER.info("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
-            // Not regenerated with asgard-legacy 1.2.1 // SXGEO 0.3.1
-            assertEquals(grounds[0][0], -18.490305707482214, delta);
-            assertEquals(grounds[0][1], 33.58277655913304, delta);
-            assertEquals(grounds[0][2], 43.448338191393816, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(grounds[0][0], -18.85503623572017417587, delta);
+            assertEquals(grounds[0][1], 33.38078853572306314845, delta);
+            assertEquals(grounds[0][2], 43.19992448626086911645, delta);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -351,16 +352,19 @@ public class Sen2VMCheckPointTest
             assertEquals(sensor[0][0], Double.NaN);
 
             sensor = inverseLocD01B01(configTmpInverse, "01", "B01", new double[]{-18.919175317847085, 33.79427774463745, 42.539127849734236});
-            assertEquals(sensor[0][0], 9.94165389e-01, delta);
-            assertEquals(sensor[0][1], 4.68505600e-06, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(sensor[0][0], 0.99349593718539686016, delta);
+            assertEquals(sensor[0][1], 0.00004379682761444237, delta);
 
             sensor = inverseLocD01B01(configTmpInverse, "01", "B01", new double[]{-18.919175317847085, 33.79427774463745});
-            assertEquals(sensor[0][0], 9.94165389e-01, delta);
-            assertEquals(sensor[0][1], 4.68505600e-06, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(sensor[0][0], 0.99349593718539686016, delta);
+            assertEquals(sensor[0][1], 0.00004379682761444237, delta);
 
             sensor = inverseLocD01B01(configTmpInverse, "01", "B01", new double[]{-18.821137292435186, 33.635377815436044, 42.87227050779195});
-            assertEquals(sensor[0][0], 250.50004268066434, delta);
-            assertEquals(sensor[0][1], 200.50000152164057, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(sensor[0][0], 250.50003912495120061976, delta);
+            assertEquals(sensor[0][1], 200.50000204407666615225, delta);
             LOGGER.info("OK");
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());

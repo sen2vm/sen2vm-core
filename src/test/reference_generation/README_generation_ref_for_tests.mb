@@ -132,6 +132,20 @@ rm -Rf */*
 for a in *; do cp -R ../../../reference_generation/test_generation/$a/* $a/ ; done
 ```
 
+## Step 5 - Generate points references for Sen2VMCheckPointTest.java
+
+Sen2VMCheckPointTest.java contains specific tests with only points. References should be regenerated and java file should be updated
+
+``` bash
+# Go into the script folder
+cd sen2vm-core/src/test/reference_generation
+
+# Run the bash script generating points' references 
+bash generate_Sen2VMCheckPointTest_references.sh
+
+# Modify src/test/java/esa/sen2vm/Sen2VMCheckPointTest.java with the generated values
+```
+
 
 # Example of launch of the script on other data
 
