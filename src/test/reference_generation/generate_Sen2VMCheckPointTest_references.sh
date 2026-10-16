@@ -1,6 +1,6 @@
 # TODO if modified on Windows: sed -i 's/\r$//' generate_Sen2VMCheckPointTest_references.sh
 python3.11 generate_one_point_with_asgard.py ../resources/tests/input/TDS1/configuration_TDS1_direct.json D01 B01 "0.0" "0.0" | grep ground
-python3.11 generate_one_point_with_asgard.py ../resources/tests/input/TDS1/configuration_TDS1_direct.json D01 B01 "250.5" "700.5" | grep ground
+python3.11 generate_one_point_with_asgard.py ../resources/tests/input/TDS1/configuration_TDS1_direct.json D01 B01 "700.5" "250.5" | grep ground
 
 
 python3.11 generate_one_point_with_asgard.py ../resources/tests/input/TDS1/configuration_TDS1_inverse.json D01 B01 "0.0" "0.0" | grep ground
