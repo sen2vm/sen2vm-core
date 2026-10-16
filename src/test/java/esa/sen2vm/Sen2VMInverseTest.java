@@ -319,7 +319,7 @@ public class Sen2VMInverseTest
             Sen2VM.main(args);
 
             LOGGER.warning("Threshold released at: " + THRESHOLD_INV_HIGH); // TODO
-            Utils.verifyInverseLoc(config, refDir + "/" + THRESHOLD_INV_HIGH);
+            Utils.verifyInverseLoc(config, refDir + "/" + nameTest, THRESHOLD_INV_HIGH);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
