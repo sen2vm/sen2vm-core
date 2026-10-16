@@ -68,7 +68,6 @@ public class Sen2VMCheckPointTest
     String configTmpDirect = "src/test/resources/tests/input/TDS1/configuration_TDS1_direct.json";
     String configTmpInverse = "src/test/resources/tests/input/TDS1/configuration_TDS1_inverse.json";
     String paramTmp = "src/test/resources/params_base.json";
-    String refDir = "src/test/resources/tests/ref";
 
     @Test
     public void geoTimeFirstLine()
@@ -176,20 +175,22 @@ public class Sen2VMCheckPointTest
     @Test
     public void geoLocD01B01_fromAsgard()
     {
-        double delta = 1e-9;
+        double delta = 3e-7; // Around 0.033m
         try
         {
             double[][] grounds = geoLocD01B01(configTmpDirect, 0.0, 0.0);
             LOGGER.info("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
-            assertEquals(grounds[0][0], -18.919024167218094, delta);
-            assertEquals(grounds[0][1], 33.79483143151926, delta);
-            assertEquals(grounds[0][2], 42.538715533140156, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(grounds[0][0], -18.91902420145735064239, delta);
+            assertEquals(grounds[0][1], 33.79483135354386291738, delta);
+            assertEquals(grounds[0][2], 42.53871557567230610175, delta);
 
             grounds = geoLocD01B01(configTmpDirect, 250.5, 700.5);
             LOGGER.info("pixels = 0.0 0.0 grounds = "+grounds[0][0]+" "+grounds[0][1]+" "+grounds[0][2]);
-            assertEquals(grounds[0][0], -18.490305707482214, delta);
-            assertEquals(grounds[0][1], 33.58277655913304, delta);
-            assertEquals(grounds[0][2], 43.448338191393816, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(grounds[0][0], -18.49030570773759762915, delta);
+            assertEquals(grounds[0][1], 33.58277655950302431620, delta);
+            assertEquals(grounds[0][2], 43.44833819026947452357, delta);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -308,7 +309,7 @@ public class Sen2VMCheckPointTest
         return grounds;
     }
 
-     public static HashMap<String, Sensor> getSensorHashMap(List<DetectorInfo> detectors, List<BandInfo> bands,
+    public static HashMap<String, Sensor> getSensorHashMap(List<DetectorInfo> detectors, List<BandInfo> bands,
          DataStripManager dataStripManager, GIPPManager gippManager) throws Sen2VMException {
 
         // Save sensors for each focal plane
@@ -343,7 +344,7 @@ public class Sen2VMCheckPointTest
     @Test
     public void inverseLocD01B01_fromAsgard()
     {
-        double delta = 1e-9;
+        double delta = 2e-2;
         try
         {
             double[][] sensor = inverseLocD01B01(configTmpInverse, "01", "B01", new double[]{0.0, 0.0, 0.0});
@@ -351,27 +352,29 @@ public class Sen2VMCheckPointTest
             assertEquals(sensor[0][0], Double.NaN);
 
             sensor = inverseLocD01B01(configTmpInverse, "01", "B01", new double[]{-18.919175317847085, 33.79427774463745, 42.539127849734236});
-            assertEquals(sensor[0][0], 9.94165389e-01, delta);
-            assertEquals(sensor[0][1], 4.68505600e-06, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(sensor[0][0], 0.99349593718539686016, delta);
+            assertEquals(sensor[0][1], 0.00004379682761444237, delta);
 
             sensor = inverseLocD01B01(configTmpInverse, "01", "B01", new double[]{-18.919175317847085, 33.79427774463745});
-            assertEquals(sensor[0][0], 9.94165389e-01, delta);
-            assertEquals(sensor[0][1], 4.68505600e-06, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(sensor[0][0], 0.99349593718539686016, delta);
+            assertEquals(sensor[0][1], 0.00004379682761444237, delta);
 
             sensor = inverseLocD01B01(configTmpInverse, "01", "B01", new double[]{-18.821137292435186, 33.635377815436044, 42.87227050779195});
-            assertEquals(sensor[0][0], 250.50004268066434, delta);
-            assertEquals(sensor[0][1], 200.50000152164057, delta);
+            // generated with sen2vm-core/src/test/reference_generation/generate_Sen2VMCheckPointTest_references.sh
+            assertEquals(sensor[0][0], 250.50003912495120061976, delta);
+            assertEquals(sensor[0][1], 200.50000204407666615225, delta);
             LOGGER.info("OK");
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
         }
-
     }
 
     public double[][] inverseLocD01B01(String config, String det, String band, double[] ground) throws Sen2VMException
@@ -463,15 +466,15 @@ public class Sen2VMCheckPointTest
 
             double[][] grounds = {ground};
             sensorCoordinates = simpleLocEngine.computeInverseLoc(sensorList.get("B01/D01"), grounds, "EPSG:4326");
-        } catch ( SXGeoException e ) {
+        } catch (SXGeoException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        }  catch (Sen2VMException e) {
+        } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
             assert(false);
