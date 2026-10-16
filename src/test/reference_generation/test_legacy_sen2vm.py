@@ -143,18 +143,14 @@ def compute_inverse_location(input_dir: str, product, product_asgard, detectors,
         df = pd.DataFrame(columns=['band', 'det', "nb_valeurs not nan", "nb_errors > 10-6 m", "nb_errors > 10-4 m",
                                    "nb_errors > 10-2 m", "mean (m)", "max (m)", "std (m)", "ce95 (m)"])
         for detector in detectors:
-
-            sensor = S2Sensor(detector, band).name
-            #print("#", sensor)
-
-            # Init all grounds coordinates to compute inverse loc
+            # Init Sensor
             sensor = S2Sensor(detector, band).name
             print("#", sensor)
+
             # Select corresponding grid
             geo_grid = glob.glob(op.join(input_dir, "*INV*" + sensor[4:] + "_" + sensor[0:3] + ".tif"))[0]
 
             # Init all grounds coordinates to compute inverse loc
-
             minx_, maxy_, sizex_, sizey_, stepx_, stepy_, src_crs = get_geotransfrom(geo_grid)
             cols = [minx_ + stepx_/2 + i * stepx_ for i in range(sizex_)]
             rows = [maxy_ + stepy_/2 + i * stepy_ for i in range(sizey_)]

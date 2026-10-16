@@ -166,6 +166,19 @@ public class Sen2VM
                                                     !config.getDeactivateRefining(),
                                                     config.getIgnoreInsRawShifts());
 
+            // Safe Manager
+            SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager, config.getGridsOverwriting());
+            Datastrip datastrip = safeManager.getDatastrip();
+            // Test if no grids exists already
+            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+            {
+                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
+            }
+            else
+            {
+                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
+            }
+
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
 
@@ -240,10 +253,6 @@ public class Sen2VM
                 ruggedManager,
                 demManager
             );
-            // Safe Manager
-            SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager, config.getGridsOverwriting());
-            Datastrip datastrip = safeManager.getDatastrip();
-            //ds.checkNoVRT(detectors, bands);
 
             // GIPP
             double georefConventionOffsetPixel = +0.5f;
@@ -258,17 +267,6 @@ public class Sen2VM
 
             LOGGER.info("");
             LOGGER.info("Starting grids generation");
-
-            // Test if no grids exists already
-            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
-            {
-                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
-            }
-            else
-            {
-                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
-            }
-
             for (BandInfo bandInfo: bands)
             {
                 LOGGER.info("");
