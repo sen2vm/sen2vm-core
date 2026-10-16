@@ -407,7 +407,7 @@ public class Sen2VM
             String newMessage = "";
             if(exception.toString().contains("Cant find bundle for base name S2GeoMessages"))
             {
-                newMessage = "Please, check the GEOID data contains .gtx, DBL, HDR and .xml : ";
+                newMessage = "Please, check the GEOID data contains .gtx, DBL, HDR and .xml: ";
             }
             throw new Sen2VMException(newMessage, exception);
         }

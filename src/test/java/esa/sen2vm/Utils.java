@@ -61,78 +61,66 @@ public class Utils {
     private static final double THRESHOLD_DIR = 1e-8;
     private static final double THRESHOLD_INV = 1e-6;
 
-    private static final boolean cancel_verify = false;
-
-
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {
-        // Can be canceled when generating new references
-        if (!cancel_verify)
-        {
-            Configuration configFile = new Configuration(configFilepath);
-            DataStripManager dataStripManager = new DataStripManager(
-                                                    configFile.getDatastripFilePath(),
-                                                    configFile.getIers(),
-                                                    !configFile.getDeactivateRefining(),
-                                                    configFile.getIgnoreInsRawShifts());
-            SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
+        Configuration configFile = new Configuration(configFilepath);
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
+        SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
-            ArrayList<Granule> granules = sm.getGranules();
+        ArrayList<Granule> granules = sm.getGranules();
 
-            for(int g = 0; g < granules.size(); g++) {
-                File[] grids = granules.get(g).getGrids();
+        for(int g = 0; g < granules.size(); g++) {
+            File[] grids = granules.get(g).getGrids();
 
-                int b = 0;
-                for (File grid : grids) {
-                    if (grid != null) {
-                        double res = BandInfo.getBandInfoFromIndex(b).getPixelHeight();
-                        Dataset ds = gdal.Open(grid.getPath());
-                        double[] transform = ds.GetGeoTransform();
-                        System.out.println("transform: " + String.valueOf(transform[1]));
-                        System.out.println("res: " + String.valueOf(res));
-                        System.out.println("step: " + String.valueOf(step));
+            int b = 0;
+            for (File grid : grids) {
+                if (grid != null) {
+                    double res = BandInfo.getBandInfoFromIndex(b).getPixelHeight();
+                    Dataset ds = gdal.Open(grid.getPath());
+                    double[] transform = ds.GetGeoTransform();
+                    System.out.println("transform: " + String.valueOf(transform[1]));
+                    System.out.println("res: " + String.valueOf(res));
+                    System.out.println("step: " + String.valueOf(step));
 
-                        assertEquals(transform[1] * (res / 10), step);
-                        assertEquals(transform[5] * (res / 10), step);
-                        ds.delete();
-                    }
-                    b = b + 1;
+                    assertEquals(transform[1] * (res / 10), step);
+                    assertEquals(transform[5] * (res / 10), step);
+                    ds.delete();
                 }
+                b = b + 1;
             }
-
         }
     }
 
     public static void verifyStepInverseLoc(String configFilepath, int step) throws Sen2VMException
     {
-        // Can be canceled when generating new references
-        if (!cancel_verify)
-        {
-            Configuration configFile = new Configuration(configFilepath);
-            DataStripManager dataStripManager = new DataStripManager(
-                                                    configFile.getDatastripFilePath(),
-                                                    configFile.getIers(),
-                                                    !configFile.getDeactivateRefining(),
-                                                    configFile.getIgnoreInsRawShifts());
-            SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
+        Configuration configFile = new Configuration(configFilepath);
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
+        SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
-            ArrayList<Granule> granules = sm.getGranules();
+        ArrayList<Granule> granules = sm.getGranules();
 
-            for(int g = 0; g < granules.size(); g++) {
-                File[] grids = granules.get(g).getGrids();
+        for(int g = 0; g < granules.size(); g++) {
+            File[] grids = granules.get(g).getGrids();
 
-                int b = 0;
-                for (File grid : grids) {
-                    if (grid != null) {
-                        double res = BandInfo.getBandInfoFromIndex(b).getPixelHeight();
-                        Dataset ds = gdal.Open(grid.getPath());
-                        double[] transform = ds.GetGeoTransform();
-                        assertEquals(transform[1] * res, step);
-                        assertEquals(transform[5] * res, step);
-                        ds.delete();
-                    }
-                    b = b + 1;
+            int b = 0;
+            for (File grid : grids) {
+                if (grid != null) {
+                    double res = BandInfo.getBandInfoFromIndex(b).getPixelHeight();
+                    Dataset ds = gdal.Open(grid.getPath());
+                    double[] transform = ds.GetGeoTransform();
+                    assertEquals(transform[1] * res, step);
+                    assertEquals(transform[5] * res, step);
+                    ds.delete();
                 }
+                b = b + 1;
             }
         }
     }
@@ -150,31 +138,27 @@ public class Utils {
 
     public static void verifyDirectLoc(String configFilepath, String outputRef, double threshold, boolean expected) throws Sen2VMException, IOException
     {
-        // Can be canceled when generating new references
-        if (!cancel_verify)
-        {
-            Configuration configFile = new Configuration(configFilepath);
-            DataStripManager dataStripManager = new DataStripManager(
-                                                    configFile.getDatastripFilePath(),
-                                                    configFile.getIers(),
-                                                    !configFile.getDeactivateRefining(),
-                                                    configFile.getIgnoreInsRawShifts());
-            SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
+        Configuration configFile = new Configuration(configFilepath);
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
+        SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
 
-            ArrayList<Granule> granules = sm.getGranules();
+        ArrayList<Granule> granules = sm.getGranules();
 
-            for(int g = 0; g < granules.size(); g++) {
-                File[] grids = granules.get(g).getGrids();
+        for(int g = 0; g < granules.size(); g++) {
+            File[] grids = granules.get(g).getGrids();
 
-                int b = 0;
-                for (File grid : grids) {
-                    if (grid != null) {
-                        int len = grid.toPath().getNameCount();
-                        String refGrid = outputRef + File.separator + grid.toPath().subpath(len - 4, len);
-                        assertEquals(imagesEqualDirect(grid.toString(), refGrid, threshold), expected);
-                    }
-                    b = b + 1;
+            int b = 0;
+            for (File grid : grids) {
+                if (grid != null) {
+                    int len = grid.toPath().getNameCount();
+                    String refGrid = outputRef + File.separator + grid.toPath().subpath(len - 4, len);
+                    assertEquals(imagesEqualDirect(grid.toString(), refGrid, threshold), expected);
                 }
+                b = b + 1;
             }
         }
     }
@@ -196,30 +180,26 @@ public class Utils {
 
     public static void verifyInverseLoc(String configFilepath, String outputRef, double threshold, boolean expected) throws Sen2VMException, IOException
     {
-        // Can be canceled when generating new references
-        if (!cancel_verify)
-        {
-            Configuration configFile = new Configuration(configFilepath);
-            DataStripManager dataStripManager = new DataStripManager(
-                                                    configFile.getDatastripFilePath(),
-                                                    configFile.getIers(),
-                                                    !configFile.getDeactivateRefining(),
-                                                    configFile.getIgnoreInsRawShifts());
-            SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
-            File[][] outputGrids = sm.getInverseGrids(configFile.getInverseLocOutputFolder());
-            File[][] refGrids = sm.getInverseGrids(outputRef);
+        Configuration configFile = new Configuration(configFilepath);
+        DataStripManager dataStripManager = new DataStripManager(
+                                                configFile.getDatastripFilePath(),
+                                                configFile.getIers(),
+                                                !configFile.getDeactivateRefining(),
+                                                configFile.getIgnoreInsRawShifts());
+        SafeManager sm = new SafeManager(configFile.getL1bProduct(), dataStripManager);
+        File[][] outputGrids = sm.getInverseGrids(configFile.getInverseLocOutputFolder());
+        File[][] refGrids = sm.getInverseGrids(outputRef);
 
-            for(int d = 0; d < Sen2VMConstants.NB_DETS; d++)
+        for(int d = 0; d < Sen2VMConstants.NB_DETS; d++)
+        {
+            for(int b = 0; b < Sen2VMConstants.NB_BANDS; b++)
             {
-                for(int b = 0; b < Sen2VMConstants.NB_BANDS; b++)
-                {
-                    BandInfo bandInfo = BandInfo.getBandInfoFromIndex(b);
-                    double res = bandInfo.getPixelHeight();
-                    if (outputGrids[d][b] != null) {
-                        File outputGrid = outputGrids[d][b];
-                        File refGrid = refGrids[d][b];
-                        assertEquals(imagesEqualInverse(outputGrid.toString(), refGrid.toString(), threshold, res), expected);
-                    }
+                BandInfo bandInfo = BandInfo.getBandInfoFromIndex(b);
+                double res = bandInfo.getPixelHeight();
+                if (outputGrids[d][b] != null) {
+                    File outputGrid = outputGrids[d][b];
+                    File refGrid = refGrids[d][b];
+                    assertEquals(imagesEqualInverse(outputGrid.toString(), refGrid.toString(), threshold, res), expected);
                 }
             }
         }

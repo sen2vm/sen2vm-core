@@ -425,7 +425,7 @@ public class DataStripManager
 
                 DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(iersFile.getParentFile()));
 
-                // When using a single IERS A bulletin some gaps may arise : to allow the use of such bulletin,
+                // When using a single IERS A bulletin some gaps may arise: to allow the use of such bulletin,
                 // we fix the EOP continuity threshold to one year instead of the normal gap ...
                 FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
             }
@@ -618,7 +618,7 @@ public class DataStripManager
             if (dateSet.contains(attitudeDate))
             {
                 // duplicate data for the current ephemeris date => we aldeady add this quaternion => we just ignore it
-                LOGGER.warning("Duplicate quaternion with date : " + values.getGPS_TIME().toString());
+                LOGGER.warning("Duplicate quaternion with date: " + values.getGPS_TIME().toString());
             }
             else
             {

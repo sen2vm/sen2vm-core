@@ -277,7 +277,7 @@ public class Configuration extends InputFileManager
         }
         catch (JSONException | IOException e)
         {
-            throw new Sen2VMException("Problem while reading JSON configuration file" + jsonFilePath + " : ", e);
+            throw new Sen2VMException("Problem while reading JSON configuration file" + jsonFilePath + ": ", e);
         }
     }
 
