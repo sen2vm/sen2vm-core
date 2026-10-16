@@ -25,7 +25,7 @@
 * Additional information for configuration.
 
 > [!NOTE]
-> The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/orekit-data.
+> The orekit-data is required to process the grid. During the first run, the orekit-data is extracted from the JAR file (.jar) and placed in the same directory as the JAR. The orekit-data can be replaced by the user if needed. The official orekit-data is available https://github.com/sen2vm/sen2vm-core/tree/main/src/main/resources/orekit-data.
 
 Please note that the <mark>[orthorectification notebook](../../sen2vm-notebook/README_Notebooks.md)</mark> is available to ease configuration and usage.
 

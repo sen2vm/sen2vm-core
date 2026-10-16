@@ -307,7 +307,7 @@ public class GIPPFileManager
                 .map(File::getAbsolutePath)
                 .collect(Collectors.joining(", "));
 
-            LOGGER.info("GIPP " + dirNameRegex + " : " + message);
+            LOGGER.info("GIPP " + dirNameRegex + ": " + message);
             throw new Sen2VMException("Duplicate GIPP file type found"); 
         }
         else

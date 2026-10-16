@@ -166,6 +166,19 @@ public class Sen2VM
                                                     !config.getDeactivateRefining(),
                                                     config.getIgnoreInsRawShifts());
 
+            // Safe Manager
+            SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager, config.getGridsOverwriting());
+            Datastrip datastrip = safeManager.getDatastrip();
+            // Test if no grids exists already
+            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+            {
+                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
+            }
+            else
+            {
+                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
+            }
+
             // Read GIPP
             GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
 
@@ -240,10 +253,6 @@ public class Sen2VM
                 ruggedManager,
                 demManager
             );
-            // Safe Manager
-            SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager, config.getGridsOverwriting());
-            Datastrip datastrip = safeManager.getDatastrip();
-            //ds.checkNoVRT(detectors, bands);
 
             // GIPP
             double georefConventionOffsetPixel = +0.5f;
@@ -258,17 +267,6 @@ public class Sen2VM
 
             LOGGER.info("");
             LOGGER.info("Starting grids generation");
-
-            // Test if no grids exists already
-            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
-            {
-                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
-            }
-            else
-            {
-                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
-            }
-
             for (BandInfo bandInfo: bands)
             {
                 LOGGER.info("");
@@ -305,8 +303,32 @@ public class Sen2VM
                             step, startLine, startPixel, sizeLine, sizePixel);
                         double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2 - georefConventionOffsetPixel, step/2 + georefConventionOffsetLine);
 
+                        // Set to default rugged algorithm (not constant altitude)
+                        ruggedManager.resetIntersectionAlgorithm();
+                        
                         // Direct Loc
                         double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
+
+                        // LOGGER.info("directLocGrid[0][0]: " + directLocGrid[0][0]);
+                        // LOGGER.info("directLocGrid[0][1]: " + directLocGrid[0][1]);
+                        
+                        // LOGGER.info("");
+                        // LOGGER.info("sensorGridForDirectLoc[0][0]: " + sensorGridForDirectLoc[0][0]);
+                        // LOGGER.info("sensorGridForDirectLoc[0][1]: " + sensorGridForDirectLoc[0][1]);
+                        // LOGGER.info("");
+                        // LOGGER.info("sensorGridForDirectLoc[1][0]: " + sensorGridForDirectLoc[1][0]);
+                        // LOGGER.info("sensorGridForDirectLoc[1][1]: " + sensorGridForDirectLoc[1][1]);
+                        // LOGGER.info("");
+                        // LOGGER.info("sensorGridForDirectLoc[95][0]: " + sensorGridForDirectLoc[95][0]);
+                        // LOGGER.info("sensorGridForDirectLoc[95[1]: " + sensorGridForDirectLoc[95][1]);
+                        // LOGGER.info("");
+                        // LOGGER.info("sensorGridForDirectLoc[5225][0]: " + sensorGridForDirectLoc[5225][0]);
+                        // LOGGER.info("sensorGridForDirectLoc[5225[1]: " + sensorGridForDirectLoc[5225][1]);
+                        // LOGGER.info("");
+                        
+                        // LOGGER.info("directLocGrid[5225][0]: " + directLocGrid[5225][0]);
+                        // LOGGER.info("directLocGrid[5225][1]: " + directLocGrid[5225][1]);
+
 
                         Vector<String> inputTIFs = new Vector<String>();
                         double pixelOffset = dirGrid.getPixelOffsetGranule();
@@ -383,7 +405,7 @@ public class Sen2VM
             String newMessage = "";
             if(exception.toString().contains("Cant find bundle for base name S2GeoMessages"))
             {
-                newMessage = "Please, check the GEOID data contains .gtx, DBL, HDR and .xml : ";
+                newMessage = "Please, check the GEOID data contains .gtx, DBL, HDR and .xml: ";
             }
             throw new Sen2VMException(newMessage, exception);
         }

@@ -61,10 +61,8 @@ public class Utils {
     private static final double THRESHOLD_DIR = 1e-8;
     private static final double THRESHOLD_INV = 1e-6;
 
-
     public static void verifyStepDirectLoc(String configFilepath, int step) throws Sen2VMException
     {
-
         Configuration configFile = new Configuration(configFilepath);
         DataStripManager dataStripManager = new DataStripManager(
                                                 configFile.getDatastripFilePath(),
@@ -99,7 +97,6 @@ public class Utils {
 
     public static void verifyStepInverseLoc(String configFilepath, int step) throws Sen2VMException
     {
-
         Configuration configFile = new Configuration(configFilepath);
         DataStripManager dataStripManager = new DataStripManager(
                                                 configFile.getDatastripFilePath(),
@@ -208,8 +205,8 @@ public class Utils {
         }
     }
 
-    public static boolean imagesEqualDirect(String img1Path, String img2Path, double threshold) throws IOException{
-
+    public static boolean imagesEqualDirect(String img1Path, String img2Path, double threshold) throws IOException
+    {
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
         LOGGER.info("Comparing: " +  img1Path + " with " + img2Path);
@@ -246,15 +243,17 @@ public class Utils {
         return false;
     }
 
-     public static boolean myIsNan(double value){
-        if ((value == Sen2VMConstants.noDataRasterValue) || (Double.isNaN(value))) {
+    public static boolean myIsNan(double value)
+    {
+        if ((value == Sen2VMConstants.noDataRasterValue) || (Double.isNaN(value)))
+        {
             return true;
         }
         return false;
      }
 
-    public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, double res) throws IOException {
-
+    public static boolean imagesEqualInverse(String img1Path, String img2Path, double threshold, double res) throws IOException
+    {
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
         
@@ -275,14 +274,16 @@ public class Utils {
         LOGGER.info("Comparing: " +  img1Path + " with " + img2Path);
         if (ds1.GetRasterCount() == ds2.GetRasterCount()
             && ds1.getRasterXSize() == ds2.getRasterXSize()
-            && ds1.getRasterYSize() == ds2.getRasterYSize()) {
+            && ds1.getRasterYSize() == ds2.getRasterYSize())
+        {
 
             Band ds1b1 = ds1.GetRasterBand(1);
             Band ds1b2 = ds1.GetRasterBand(2);
             Band ds2b1 = ds2.GetRasterBand(1);
             Band ds2b2 = ds2.GetRasterBand(2);
 
-            for (int r = 0; r < ds1.getRasterYSize(); r++) {
+            for (int r = 0; r < ds1.getRasterYSize(); r++)
+            {
 
                 double[] data1b1 = new double[ds1.getRasterXSize()];
                 double[] data1b2 = new double[ds1.getRasterXSize()];
@@ -297,8 +298,8 @@ public class Utils {
                 for (int c = 0; c < ds1.getRasterXSize(); c++) {
 
                     // nan in one grid and value in other grid case
-                    if (!(myIsNan(data1b1[c]) == myIsNan(data2b1[c]))) {
-
+                    if (!(myIsNan(data1b1[c]) == myIsNan(data2b1[c])))
+                    {
                         isOK = false;
                         errorCount++;
 
@@ -324,7 +325,8 @@ public class Utils {
                         // Then operation on small numbers shall be in a separated lines
                         diff = diff * res;
 
-                        if (diff > threshold) {
+                        if (diff > threshold)
+                        {
 
                             isOK = false;
                             errorCount++;
@@ -348,7 +350,6 @@ public class Utils {
                                 + "(" + data2b2[c] + ", " + data2b1[c] + ") "
                                 + " diff=" + diff + "\n");
                             }
-
                         }
                     }
                 }

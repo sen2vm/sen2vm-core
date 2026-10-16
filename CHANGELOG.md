@@ -8,7 +8,7 @@
 
 * Fix:
 
-  * 
+  * Check existing granules in output before long DEM check: #80
 
 * Feature:
 
@@ -16,7 +16,7 @@
 
 * Doc:
 
-  * 
+  * Correct link to Orekit-folder: #85
 
 ## 1.3.0 (2026-07-17)
 

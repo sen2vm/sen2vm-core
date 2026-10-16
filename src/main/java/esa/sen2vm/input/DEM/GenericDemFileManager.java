@@ -64,7 +64,7 @@ public class GenericDemFileManager extends SrtmFileManager
     public GenericDemFileManager(String demRootDir) throws Sen2VMException
     {
         super(demRootDir);
-        LOGGER.info("Loading DEM from  : " + demRootDir);
+        LOGGER.info("Loading DEM from: " + demRootDir);
         buildMap(demRootDir);
     }
 
@@ -85,7 +85,7 @@ public class GenericDemFileManager extends SrtmFileManager
         {
             for (int y = yMin; y < yMax; y++)
             {
-                LOGGER.finer("Loading DEM from  : " + x + " " + y);
+                LOGGER.finer("Loading DEM from: " + x + " " + y);
                 long key = mapKey(x, y);
                 demGridMap.computeIfAbsent(key, k -> new ArrayList<>()).add(d);
             }
@@ -111,13 +111,13 @@ public class GenericDemFileManager extends SrtmFileManager
                 else
                 {
                     String filePath = currentFile.getAbsolutePath();
-                    LOGGER.finer("Loading DEM Tile  : " + filePath);
-                    LOGGER.info("Loading DEM Tile  : " + filePath);
+                    LOGGER.finer("Loading DEM Tile: " + filePath);
+                    LOGGER.info("Loading DEM Tile: " + filePath);
                     DemTile newDemTile = getDemTileFromFile(filePath);
                     if (newDemTile != null)
                     {
-                        LOGGER.finer("DEM Tile loaded : " + newDemTile.toString());
-                        LOGGER.info("DEM Tile loaded : " + newDemTile.toString());
+                        LOGGER.finer("DEM Tile loaded: " + newDemTile.toString());
+                        LOGGER.info("DEM Tile loaded: " + newDemTile.toString());
                         addDemTile(newDemTile);
                     }
                 }
@@ -198,8 +198,8 @@ public class GenericDemFileManager extends SrtmFileManager
         Dataset dataset = gdal.Open(filePath, gdalconstConstants.GA_ReadOnly);
         if (dataset == null)
         {
-            LOGGER.severe("Error when reading : " + gdal.GetLastErrorMsg());
-            //System.err.println("Error when reading  : " + gdal.GetLastErrorMsg());
+            LOGGER.severe("Error when reading: " + gdal.GetLastErrorMsg());
+            //System.err.println("Error when reading: " + gdal.GetLastErrorMsg());
             return null;
         }
 
