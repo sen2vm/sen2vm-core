@@ -10,7 +10,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/sen2vm/sen2vm-build-env:0.1.0
+      image: ghcr.io/sen2vm/sen2vm-build-env:1.0.0
     env:
       MAVEN_CLI_OPTS: "-s .CI/maven-settings.xml --file pom.xml --batch-mode --update-snapshots"
     steps:
