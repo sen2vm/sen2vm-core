@@ -254,126 +254,26 @@ public class Sen2VM
                 demManager
             );
 
-            // GIPP
-            double georefConventionOffsetPixel = +0.5f;
-            double georefConventionOffsetLine = +0.5f;
-
             OutputFileManager outputFileManager = new OutputFileManager();
 
             if (config.getOperation().equals(Sen2VMConstants.INVERSE))
             {
-                LOGGER.info("EGSG read from configuration file (for inverse location): " + config.getInverseLocReferential());
+                LOGGER.info("EPSG read from configuration file (for inverse location): " + config.getInverseLocReferential());
             }
 
-            LOGGER.info("");
-            LOGGER.info("Starting grids generation");
-            for (BandInfo bandInfo: bands)
-            {
-                LOGGER.info("");
-                LOGGER.info("###############");
-                LOGGER.info("### BAND " + bandInfo.getName() + " ###");
-                LOGGER.info("###############");
+            generateGrids(
+                config,
+                bands,
+                detectors,
+                dataStripManager,
+                safeManager,
+                datastrip,
+                sensorList,
+                ruggedManager,
+                simpleLocEngine,
+                outputFileManager
+            );
 
-                double res = bandInfo.getPixelHeight();
-                double step = config.getStepFromBandInfo(bandInfo);
-
-                LOGGER.info("Grid resolution: " + String.valueOf(config.getStepFromBandInfo(bandInfo)));
-                LOGGER.info("Band resolution: " + String.valueOf(res));
-
-                for (DetectorInfo detectorInfo: detectors)
-                {
-                    LOGGER.info("");
-                    LOGGER.info("### DET " + detectorInfo.getName() + " (BAND " + bandInfo.getName() + ") ###");
-
-                    // Direct Loc case
-                    // --------------------
-                    if (config.getOperation().equals(Sen2VMConstants.DIRECT))
-                    {
-                        int[] bbox = safeManager.getFullSize(dataStripManager, bandInfo, detectorInfo);
-                        int startLine = bbox[0];
-                        int startPixel = bbox[1];
-                        int sizeLine = bbox[2];
-                        int sizePixel = bbox[3];
-
-                        // Load Granule Info
-                        ArrayList<Granule> granulesToCompute = safeManager.getGranulesToCompute(detectorInfo, bandInfo);
-
-                        // Get Full Sensor Grid
-                        DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffsetLine, georefConventionOffsetPixel,
-                            step, startLine, startPixel, sizeLine, sizePixel);
-                        double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2 - georefConventionOffsetPixel, step/2 + georefConventionOffsetLine);
-
-                        // Set to default rugged algorithm (not constant altitude)
-                        ruggedManager.resetIntersectionAlgorithm();
-                        
-                        // Direct Loc
-                        double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
-
-                        Vector<String> inputTIFs = new Vector<String>();
-                        double pixelOffset = dirGrid.getPixelOffsetGranule();
-
-                        for (int g = 0; g < granulesToCompute.size(); g++)
-                        {
-                            Granule gr = granulesToCompute.get(g);
-
-                            int startGranule = gr.getFirstLine(res);
-                            int sizeGranule = gr.getSizeLines(res);
-
-                            double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule, config.getExportAlt());
-
-                            double subLineOffset = dirGrid.getLineOffsetGranule(startGranule);
-
-                            // Save in TIF
-                            String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
-
-                            // Save with originY = - originY and stepY = -stepY for VRT construction
-                            outputFileManager.createGeoTiff(gridFileName, pixelOffset, -(startGranule + subLineOffset) ,
-                            step, -step, subDirectLocGrid, "", "EPSG:4326", subLineOffset, pixelOffset, true);
-
-                            // Add TIF to the future VRT
-                            inputTIFs.add(gridFileName);
-                        }
-
-                        // Create VRT
-                        double lineOffset = dirGrid.getLineOffsetGranule(0);
-                        String vrtFileName = datastrip.getCorrespondingVRTFileName(detectorInfo, bandInfo);
-                        outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset, pixelOffset, config.getExportAlt());
-
-                        // Correction post build VRT
-                        outputFileManager.correctGeoGrid(inputTIFs);
-                        outputFileManager.correctVRT(vrtFileName);
-                    }
-
-                    // Inverse Loc case
-                    // --------------------
-                    else
-                    {
-                        double[] bb =  config.getInverseLocBound();
-
-                        InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), step);
-                        double[][] groundGrid = invGrid.get2DgridLatLon();
-
-                        double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
-
-                        double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, georefConventionOffsetPixel, -georefConventionOffsetLine);
-
-                        String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());
-                        outputFileManager.createGeoTiff(invFileName, invGrid.getUlX(), invGrid.getUlY(), invGrid.getStepX(), invGrid.getStepY(), grid3D, config.getInverseLocReferential(), "", 0.0f, 0.0f, false);
-                    }
-                }
-            }
-
-            // Export parameters used in a json file
-            String outputConfigPath ;
-            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
-            {
-                outputConfigPath = datastrip.getPath() + File.separator + Sen2VMConstants.GEO_DATA_DS;
-            }
-            else
-            {
-                outputConfigPath = config.getInverseLocOutputFolder();
-            }
-            outputFileManager.writeInfoJson(config, bands, detectors, outputConfigPath);
         }
         catch (IOException exception)
         {
@@ -390,6 +290,131 @@ public class Sen2VM
         }
     }
 
+    private static void generateGrids(
+        final Configuration config,
+        final List<BandInfo> bands,
+        final List<DetectorInfo> detectors,
+        final DataStripManager dataStripManager,
+        final SafeManager safeManager,
+        final Datastrip datastrip,
+        final HashMap<String, Sensor> sensorList,
+        final RuggedManager ruggedManager,
+        final SimpleLocEngine simpleLocEngine,
+        final OutputFileManager outputFileManager)
+        throws Exception
+    {
+        double georefConventionOffsetPixel = +0.5f;
+        double georefConventionOffsetLine = +0.5f;
+        LOGGER.info("");
+        LOGGER.info("Starting grids generation");
+        for (BandInfo bandInfo: bands)
+        {
+            LOGGER.info("");
+            LOGGER.info("###############");
+            LOGGER.info("### BAND " + bandInfo.getName() + " ###");
+            LOGGER.info("###############");
+
+            double res = bandInfo.getPixelHeight();
+            double step = config.getStepFromBandInfo(bandInfo);
+
+            LOGGER.info("Grid resolution: " + String.valueOf(config.getStepFromBandInfo(bandInfo)));
+            LOGGER.info("Band resolution: " + String.valueOf(res));
+
+            for (DetectorInfo detectorInfo: detectors)
+            {
+                LOGGER.info("");
+                LOGGER.info("### DET " + detectorInfo.getName() + " (BAND " + bandInfo.getName() + ") ###");
+
+                // Direct Loc case
+                // --------------------
+                if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+                {
+                    int[] bbox = safeManager.getFullSize(dataStripManager, bandInfo, detectorInfo);
+                    int startLine = bbox[0];
+                    int startPixel = bbox[1];
+                    int sizeLine = bbox[2];
+                    int sizePixel = bbox[3];
+
+                    // Load Granule Info
+                    ArrayList<Granule> granulesToCompute = safeManager.getGranulesToCompute(detectorInfo, bandInfo);
+
+                    // Get Full Sensor Grid
+                    DirectLocGrid dirGrid = new DirectLocGrid(georefConventionOffsetLine, georefConventionOffsetPixel,
+                        step, startLine, startPixel, sizeLine, sizePixel);
+                    double[][] sensorGridForDirectLoc = dirGrid.get2Dgrid(step/2 - georefConventionOffsetPixel, step/2 + georefConventionOffsetLine);
+
+                    // Set to default rugged algorithm (not constant altitude)
+                    ruggedManager.resetIntersectionAlgorithm();
+                    
+                    // Direct Loc
+                    double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
+
+                    Vector<String> inputTIFs = new Vector<String>();
+                    double pixelOffset = dirGrid.getPixelOffsetGranule();
+
+                    for (int g = 0; g < granulesToCompute.size(); g++)
+                    {
+                        Granule gr = granulesToCompute.get(g);
+
+                        int startGranule = gr.getFirstLine(res);
+                        int sizeGranule = gr.getSizeLines(res);
+
+                        double[][][] subDirectLocGrid = dirGrid.extractPointsDirectLoc(directLocGrid, startGranule, sizeGranule, config.getExportAlt());
+
+                        double subLineOffset = dirGrid.getLineOffsetGranule(startGranule);
+
+                        // Save in TIF
+                        String gridFileName = gr.getCorrespondingGeoFileName(bandInfo);
+
+                        // Save with originY = - originY and stepY = -stepY for VRT construction
+                        outputFileManager.createGeoTiff(gridFileName, pixelOffset, -(startGranule + subLineOffset) ,
+                        step, -step, subDirectLocGrid, "", "EPSG:4326", subLineOffset, pixelOffset, true);
+
+                        // Add TIF to the future VRT
+                        inputTIFs.add(gridFileName);
+                    }
+
+                    // Create VRT
+                    double lineOffset = dirGrid.getLineOffsetGranule(0);
+                    String vrtFileName = datastrip.getCorrespondingVRTFileName(detectorInfo, bandInfo);
+                    outputFileManager.createVRT(vrtFileName, inputTIFs, step, lineOffset, pixelOffset, config.getExportAlt());
+
+                    // Correction post build VRT
+                    outputFileManager.correctGeoGrid(inputTIFs);
+                    outputFileManager.correctVRT(vrtFileName);
+                }
+
+                // Inverse Loc case
+                // --------------------
+                else
+                {
+                    double[] bb =  config.getInverseLocBound();
+
+                    InverseLocGrid invGrid = new InverseLocGrid(bb[0], bb[1], bb[2], bb[3], config.getInverseLocReferential(), step);
+                    double[][] groundGrid = invGrid.get2DgridLatLon();
+
+                    double[][] inverseLocGrid = simpleLocEngine.computeInverseLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()),  groundGrid, "EPSG:4326");
+
+                    double[][][] grid3D = invGrid.get3Dgrid(inverseLocGrid, georefConventionOffsetPixel, -georefConventionOffsetLine);
+
+                    String invFileName = datastrip.getCorrespondingInverseLocGrid(detectorInfo, bandInfo, config.getInverseLocOutputFolder());
+                    outputFileManager.createGeoTiff(invFileName, invGrid.getUlX(), invGrid.getUlY(), invGrid.getStepX(), invGrid.getStepY(), grid3D, config.getInverseLocReferential(), "", 0.0f, 0.0f, false);
+                }
+            }
+        }
+
+        // Export parameters used in a json file
+        String outputConfigPath ;
+        if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+        {
+            outputConfigPath = datastrip.getPath() + File.separator + Sen2VMConstants.GEO_DATA_DS;
+        }
+        else
+        {
+            outputConfigPath = config.getInverseLocOutputFolder();
+        }
+        outputFileManager.writeInfoJson(config, bands, detectors, outputConfigPath);   
+    }
 
 }
 

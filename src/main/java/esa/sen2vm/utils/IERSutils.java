@@ -69,13 +69,9 @@ public class IERSutils
 
     public static void setLoaders(IERSConventions conventions, List<EOPEntry> eop)
     {
-        FramesFactory.addEOPHistoryLoader(conventions, new EopHistoryLoader()
-        {
-            public void fillHistory(IERSConventions.NutationCorrectionConverter converter,
-                                    SortedSet<EOPEntry> history)
-            {
-                history.addAll(eop);
-            }
-        });
+        FramesFactory.addEOPHistoryLoader(
+            conventions,
+            (converter, history) -> history.addAll(eop)
+         );
     }
 }
