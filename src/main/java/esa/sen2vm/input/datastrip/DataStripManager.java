@@ -614,7 +614,7 @@ public class DataStripManager
             Rotation rotation = new Rotation(q0, q1, q2, q3, false); // no normalisation as in asgard-legacy
             TimeStampedAngularCoordinates pair = new TimeStampedAngularCoordinates(attitudeDate, rotation, Vector3D.ZERO, Vector3D.ZERO);
 
-            LOGGER.log(Level.FINE, "Qlist-attitude date: {0}", new Object[]{attitudeDate.toString()});
+            LOGGER.log(Level.FINE, "Qlist-attitude date: {0}", new Object[]{attitudeDate});
 
             if (dateSet.contains(attitudeDate))
             {
@@ -655,7 +655,7 @@ public class DataStripManager
                 }
                 // extract PV from XML objects
                 AbsoluteDate ephemerisDate = new AbsoluteDate(gpsTime.toString(), gps);
-                LOGGER.log(Level.FINE, "PVlist-ephemeris date: {0}", new Object[]{ephemerisDate.toString()});
+                LOGGER.log(Level.FINE, "PVlist-ephemeris date: {0}", new Object[]{ephemerisDate});
                 List<Long> positionValues = ephemeris.getPOSITION_VALUES().getValue();
                 List<Long> velocityValues = ephemeris.getVELOCITY_VALUES().getValue();
 
@@ -958,7 +958,7 @@ public class DataStripManager
                                     found = true;
                                     int refLineInt = detector.getREFERENCE_LINE();
                                     
-                                    LOGGER.info("refLineInt (Band:" + bandId + "; Detector:" + detectorInfo.getName() + "):" + refLineInt);
+                                    LOGGER.log(Level.INFO, "refLineInt (Band: {0}; Detector: {1}): {2}", new Object[]{bandId, detectorInfo.getName(), refLineInt});
                                     if (refLineInt != 0 && refLineInt != 1)
                                     {
                                         referenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.RESOLUTION_10M_DOUBLE, bandInfo.getPixelHeight());
@@ -1063,21 +1063,6 @@ public class DataStripManager
     public RefiningInfo getRefiningInfo()
     {
         return refiningInfo;
-    }
-
-    private static AbsoluteDate truncateEpoch(AbsoluteDate absDate, TimeScale scale) {
-        DateTimeComponents c = absDate.getComponents(scale);
-        int seconds = (int) c.getTime().getSecond();
-    
-        return new AbsoluteDate(
-            c.getDate().getYear(),
-            c.getDate().getMonth(),
-            c.getDate().getDay(),
-            c.getTime().getHour(),
-            c.getTime().getMinute(),
-            seconds,
-            scale
-        );
     }
 
     /**
