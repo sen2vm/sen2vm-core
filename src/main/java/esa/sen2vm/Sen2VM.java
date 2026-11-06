@@ -95,9 +95,6 @@ public class Sen2VM
         CommandLine commandLine = OptionManager.readCommandLineArguments(args);
         try
         {
-            // Init all detectors and bands by default
-            List<DetectorInfo> detectors = DetectorInfo.getAllDetectorInfo();
-            List<BandInfo> bands = BandInfo.getAllBandInfo();
 
             Configuration config;
             Params params = null;
@@ -136,29 +133,12 @@ public class Sen2VM
             } // end areFiles
 
             //Read the parameters to process
-            if (params != null && params.getDetectorsList().size() > 0)
-            {
-                detectors = params.getDetectorsList();
-            }
-            else
-            {
-                // Information missing, by default we prosse all
-                detectors = DetectorInfo.getAllDetectorInfo();
-            }
-
-            if (params != null && params.getBandsList().size() > 0)
-            {
-                bands = params.getBandsList();
-            }
-            else
-            {
-                // Information missing, by default we prosse all
-                bands = BandInfo.getAllBandInfo();
-            }
+            // Init all detectors and bands by default
+            List<DetectorInfo> detectors = readDetectors(params);
+            List<BandInfo> bands = readBands(params);
 
             LOGGER.info("Detectors list: " + detectors);
             LOGGER.info("Bands list: " + bands);
-
   
             initiate(config, bands, detectors);
 
@@ -178,11 +158,42 @@ public class Sen2VM
         }
     }
 
+    private static List<DetectorInfo> readDetectors(Params params)
+    {
+        List<DetectorInfo> detectors = DetectorInfo.getAllDetectorInfo();
+
+        if (params != null && params.getDetectorsList().size() > 0)
+        {
+            detectors = params.getDetectorsList();
+        }
+        else
+        {
+            // Information missing, by default we prosse all
+            detectors = DetectorInfo.getAllDetectorInfo();
+        }
+        return detectors;
+    }
+
+    private static List<BandInfo> readBands(Params params)
+    {
+        List<BandInfo> bands = BandInfo.getAllBandInfo();
+        if (params != null && params.getBandsList().size() > 0)
+        {
+            bands = params.getBandsList();
+        }
+        else
+        {
+            // Information missing, by default we prosse all
+            bands = BandInfo.getAllBandInfo();
+        }
+        return bands;
+    }
+
     private static void initiate(
         final Configuration config,
         final List<BandInfo> bands,
         final List<DetectorInfo> detectors        
-    ) throws Exception, Sen2VMException
+    ) throws Exception
     {
         // Read datastrip
         DataStripManager dataStripManager = new DataStripManager(
