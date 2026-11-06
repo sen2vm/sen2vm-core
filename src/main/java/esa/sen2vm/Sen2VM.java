@@ -159,120 +159,8 @@ public class Sen2VM
             LOGGER.info("Detectors list: " + detectors);
             LOGGER.info("Bands list: " + bands);
 
-            // Read datastrip
-            DataStripManager dataStripManager = new DataStripManager(
-                                                    config.getDatastripFilePath(),
-                                                    config.getIers(),
-                                                    !config.getDeactivateRefining(),
-                                                    config.getIgnoreInsRawShifts());
-
-            // Safe Manager
-            SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager, config.getGridsOverwriting());
-            Datastrip datastrip = safeManager.getDatastrip();
-            // Test if no grids exists already
-            if (config.getOperation().equals(Sen2VMConstants.DIRECT))
-            {
-                safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
-            }
-            else
-            {
-                safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
-            }
-
-            // Read GIPP
-            GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
-
-            // Initialize SimpleLocEngine
-            // ==========================
-            // Init demManager
-            // ---------------
-            Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
-
-            //Using SXGEO FileManager
-            /*SrtmFileManager demFileManager = new SrtmFileManager(config.getDem());
-            if (!demFileManager.findRasterFile())
-            {
-                throw new Sen2VMException("Error when checking for DEM file");
-            }*/
-
-            //Using Sen2VM FileManager
-            GenericDemFileManager demFileManager = new GenericDemFileManager(config.getDem());
-
-            GeoidManager geoidManager = new GeoidManager(config.getGeoid(), isOverlappingTiles);
-            DemManager demManager = new DemManager(
-                demFileManager,
-                geoidManager,
-                isOverlappingTiles);
-
-            // Build sensors list
-            // ------------------
-            // Save sensors for each focal plane
-            HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
-            for (DetectorInfo detectorInfo: detectors)
-            {
-                for (BandInfo bandInfo: bands)
-                {
-                    SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                    LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo,gippManager.getRawShifts(bandInfo, detectorInfo));
-                    SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
-                    SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
-                    SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
-
-                    // Save sensor information
-                    Sensor sensor = new Sensor(
-                        bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
-                        viewing,
-                        lineDatation,
-                        bandInfo.getPixelHeight(),
-                        focalplaneToSensor,
-                        msiToFocalplane,
-                        pilotingToMsi
-                    );
-                    sensorList.put(sensor.getName(), sensor);
-                }
-            }
-
-            // Init rugged instance
-            // --------------------
-            RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
-                demManager,
-                dataStripManager.getDataSensingInfos(),
-                Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
-                Sen2VMConstants.RESOLUTION_10M_DOUBLE,
-                new ArrayList(sensorList.values()),
-                Sen2VMConstants.MARGIN,
-                dataStripManager.getRefiningInfo()
-            );
-            ruggedManager.setLightTimeCorrection(false);
-            ruggedManager.setAberrationOfLightCorrection(false);
-
-            // Init simpleLocEngine
-            // --------------------
-            SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
-                dataStripManager.getDataSensingInfos(),
-                ruggedManager,
-                demManager
-            );
-
-            OutputFileManager outputFileManager = new OutputFileManager();
-
-            if (config.getOperation().equals(Sen2VMConstants.INVERSE))
-            {
-                LOGGER.info("EPSG read from configuration file (for inverse location): " + config.getInverseLocReferential());
-            }
-
-            generateGrids(
-                config,
-                bands,
-                detectors,
-                dataStripManager,
-                safeManager,
-                datastrip,
-                sensorList,
-                ruggedManager,
-                simpleLocEngine,
-                outputFileManager
-            );
+  
+            initiate(config, bands, detectors);
 
         }
         catch (IOException exception)
@@ -288,6 +176,128 @@ public class Sen2VM
             }
             throw new Sen2VMException(newMessage, exception);
         }
+    }
+
+    private static void initiate(
+        final Configuration config,
+        final List<BandInfo> bands,
+        final List<DetectorInfo> detectors        
+    )
+    {
+        // Read datastrip
+        DataStripManager dataStripManager = new DataStripManager(
+                                                config.getDatastripFilePath(),
+                                                config.getIers(),
+                                                !config.getDeactivateRefining(),
+                                                config.getIgnoreInsRawShifts());
+
+        // Safe Manager
+        SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager, config.getGridsOverwriting());
+        Datastrip datastrip = safeManager.getDatastrip();
+        // Test if no grids exists already
+        if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+        {
+            safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
+        }
+        else
+        {
+            safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
+        }
+
+        // Read GIPP
+        GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
+
+        // Initialize SimpleLocEngine
+        // ==========================
+        // Init demManager
+        // ---------------
+        Boolean isOverlappingTiles = true; // geoid is a single file (not tiles) so set overlap to True by default
+
+        //Using SXGEO FileManager
+        /*SrtmFileManager demFileManager = new SrtmFileManager(config.getDem());
+        if (!demFileManager.findRasterFile())
+        {
+            throw new Sen2VMException("Error when checking for DEM file");
+        }*/
+
+        //Using Sen2VM FileManager
+        GenericDemFileManager demFileManager = new GenericDemFileManager(config.getDem());
+
+        GeoidManager geoidManager = new GeoidManager(config.getGeoid(), isOverlappingTiles);
+        DemManager demManager = new DemManager(
+            demFileManager,
+            geoidManager,
+            isOverlappingTiles);
+
+        // Build sensors list
+        // ------------------
+        // Save sensors for each focal plane
+        HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
+        for (DetectorInfo detectorInfo: detectors)
+        {
+            for (BandInfo bandInfo: bands)
+            {
+                SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
+                LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo,gippManager.getRawShifts(bandInfo, detectorInfo));
+                SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
+                SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
+                SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
+
+                // Save sensor information
+                Sensor sensor = new Sensor(
+                    bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
+                    viewing,
+                    lineDatation,
+                    bandInfo.getPixelHeight(),
+                    focalplaneToSensor,
+                    msiToFocalplane,
+                    pilotingToMsi
+                );
+                sensorList.put(sensor.getName(), sensor);
+            }
+        }
+
+        // Init rugged instance
+        // --------------------
+        RuggedManager ruggedManager = RuggedManager.initRuggedManagerDefaultValues(
+            demManager,
+            dataStripManager.getDataSensingInfos(),
+            Sen2VMConstants.MINMAX_LINES_INTERVAL_QUARTER,
+            Sen2VMConstants.RESOLUTION_10M_DOUBLE,
+            new ArrayList(sensorList.values()),
+            Sen2VMConstants.MARGIN,
+            dataStripManager.getRefiningInfo()
+        );
+        ruggedManager.setLightTimeCorrection(false);
+        ruggedManager.setAberrationOfLightCorrection(false);
+
+        // Init simpleLocEngine
+        // --------------------
+        SimpleLocEngine simpleLocEngine = new SimpleLocEngine(
+            dataStripManager.getDataSensingInfos(),
+            ruggedManager,
+            demManager
+        );
+
+        OutputFileManager outputFileManager = new OutputFileManager();
+
+        if (config.getOperation().equals(Sen2VMConstants.INVERSE))
+        {
+            LOGGER.info("EPSG read from configuration file (for inverse location): " + config.getInverseLocReferential());
+        }
+
+        generateGrids(
+            config,
+            bands,
+            detectors,
+            dataStripManager,
+            safeManager,
+            datastrip,
+            sensorList,
+            ruggedManager,
+            simpleLocEngine,
+            outputFileManager
+        );
     }
 
     private static void generateGrids(
