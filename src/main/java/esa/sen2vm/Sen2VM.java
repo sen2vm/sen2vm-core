@@ -141,7 +141,7 @@ public class Sen2VM
             LOGGER.log(Level.INFO, "Detectors list: {0}", detectors);
             LOGGER.log(Level.INFO, "Bands list: {0}", bands);
   
-            initiate(config, bands, detectors);
+            generateGrids(config, bands, detectors);
 
         }
         catch (IOException exception)
@@ -159,30 +159,9 @@ public class Sen2VM
         }
     }
 
-    private static List<DetectorInfo> readDetectors(Params params)
-    {
-        List<DetectorInfo> detectors = DetectorInfo.getAllDetectorInfo();
 
-        if (params != null && params.getDetectorsList().size() > 0)
-        {
-            detectors = params.getDetectorsList();
-        }
 
-        return detectors;
-    }
-
-    private static List<BandInfo> readBands(Params params)
-    {
-        List<BandInfo> bands = BandInfo.getAllBandInfo();
-        if (params != null && params.getBandsList().size() > 0)
-        {
-            bands = params.getBandsList();
-        }
-
-        return bands;
-    }
-
-    private static void initiate(
+    private static void generateGrids(
         final Configuration config,
         final List<BandInfo> bands,
         final List<DetectorInfo> detectors        
@@ -199,14 +178,7 @@ public class Sen2VM
         SafeManager safeManager = new SafeManager( config.getL1bProduct(), dataStripManager, config.getGridsOverwriting());
         Datastrip datastrip = safeManager.getDatastrip();
         // Test if no grids exists already
-        if (config.getOperation().equals(Sen2VMConstants.DIRECT))
-        {
-            safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
-        }
-        else
-        {
-            safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
-        }
+        testIfGridsExists(detectors,bands, config, safeManager);
 
         // Read GIPP
         GIPPManager gippManager = new GIPPManager(config.getGippFolder(), bands, dataStripManager, config.getGippVersionCheck());
@@ -235,31 +207,8 @@ public class Sen2VM
 
         // Build sensors list
         // ------------------
-        // Save sensors for each focal plane
-        HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
-        for (DetectorInfo detectorInfo: detectors)
-        {
-            for (BandInfo bandInfo: bands)
-            {
-                SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
-                LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo,gippManager.getRawShifts(bandInfo, detectorInfo));
-                SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
-                SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
-                SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
+        HashMap<String, Sensor> sensorList = buildSensorList(detectors, bands, dataStripManager, gippManager);
 
-                // Save sensor information
-                Sensor sensor = new Sensor(
-                    bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
-                    viewing,
-                    lineDatation,
-                    bandInfo.getPixelHeight(),
-                    focalplaneToSensor,
-                    msiToFocalplane,
-                    pilotingToMsi
-                );
-                sensorList.put(sensor.getName(), sensor);
-            }
-        }
 
         // Init rugged instance
         // --------------------
@@ -285,38 +234,8 @@ public class Sen2VM
 
         OutputFileManager outputFileManager = new OutputFileManager();
 
-        if (config.getOperation().equals(Sen2VMConstants.INVERSE))
-        {
-            LOGGER.info("EPSG read from configuration file (for inverse location): " + config.getInverseLocReferential());
-        }
+ 
 
-    //     generateGrids(
-    //         config,
-    //         bands,
-    //         detectors,
-    //         dataStripManager,
-    //         safeManager,
-    //         datastrip,
-    //         sensorList,
-    //         ruggedManager,
-    //         simpleLocEngine,
-    //         outputFileManager
-    //     );
-    // }
-
-    // private static void generateGrids(
-    //     final Configuration config,
-    //     final List<BandInfo> bands,
-    //     final List<DetectorInfo> detectors,
-    //     final DataStripManager dataStripManager,
-    //     final SafeManager safeManager,
-    //     final Datastrip datastrip,
-    //     final HashMap<String, Sensor> sensorList,
-    //     final RuggedManager ruggedManager,
-    //     final SimpleLocEngine simpleLocEngine,
-    //     final OutputFileManager outputFileManager)
-    //     throws Exception
-    // {
         double georefConventionOffsetPixel = +0.5f;
         double georefConventionOffsetLine = +0.5f;
         LOGGER.info("");
@@ -430,6 +349,84 @@ public class Sen2VM
         outputFileManager.writeInfoJson(config, bands, detectors, outputConfigPath);   
     }
 
+
+    private static List<DetectorInfo> readDetectors(Params params)
+    {
+        List<DetectorInfo> detectors = DetectorInfo.getAllDetectorInfo();
+
+        if (params != null && params.getDetectorsList().size() > 0)
+        {
+            detectors = params.getDetectorsList();
+        }
+
+        return detectors;
+    }
+
+    private static List<BandInfo> readBands(Params params)
+    {
+        List<BandInfo> bands = BandInfo.getAllBandInfo();
+        if (params != null && params.getBandsList().size() > 0)
+        {
+            bands = params.getBandsList();
+        }
+
+        return bands;
+    }
+
+    private static HashMap<String, Sensor> buildSensorList(
+        List<DetectorInfo> detectors,
+        List<BandInfo> bands,
+        DataStripManager dataStripManager,
+        GIPPManager gippManager
+     ) throws Sen2VMException
+    {
+        // Save sensors for each focal plane
+        HashMap<String, Sensor> sensorList = new HashMap<String, Sensor>();
+        for (DetectorInfo detectorInfo: detectors)
+        {
+            for (BandInfo bandInfo: bands)
+            {
+                SensorViewingDirection viewing = gippManager.getSensorViewingDirections(bandInfo, detectorInfo);
+                LineDatation lineDatation = dataStripManager.getLineDatation(bandInfo, detectorInfo,gippManager.getRawShifts(bandInfo, detectorInfo));
+                SpaceCraftModelTransformation pilotingToMsi = gippManager.getPilotingToMsiTransformation();
+                SpaceCraftModelTransformation msiToFocalplane = gippManager.getMsiToFocalPlaneTransformation(bandInfo);
+                SpaceCraftModelTransformation focalplaneToSensor = gippManager.getFocalPlaneToDetectorTransformation(bandInfo, detectorInfo);
+
+                // Save sensor information
+                Sensor sensor = new Sensor(
+                    bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD(),
+                    viewing,
+                    lineDatation,
+                    bandInfo.getPixelHeight(),
+                    focalplaneToSensor,
+                    msiToFocalplane,
+                    pilotingToMsi
+                );
+                sensorList.put(sensor.getName(), sensor);
+            }
+        }
+
+        return sensorList;
+    }
+
+    private static void testIfGridsExists(
+        final List<DetectorInfo> detectors,
+        final List<BandInfo> bands,
+        final Configuration config,
+        final SafeManager safeManager
+    ) throws Sen2VMException
+    {
+        // Test if no grids exists already
+        if (config.getOperation().equals(Sen2VMConstants.DIRECT))
+        {
+            safeManager.testifDirectGridsToComputeAlreadyExist(detectors, bands);
+        }
+        else
+        {
+            LOGGER.info("EPSG read from configuration file (for inverse location): " + config.getInverseLocReferential());
+            safeManager.testifInverseGridsToComputeAlreadyExist(detectors, bands, config.getInverseLocOutputFolder());
+        }
+    }
 }
 
 
