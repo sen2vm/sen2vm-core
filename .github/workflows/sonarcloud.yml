@@ -44,26 +44,44 @@ env:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
+    
+    container:
+      image: ghcr.io/sen2vm/sen2vm-build-env:1.1.0
+
     steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check analysis environment
+        shell: bash
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "java:"
+          java -version
+          echo "javac:"
+          javac -version
+          echo "Maven:"
+          mvn -version
+          echo "GDAL:"
+          gdal-config --version
+
       - name: Analyze with SonarCloud
         if: env.SONAR_TOKEN_DEFINED == 'true'
-        # You can pin the exact commit or the version.
-        # uses: SonarSource/sonarcloud-github-action@v2.2.0
-        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
+        shell: bash
         env:
+          JAVA_HOME: /usr/lib/jvm/java-21-openjdk
+          PATH: /usr/lib/jvm/java-21-openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          # Additional arguments for the SonarScanner CLI
-          args:
-            # Unique keys of your project and organization. You can find them in SonarCloud > Information (bottom-left menu)
-            # mandatory
-            -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_}
-            -Dsonar.organization=${GITHUB_REPOSITORY_OWNER}
-            # Comma-separated paths to directories containing main source files.
-            #-Dsonar.sources= # optional, default is project base directory
-            # Comma-separated paths to directories containing test source files.
-            #-Dsonar.tests= # optional. For more info about Code Coverage, please refer to https://docs.sonarcloud.io/enriching/test-coverage/overview/
-            # Adds more detail to both client and server-side analysis logs, activating DEBUG mode for the scanner, and adding client-side environment variables and system properties to the server-side log of analysis report processing.
-            #-Dsonar.verbose= # optional, default is false
-          # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
-          projectBaseDir: .
+        run: |
+          java -version
+          mvn -version
+
+          mvn \
+            -s .CI/maven-settings.xml \
+            --file pom.xml \
+            --batch-mode \
+            verify \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=sen2vm-core \
+            -Dsonar.organization=sen2vm

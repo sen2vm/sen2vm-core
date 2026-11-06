@@ -48,7 +48,7 @@ The [CDSE-Copernicus-DEM-downloader](https://github.com/senbox-org/CDSE-Copernic
    cd CDSE-Copernicus-DEM-downloader
    ```
 
-2. Download the Copernicus Sentinel-2 tiling system KML file from [Sentiwiki](https://sentiwiki.copernicus.eu/__attachments/1692737/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.zip), unzip it, and place the KML file in `./cdse-copernicus-dem-downloader/auxiliary/`.
+2. Download the Copernicus Sentinel-2 tiling system KML file from [Sentiwiki](https://sentiwiki.copernicus.eu/__attachments/a_69a662aa1cb30487acc66009f09b1dcfa9e4e32f92af1c3b2dd1fc8a3c011738/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.zip), unzip it, and place the KML file in `./cdse-copernicus-dem-downloader/auxiliary/`.
 
 3. Create and activate the conda environment:
 

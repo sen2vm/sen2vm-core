@@ -246,7 +246,7 @@ public class SafeManager
 
     /**
      * Check if one grid (tif/vrt) in the wanted configs already exists
-     * @param detectors and bands : list of configs to check
+     * @param detectors and bands: list of configs to check
      * throw Sen2VMException if yes
      */
     public void testifDirectGridsToComputeAlreadyExist(List<DetectorInfo> detectors, List<BandInfo> bands) throws Sen2VMException
@@ -282,7 +282,7 @@ public class SafeManager
 
     /**
      * Check if one inverse grid in the wanted configs already exists
-     * @param detectors and bands : list of configs to check
+     * @param detectors and bands: list of configs to check
      * throw Sen2VMException if yes
      */
     public void testifInverseGridsToComputeAlreadyExist(List<DetectorInfo> detectors, List<BandInfo> bands,

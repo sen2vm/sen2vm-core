@@ -22,7 +22,6 @@ import java.util.SortedSet;
 
 import org.orekit.data.DataContext;
 import org.orekit.frames.EOPEntry;
-import org.orekit.frames.EOPHistoryLoader;
 import org.orekit.frames.FramesFactory;
 import org.orekit.frames.ITRFVersion;
 import org.orekit.time.AbsoluteDate;
@@ -59,6 +58,7 @@ public class IERSutils
             list.add(new EOPEntry((int) mjd_inc, dt, Sen2VMConstants.lod,
                                   org.orekit.utils.Constants.ARC_SECONDS_TO_RADIANS * x,
                                   org.orekit.utils.Constants.ARC_SECONDS_TO_RADIANS * y,
+                                  Double.NaN, Double.NaN,
                                   Sen2VMConstants.ddPsi, Sen2VMConstants.ddEps,
                                   Sen2VMConstants.dx, Sen2VMConstants.dy, itrfType,
                                   AbsoluteDate.createMJDDate((int) mjd_inc, 0.0, utc)));
@@ -68,13 +68,9 @@ public class IERSutils
 
     public static void setLoaders(IERSConventions conventions, List<EOPEntry> eop)
     {
-        FramesFactory.addEOPHistoryLoader(conventions, new EOPHistoryLoader()
-        {
-            public void fillHistory(IERSConventions.NutationCorrectionConverter converter,
-                                    SortedSet<EOPEntry> history)
-            {
-                history.addAll(eop);
-            }
-        });
+        FramesFactory.addEOPHistoryLoader(
+            conventions,
+            (converter, history) -> history.addAll(eop)
+         );
     }
 }

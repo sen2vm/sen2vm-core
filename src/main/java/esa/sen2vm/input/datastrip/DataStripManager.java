@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -92,7 +93,6 @@ import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_DOUBLE_WITH_ARCS
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_POLYNOMIAL_MODEL;
 import https.psd_15_sentinel2_eo_esa_int.dico.pdi_v15.sy.misc.A_ROTATION_TRANSLATION_HOMOTHETY_UNCERTAINTIES_TYPE_LOWER_CASE;
 import https.psd_15_sentinel2_eo_esa_int.psd.s2_pdi_level_1b_datastrip_metadata.Level1B_DataStrip;
-
 
 /**
  * Manager for Datastrip directory
@@ -420,11 +420,11 @@ public class DataStripManager
             else
             {
                 File iersFile = new File(iersFilePath);
-                FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName());
+                FramesFactory.addDefaultEOP2000HistoryLoaders(null, null, null, null, iersFile.getName(), null);
 
                 DataContext.getDefault().getDataProvidersManager().addProvider(new DirectoryCrawler(iersFile.getParentFile()));
 
-                // When using a single IERS A bulletin some gaps may arise : to allow the use of such bulletin,
+                // When using a single IERS A bulletin some gaps may arise: to allow the use of such bulletin,
                 // we fix the EOP continuity threshold to one year instead of the normal gap ...
                 FramesFactory.setEOPContinuityThreshold(Constants.JULIAN_YEAR);
             }
@@ -608,13 +608,16 @@ public class DataStripManager
             double q3 = quaternionValues.get(2);
             double q0 = quaternionValues.get(3);
 
-            Rotation rotation = new Rotation(q0, q1, q2, q3, true);
+            // Rotation rotation = new Rotation(q0, q1, q2, q3, true);
+            Rotation rotation = new Rotation(q0, q1, q2, q3, false); // no normalisation as in asgard-legacy
             TimeStampedAngularCoordinates pair = new TimeStampedAngularCoordinates(attitudeDate, rotation, Vector3D.ZERO, Vector3D.ZERO);
+
+            LOGGER.log(Level.FINE, "Qlist-attitude date: {0}", new Object[]{attitudeDate});
 
             if (dateSet.contains(attitudeDate))
             {
                 // duplicate data for the current ephemeris date => we aldeady add this quaternion => we just ignore it
-                LOGGER.warning("Duplicate quaternion with date : " + values.getGPS_TIME().toString());
+                LOGGER.warning("Duplicate quaternion with date: " + values.getGPS_TIME().toString());
             }
             else
             {
@@ -650,6 +653,7 @@ public class DataStripManager
                 }
                 // extract PV from XML objects
                 AbsoluteDate ephemerisDate = new AbsoluteDate(gpsTime.toString(), gps);
+                LOGGER.log(Level.FINE, "PVlist-ephemeris date: {0}", new Object[]{ephemerisDate});
                 List<Long> positionValues = ephemeris.getPOSITION_VALUES().getValue();
                 List<Long> velocityValues = ephemeris.getVELOCITY_VALUES().getValue();
 
@@ -672,7 +676,11 @@ public class DataStripManager
                 PVCoordinates pvEME2000 = transform.transformPVCoordinates(pvITRF);
 
                 // Convert PV from ITRF to EME2000
-                TimeStampedPVCoordinates pair = new TimeStampedPVCoordinates(ephemerisDate, pvEME2000.getPosition(), pvEME2000.getVelocity(), Vector3D.ZERO);
+                TimeStampedPVCoordinates pair = new TimeStampedPVCoordinates(
+                                                        ephemerisDate,
+                                                        pvEME2000.getPosition(),
+                                                        pvEME2000.getVelocity(),
+                                                        Vector3D.ZERO);
 
                 if (dateSet.contains(ephemerisDate))
                 {
@@ -819,6 +827,7 @@ public class DataStripManager
         // acquisition center time
         // Polynomial model of refining corrections are computed with that the time centered on this value;
         // i.e. this time is 0 for the polynoms
+        LOGGER.log(Level.FINE, "CenterAcquisition: {0}",  new AbsoluteDate(datastripStartDateUTC, halfDatastripDuration));
         return new AbsoluteDate(datastripStartDateUTC, halfDatastripDuration);
     }
 
@@ -946,14 +955,19 @@ public class DataStripManager
                                 {
                                     found = true;
                                     int refLineInt = detector.getREFERENCE_LINE();
+                                    
+                                    LOGGER.log(Level.INFO, "refLineInt (Band: {0}; Detector: {1}): {2}", new Object[]{bandId, detectorInfo.getName(), refLineInt});
                                     if (refLineInt != 0 && refLineInt != 1)
                                     {
                                         referenceLineDouble = getNewPositionFromSize((double) refLineInt, Sen2VMConstants.RESOLUTION_10M_DOUBLE, bandInfo.getPixelHeight());
                                     }
                                     XMLGregorianCalendar referenceDateXML = detector.getGPS_TIME();
                                     referenceDate = new AbsoluteDate(referenceDateXML.toString(), gps);
+                                    
                                     // We shift the date of a half line period to be in the middle of the line
                                     referenceDate = referenceDate.shiftedBy(halfLinePeriod / 1000d);
+
+                                    LOGGER.log(Level.FINE,"referance date: {0}", new Object[]{referenceDate});
 
                                     // Apply shift workaround due to https://esa-cams.atlassian.net/browse/GSANOM-22074 for INS-RAW
                                     if(isRaw)
@@ -976,6 +990,7 @@ public class DataStripManager
                                     defaultReferenceDate = new AbsoluteDate(referenceDateXML.toString(), gps);
                                     // We shift the date of a half line period to be in the middle of the line
                                     defaultReferenceDate = defaultReferenceDate.shiftedBy(halfLinePeriod / 1000d);
+                                    LOGGER.log(Level.FINE, "Default referenace date: {0}", new Object[]{defaultReferenceDate});
                                 }
                             }
                         }

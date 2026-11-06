@@ -147,7 +147,7 @@ public class Params extends InputFileManager
         }
         catch (JSONException | IOException e)
         {
-            throw new Sen2VMException("Problem while reading JSON parameters file" + jsonFilePath + " : ", e);
+            throw new Sen2VMException("Problem while reading JSON parameters file" + jsonFilePath + ": ", e);
         }
     }
 

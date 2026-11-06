@@ -28,6 +28,7 @@ import esa.sen2vm.exception.Sen2VMException;
 import org.orekit.data.DataContext;
 import org.orekit.data.LazyLoadedDataContext;
 
+
 /**
  * Unit test for Sen2VM (direct loc).
  */
@@ -41,6 +42,8 @@ public class Sen2VMDirectTest
     String configTmpDirectTDS2NoShift = "src/test/resources/tests/input/TDS2-INS-RAW/configuration_TDS2_direct_no_shift.json";
     String paramTmp = "src/test/resources/params_base.json";
     String refDir = "src/test/resources/tests/ref";
+
+    private static final double THRESHOLD_DIR_HIGH = 1.2e-1; // Shall be high due to the cache mechanism for inverse location in SXGEO/RUGGED/OREKIT
 
     @AfterEach
     void resetGlobalState(){
@@ -98,7 +101,9 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+            
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest, THRESHOLD_DIR_HIGH);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -125,7 +130,9 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+
+            LOGGER.warning("Threshold released at: 1e-5"); // https://github.com/sen2vm/sen2vm-core/issues/15
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest, 1e-5);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -162,7 +169,9 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             LOGGER.info("config: "+config);
             Sen2VM.main(args);
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest, THRESHOLD_DIR_HIGH);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -185,7 +194,6 @@ public class Sen2VMDirectTest
         File sourceArchive= new File(GIPP_archive);
         if(Files.exists(gippDir.toPath()))
         {
-
             Config.deleteDirectory(gippDir);
         }
         gippDir.mkdir();
@@ -193,18 +201,18 @@ public class Sen2VMDirectTest
         {
             Config.copyFolder(sourceArchive,gippDir,true);
 
-            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
-            LOGGER.info("File to remove: "+fileToRemove.toString());
+            File fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
+            LOGGER.info("File to remove: " + fileToRemove.toString());
             fileToRemove.delete();
 
-            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
-            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
+            LOGGER.info("File to remove: " + fileToRemove.toString());
             fileToRemove.delete();
 
-            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.DBL");
-            LOGGER.info("File to remove: "+fileToRemove.toString());
+            fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00/S2A_OPER_GIP_BLINDP_MPC__20150605T094736_V20150622T000000_21000101T000000_B00.DBL");
+            LOGGER.info("File to remove: " + fileToRemove.toString());
             fileToRemove.delete();
-            
+
             String nameTest = "testDirectLoc";
             String outputDir = Config.createTestDir(Config.TDS.TDS1, nameTest, "direct");
             String config = Config.configAutoGippSelection(configTmpDirectTDS1, GIPP_2, false, outputDir);
@@ -212,7 +220,9 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             LOGGER.info("config: "+config);
             Sen2VM.main(args);
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+
+            LOGGER.warning("Threshold released at: 1e-5"); // https://github.com/sen2vm/sen2vm-core/issues/15
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest,1e-5);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -244,7 +254,7 @@ public class Sen2VMDirectTest
         {
             Config.copyFolder(sourceArchive,gippDir,true);
             // remove a listed GIPP to check a test failure
-            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_VIEDIR_SPS__20150731T092207_V20150703T000000_21000101T000000_B01.tar.gz");
+            File fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_VIEDIR_SPS__20150731T092207_V20150703T000000_21000101T000000_B01.tar.gz");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
             String nameTest = "testDirectLoc";
@@ -254,7 +264,9 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             LOGGER.info("config: "+config);
             Sen2VM.main(args);
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest, THRESHOLD_DIR_HIGH);
             LOGGER.warning("Expecting an error.");
             assert(false);
         } catch (Sen2VMException e) {
@@ -289,15 +301,15 @@ public class Sen2VMDirectTest
             Config.copyFolder(sourceArchive,gippDir,true);
 
             // remove a listed GIPP to check a test failure
-            File fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
+            File fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.xml");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
 
-            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
+            fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20210419T000024_V20210421T233000_21000101T000000_B00.tar.gz");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
 
-            fileToRemove = new File("src/test/resources/tests/data/test_GIPP/S2A_OPER_GIP_SPAMOD_MPC__20220120T000025_V20220125T022000_21000101T000000_B00.tar.gz");
+            fileToRemove = new File(GIPP_2 + "S2A_OPER_GIP_SPAMOD_MPC__20220120T000025_V20220125T022000_21000101T000000_B00.tar.gz");
             LOGGER.info("File to remove: "+fileToRemove.toString());
             fileToRemove.delete();
 
@@ -368,7 +380,9 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+            
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest, THRESHOLD_DIR_HIGH);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -508,7 +522,8 @@ public class Sen2VMDirectTest
             Sen2VM.main(args);
             // Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
             // Comparison with nominal run
-            Utils.verifyDirectLoc(config, refDir + "/" + "testDirectLoc");
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
+            Utils.verifyDirectLoc(config, refDir + "/" + "testDirectLoc", THRESHOLD_DIR_HIGH); // Same comparison threshold than direct loc
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -580,7 +595,7 @@ public class Sen2VMDirectTest
     @Test
     public void testDirectLocRawShifted()
     {
-        // ref DATA generated duriectly with Sen2Vm 1.1.4 using Notebook with same list of bands/detectors. In Sen2VM 1.1.4, shift was not corrected yet
+        // ref DATA directly generated with Sen2Vm 1.1.4 using Notebook with same list of bands/detectors. In Sen2VM 1.1.4, shift was not corrected yet
         String[] detectors = new String[]{"05","06","11","12"};
         String[] bands = new String[]{"B01","B02","B03","B04","B05","B06", "B07", "B08", "B8A","B09","B10","B11","B12"};
         int stepBand10m = 600; // corresponding to 6 kms
@@ -593,7 +608,7 @@ public class Sen2VMDirectTest
             String param = Config.changeParams(paramTmp, detectors, bands, outputDir);
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
-            Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
+            Utils.verifyDirectLoc(config, refDir + "/" + nameTest, 3.41e-6); // References haven't been regenerated since migration to new Orekit, hence threhsold is put a little higher
 
             String nameTest2 = "testDirectLocRawShifted";
             String outputDir2 = Config.createTestDir(Config.TDS.TDS2, nameTest2, "direct");
@@ -615,7 +630,7 @@ public class Sen2VMDirectTest
             // Comparison versus "reference" data
             // ref DATA generated by Sen2VM with shift applied, so no real ref, more a non-regression test
             // Orthorectification has yet been verified visually
-            Utils.verifyDirectLoc(config2, refDir + "/" + nameTest2);
+            Utils.verifyDirectLoc(config2, refDir + "/" + nameTest2, 3.41e-6); // References haven't been regenerated since migration to new Orekit, hence threhsold is put a little higher
             
             String nameTest3 = "testDirectLocRawNoShiftInConf";
             String outputDir3 = Config.createTestDir(Config.TDS.TDS2, nameTest3, "direct");
@@ -624,7 +639,7 @@ public class Sen2VMDirectTest
             String[] args3 = {"-c", config3, "-p", param3};
             Sen2VM.main(args3);
             // We expect it to be shifted
-            Utils.verifyDirectLoc(config3, refDir + "/" + nameTest2);
+            Utils.verifyDirectLoc(config3, refDir + "/" + nameTest2, 3.41e-6); // References haven't been regenerated since migration to new Orekit, hence threhsold is put a little higher
 
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());

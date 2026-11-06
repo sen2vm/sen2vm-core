@@ -8,7 +8,9 @@
 
 * Fix:
 
-  * 
+  * Check existing granules in output before long DEM check: #80
+  * Put back SonarCloud analysis
+  * Reduce SonarCloud warnings
 
 * Feature:
 
@@ -16,7 +18,8 @@
 
 * Doc:
 
-  * 
+  * Correct link to Orekit-folder: #85
+  * Update link to TILPAR in CDSE DEM Download: #91
 
 ## 1.3.0 (2026-07-17)
 
