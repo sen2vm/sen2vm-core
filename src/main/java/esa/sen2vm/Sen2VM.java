@@ -354,7 +354,7 @@ public class Sen2VM
     {
         List<DetectorInfo> detectors = DetectorInfo.getAllDetectorInfo();
 
-        if (params != null && params.getDetectorsList().size() > 0)
+        if (params != null && !params.getDetectorsList().isEmpty())
         {
             detectors = params.getDetectorsList();
         }
@@ -365,7 +365,7 @@ public class Sen2VM
     private static List<BandInfo> readBands(Params params)
     {
         List<BandInfo> bands = BandInfo.getAllBandInfo();
-        if (params != null && params.getBandsList().size() > 0)
+        if (params != null && !params.getBandsList().isEmpty())
         {
             bands = params.getBandsList();
         }
