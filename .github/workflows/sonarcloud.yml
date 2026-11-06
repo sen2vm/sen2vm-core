@@ -57,13 +57,12 @@ jobs:
           javac -version
           mvn -version
           gdal-config --version
-      - uses: actions/checkout@v6
+      # TODO pin the exact commit instead of the  version.
+      - uses: SonarSource/sonarqube-scan-action@v6
         with:
           fetch-depth: 0
       - name: Analyze with SonarCloud
         if: env.SONAR_TOKEN_DEFINED == 'true'
-        # TODO pin the exact commit instead of the  version.
-        uses: SonarSource/sonarqube-scan-action@v6
         env:
           JAVA_HOME: /usr/lib/jvm/java-21-openjdk
           PATH: /usr/lib/jvm/java-21-openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
