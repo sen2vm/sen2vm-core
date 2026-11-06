@@ -288,7 +288,9 @@ public class GIPPFileManager
      * @throws Sen2VMException
      */
     public static File findGippFile(Path root, String dirNameRegex, List<String> gippList, String fileNameRegex, List<String> validExtensions) throws IOException, Sen2VMException {
-        final List<File> results = findGippFiles(root, dirNameRegex, gippList, fileNameRegex, validExtensions);
+        final List<File> results = findGippFiles(root, dirNameRegex, gippList, fileNameRegex, validExtensions)
+                                    .stream().distinct().collect(Collectors.toList()); // Remove identical, can happen when untaring
+
         if(results.isEmpty())
         {
             if (gippList.isEmpty())
