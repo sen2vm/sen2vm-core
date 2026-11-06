@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/sen2vm/sen2vm-build-env:1.1.0
- tu-enabling-in-ci
     env:
       JAVA_HOME: /usr/lib/jvm/java-1.8-openjdk
       PATH: /usr/lib/jvm/java-1.8-openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
