@@ -22,7 +22,6 @@ import java.util.SortedSet;
 
 import org.orekit.data.DataContext;
 import org.orekit.frames.EOPEntry;
-import org.orekit.frames.EopHistoryLoader;
 import org.orekit.frames.FramesFactory;
 import org.orekit.frames.ITRFVersion;
 import org.orekit.time.AbsoluteDate;
