@@ -44,13 +44,28 @@ env:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
+    
+    container:
+      image:ghcr.io/sen2vm/sen2vm-build-env:1.1.0
+
     steps:
+      - name: Check analysis environment
+        shell: bash
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME"
+          java -versio
+          javac -version
+          mvn -version
+          gdal-config --version
+
       - name: Analyze with SonarCloud
         if: env.SONAR_TOKEN_DEFINED == 'true'
         # You can pin the exact commit or the version.
         # uses: SonarSource/sonarcloud-github-action@v2.2.0
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
+          JAVA_HOME: /usr/lib/jvm/java-21-openjdk
+          PATH: /usr/lib/jvm/java-21-openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           # Additional arguments for the SonarScanner CLI
