@@ -102,7 +102,7 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             
-            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // TODO
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest, THRESHOLD_DIR_HIGH);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
@@ -131,7 +131,7 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
 
-            LOGGER.warning("Threshold released at: 1e-5"); // THRESHOLD_DIR_HIGH TODO
+            LOGGER.warning("Threshold released at: 1e-5"); // https://github.com/sen2vm/sen2vm-core/issues/15
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest, 1e-5);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
@@ -170,7 +170,7 @@ public class Sen2VMDirectTest
             LOGGER.info("config: "+config);
             Sen2VM.main(args);
 
-            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // TODO
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest, THRESHOLD_DIR_HIGH);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
@@ -221,7 +221,7 @@ public class Sen2VMDirectTest
             LOGGER.info("config: "+config);
             Sen2VM.main(args);
 
-            LOGGER.warning("Threshold released at: 1e-5"); // THRESHOLD_DIR_HIGH TODO
+            LOGGER.warning("Threshold released at: 1e-5"); // https://github.com/sen2vm/sen2vm-core/issues/15
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest,1e-5);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
@@ -265,7 +265,7 @@ public class Sen2VMDirectTest
             LOGGER.info("config: "+config);
             Sen2VM.main(args);
 
-            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // TODO
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest, THRESHOLD_DIR_HIGH);
             LOGGER.warning("Expecting an error.");
             assert(false);
@@ -381,7 +381,7 @@ public class Sen2VMDirectTest
             String[] args = {"-c", config, "-p", param};
             Sen2VM.main(args);
             
-            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // TODO
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
             Utils.verifyDirectLoc(config, refDir + "/" + nameTest, THRESHOLD_DIR_HIGH);
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
@@ -522,7 +522,7 @@ public class Sen2VMDirectTest
             Sen2VM.main(args);
             // Utils.verifyDirectLoc(config, refDir + "/" + nameTest);
             // Comparison with nominal run
-            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // TODO
+            LOGGER.warning("Threshold released at: " + THRESHOLD_DIR_HIGH); // https://github.com/sen2vm/sen2vm-core/issues/15
             Utils.verifyDirectLoc(config, refDir + "/" + "testDirectLoc", THRESHOLD_DIR_HIGH); // Same comparison threshold than direct loc
         } catch (Sen2VMException e) {
             LOGGER.warning(e.getMessage());
