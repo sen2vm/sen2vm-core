@@ -182,7 +182,7 @@ public class Sen2VM
         final Configuration config,
         final List<BandInfo> bands,
         final List<DetectorInfo> detectors        
-    )
+    ) throws Exception, Sen2VMException
     {
         // Read datastrip
         DataStripManager dataStripManager = new DataStripManager(
