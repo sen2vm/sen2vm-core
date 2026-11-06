@@ -9,6 +9,8 @@
 * Fix:
 
   * Check existing granules in output before long DEM check: #80
+  * Put back SonarCloud analysis
+  * Reduce SonarCloud warnings
 
 * Feature:
 

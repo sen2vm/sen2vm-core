@@ -205,7 +205,7 @@ public class Utils {
         }
     }
 
-    public static boolean imagesEqualDirect(String img1Path, String img2Path, double threshold) throws IOException
+    public static boolean imagesEqualDirect(String img1Path, String img2Path, double threshold)
     {
         Dataset ds1 = gdal.Open(img1Path, 0);
         Dataset ds2 = gdal.Open(img2Path, 0);
@@ -298,7 +298,7 @@ public class Utils {
                 for (int c = 0; c < ds1.getRasterXSize(); c++) {
 
                     // nan in one grid and value in other grid case
-                    if (!(myIsNan(data1b1[c]) == myIsNan(data2b1[c])))
+                    if (myIsNan(data1b1[c]) != myIsNan(data2b1[c]))
                     {
                         isOK = false;
                         errorCount++;

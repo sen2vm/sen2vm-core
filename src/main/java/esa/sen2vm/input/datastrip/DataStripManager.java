@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -613,7 +614,7 @@ public class DataStripManager
             Rotation rotation = new Rotation(q0, q1, q2, q3, false); // no normalisation as in asgard-legacy
             TimeStampedAngularCoordinates pair = new TimeStampedAngularCoordinates(attitudeDate, rotation, Vector3D.ZERO, Vector3D.ZERO);
 
-            LOGGER.fine("Qlist-attitude date: " + attitudeDate.toString());
+            LOGGER.log(Level.FINE, "Qlist-attitude date: {0}", new Object[]{attitudeDate.toString()});
 
             if (dateSet.contains(attitudeDate))
             {
@@ -654,7 +655,7 @@ public class DataStripManager
                 }
                 // extract PV from XML objects
                 AbsoluteDate ephemerisDate = new AbsoluteDate(gpsTime.toString(), gps);
-                LOGGER.fine("PVlist-ephemeris date: " + ephemerisDate.toString());
+                LOGGER.log(Level.FINE, "PVlist-ephemeris date: {0}", new Object[]{ephemerisDate.toString()});
                 List<Long> positionValues = ephemeris.getPOSITION_VALUES().getValue();
                 List<Long> velocityValues = ephemeris.getVELOCITY_VALUES().getValue();
 
@@ -828,7 +829,7 @@ public class DataStripManager
         // acquisition center time
         // Polynomial model of refining corrections are computed with that the time centered on this value;
         // i.e. this time is 0 for the polynoms
-        LOGGER.fine("CenterAcquisition: " + new AbsoluteDate(datastripStartDateUTC, halfDatastripDuration));
+        LOGGER.log(Level.FINE, "CenterAcquisition: {0}",  new AbsoluteDate(datastripStartDateUTC, halfDatastripDuration));
         return new AbsoluteDate(datastripStartDateUTC, halfDatastripDuration);
     }
 
@@ -968,7 +969,7 @@ public class DataStripManager
                                     // We shift the date of a half line period to be in the middle of the line
                                     referenceDate = referenceDate.shiftedBy(halfLinePeriod / 1000d);
 
-                                    LOGGER.fine("referenace date:" + referenceDate);
+                                    LOGGER.log(Level.FINE,"referance date: {0}", new Object[]{referenceDate});
 
                                     // Apply shift workaround due to https://esa-cams.atlassian.net/browse/GSANOM-22074 for INS-RAW
                                     if(isRaw)
@@ -991,7 +992,7 @@ public class DataStripManager
                                     defaultReferenceDate = new AbsoluteDate(referenceDateXML.toString(), gps);
                                     // We shift the date of a half line period to be in the middle of the line
                                     defaultReferenceDate = defaultReferenceDate.shiftedBy(halfLinePeriod / 1000d);
-                                    LOGGER.fine("Default referenace date:" + defaultReferenceDate);
+                                    LOGGER.log(Level.FINE, "Default referenace date: {0}", new Object[]{defaultReferenceDate});
                                 }
                             }
                         }
@@ -1074,7 +1075,7 @@ public class DataStripManager
             c.getDate().getDay(),
             c.getTime().getHour(),
             c.getTime().getMinute(),
-            (double) seconds,
+            seconds,
             scale
         );
     }

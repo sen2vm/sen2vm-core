@@ -309,27 +309,6 @@ public class Sen2VM
                         // Direct Loc
                         double[][] directLocGrid = simpleLocEngine.computeDirectLoc(sensorList.get(bandInfo.getNameWithB() + "/" + detectorInfo.getNameWithD()), sensorGridForDirectLoc);
 
-                        // LOGGER.info("directLocGrid[0][0]: " + directLocGrid[0][0]);
-                        // LOGGER.info("directLocGrid[0][1]: " + directLocGrid[0][1]);
-                        
-                        // LOGGER.info("");
-                        // LOGGER.info("sensorGridForDirectLoc[0][0]: " + sensorGridForDirectLoc[0][0]);
-                        // LOGGER.info("sensorGridForDirectLoc[0][1]: " + sensorGridForDirectLoc[0][1]);
-                        // LOGGER.info("");
-                        // LOGGER.info("sensorGridForDirectLoc[1][0]: " + sensorGridForDirectLoc[1][0]);
-                        // LOGGER.info("sensorGridForDirectLoc[1][1]: " + sensorGridForDirectLoc[1][1]);
-                        // LOGGER.info("");
-                        // LOGGER.info("sensorGridForDirectLoc[95][0]: " + sensorGridForDirectLoc[95][0]);
-                        // LOGGER.info("sensorGridForDirectLoc[95[1]: " + sensorGridForDirectLoc[95][1]);
-                        // LOGGER.info("");
-                        // LOGGER.info("sensorGridForDirectLoc[5225][0]: " + sensorGridForDirectLoc[5225][0]);
-                        // LOGGER.info("sensorGridForDirectLoc[5225[1]: " + sensorGridForDirectLoc[5225][1]);
-                        // LOGGER.info("");
-                        
-                        // LOGGER.info("directLocGrid[5225][0]: " + directLocGrid[5225][0]);
-                        // LOGGER.info("directLocGrid[5225][1]: " + directLocGrid[5225][1]);
-
-
                         Vector<String> inputTIFs = new Vector<String>();
                         double pixelOffset = dirGrid.getPixelOffsetGranule();
 
