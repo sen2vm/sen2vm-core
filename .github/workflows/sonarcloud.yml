@@ -82,6 +82,6 @@ jobs:
             --file pom.xml \
             --batch-mode \
             verify \
-            sonar:sonar \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=sen2vm-core \
             -Dsonar.organization=sen2vm
