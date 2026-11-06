@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           echo "JAVA_HOME=$JAVA_HOME"
-          java -versio
+          java -version
           javac -version
           mvn -version
           gdal-config --version
