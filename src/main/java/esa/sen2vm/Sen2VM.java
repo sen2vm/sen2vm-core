@@ -290,33 +290,33 @@ public class Sen2VM
             LOGGER.info("EPSG read from configuration file (for inverse location): " + config.getInverseLocReferential());
         }
 
-        generateGrids(
-            config,
-            bands,
-            detectors,
-            dataStripManager,
-            safeManager,
-            datastrip,
-            sensorList,
-            ruggedManager,
-            simpleLocEngine,
-            outputFileManager
-        );
-    }
+    //     generateGrids(
+    //         config,
+    //         bands,
+    //         detectors,
+    //         dataStripManager,
+    //         safeManager,
+    //         datastrip,
+    //         sensorList,
+    //         ruggedManager,
+    //         simpleLocEngine,
+    //         outputFileManager
+    //     );
+    // }
 
-    private static void generateGrids(
-        final Configuration config,
-        final List<BandInfo> bands,
-        final List<DetectorInfo> detectors,
-        final DataStripManager dataStripManager,
-        final SafeManager safeManager,
-        final Datastrip datastrip,
-        final HashMap<String, Sensor> sensorList,
-        final RuggedManager ruggedManager,
-        final SimpleLocEngine simpleLocEngine,
-        final OutputFileManager outputFileManager)
-        throws Exception
-    {
+    // private static void generateGrids(
+    //     final Configuration config,
+    //     final List<BandInfo> bands,
+    //     final List<DetectorInfo> detectors,
+    //     final DataStripManager dataStripManager,
+    //     final SafeManager safeManager,
+    //     final Datastrip datastrip,
+    //     final HashMap<String, Sensor> sensorList,
+    //     final RuggedManager ruggedManager,
+    //     final SimpleLocEngine simpleLocEngine,
+    //     final OutputFileManager outputFileManager)
+    //     throws Exception
+    // {
         double georefConventionOffsetPixel = +0.5f;
         double georefConventionOffsetLine = +0.5f;
         LOGGER.info("");
