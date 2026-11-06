@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.io.File;
 import java.nio.file.Files;
 
@@ -137,8 +138,8 @@ public class Sen2VM
             List<DetectorInfo> detectors = readDetectors(params);
             List<BandInfo> bands = readBands(params);
 
-            LOGGER.info("Detectors list: " + detectors);
-            LOGGER.info("Bands list: " + bands);
+            LOGGER.log(Level.INFO, "Detectors list: {0}", detectors);
+            LOGGER.log(Level.INFO, "Bands list: {0}", bands);
   
             initiate(config, bands, detectors);
 
@@ -166,11 +167,7 @@ public class Sen2VM
         {
             detectors = params.getDetectorsList();
         }
-        else
-        {
-            // Information missing, by default we prosse all
-            detectors = DetectorInfo.getAllDetectorInfo();
-        }
+
         return detectors;
     }
 
@@ -181,11 +178,7 @@ public class Sen2VM
         {
             bands = params.getBandsList();
         }
-        else
-        {
-            // Information missing, by default we prosse all
-            bands = BandInfo.getAllBandInfo();
-        }
+
         return bands;
     }
 
