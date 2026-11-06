@@ -61,7 +61,7 @@ jobs:
           java -version
           echo "javac:"
           javac -version
-          echo"maven:"
+          echo "Maven:"
           mvn -version
           echo "GDAL:"
           gdal-config --version
@@ -83,5 +83,5 @@ jobs:
             --batch-mode \
             verify \
             sonar:sonar \
-            -Dsonar.projectKey=sen2vm-core
+            -Dsonar.projectKey=sen2vm-core \
             -Dsonar.organization=sen2vm
