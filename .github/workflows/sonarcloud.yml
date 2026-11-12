@@ -65,7 +65,13 @@ jobs:
           mvn -version
           echo "GDAL:"
           gdal-config --version
+      - name: Debug JaCoCo coverage
+        run: |
+          echo "=== JaCoCo reports ==="
+          find . -name "jacoco.xml" -print
 
+          echo "===DataStripManager ni JaCoCo ==="
+          grep -R "DataStripManager" --include="jacoco.xml" . || true
       - name: Analyze with SonarCloud
         if: env.SONAR_TOKEN_DEFINED == 'true'
         shell: bash
