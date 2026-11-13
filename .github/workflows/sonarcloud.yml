@@ -85,6 +85,7 @@ jobs:
             --file pom.xml \
             --batch-mode \
             org.owasp:dependency-check-maven:13.0.0:check \
+            -DnvdApiKeyEnvironmentVariable=NVD_API_KEY \
             -DfailBuildOnCVSS=7.0
 
       - name: Analyze with SonarCloud
