@@ -70,6 +70,7 @@ jobs:
         env:
           JAVA_HOME: /usr/lib/jvm/java-21-openjdk
           PATH: /usr/lib/jvm/java-21-openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          NVD_API_KEY: ${{secrets.NVD_API_KEY}}
         run: |
           java -version
           mvn -version
