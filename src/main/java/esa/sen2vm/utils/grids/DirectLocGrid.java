@@ -19,6 +19,7 @@ package esa.sen2vm.utils.grids;
 import java.util.ArrayList;
 
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class DirectLocGrid
 {
@@ -89,6 +90,7 @@ public class DirectLocGrid
                 grid[l*nbCols + c][0] = this.gridLines.get(l) + lineOffest;
                 grid[l*nbCols + c][1] = this.gridPixels.get(c) + pixelOffest;
             }
+            LOGGER.log(Level.FINE, "Grid Direct Lines {0} => {1}", new Object[]{l, grid[l*nbCols][0]});
         }
 
         return grid;

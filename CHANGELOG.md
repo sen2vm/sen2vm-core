@@ -8,15 +8,22 @@
 
 * Fix:
 
-  * 
+  * Check existing granules in output before long DEM check: #80
+  * Fix CI (#82):
+    * Activate back mvn tests in CI
+    * Put back SonarCloud analysis
+    * Reduce SonarCloud warnings
+    * Put on dependency check
+    * Update dependencies for Notebooks venv
 
 * Feature:
 
-  * 
+  * Upgrade dependencis (SXGEO 0.3.1 with now official rugged usage; it required a Orekit 13 migration instead of 11): #30
 
 * Doc:
 
-  * 
+  * Correct link to Orekit-folder: #85
+  * Update link to TILPAR in CDSE DEM Download: #91
 
 ## 1.3.0 (2026-07-17)
 

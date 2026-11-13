@@ -10,11 +10,17 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/sen2vm/sen2vm-build-env:0.1.0
+      image: ghcr.io/sen2vm/sen2vm-build-env:1.1.0
     env:
+      JAVA_HOME: /usr/lib/jvm/java-1.8-openjdk
+      PATH: /usr/lib/jvm/java-1.8-openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       MAVEN_CLI_OPTS: "-s .CI/maven-settings.xml --file pom.xml --batch-mode --update-snapshots"
     steps:
       - uses: actions/checkout@v4
+      - name: Check Java Version
+        run: |
+          java -version
+          mvn -version
       - name: Build
         run: mvn $MAVEN_CLI_OPTS install
       - name: Deploy
@@ -28,7 +34,6 @@ jobs:
                 exit 1
             fi
             mvn $MAVEN_CLI_OPTS deploy \
-                -DskipTests=true \
                 -Dmaven.repository.target=${{ github.repository }}
           else
             echo "Tag '$TAG_NAME' does not follow SemVer format. No artifact released."

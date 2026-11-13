@@ -6,8 +6,8 @@
 
     <groupId>esa.sen2vm</groupId>
     <artifactId>sen2vm-core</artifactId>
-    <!-- NOTE: remind to change also the SEN2VM_VERSION in the Dokerfile-->
-    <version>1.3.0</version>
+    <version>2.0.0</version>
+
 
     <name>sen2vm-core</name>
     <url>https://github.com/sen2vm/sen2vm-core</url>
@@ -16,12 +16,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.release>8</maven.compiler.release>
         <jaxb.plugin.version>2.5.0</jaxb.plugin.version>
         <!-- cots version -->
         <gdal.version>3.6.2</gdal.version>
-        <sxgeo.version>0.2.1</sxgeo.version>
-        <sxgeo.orekit-tools.version>1.2</sxgeo.orekit-tools.version>
-        <sxgeo.hipparchus.version>2.3</sxgeo.hipparchus.version>
+        <sxgeo.version>0.3.1</sxgeo.version>
         <commons-compress.version>1.26.0</commons-compress.version>
         <maven.repository.target>sen2vm/sen2vm-core</maven.repository.target>
     </properties>
@@ -41,6 +40,21 @@
         </repository>
     </repositories>
     <dependencies>
+
+        <!-- JAXB API: namespace javax.xml.bin -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <!-- JAXB Runtime: implementation -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.8</version>
+        </dependency>
+
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
@@ -62,12 +76,6 @@
             <artifactId>json-simple</artifactId>
             <version>1.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>jaxb2-maven-plugin</artifactId>
-            <version>${jaxb.plugin.version}</version>
-            <type>maven-plugin</type>
-        </dependency>
         <!-- cots -->
         <dependency>
             <groupId>org.gdal</groupId>
@@ -82,19 +90,30 @@
             <version>${sxgeo.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.hipparchus</groupId>
-                <artifactId>hipparchus-core</artifactId>
-                <version>${sxgeo.hipparchus.version}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${commons-compress.version}</version>
         </dependency>
-         <dependency>
-            <groupId>org.orekit</groupId>
-            <artifactId>orekit-tools</artifactId>
-            <version>${sxgeo.orekit-tools.version}</version>
-        </dependency>
+
+        <!-- Fix CVE-2025-48735 and CVE-20219-10086 -->
         <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>${commons-compress.version}</version>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.11.0</version>
+        </dependency>
+
+        <!-- Fix Jackson vulnerabilities -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.18.9</version>
+        </dependency>
+
+        <!-- Fix Commons Lang vulnerability -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.18.0</version>
         </dependency>
     </dependencies>
 
@@ -124,10 +143,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>8</release>
                 </configuration>
             </plugin>
             <!-- XJC plugin to generate java class from xsd -->
@@ -224,6 +242,37 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>13.0.0</version>
+                <configuration>
+                    <failBuildOnCVSS>7.0</failBuildOnCVSS>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.14</version>
+                <executions>
+                    <!-- Attach JaCoCo agent before running tests -->
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Generate XML/HTML coverage report -->
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 

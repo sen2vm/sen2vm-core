@@ -1,7 +1,7 @@
 affine==2.4.0
 asttokens==3.0.1
 attrs==25.4.0
-certifi==2025.11.12
+certifi==2026.10.18
 charset-normalizer==3.4.4
 click==8.3.1
 click-plugins==1.1.1.2
@@ -10,7 +10,7 @@ comm==0.2.3
 debugpy==1.8.17
 decorator==5.2.1
 executing==2.2.1
-idna==3.11
+idna==3.15
 ipykernel==7.1.0
 ipython==9.8.0
 ipython_pygments_lexers==1.1.1
@@ -33,12 +33,12 @@ pyparsing==3.2.5
 python-dateutil==2.9.0.post0
 pyzmq==27.1.0
 rasterio==1.4.3
-requests==2.32.5
+requests==2.33
 scipy
 six==1.17.0
 stack-data==0.6.3
-tornado==6.5.2
+tornado==6.6
 traitlets==5.14.3
-urllib3==2.6.1
+urllib3==2.8.0
 utm==0.8.1
 wcwidth==0.2.14
