@@ -108,4 +108,6 @@ jobs:
             --batch-mode \
             org.owasp:dependency-check-maven:13.0.0:check \
             -DnvdApiKeyEnvironmentVariable=NVD_API_KEY \
+            -DnvdMaxRetryCount=20 \
+            -DnvdApiDelay=5000 \
             -DfailBuildOnCVSS=7.0
