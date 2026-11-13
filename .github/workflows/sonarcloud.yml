@@ -65,6 +65,22 @@ jobs:
           mvn -version
           echo "GDAL:"
           gdal-config --version
+      - name: OWASP Dependency Check (Java 21)
+        shell: bash
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-21-openjdk
+          PATH: /usr/lib/jvm/java-21-openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        run: |
+          java -version
+          mvn -version
+
+          mvn \
+            -s .CI/maven-settings.xml \
+            --file pom.xml \
+            --batch-mode \
+            org.owasp:dependency-check-maven:13.0.0:check \
+            -DfailBuildOnCVSS=7.0
+            
       - name: Analyze with SonarCloud
         if: env.SONAR_TOKEN_DEFINED == 'true'
         shell: bash
