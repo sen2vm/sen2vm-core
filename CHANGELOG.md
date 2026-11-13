@@ -9,12 +9,16 @@
 * Fix:
 
   * Check existing granules in output before long DEM check: #80
-  * Put back SonarCloud analysis
-  * Reduce SonarCloud warnings
+  * Fix CI (#82):
+    * Activate back mvn tests in CI
+    * Put back SonarCloud analysis
+    * Reduce SonarCloud warnings
+    * Put on dependency check
+    * Update dependencies for Notebooks venv
 
 * Feature:
 
-  * 
+  * Upgrade dependencis (SXGEO 0.3.1 with now official rugged usage; it required a Orekit 13 migration instead of 11): #30
 
 * Doc:
 

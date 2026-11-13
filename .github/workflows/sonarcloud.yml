@@ -74,13 +74,19 @@ jobs:
           java -version
           mvn -version
 
+          # Verification of secret without printing its value
+          if [ -z "$NVD_API_KEY" ]; then
+            echo "::error::NVD_API_KEY is missing"
+            exit 1
+          fi
+
           mvn \
             -s .CI/maven-settings.xml \
             --file pom.xml \
             --batch-mode \
             org.owasp:dependency-check-maven:13.0.0:check \
             -DfailBuildOnCVSS=7.0
-            
+
       - name: Analyze with SonarCloud
         if: env.SONAR_TOKEN_DEFINED == 'true'
         shell: bash
