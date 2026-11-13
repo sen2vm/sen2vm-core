@@ -65,29 +65,6 @@ jobs:
           mvn -version
           echo "GDAL:"
           gdal-config --version
-      - name: OWASP Dependency Check (Java 21)
-        shell: bash
-        env:
-          JAVA_HOME: /usr/lib/jvm/java-21-openjdk
-          PATH: /usr/lib/jvm/java-21-openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-          NVD_API_KEY: ${{secrets.NVD_API_KEY}}
-        run: |
-          java -version
-          mvn -version
-
-          # Verification of secret without printing its value
-          if [ -z "$NVD_API_KEY" ]; then
-            echo "::error::NVD_API_KEY is missing"
-            exit 1
-          fi
-
-          mvn \
-            -s .CI/maven-settings.xml \
-            --file pom.xml \
-            --batch-mode \
-            org.owasp:dependency-check-maven:13.0.0:check \
-            -DnvdApiKeyEnvironmentVariable=NVD_API_KEY \
-            -DfailBuildOnCVSS=7.0
 
       - name: Analyze with SonarCloud
         if: env.SONAR_TOKEN_DEFINED == 'true'
@@ -108,3 +85,27 @@ jobs:
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=sen2vm-core \
             -Dsonar.organization=sen2vm
+
+      - name: OWASP Dependency Check (Java 21)
+        shell: bash
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-21-openjdk
+          PATH: /usr/lib/jvm/java-21-openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          java -version
+          mvn -version
+
+          # Verification of secret without printing its value
+          if [ -z "$NVD_API_KEY" ]; then
+            echo "::error::NVD_API_KEY is missing"
+            exit 1
+          fi
+
+          mvn \
+            -s .CI/maven-settings.xml \
+            --file pom.xml \
+            --batch-mode \
+            org.owasp:dependency-check-maven:13.0.0:check \
+            -DnvdApiKeyEnvironmentVariable=NVD_API_KEY \
+            -DfailBuildOnCVSS=7.0
